@@ -6,6 +6,7 @@ type AuthContextValue = {
   user: {
     email: string;
     role: string;
+    name: string;
   } | null;
   login: (data: { email: string; password: string }) => Promise<unknown>;
   logout: () => void;
@@ -32,11 +33,13 @@ export const AuthProvider = ({
       user = {
         email: data.email,
         role: "admin",
+        name: "admin",
       };
     } else {
       user = {
         email: data.email,
         role: "customer",
+        name: "customer",
       };
     }
 

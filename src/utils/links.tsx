@@ -15,7 +15,7 @@ type FlatLink = {
   element: ReactElement;
   type: "flat";
 };
-type NestedLink = {
+export type NestedLink = {
   label: string;
   path: string;
   basePath: string;
