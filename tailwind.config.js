@@ -55,6 +55,7 @@ module.exports = {
         "line-gray": "#b6b6b6",
         "light-blue": "#88CED5",
         "secondary-dark": "#0D152B",
+        "hover-orange": "#feeed1",
         orange: "#E99E18",
       },
       borderRadius: {

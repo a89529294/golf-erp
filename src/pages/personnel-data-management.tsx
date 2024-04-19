@@ -3,25 +3,20 @@ import { DataTable } from "@/components/personnel-data-management-table/data-tab
 import { IconButton } from "@/components/ui/button";
 import { UserDisplayLogout } from "@/components/user-display-logout";
 
-type Payment = {
-  id: string;
-  amount: number;
-  status: "pending" | "processing" | "success" | "failed";
-  email: string;
-};
-
-export const payments: Payment[] = [
+export const personnel = [
   {
     id: "728ed52f",
-    amount: 100,
-    status: "pending",
-    email: "m@example.com",
+    name: "大名",
+    phoneno: "0900111222",
+    classification: "高爾夫",
+    clientName: "高仕高爾夫練習場-西屯朝馬總店",
   },
   {
-    id: "489e1d42",
-    amount: 125,
-    status: "processing",
-    email: "example@gmail.com",
+    id: "234fg12a",
+    name: "小名",
+    phoneno: "0900333444",
+    classification: "高爾夫",
+    clientName: "高仕高爾夫練習場-西屯朝馬總店",
   },
   // ...
 ];
@@ -36,7 +31,7 @@ export default function PersonnelDataManagement() {
         <UserDisplayLogout />
       </header>
       <div>
-        <DataTable columns={columns} data={payments} />
+        <DataTable columns={columns} data={personnel} />
       </div>
     </div>
   );
