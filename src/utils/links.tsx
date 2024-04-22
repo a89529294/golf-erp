@@ -119,3 +119,8 @@ export const isBelowLink = (prevPath: string, nextPath: string) => {
     0
   );
 };
+
+export const findLinkFromPathname = (pathname: string) =>
+  links.find((link) =>
+    pathname.startsWith(link.type === "nested" ? link.basePath : link.path),
+  );

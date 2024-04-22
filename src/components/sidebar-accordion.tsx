@@ -6,7 +6,12 @@ import {
 } from "@/components/ui/accordion";
 import { usePrevious } from "@/hooks/use-previous";
 import { cn } from "@/lib/utils";
-import { FlatLink, NestedLink, isBelowLink } from "@/utils/links";
+import {
+  FlatLink,
+  NestedLink,
+  findLinkFromPathname,
+  isBelowLink,
+} from "@/utils/links";
 import { motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -18,25 +23,19 @@ export function SidebarAccordion({
   links: (NestedLink | FlatLink)[];
 }) {
   const { pathname } = useLocation();
-  const [openedItem, setOpenedItem] = useState(
-    links.find((link) =>
-      pathname.startsWith("basePath" in link ? link.basePath : link.path),
-    )!.path,
-  );
-  const [nestedLinksClosed, setNestedLinksClosed] = useState(true);
+  const [nestedLinksClosed, setNestedLinksClosed] = useState(false);
 
-  const prevLink = usePrevious(
-    links.find((link) =>
-      pathname.startsWith(link.type === "nested" ? link.basePath : link.path),
-    ),
-  );
+  const prevLink = usePrevious(findLinkFromPathname(pathname));
 
   const isLinkActive = (link: NestedLink | FlatLink) => {
     const getPath = (link: NestedLink | FlatLink) =>
       link.type === "nested" ? link.basePath : link.path;
 
-    if (!prevLink) return pathname.startsWith(getPath(link));
-    if (prevLink.type === "nested" && isBelowLink(getPath(prevLink), pathname))
+    if (
+      prevLink &&
+      prevLink.type === "nested" &&
+      isBelowLink(getPath(prevLink), pathname)
+    )
       return pathname.startsWith(getPath(link)) && nestedLinksClosed;
     return pathname.startsWith(getPath(link));
   };
@@ -47,14 +46,10 @@ export function SidebarAccordion({
 
   return (
     <Accordion
-      value={openedItem}
-      onValueChange={(v) => {
-        setOpenedItem(v);
-        console.log(v);
-      }}
       type="single"
       collapsible
       className="w-full"
+      defaultValue={findLinkFromPathname(pathname)?.path}
     >
       {links.map((link) => (
         <AccordionItem value={link.path} key={link.path}>
@@ -68,7 +63,7 @@ export function SidebarAccordion({
               >
                 {link.label}
                 {link.type === "nested" && (
-                  <ChevronDown className="transition-transform group-data-[state=closed]:-rotate-180" />
+                  <ChevronDown className="transition-transform duration-300 group-data-[state=closed]:-rotate-180" />
                 )}
               </div>
               {isLinkActive(link) ? (
