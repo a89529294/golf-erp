@@ -48,7 +48,7 @@ export function CollapsibleNavLink({ link }: { link: NestedLink }) {
           })()}
         </NavLink>
       </CollapsibleTrigger>
-      <CollapsibleContent className="flex flex-col pt-1">
+      <CollapsibleContent className="data-[state=closed]:animate-slide-up data-[state=open]:animate-slide-down flex flex-col overflow-hidden pt-1">
         {link.subLinks.map((subLink) => {
           const isActive = location.pathname === subLink.path;
           return (

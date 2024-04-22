@@ -32,10 +32,20 @@ const router = createBrowserRouter(
             <Route index element={<Index />} />
             {links.map((link) => {
               if (link.type === "flat")
-                return <Route path={link.path} element={link.element} />;
+                return (
+                  <Route
+                    path={link.path}
+                    element={link.element}
+                    key={link.path}
+                  />
+                );
               else
                 return link.subLinks.map((subLink) => (
-                  <Route path={subLink.path} element={subLink.element} />
+                  <Route
+                    path={subLink.path}
+                    element={subLink.element}
+                    key={link.path}
+                  />
                 ));
             })}
           </Route>

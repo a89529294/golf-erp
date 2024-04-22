@@ -5,11 +5,13 @@ import DrivingRange from "@/pages/driving-range";
 import Golf from "@/pages/golf";
 import IndoorSimulator from "@/pages/indoor-simulator";
 import MemberManagement from "@/pages/member-management";
+import MemberProfiles from "@/pages/member-profiles";
 import PersonnelDataManagement from "@/pages/personnel-data-management";
+import Purchases from "@/pages/purchases";
 import SystemOperationManagement from "@/pages/system-operation-management";
 import { ReactElement } from "react";
 
-type FlatLink = {
+export type FlatLink = {
   label: string;
   path: string;
   element: ReactElement;
@@ -27,6 +29,7 @@ export type NestedLink = {
 type Links = (FlatLink | NestedLink)[];
 
 const SYSTEM_MANAGEMENT_BASE_PATH = "/system-management";
+const MEMBER_MANAGEMENT_BASE_PATH = "/member-management";
 
 export const links: Links = [
   {
@@ -88,8 +91,31 @@ export const links: Links = [
   },
   {
     label: "會員管理",
-    path: "/member-management",
+    basePath: MEMBER_MANAGEMENT_BASE_PATH,
+    path: `${MEMBER_MANAGEMENT_BASE_PATH}/member-profiles`,
     element: <MemberManagement />,
-    type: "flat" as const,
+    type: "nested" as const,
+    subLinks: [
+      {
+        label: "查詢基本資料",
+        path: `${MEMBER_MANAGEMENT_BASE_PATH}/member-profiles`,
+        element: <MemberProfiles />,
+        type: "flat" as const,
+      },
+      {
+        label: "儲值紀錄",
+        path: `${MEMBER_MANAGEMENT_BASE_PATH}/purchases`,
+        element: <Purchases />,
+        type: "flat" as const,
+      },
+    ],
   },
 ];
+
+export const isBelowLink = (prevPath: string, nextPath: string) => {
+  return (
+    links.findIndex((l) => l.path.startsWith(prevPath)) -
+      links.findIndex((l) => l.path.startsWith(nextPath)) <
+    0
+  );
+};

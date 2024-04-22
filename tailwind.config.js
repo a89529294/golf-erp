@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+/* eslint-env node */
 module.exports = {
   darkMode: ["class"],
   content: [
@@ -72,10 +73,14 @@ module.exports = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        "fade-in": {
+          from: { opacity: 0 },
+          to: { opacity: 1 },
+        },
       },
       animation: {
-        "accordion-down": "accordion-down 0.2s ease-out",
-        "accordion-up": "accordion-up 0.2s ease-out",
+        "accordion-down": "accordion-down .3s ease-out",
+        "accordion-up": "accordion-up .3s ease-out",
       },
     },
   },
