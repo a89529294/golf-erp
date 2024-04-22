@@ -31,7 +31,8 @@ export function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = useState({});
   const table = useReactTable({
-    data,
+    // data: data.slice(0, 5),
+    data: data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     onRowSelectionChange: setRowSelection,
@@ -41,17 +42,17 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div className="border border-line-gray">
-      <Table>
-        <TableHeader>
+    <div className=" border border-line-gray">
+      <Table className="relative isolate">
+        <TableHeader className="relative z-10">
           {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow
-              key={headerGroup.id}
-              className="bg-light-gray hover:bg-light-gray"
-            >
+            <TableRow key={headerGroup.id} className="">
               {headerGroup.headers.map((header) => {
                 return (
-                  <TableHead key={header.id}>
+                  <TableHead
+                    key={header.id}
+                    className="sticky top-[90px] bg-light-gray hover:bg-light-gray"
+                  >
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -64,7 +65,8 @@ export function DataTable<TData, TValue>({
             </TableRow>
           ))}
         </TableHeader>
-        <TableBody>
+
+        <TableBody className="relative ">
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
               <TableRow
