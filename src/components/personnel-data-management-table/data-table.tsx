@@ -2,6 +2,8 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
+  ColumnFiltersState,
+  getFilteredRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 
@@ -29,15 +31,18 @@ export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [rowSelection, setRowSelection] = useState({});
   const table = useReactTable({
-    // data: data.slice(0, 5),
     data: data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     onRowSelectionChange: setRowSelection,
+    onColumnFiltersChange: setColumnFilters,
+    getFilteredRowModel: getFilteredRowModel(),
     state: {
       rowSelection,
+      columnFilters,
     },
   });
 
@@ -51,6 +56,7 @@ export function DataTable<TData, TValue>({
                 return (
                   <TableHead
                     key={header.id}
+                    // height of header 80 plus gap 10
                     className="sticky top-[90px] bg-light-gray hover:bg-light-gray"
                   >
                     {header.isPlaceholder

@@ -4,6 +4,7 @@ import plusIcon from "@/assets/plus-icon.svg";
 import pfpIcon from "@/assets/pfp-icon.svg";
 import magnifyingGlassIcon from "@/assets/magnifying-glass-icon.svg";
 import { ReactNode } from "react";
+import { twMerge } from "tailwind-merge";
 
 const iconMap = {
   leave: leaveIcon,
@@ -13,10 +14,10 @@ const iconMap = {
 };
 
 const button = tv({
-  base: "border-line-gray flex h-11 items-center gap-1 border bg-light-gray px-3 hover:border-[1.5px] hover:border-orange focus-visible:border-[1.5px] focus-visible:border-orange focus-visible:outline-none",
+  base: "flex h-11 items-center gap-1 bg-light-gray px-3 outline outline-1 outline-line-gray hover:outline-[1.5px] hover:outline-orange focus-visible:outline-[1.5px] focus-visible:outline-orange",
   variants: {
     borderLess: {
-      true: "border-none px-5",
+      true: "px-5 outline-0 hover:outline-0 focus-visible:outline-0",
     },
   },
 });
@@ -47,7 +48,7 @@ export const IconButtonBorderLess = ({
 }) => {
   return (
     <button
-      className={button({ borderLess: true, class: "h-full" })}
+      className={twMerge(button({ borderLess: true, class: "h-full" }))}
       onClick={onClick}
     >
       <img src={iconMap[icon]} />
