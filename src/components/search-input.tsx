@@ -1,4 +1,5 @@
 import magnifyingGlass from "@/assets/magnifying-glass-icon.svg";
+import x from "@/assets/x.svg";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { motion } from "framer-motion";
@@ -6,7 +7,7 @@ import { motion } from "framer-motion";
 export function SearchInput() {
   const [value, setValue] = useState("");
 
-  const [isCursorOut, setIsCursorOut] = useState(false);
+  const [isCursorOut, setIsCursorOut] = useState(true);
   const isActive = !isCursorOut ? true : !!value;
 
   return (
@@ -22,13 +23,22 @@ export function SearchInput() {
       transition={{ duration: 0.1 }}
     >
       <img src={magnifyingGlass} />
+
       <input
         onFocus={() => setIsCursorOut(false)}
         onBlur={() => setIsCursorOut(true)}
         type="text"
-        className={cn("bg-transparent outline-none")}
+        className={cn("w-0 bg-transparent outline-none", isActive && "w-40")}
         value={value}
         onChange={(e) => setValue(e.target.value)}
+      />
+      <img
+        src={x}
+        className={cn(
+          "ml-auto w-0 opacity-0 transition-opacity delay-500",
+          !!value && "w-5 opacity-100",
+        )}
+        onClick={() => setValue("")}
       />
     </motion.label>
   );

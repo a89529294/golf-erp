@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { JSONValue } from "../utils/types";
 
 export const useLocalStorage = <V extends JSONValue>(
@@ -27,14 +27,14 @@ export const useLocalStorage = <V extends JSONValue>(
     setStoredValue(newValue);
   };
 
-  const clearValue = () => {
+  const clearValue = useCallback(() => {
     try {
       window.localStorage.removeItem(keyName);
     } catch (err) {
       console.log(err);
     }
     setStoredValue(null);
-  };
+  }, [keyName]);
 
   return [storedValue, setValue, clearValue] as const;
 };

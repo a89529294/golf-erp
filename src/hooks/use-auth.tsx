@@ -1,15 +1,17 @@
-import { ReactNode, createContext, useContext } from "react";
+import { privateFetch } from "@/utils/utils";
+import { ReactNode, createContext, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLocalStorage } from "./use-local-storage";
 
 type AuthContextValue = {
   user: {
-    email: string;
-    role: string;
-    name: string;
+    account: string;
+    permissions: string[];
+    expiresAt: number;
   } | null;
-  login: (data: { email: string; password: string }) => Promise<unknown>;
+  login: (data: { account: string; password: string }) => Promise<unknown>;
   logout: () => void;
+  isAuthenticated: boolean;
 };
 
 export type User = AuthContextValue["user"];
@@ -28,29 +30,37 @@ export const AuthProvider = ({
   const navigate = useNavigate();
 
   const login = async (data: LoginData) => {
-    let user;
-    if (data.email === "admin@example.com") {
-      user = {
-        email: data.email,
-        role: "admin",
-        name: "admin",
-      };
-    } else {
-      user = {
-        email: data.email,
-        role: "customer",
-        name: "customer",
-      };
-    }
+    const response = await privateFetch("/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
 
-    setUser(user);
+    const permissionsResponse = await privateFetch("/erp-features/me");
+    const permissions = await permissionsResponse.json();
+    const user = await response.json();
+
+    setUser({
+      account: user.account,
+      permissions: permissions.map((p: { name: string }) => p.name),
+      expiresAt: Date.now() + 1000 * 60 * 60,
+    });
     navigate("/", { replace: true });
   };
 
   const logout = () => {
+    privateFetch("/auth/logout");
     clearUser();
     navigate("/login", { replace: true });
   };
+
+  const isAuthenticated = !!(user && user.expiresAt > Date.now());
+
+  useEffect(() => {
+    if (!isAuthenticated) clearUser();
+  }, [isAuthenticated, clearUser]);
 
   return (
     <AuthContext.Provider
@@ -58,6 +68,7 @@ export const AuthProvider = ({
         user,
         login,
         logout,
+        isAuthenticated,
       }}
     >
       {children}

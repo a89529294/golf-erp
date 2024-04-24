@@ -2,9 +2,9 @@ import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../hooks/use-auth";
 
 export default function RedirectToIndex() {
-  const { user } = useAuth();
+  const { isAuthenticated } = useAuth();
 
-  if (user) return <Navigate to="/" />;
+  if (isAuthenticated) return <Navigate to="/" />;
 
   return <Outlet />;
 }

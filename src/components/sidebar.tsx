@@ -17,11 +17,7 @@ import { ChevronDown } from "lucide-react";
 import { useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 
-export function SidebarAccordion({
-  links,
-}: {
-  links: (NestedLink | FlatLink)[];
-}) {
+export function Sidebar({ links }: { links: (NestedLink | FlatLink)[] }) {
   const { pathname } = useLocation();
   const [nestedLinksClosed, setNestedLinksClosed] = useState(false);
 
@@ -85,18 +81,25 @@ export function SidebarAccordion({
                   );
               }}
             >
-              {link.subLinks.map((subLink) => {
-                const isActive = location.pathname === subLink.path;
+              {Object.values(link.subLinks).map((subLink) => {
+                const isActive =
+                  subLink.type === "multiple"
+                    ? Object.values(subLink.paths).find((p) =>
+                        pathname.startsWith(p),
+                      )
+                    : pathname === subLink.path;
+                const path =
+                  subLink.type === "multiple" ? subLink.paths[0] : subLink.path;
                 return (
                   <NavLink
-                    to={subLink.path}
+                    to={path}
                     className={() => {
                       let base =
                         "relative py-2.5 pl-10 text-sm transition-colors ";
                       base += isActive ? "  text-white" : "";
                       return base;
                     }}
-                    key={subLink.path}
+                    key={path}
                   >
                     {isActive && (
                       <motion.div

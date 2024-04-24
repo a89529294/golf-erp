@@ -1,4 +1,4 @@
-import { SidebarAccordion } from "@/components/sidebar-accordion";
+import { Sidebar } from "@/components/sidebar";
 import { links } from "@/utils/links";
 import { Outlet } from "react-router-dom";
 
@@ -12,7 +12,7 @@ export default function DashboardLayout() {
           </div>
         </div>
 
-        <SidebarAccordion links={links} />
+        <Sidebar links={links} />
       </nav>
       <main className="ml-52 w-full">
         <Outlet />

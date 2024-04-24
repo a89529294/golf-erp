@@ -2,22 +2,31 @@ import { columns } from "@/components/personnel-data-management-table/columns";
 import { DataTable } from "@/components/personnel-data-management-table/data-table";
 import { SearchInput } from "@/components/search-input";
 import { IconButton } from "@/components/ui/button";
-import { UserDisplayLogout } from "@/components/user-display-logout";
+import { MainLayout } from "@/layouts/main-layout";
+import { linksKV } from "@/utils/links";
 import { personnel } from "@/utils/temp-data";
+import { Link } from "react-router-dom";
 
 export default function PersonnelDataManagement() {
   return (
-    <div className="relative isolate flex flex-col px-2.5">
-      <header className="sticky top-0 z-10 mb-[1.5px] flex h-20 flex-shrink-0 items-end gap-2.5 bg-white">
-        <IconButton icon="plus">新增人員</IconButton>
-        <SearchInput />
-
-        <UserDisplayLogout />
-      </header>
-      <div className="sticky top-20 z-10 h-2.5 bg-white" />
-      <div className="">
-        <DataTable columns={columns} data={personnel} />
-      </div>
-    </div>
+    <MainLayout
+      headerChildren={
+        <>
+          <IconButton icon="plus">
+            <Link
+              to={
+                linksKV["data-management"].subLinks["personnel-data-management"]
+                  .paths.new
+              }
+            >
+              新增人員
+            </Link>
+          </IconButton>
+          <SearchInput />
+        </>
+      }
+    >
+      <DataTable columns={columns} data={personnel} />
+    </MainLayout>
   );
 }

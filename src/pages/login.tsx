@@ -1,16 +1,13 @@
-import { Navigate } from "react-router-dom";
 import { useAuth } from "../hooks/use-auth";
 
 const Login = () => {
-  const { user, login } = useAuth();
-
-  if (user) return <Navigate to="/" />;
+  const { login } = useAuth();
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     login({
-      email: data.get("email") as string,
+      account: data.get("account") as string,
       password: data.get("password") as string,
     });
   };
@@ -23,10 +20,10 @@ const Login = () => {
         onSubmit={handleSubmit}
       >
         <label className="flex w-80 justify-between">
-          email:
+          account:
           <input
             required
-            name="email"
+            name="account"
             type="text"
             className="border border-black"
           />
