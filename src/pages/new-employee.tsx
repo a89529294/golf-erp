@@ -37,8 +37,6 @@ export default function NewEmployee() {
       idNumber: "",
       name: "",
       phoneno: "",
-      category: "",
-      storeId: "",
     },
   });
 
@@ -149,7 +147,11 @@ function EmployeeFormSelectField({
           render={({ field }) => (
             <FormItem className="flex items-baseline gap-7">
               <FormLabel>{label}</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select
+                required
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+              >
                 <FormControl>
                   <SelectTrigger
                     className={cn(
