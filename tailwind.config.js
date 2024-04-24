@@ -54,6 +54,7 @@ module.exports = {
         },
         "light-gray": "#f5f5f5",
         "line-gray": "#b6b6b6",
+        "word-gray": "#c4c4c4",
         "light-blue": "#88CED5",
         "secondary-dark": "#0D152B",
         "hover-orange": "#feeed1",

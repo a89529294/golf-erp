@@ -89,7 +89,9 @@ export function Sidebar({ links }: { links: (NestedLink | FlatLink)[] }) {
                       )
                     : pathname === subLink.path;
                 const path =
-                  subLink.type === "multiple" ? subLink.paths[0] : subLink.path;
+                  subLink.type === "multiple"
+                    ? Object.values(subLink.paths)[0]
+                    : subLink.path;
                 return (
                   <NavLink
                     to={path}

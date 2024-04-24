@@ -1,6 +1,8 @@
 import { tv } from "tailwind-variants";
 import leaveIcon from "@/assets/leave-icon.svg";
 import plusIcon from "@/assets/plus-icon.svg";
+import saveIcon from "@/assets/save.svg";
+import backIcon from "@/assets/back.svg";
 import pfpIcon from "@/assets/pfp-icon.svg";
 import magnifyingGlassIcon from "@/assets/magnifying-glass-icon.svg";
 import { ReactNode } from "react";
@@ -11,6 +13,8 @@ const iconMap = {
   plus: plusIcon,
   magnifyingGlass: magnifyingGlassIcon,
   pfp: pfpIcon,
+  save: saveIcon,
+  back: backIcon,
 };
 
 const button = tv({
@@ -22,15 +26,21 @@ const button = tv({
   },
 });
 
+type IconButtonType = React.DetailedHTMLProps<
+  React.ButtonHTMLAttributes<HTMLButtonElement>,
+  HTMLButtonElement
+> & {
+  icon: keyof typeof iconMap;
+};
+
 export const IconButton = ({
   children,
   icon,
-}: {
-  children?: ReactNode;
-  icon: keyof typeof iconMap;
-}) => {
+  onClick,
+  ...props
+}: IconButtonType) => {
   return (
-    <button className={button()}>
+    <button className={button()} onClick={onClick} {...props}>
       <img src={iconMap[icon]} />
       {children}
     </button>
