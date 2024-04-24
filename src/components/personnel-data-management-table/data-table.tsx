@@ -47,7 +47,7 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div className=" border border-line-gray">
+    <div className="w-full border border-line-gray">
       <Table className="relative isolate">
         <TableHeader className="relative z-10">
           {table.getHeaderGroups().map((headerGroup) => (

@@ -49,11 +49,18 @@ export function CollapsibleNavLink({ link }: { link: NestedLink }) {
         </NavLink>
       </CollapsibleTrigger>
       <CollapsibleContent className="data-[state=closed]:animate-slide-up data-[state=open]:animate-slide-down flex flex-col overflow-hidden pt-1">
-        {link.subLinks.map((subLink) => {
-          const isActive = location.pathname === subLink.path;
+        {Object.values(link.subLinks).map((subLink) => {
+          const isActive =
+            subLink.type === "flat"
+              ? pathname.includes(subLink.path)
+              : Object.values(subLink.paths).find((v) => pathname.includes(v));
+          const path =
+            subLink.type === "flat"
+              ? subLink.path
+              : Object.values(subLink.paths)[0];
           return (
             <NavLink
-              to={subLink.path}
+              to={path}
               className={() => {
                 let base = "relative py-2.5 pl-10 text-sm transition-colors ";
                 base += isActive ? "  text-white" : "";
