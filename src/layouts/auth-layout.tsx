@@ -1,8 +1,11 @@
 import { useLoaderData, useOutlet } from "react-router-dom";
 import { AuthProvider, User } from "../hooks/use-auth";
+import { localStorageUserKey } from "@/utils";
 
 const getUserData = (): User => {
-  let user = JSON.parse(window.localStorage.getItem("user") ?? "[]");
+  let user = JSON.parse(
+    window.localStorage.getItem(localStorageUserKey) ?? "[]",
+  );
 
   if (user === null || user.length === 0) user = null;
   return user;

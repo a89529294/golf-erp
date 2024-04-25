@@ -21,12 +21,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { UseFormReturn, useForm } from "react-hook-form";
 import { z } from "zod";
 import { cn } from "@/lib/utils";
+import { storeCategories } from "@/utils/types";
 
 const formSchema = z.object({
   idNumber: z.string(),
   name: z.string(),
   phoneno: z.string(),
-  category: z.enum(["golf", "simulator", "ground", ""]),
+  category: z.enum(storeCategories),
   storeId: z.string(),
 });
 

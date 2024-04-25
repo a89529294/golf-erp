@@ -42,13 +42,26 @@ const router = createBrowserRouter(
               else
                 return Object.values(link.subLinks).map((subLink) =>
                   subLink.type === "multiple" ? (
-                    Object.values(subLink.paths).map((p, i) => (
-                      <Route
-                        path={p}
-                        element={Object.values(subLink.elements)[i]}
-                        key={p}
-                      />
-                    ))
+                    (
+                      Object.entries(subLink.paths) as [
+                        key: keyof typeof subLink.paths,
+                        path: string,
+                      ][]
+                    ).map(([key, path]) => {
+                      return (
+                        <Route
+                          path={path}
+                          element={subLink.elements[key]}
+                          key={path}
+                          {...(key in subLink.loaders
+                            ? { loader: subLink.loaders[key] }
+                            : {})}
+                          {...(key in subLink.errorElements
+                            ? { errorElement: subLink.errorElements[key] }
+                            : {})}
+                        />
+                      );
+                    })
                   ) : (
                     <Route
                       path={subLink.path}

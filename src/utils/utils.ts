@@ -1,4 +1,5 @@
-import { base_url } from "@/utils";
+import { base_url, localStorageUserKey } from "@/utils";
+import { redirect } from "react-router-dom";
 
 export function sleep(ms = 1000) {
   return new Promise((r) => setTimeout(r, ms));
@@ -9,8 +10,14 @@ export async function privateFetch(...args: Parameters<typeof fetch>) {
     credentials: "include",
     ...args[1],
   });
-
-  if (!response.ok) throw new Error("response not ok");
+  console.log(response.status);
 
   return response;
+}
+
+export function redirectToLoginIf401(status: number) {
+  if (status === 401) {
+    localStorage.removeItem(localStorageUserKey);
+    redirect("/login");
+  }
 }

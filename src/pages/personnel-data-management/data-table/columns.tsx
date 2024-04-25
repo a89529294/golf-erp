@@ -1,17 +1,10 @@
 import { Checkbox } from "@/components/ui/checkbox";
+import { Employee } from "@/pages/personnel-data-management/loader";
+import { categoryMap } from "@/utils";
+import { StoreCategory } from "@/utils/types";
 import { ColumnDef } from "@tanstack/react-table";
 
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
-export type Personnel = {
-  id: string;
-  name: string;
-  phoneno: string;
-  classification: string;
-  clientName: string;
-};
-
-export const columns: ColumnDef<Personnel>[] = [
+export const columns: ColumnDef<Employee>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -37,23 +30,24 @@ export const columns: ColumnDef<Personnel>[] = [
     ),
   },
   {
-    accessorKey: "id",
+    accessorKey: "idNumber",
     header: "編號",
   },
   {
-    accessorKey: "name",
+    accessorKey: "chName",
     header: "姓名",
   },
   {
-    accessorKey: "phoneno",
+    accessorKey: "telphone",
     header: "電話",
   },
   {
-    accessorKey: "classification",
+    accessorKey: "stores.0.category",
     header: "分類",
+    cell: (props) => categoryMap[props.cell.getValue() as StoreCategory],
   },
   {
-    accessorKey: "clientName",
+    accessorKey: "stores.0.name",
     header: "廠商名稱",
   },
 ];

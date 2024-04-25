@@ -1,7 +1,8 @@
-import { privateFetch } from "@/utils/utils";
+import { base_url, localStorageUserKey } from "@/utils";
 import { ReactNode, createContext, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLocalStorage } from "./use-local-storage";
+import { privateFetch } from "@/utils/utils";
 
 type AuthContextValue = {
   user: {
@@ -26,7 +27,10 @@ export const AuthProvider = ({
   children: ReactNode;
   userData: User;
 }) => {
-  const [user, setUser, clearUser] = useLocalStorage("user", userData);
+  const [user, setUser, clearUser] = useLocalStorage(
+    localStorageUserKey,
+    userData,
+  );
   const navigate = useNavigate();
 
   const login = async (data: LoginData) => {
@@ -51,12 +55,18 @@ export const AuthProvider = ({
   };
 
   const logout = () => {
-    privateFetch("/auth/logout");
+    fetch(`${base_url}/auth/logout`, {
+      credentials: "include",
+    });
     clearUser();
     navigate("/login", { replace: true });
   };
 
-  const isAuthenticated = !!(user && user.expiresAt > Date.now());
+  const isAuthenticated = !!(
+    localStorage.getItem(localStorageUserKey) &&
+    user &&
+    user.expiresAt > Date.now()
+  );
 
   useEffect(() => {
     if (!isAuthenticated) clearUser();

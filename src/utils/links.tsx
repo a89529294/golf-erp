@@ -1,3 +1,4 @@
+import { ErrorElement } from "@/components/error-element";
 import AppExpenditureLevel from "@/pages/app-expenditure-level";
 import AppPermissionManagement from "@/pages/app-permission-management";
 import ClientManagement from "@/pages/client-management";
@@ -7,9 +8,11 @@ import IndoorSimulator from "@/pages/indoor-simulator";
 import MemberProfiles from "@/pages/member-profiles";
 import NewEmployee from "@/pages/new-employee";
 import PersonnelDataManagement from "@/pages/personnel-data-management";
+import { loader as personnelDataManagementLoader } from "@/pages/personnel-data-management/loader";
 import Purchases from "@/pages/purchases";
 import SystemOperationManagement from "@/pages/system-operation-management";
 import { ReactElement } from "react";
+import { type LoaderFunction } from "react-router-dom";
 
 export type FlatLink = {
   label: string;
@@ -29,6 +32,7 @@ export type MultipleLink = {
   label: string;
   paths: { [key: string]: string };
   elements: { [key: string]: ReactElement };
+  loaders: { [key: string]: () => Promise<unknown> };
   type: "multiple";
 };
 
@@ -67,6 +71,13 @@ export const linksKV = {
           new: `${SYSTEM_MANAGEMENT_BASE_PATH}/personnel-data-management/new-employee`,
         },
         elements: { index: <PersonnelDataManagement />, new: <NewEmployee /> },
+        loaders: { index: personnelDataManagementLoader } as Record<
+          string,
+          LoaderFunction
+        >,
+        errorElements: {
+          index: <ErrorElement />,
+        } as Record<string, ReactElement>,
         type: "multiple" as const,
       },
       "app-expenditure-level": {
