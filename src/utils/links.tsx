@@ -32,7 +32,8 @@ export type MultipleLink = {
   label: string;
   paths: { [key: string]: string };
   elements: { [key: string]: ReactElement };
-  loaders: { [key: string]: () => Promise<unknown> };
+  loaders: { [key: string]: LoaderFunction };
+  errorElements: { [key: string]: ReactElement };
   type: "multiple";
 };
 
