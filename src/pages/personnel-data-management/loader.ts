@@ -1,5 +1,6 @@
+import { storeCategoryArray } from "@/utils";
 import { queryClient } from "@/utils/query-client";
-import { storeCategories } from "@/utils/types";
+import {} from "@/utils/types";
 import { privateFetch } from "@/utils/utils";
 import { z } from "zod";
 
@@ -13,7 +14,7 @@ const employeesSchema = z.object({
       stores: z.array(
         z.object({
           name: z.string(),
-          category: z.enum(storeCategories),
+          category: z.enum(storeCategoryArray),
         }),
       ),
     }),
@@ -28,8 +29,6 @@ export const employeesQuery = {
     const response = await privateFetch(
       "/employees?pageSize=999&populate=stores",
     );
-
-    if (response.status === 401) throw new Error("401");
 
     const data = await response.json();
     const employees = employeesSchema.parse(data);

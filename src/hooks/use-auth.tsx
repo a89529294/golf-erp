@@ -1,5 +1,11 @@
 import { base_url, localStorageUserKey } from "@/utils";
-import { ReactNode, createContext, useContext, useEffect } from "react";
+import {
+  ReactNode,
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+} from "react";
 import { useNavigate } from "react-router-dom";
 import { useLocalStorage } from "./use-local-storage";
 import { privateFetch } from "@/utils/utils";
@@ -13,6 +19,7 @@ type AuthContextValue = {
   login: (data: { account: string; password: string }) => Promise<unknown>;
   logout: () => void;
   isAuthenticated: boolean;
+  clearUser: () => void;
 };
 
 export type User = AuthContextValue["user"];
@@ -54,13 +61,13 @@ export const AuthProvider = ({
     navigate("/", { replace: true });
   };
 
-  const logout = () => {
+  const logout = useCallback(() => {
     fetch(`${base_url}/auth/logout`, {
       credentials: "include",
     });
     clearUser();
     navigate("/login", { replace: true });
-  };
+  }, [clearUser, navigate]);
 
   const isAuthenticated = !!(
     localStorage.getItem(localStorageUserKey) &&
@@ -79,6 +86,7 @@ export const AuthProvider = ({
         login,
         logout,
         isAuthenticated,
+        clearUser,
       }}
     >
       {children}

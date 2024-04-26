@@ -18,8 +18,6 @@ export default function PersonnelDataManagement() {
     initialData,
   });
 
-  if (!data) return null;
-
   return (
     <MainLayout
       headerChildren={

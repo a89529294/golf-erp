@@ -1,7 +1,6 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Employee } from "@/pages/personnel-data-management/loader";
-import { categoryMap } from "@/utils";
-import { StoreCategory } from "@/utils/types";
+import { StoreCategory, storeCategoryMap } from "@/utils";
 import { ColumnDef } from "@tanstack/react-table";
 
 export const columns: ColumnDef<Employee>[] = [
@@ -44,7 +43,7 @@ export const columns: ColumnDef<Employee>[] = [
   {
     accessorKey: "stores.0.category",
     header: "分類",
-    cell: (props) => categoryMap[props.cell.getValue() as StoreCategory],
+    cell: (props) => storeCategoryMap[props.cell.getValue() as StoreCategory],
   },
   {
     accessorKey: "stores.0.name",

@@ -7,12 +7,14 @@ import Golf from "@/pages/golf";
 import IndoorSimulator from "@/pages/indoor-simulator";
 import MemberProfiles from "@/pages/member-profiles";
 import NewEmployee from "@/pages/new-employee";
+import { action as newEmployeeAction } from "@/pages/new-employee/action";
+import { loader as newEmployeeLoader } from "@/pages/new-employee/loader";
 import PersonnelDataManagement from "@/pages/personnel-data-management";
 import { loader as personnelDataManagementLoader } from "@/pages/personnel-data-management/loader";
 import Purchases from "@/pages/purchases";
 import SystemOperationManagement from "@/pages/system-operation-management";
 import { ReactElement } from "react";
-import { type LoaderFunction } from "react-router-dom";
+import { ActionFunction, type LoaderFunction } from "react-router-dom";
 
 export type FlatLink = {
   label: string;
@@ -72,14 +74,17 @@ export const linksKV = {
           new: `${SYSTEM_MANAGEMENT_BASE_PATH}/personnel-data-management/new-employee`,
         },
         elements: { index: <PersonnelDataManagement />, new: <NewEmployee /> },
-        // loaders: {} as Record<string, LoaderFunction>,
-        loaders: { index: personnelDataManagementLoader } as Record<
-          string,
-          LoaderFunction
-        >,
+        loaders: {
+          index: personnelDataManagementLoader,
+          new: newEmployeeLoader,
+        } as Record<string, LoaderFunction>,
         errorElements: {
           index: <ErrorElement />,
+          new: <ErrorElement />,
         } as Record<string, ReactElement>,
+        actions: {
+          new: newEmployeeAction,
+        } as Record<string, ActionFunction>,
         type: "multiple" as const,
       },
       "app-expenditure-level": {

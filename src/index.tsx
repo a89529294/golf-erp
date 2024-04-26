@@ -17,6 +17,7 @@ import Index from "./pages";
 import Login from "./pages/login";
 import RedirectToIndexIfAuthed from "./utils/redirect-to-index-if-authed";
 import RedirectToLoginIfNotAuthed from "./utils/redirect-to-login-if-not-authed";
+import { Toaster } from "sonner";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -58,6 +59,9 @@ const router = createBrowserRouter(
                           {...(key in subLink.errorElements
                             ? { errorElement: subLink.errorElements[key] }
                             : {})}
+                          {...(key in subLink.actions
+                            ? { action: subLink.actions[key] }
+                            : {})}
                         />
                       );
                     })
@@ -81,6 +85,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <RouterProvider router={router} />
+      <Toaster richColors={true} theme="light" />
       <ReactQueryDevtools buttonPosition="bottom-right" />
     </QueryClientProvider>
   </React.StrictMode>,

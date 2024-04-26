@@ -10,7 +10,7 @@ export async function privateFetch(...args: Parameters<typeof fetch>) {
     credentials: "include",
     ...args[1],
   });
-
+  if (response.status === 401) throw new Error("401");
   return response;
 }
 
