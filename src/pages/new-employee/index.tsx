@@ -24,7 +24,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { UseFormReturn, useForm, useWatch } from "react-hook-form";
-import { useLoaderData, useLocation, useSubmit } from "react-router-dom";
+import {
+  useActionData,
+  useLoaderData,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+  useSubmit,
+} from "react-router-dom";
 import { z } from "zod";
 
 const toValueLabelArray = (obj: { name: string; id: string }[]) => {
@@ -44,6 +51,10 @@ const formSchema = z.object({
 });
 
 export default function NewEmployee() {
+  const submit = useSubmit();
+  const { pathname } = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
   const { data: stores } = useQuery({ ...storeQuery, initialData });
   const form = useForm<z.infer<typeof formSchema>>({
@@ -59,8 +70,8 @@ export default function NewEmployee() {
   const [storeOptions, setStoreOptions] = useState(() => {
     return toValueLabelArray(stores.golf);
   });
-  const submit = useSubmit();
-  const { pathname } = useLocation();
+  const [isMutating, setIsMutating] = useState(false);
+
   const categorySelected = useWatch({
     control: form.control,
     name: "category",
@@ -68,7 +79,7 @@ export default function NewEmployee() {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
-
+    setIsMutating(true);
     submit(values, {
       method: "post",
       action: pathname,
@@ -86,12 +97,29 @@ export default function NewEmployee() {
     form.resetField("storeId");
   }, [categorySelected, stores, form]);
 
+  useEffect(() => {
+    if (searchParams.get("error")) {
+      setIsMutating(false);
+      setSearchParams("");
+    }
+  }, [searchParams, setSearchParams]);
+
   return (
     <MainLayout
       headerChildren={
         <>
-          <IconButton icon="back">返回</IconButton>
-          <IconButton icon="save" form="new-employee-form">
+          <IconButton
+            disabled={isMutating}
+            icon="back"
+            onClick={() => navigate(-1)}
+          >
+            返回
+          </IconButton>
+          <IconButton
+            disabled={isMutating}
+            icon="save"
+            form="new-employee-form"
+          >
             儲存
           </IconButton>
         </>

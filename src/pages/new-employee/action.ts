@@ -21,7 +21,9 @@ export const action: ActionFunction = async ({ request }) => {
 
   if (!response.ok) {
     toast.error("新增員工失敗");
-    return null;
+    const url = new URL(request.url);
+
+    return redirect(`${url.pathname}/?error=true`);
   }
 
   toast.success("新增員工成功");
