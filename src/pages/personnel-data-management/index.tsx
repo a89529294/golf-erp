@@ -3,12 +3,22 @@ import { IconButton } from "@/components/ui/button";
 import { MainLayout } from "@/layouts/main-layout";
 import { columns } from "@/pages/personnel-data-management/data-table/columns";
 import { DataTable } from "@/pages/personnel-data-management/data-table/data-table";
-import { loader } from "@/pages/personnel-data-management/loader";
+import {
+  employeesQuery,
+  loader,
+} from "@/pages/personnel-data-management/loader";
 import { linksKV } from "@/utils/links";
+import { useQuery } from "@tanstack/react-query";
 import { Link, useLoaderData } from "react-router-dom";
 
 export default function PersonnelDataManagement() {
-  const data = useLoaderData() as Awaited<ReturnType<typeof loader>>;
+  const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
+  const { data } = useQuery({
+    ...employeesQuery,
+    initialData,
+  });
+
+  if (!data) return null;
 
   return (
     <MainLayout

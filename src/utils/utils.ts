@@ -10,7 +10,6 @@ export async function privateFetch(...args: Parameters<typeof fetch>) {
     credentials: "include",
     ...args[1],
   });
-  console.log(response.status);
 
   return response;
 }
@@ -18,6 +17,6 @@ export async function privateFetch(...args: Parameters<typeof fetch>) {
 export function redirectToLoginIf401(status: number) {
   if (status === 401) {
     localStorage.removeItem(localStorageUserKey);
-    redirect("/login");
+    return redirect("/login");
   }
 }

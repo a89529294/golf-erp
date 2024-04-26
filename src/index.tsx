@@ -1,5 +1,6 @@
 import { links } from "@/utils/links";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { queryClient } from "@/utils/query-client";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import React from "react";
 import ReactDOM from "react-dom/client";
@@ -16,8 +17,6 @@ import Index from "./pages";
 import Login from "./pages/login";
 import RedirectToIndexIfAuthed from "./utils/redirect-to-index-if-authed";
 import RedirectToLoginIfNotAuthed from "./utils/redirect-to-login-if-not-authed";
-
-const queryClient = new QueryClient();
 
 const router = createBrowserRouter(
   createRoutesFromElements(

@@ -72,6 +72,7 @@ export const linksKV = {
           new: `${SYSTEM_MANAGEMENT_BASE_PATH}/personnel-data-management/new-employee`,
         },
         elements: { index: <PersonnelDataManagement />, new: <NewEmployee /> },
+        // loaders: {} as Record<string, LoaderFunction>,
         loaders: { index: personnelDataManagementLoader } as Record<
           string,
           LoaderFunction
