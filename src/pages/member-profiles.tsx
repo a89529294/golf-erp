@@ -1,3 +1,3 @@
-export default function MemberProfiles() {
+export function Component() {
   return <div>member profiles</div>;
 }

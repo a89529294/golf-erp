@@ -1,3 +1,3 @@
-export default function DrivingRange() {
+export function Component() {
   return <div>driving range</div>;
 }

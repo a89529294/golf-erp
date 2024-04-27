@@ -1,25 +1,16 @@
 import { ErrorElement } from "@/components/error-element";
-import AppExpenditureLevel from "@/pages/app-expenditure-level";
-import AppPermissionManagement from "@/pages/app-permission-management";
-import ClientManagement from "@/pages/client-management";
-import DrivingRange from "@/pages/driving-range";
-import Golf from "@/pages/golf";
-import IndoorSimulator from "@/pages/indoor-simulator";
-import MemberProfiles from "@/pages/member-profiles";
 import NewEmployee from "@/pages/new-employee";
 import { action as newEmployeeAction } from "@/pages/new-employee/action";
 import { loader as newEmployeeLoader } from "@/pages/new-employee/loader";
 import PersonnelDataManagement from "@/pages/personnel-data-management";
 import { loader as personnelDataManagementLoader } from "@/pages/personnel-data-management/loader";
-import Purchases from "@/pages/purchases";
-import SystemOperationManagement from "@/pages/system-operation-management";
 import { ReactElement } from "react";
 import { ActionFunction, type LoaderFunction } from "react-router-dom";
 
 export type FlatLink = {
   label: string;
   path: string;
-  element: ReactElement;
+  lazy: () => Promise<unknown>;
   type: "flat";
 };
 export type NestedLink = {
@@ -46,19 +37,19 @@ export const linksKV = {
   "indoor-simulator": {
     label: "室內模擬器",
     path: "/indoor-simulator",
-    element: <IndoorSimulator />,
+    lazy: () => import("@/pages/indoor-simulator"),
     type: "flat" as const,
   },
   golf: {
     label: "高爾夫球",
     path: "/golf",
-    element: <Golf />,
+    lazy: () => import("@/pages/golf"),
     type: "flat" as const,
   },
   "driving-range": {
     label: "練習場",
     path: "/driving-range",
-    element: <DrivingRange />,
+    lazy: () => import("@/pages/driving-range"),
     type: "flat" as const,
   },
   "data-management": {
@@ -90,19 +81,19 @@ export const linksKV = {
       "app-expenditure-level": {
         label: "APP消費級距",
         path: `${SYSTEM_MANAGEMENT_BASE_PATH}/app-expenditure-level`,
-        element: <AppExpenditureLevel />,
+        lazy: () => import("@/pages/app-expenditure-level"),
         type: "flat" as const,
       },
       "system-operation-management": {
         label: "系統操作管理",
         path: `${SYSTEM_MANAGEMENT_BASE_PATH}/system-operation-management`,
-        element: <SystemOperationManagement />,
+        lazy: () => import("@/pages/system-operation-management"),
         type: "flat" as const,
       },
       "app-permission-management": {
         label: "功能權限管理",
         path: `${SYSTEM_MANAGEMENT_BASE_PATH}/app-permission-management`,
-        element: <AppPermissionManagement />,
+        lazy: () => import("@/pages/app-permission-management"),
         type: "flat" as const,
       },
     },
@@ -110,7 +101,7 @@ export const linksKV = {
   "client-management": {
     label: "廠商管理",
     path: "/client-management",
-    element: <ClientManagement />,
+    lazy: () => import("@/pages/client-management"),
     type: "flat" as const,
   },
   "member-management": {
@@ -122,13 +113,13 @@ export const linksKV = {
       profiles: {
         label: "查詢基本資料",
         path: `${MEMBER_MANAGEMENT_BASE_PATH}/member-profiles`,
-        element: <MemberProfiles />,
+        lazy: () => import("@/pages/member-profiles"),
         type: "flat" as const,
       },
       purchases: {
         label: "儲值紀錄",
         path: `${MEMBER_MANAGEMENT_BASE_PATH}/purchases`,
-        element: <Purchases />,
+        lazy: () => import("@/pages/purchases"),
         type: "flat" as const,
       },
     },

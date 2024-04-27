@@ -1,3 +1,3 @@
-export default function Golf() {
+export function Component() {
   return <div>golf page</div>;
 }

@@ -1,3 +1,3 @@
-export default function Purchases() {
+export function Component() {
   return <div>purchases</div>;
 }

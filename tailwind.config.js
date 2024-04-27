@@ -58,7 +58,7 @@ module.exports = {
         "light-blue": "#88CED5",
         "secondary-dark": "#0D152B",
         "hover-orange": "#feeed1",
-        orange: "var(--orange)",
+        orange: "rgb(var(--orange) / <alpha-value>)",
       },
       borderRadius: {
         lg: "var(--radius)",

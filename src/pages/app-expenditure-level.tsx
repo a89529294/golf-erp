@@ -1,3 +1,3 @@
-export default function AppExpenditureLevel() {
+export function Component() {
   return <div>app expenditure level</div>;
 }

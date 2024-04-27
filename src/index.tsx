@@ -33,11 +33,7 @@ const router = createBrowserRouter(
             {links.map((link) => {
               if (link.type === "flat")
                 return (
-                  <Route
-                    path={link.path}
-                    element={link.element}
-                    key={link.path}
-                  />
+                  <Route path={link.path} lazy={link.lazy} key={link.path} />
                 );
               else
                 return Object.values(link.subLinks).map((subLink) =>
@@ -68,7 +64,7 @@ const router = createBrowserRouter(
                   ) : (
                     <Route
                       path={subLink.path}
-                      element={subLink.element}
+                      lazy={subLink.lazy}
                       key={subLink.path}
                     />
                   ),

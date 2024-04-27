@@ -1,3 +1,3 @@
-export default function ClientManagement() {
+export function Component() {
   return <div>client management</div>;
 }

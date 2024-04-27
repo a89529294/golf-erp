@@ -15,11 +15,13 @@ import {
 import { motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { useEffect, useState } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigation } from "react-router-dom";
 
 export function Sidebar({ links }: { links: (NestedLink | FlatLink)[] }) {
   const { pathname } = useLocation();
   const [nestedLinksClosed, setNestedLinksClosed] = useState(false);
+  const { state } = useNavigation();
+  console.log(state);
 
   const prevLink = usePrevious(findLinkFromPathname(pathname));
 
@@ -51,24 +53,35 @@ export function Sidebar({ links }: { links: (NestedLink | FlatLink)[] }) {
         <AccordionItem value={link.path} key={link.path}>
           <AccordionTrigger asChild>
             <NavLink to={link.path} className="group relative block py-3 pl-7">
-              <div
-                className={cn(
-                  "flex w-full items-center justify-between pr-4 transition-colors",
-                  isLinkActive(link) && "text-white ",
-                )}
-              >
-                {link.label}
-                {link.type === "nested" && (
-                  <ChevronDown className="transition-transform duration-300 group-data-[state=closed]:-rotate-180" />
-                )}
-              </div>
-              {isLinkActive(link) ? (
-                <motion.div
-                  className=" absolute inset-0 -z-10 bg-secondary-dark"
-                  layoutId="link-bg"
-                  layout
-                />
-              ) : null}
+              {({ isPending }) => (
+                <>
+                  <div
+                    className={cn(
+                      "flex w-full items-center justify-between pr-4 transition-colors",
+                      isLinkActive(link) && "text-white",
+                    )}
+                  >
+                    {link.label}
+                    {link.type === "nested" && (
+                      <ChevronDown className="transition-transform duration-300 group-data-[state=closed]:-rotate-180" />
+                    )}
+                  </div>
+                  {isLinkActive(link) && (
+                    <motion.div
+                      className="absolute inset-0 -z-10 bg-secondary-dark"
+                      layoutId="link-bg"
+                      layout
+                    />
+                  )}
+                  {isPending && (
+                    <motion.div
+                      className="absolute inset-0 -z-10 bg-secondary-dark opacity-50"
+                      layoutId="link-bg"
+                      layout
+                    />
+                  )}
+                </>
+              )}
             </NavLink>
           </AccordionTrigger>
           {link.type === "nested" && (
@@ -103,13 +116,23 @@ export function Sidebar({ links }: { links: (NestedLink | FlatLink)[] }) {
                     }}
                     key={path}
                   >
-                    {isActive && (
-                      <motion.div
-                        className="absolute inset-0 -z-10 border-l-[3px] border-secondary-dark bg-orange"
-                        layoutId="nested-link-bg"
-                      />
+                    {({ isPending }) => (
+                      <>
+                        {isActive && (
+                          <motion.div
+                            className="absolute inset-0 -z-10 border-l-[3px] border-secondary-dark bg-orange"
+                            layoutId="nested-link-bg"
+                          />
+                        )}
+                        {isPending && (
+                          <motion.div
+                            className="absolute inset-0 -z-10 border-l-[3px] border-secondary-dark bg-orange/50"
+                            layoutId="nested-link-bg"
+                          />
+                        )}
+                        {subLink.label}
+                      </>
                     )}
-                    {subLink.label}
                   </NavLink>
                 );
               })}
