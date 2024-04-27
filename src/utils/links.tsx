@@ -1,12 +1,3 @@
-import { ErrorElement } from "@/components/error-element";
-import NewEmployee from "@/pages/new-employee";
-import { action as newEmployeeAction } from "@/pages/new-employee/action";
-import { loader as newEmployeeLoader } from "@/pages/new-employee/loader";
-import PersonnelDataManagement from "@/pages/personnel-data-management";
-import { loader as personnelDataManagementLoader } from "@/pages/personnel-data-management/loader";
-import { ReactElement } from "react";
-import { ActionFunction, type LoaderFunction } from "react-router-dom";
-
 export type FlatLink = {
   label: string;
   path: string;
@@ -24,14 +15,12 @@ export type NestedLink = {
 export type MultipleLink = {
   label: string;
   paths: { [key: string]: string };
-  elements: { [key: string]: ReactElement };
-  loaders: { [key: string]: LoaderFunction };
-  errorElements: { [key: string]: ReactElement };
+  lazy: { [key: string]: () => Promise<unknown> };
   type: "multiple";
 };
 
 const SYSTEM_MANAGEMENT_BASE_PATH = "/system-management";
-const MEMBER_MANAGEMENT_BASE_PATH = "/member-management";
+// const MEMBER_MANAGEMENT_BASE_PATH = "/member-management";
 
 export const linksKV = {
   "indoor-simulator": {
@@ -64,18 +53,22 @@ export const linksKV = {
           index: `${SYSTEM_MANAGEMENT_BASE_PATH}/personnel-data-management`,
           new: `${SYSTEM_MANAGEMENT_BASE_PATH}/personnel-data-management/new-employee`,
         },
-        elements: { index: <PersonnelDataManagement />, new: <NewEmployee /> },
-        loaders: {
-          index: personnelDataManagementLoader,
-          new: newEmployeeLoader,
-        } as Record<string, LoaderFunction>,
-        errorElements: {
-          index: <ErrorElement />,
-          new: <ErrorElement />,
-        } as Record<string, ReactElement>,
-        actions: {
-          new: newEmployeeAction,
-        } as Record<string, ActionFunction>,
+        lazy: {
+          index: () => import("@/pages/personnel-data-management"),
+          new: () => import("@/pages/new-employee"),
+        },
+        // elements: { index: <PersonnelDataManagement />, new: <NewEmployee /> },
+        // loaders: {
+        //   index: personnelDataManagementLoader,
+        //   new: newEmployeeLoader,
+        // } as Record<string, LoaderFunction>,
+        // errorElements: {
+        //   index: <ErrorElement />,
+        //   new: <ErrorElement />,
+        // } as Record<string, ReactElement>,
+        // actions: {
+        //   new: newEmployeeAction,
+        // } as Record<string, ActionFunction>,
         type: "multiple" as const,
       },
       "app-expenditure-level": {
@@ -104,26 +97,26 @@ export const linksKV = {
     lazy: () => import("@/pages/client-management"),
     type: "flat" as const,
   },
-  "member-management": {
-    label: "會員管理",
-    basePath: MEMBER_MANAGEMENT_BASE_PATH,
-    path: `${MEMBER_MANAGEMENT_BASE_PATH}/member-profiles`,
-    type: "nested" as const,
-    subLinks: {
-      profiles: {
-        label: "查詢基本資料",
-        path: `${MEMBER_MANAGEMENT_BASE_PATH}/member-profiles`,
-        lazy: () => import("@/pages/member-profiles"),
-        type: "flat" as const,
-      },
-      purchases: {
-        label: "儲值紀錄",
-        path: `${MEMBER_MANAGEMENT_BASE_PATH}/purchases`,
-        lazy: () => import("@/pages/purchases"),
-        type: "flat" as const,
-      },
-    },
-  },
+  // "member-management": {
+  //   label: "會員管理",
+  //   basePath: MEMBER_MANAGEMENT_BASE_PATH,
+  //   path: `${MEMBER_MANAGEMENT_BASE_PATH}/member-profiles`,
+  //   type: "nested" as const,
+  //   subLinks: {
+  //     profiles: {
+  //       label: "查詢基本資料",
+  //       path: `${MEMBER_MANAGEMENT_BASE_PATH}/member-profiles`,
+  //       lazy: () => import("@/pages/member-profiles"),
+  //       type: "flat" as const,
+  //     },
+  //     purchases: {
+  //       label: "儲值紀錄",
+  //       path: `${MEMBER_MANAGEMENT_BASE_PATH}/purchases`,
+  //       lazy: () => import("@/pages/purchases"),
+  //       type: "flat" as const,
+  //     },
+  //   },
+  // },
 };
 
 export const links = Object.values(linksKV);

@@ -2,7 +2,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useEffect } from "react";
 import { useNavigate, useRouteError } from "react-router-dom";
 
-export function ErrorElement() {
+export function ErrorBoundary() {
   const error = useRouteError();
   const navigate = useNavigate();
   const { clearUser } = useAuth();

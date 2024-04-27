@@ -47,17 +47,8 @@ const router = createBrowserRouter(
                       return (
                         <Route
                           path={path}
-                          element={subLink.elements[key]}
+                          lazy={subLink.lazy[key]}
                           key={path}
-                          {...(key in subLink.loaders
-                            ? { loader: subLink.loaders[key] }
-                            : {})}
-                          {...(key in subLink.errorElements
-                            ? { errorElement: subLink.errorElements[key] }
-                            : {})}
-                          {...(key in subLink.actions
-                            ? { action: subLink.actions[key] }
-                            : {})}
                         />
                       );
                     })
