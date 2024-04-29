@@ -1,12 +1,13 @@
-import { tv } from "tailwind-variants";
+import backIcon from "@/assets/back.svg";
 import leaveIcon from "@/assets/leave-icon.svg";
+import magnifyingGlassIcon from "@/assets/magnifying-glass-icon.svg";
+import pfpIcon from "@/assets/pfp-icon.svg";
 import plusIcon from "@/assets/plus-icon.svg";
 import saveIcon from "@/assets/save.svg";
-import backIcon from "@/assets/back.svg";
-import pfpIcon from "@/assets/pfp-icon.svg";
-import magnifyingGlassIcon from "@/assets/magnifying-glass-icon.svg";
-import { ReactNode } from "react";
+import trashCanIcon from "@/assets/trash-can-icon.svg";
+import { ComponentProps, ReactNode, forwardRef } from "react";
 import { twMerge } from "tailwind-merge";
+import { tv } from "tailwind-variants";
 
 const iconMap = {
   leave: leaveIcon,
@@ -15,6 +16,7 @@ const iconMap = {
   pfp: pfpIcon,
   save: saveIcon,
   back: backIcon,
+  trashCan: trashCanIcon,
 };
 
 const button = tv({
@@ -22,6 +24,16 @@ const button = tv({
   variants: {
     borderLess: {
       true: "px-5 outline-0 hover:outline-0 focus-visible:outline-0",
+    },
+    color: {
+      warning:
+        "bg-btn-red outline-line-red hover:outline-line-red-hover text-word-red",
+    },
+    iconLess: {
+      true: "",
+    },
+    size: {
+      wide: "px-8",
     },
   },
 });
@@ -33,19 +45,32 @@ type IconButtonType = React.DetailedHTMLProps<
   icon: keyof typeof iconMap;
 };
 
-export const IconButton = ({
-  children,
-  icon,
-  onClick,
-  ...props
-}: IconButtonType) => {
-  return (
-    <button className={button()} onClick={onClick} {...props}>
-      <img src={iconMap[icon]} />
-      {children}
-    </button>
-  );
-};
+export const IconButton = forwardRef<HTMLButtonElement, IconButtonType>(
+  ({ children, icon, onClick, ...props }, ref) => {
+    return (
+      <button ref={ref} className={button()} onClick={onClick} {...props}>
+        <img src={iconMap[icon]} />
+        {children}
+      </button>
+    );
+  },
+);
+
+export const IconWarningButton = forwardRef<HTMLButtonElement, IconButtonType>(
+  ({ children, icon, onClick, ...props }, ref) => {
+    return (
+      <button
+        className={button({ color: "warning" })}
+        onClick={onClick}
+        {...props}
+        ref={ref}
+      >
+        <img src={iconMap[icon]} />
+        {children}
+      </button>
+    );
+  },
+);
 
 export const IconButtonBorderLess = ({
   children,
@@ -66,3 +91,35 @@ export const IconButtonBorderLess = ({
     </button>
   );
 };
+
+export const TextButton = forwardRef<
+  HTMLButtonElement,
+  ComponentProps<"button">
+>(({ children, onClick, ...props }, ref) => {
+  return (
+    <button
+      ref={ref}
+      className={button({ iconLess: true, size: "wide" })}
+      onClick={onClick}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+});
+
+export const TextWarningButton = forwardRef<
+  HTMLButtonElement,
+  ComponentProps<"button">
+>(({ children, onClick, ...props }, ref) => {
+  return (
+    <button
+      ref={ref}
+      className={button({ iconLess: true, size: "wide", color: "warning" })}
+      onClick={onClick}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+});
