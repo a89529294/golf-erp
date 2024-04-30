@@ -1,4 +1,5 @@
 import { linksKV } from "@/utils/links";
+import { queryClient } from "@/utils/query-client";
 import { privateFetch } from "@/utils/utils";
 import { ActionFunction, redirect } from "react-router-dom";
 import { toast } from "sonner";
@@ -27,6 +28,7 @@ export const action: ActionFunction = async ({ request }) => {
   }
 
   toast.success("新增員工成功");
+  queryClient.invalidateQueries({ queryKey: ["employees"] });
 
   return redirect(
     linksKV["data-management"].subLinks["personnel-data-management"].paths

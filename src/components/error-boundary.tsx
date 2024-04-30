@@ -14,5 +14,7 @@ export function ErrorBoundary() {
     }
   }, [error, clearUser, navigate]);
 
+  console.log(error);
+
   return <div>讀取資料發生錯誤</div>;
 }

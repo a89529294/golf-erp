@@ -116,9 +116,8 @@ export function Component() {
                 </IconButton>
               }
               onSubmit={() => navigate(-1)}
-            >
-              資料尚未儲存，是否返回列表？
-            </Modal>
+              title="資料尚未儲存，是否返回列表？"
+            />
           ) : (
             <IconButton
               disabled={isMutating}

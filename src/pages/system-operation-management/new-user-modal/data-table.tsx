@@ -15,7 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 
 declare module "@tanstack/react-table" {
   interface FilterFns {
@@ -28,14 +28,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
   rowSelection: Record<string, boolean>;
   setRowSelection: Dispatch<SetStateAction<Record<string, boolean>>>;
-  globalFilter: string;
-  setGlobalFilter: Dispatch<SetStateAction<string>>;
 }
-
-// Tip: If you find yourself using <DataTable /> in multiple places,
-// this is the component you could make reusable by extracting it
-// to components/ui/data-table.tsx.
-// <DataTable columns={columns} data={data} />
 
 const fuzzyFilter: FilterFn<unknown> = (row, columnId, value) => {
   return (row.getValue(columnId) as string)
@@ -43,14 +36,13 @@ const fuzzyFilter: FilterFn<unknown> = (row, columnId, value) => {
     .includes(value.toLowerCase());
 };
 
-export function DataTable<TData extends { id: string }, TValue>({
+export function ModalDataTable<TData extends { id: string }, TValue>({
   columns,
   data,
   rowSelection,
   setRowSelection,
-  globalFilter,
-  setGlobalFilter,
 }: DataTableProps<TData, TValue>) {
+  const [globalFilter, setGlobalFilter] = useState("");
   const table = useReactTable({
     data: data,
     columns,
@@ -70,7 +62,7 @@ export function DataTable<TData extends { id: string }, TValue>({
   });
 
   return (
-    <div className="w-full border border-line-gray">
+    <div className="w-full border border-line-gray ">
       <Table className="relative isolate">
         <TableHeader className="relative z-10">
           {table.getHeaderGroups().map((headerGroup) => (
@@ -80,7 +72,7 @@ export function DataTable<TData extends { id: string }, TValue>({
                   <TableHead
                     key={header.id}
                     // height of header 80 plus gap 10
-                    className="sticky top-[90px] bg-light-gray hover:bg-light-gray"
+                    className="sticky top-[110px] bg-light-gray hover:bg-light-gray"
                   >
                     {header.isPlaceholder
                       ? null
@@ -95,7 +87,7 @@ export function DataTable<TData extends { id: string }, TValue>({
           ))}
         </TableHeader>
 
-        <TableBody className="relative ">
+        <TableBody className="relative">
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
               <TableRow
@@ -103,7 +95,7 @@ export function DataTable<TData extends { id: string }, TValue>({
                 data-state={row.getIsSelected() && "selected"}
               >
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
+                  <TableCell key={cell.id} className="py-2.5">
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}

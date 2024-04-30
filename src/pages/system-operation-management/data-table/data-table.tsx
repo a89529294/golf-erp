@@ -32,11 +32,6 @@ interface DataTableProps<TData, TValue> {
   setGlobalFilter: Dispatch<SetStateAction<string>>;
 }
 
-// Tip: If you find yourself using <DataTable /> in multiple places,
-// this is the component you could make reusable by extracting it
-// to components/ui/data-table.tsx.
-// <DataTable columns={columns} data={data} />
-
 const fuzzyFilter: FilterFn<unknown> = (row, columnId, value) => {
   return (row.getValue(columnId) as string)
     .toLowerCase()
@@ -112,7 +107,7 @@ export function DataTable<TData extends { id: string }, TValue>({
           ) : (
             <TableRow>
               <TableCell colSpan={columns.length} className="h-24 text-center">
-                長無資料
+                查無資料
               </TableCell>
             </TableRow>
           )}

@@ -9,6 +9,7 @@ import trashCanIcon from "@/assets/trash-can-icon.svg";
 import { ComponentProps, ReactNode, forwardRef } from "react";
 import { twMerge } from "tailwind-merge";
 import { tv } from "tailwind-variants";
+import { cn } from "@/lib/utils";
 
 const iconMap = {
   leave: leaveIcon,
@@ -96,11 +97,11 @@ export const IconButtonBorderLess = ({
 export const TextButton = forwardRef<
   HTMLButtonElement,
   ComponentProps<"button"> & { loading?: boolean; disabled?: boolean }
->(({ children, onClick, loading, ...props }, ref) => {
+>(({ children, className, onClick, loading, ...props }, ref) => {
   return (
     <button
       ref={ref}
-      className={button({ iconLess: true, size: "wide" })}
+      className={cn(button({ iconLess: true, size: "wide" }), className)}
       onClick={onClick}
       {...props}
     >
@@ -113,11 +114,14 @@ export const TextButton = forwardRef<
 export const TextWarningButton = forwardRef<
   HTMLButtonElement,
   ComponentProps<"button"> & { disabled?: boolean }
->(({ children, onClick, ...props }, ref) => {
+>(({ children, onClick, className, ...props }, ref) => {
   return (
     <button
       ref={ref}
-      className={button({ iconLess: true, size: "wide", color: "warning" })}
+      className={cn(
+        button({ iconLess: true, size: "wide", color: "warning" }),
+        className,
+      )}
       onClick={onClick}
       {...props}
     >

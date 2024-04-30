@@ -1,26 +1,28 @@
+import { NewUserModal } from "@/pages/system-operation-management/new-user-modal/modal";
 import { Modal } from "@/components/modal";
 import { SearchInput } from "@/components/search-input";
 import { IconButton, IconWarningButton } from "@/components/ui/button";
 import { MainLayout } from "@/layouts/main-layout";
-import { columns } from "@/pages/personnel-data-management/data-table/columns";
-import { DataTable } from "@/pages/personnel-data-management/data-table/data-table";
-import {
-  genEmployeesQuery,
-  loader,
-} from "@/pages/personnel-data-management/loader";
-import { linksKV } from "@/utils/links";
+import { genEmployeesQuery } from "@/pages/personnel-data-management/loader";
+import { columns } from "@/pages/system-operation-management/data-table/columns";
+import { DataTable } from "@/pages/system-operation-management/data-table/data-table";
+import { loader, usersQuery } from "@/pages/system-operation-management/loader";
 import { privateFetch } from "@/utils/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Link, useLoaderData } from "react-router-dom";
+import { useLoaderData } from "react-router-dom";
 
 export function Component() {
   const [rowSelection, setRowSelection] = useState({});
   const [globalFilter, setGlobalFilter] = useState("");
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
-  const { data } = useQuery({
-    ...genEmployeesQuery(),
-    initialData,
+  const { data: users } = useQuery({
+    ...usersQuery,
+    initialData: initialData.users,
+  });
+  const { data: employees } = useQuery({
+    ...genEmployeesQuery(true),
+    initialData: initialData.employees,
   });
   const queryClient = useQueryClient();
   const { mutateAsync } = useMutation({
@@ -54,23 +56,19 @@ export function Component() {
               title="確定刪除選取員工?"
             />
           ) : null}
-          <IconButton icon="plus">
-            <Link
-              to={
-                linksKV["data-management"].subLinks["personnel-data-management"]
-                  .paths.new
-              }
-            >
-              新增人員
-            </Link>
-          </IconButton>
+          <NewUserModal
+            dialogTriggerChildren={
+              <IconButton icon="plus">新增系統操作人員</IconButton>
+            }
+            employees={employees}
+          />
           <SearchInput value={globalFilter} setValue={setGlobalFilter} />
         </>
       }
     >
       <DataTable
         columns={columns}
-        data={data}
+        data={users}
         rowSelection={rowSelection}
         setRowSelection={setRowSelection}
         globalFilter={globalFilter}

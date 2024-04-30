@@ -4,40 +4,42 @@ import {} from "@/utils/types";
 import { privateFetch } from "@/utils/utils";
 import { z } from "zod";
 
-const employeesSchema = z.object({
-  data: z.array(
+export const employeeSchema = z.object({
+  chName: z.string(),
+  id: z.string(),
+  idNumber: z.string(),
+  telphone: z.string(),
+  stores: z.array(
     z.object({
-      chName: z.string(),
-      id: z.string(),
-      idNumber: z.string(),
-      telphone: z.string(),
-      stores: z.array(
-        z.object({
-          name: z.string(),
-          category: z.enum(storeCategoryArray),
-        }),
-      ),
+      name: z.string(),
+      category: z.enum(storeCategoryArray),
     }),
   ),
 });
 
+const employeesSchema = z.object({
+  data: z.array(employeeSchema),
+});
+
 export type Employee = z.infer<typeof employeesSchema>["data"][number];
 
-export const employeesQuery = {
-  queryKey: ["employees"],
-  queryFn: async () => {
-    const response = await privateFetch(
-      "/employees?pageSize=999&populate=stores",
-    );
+export const genEmployeesQuery = (nonERPUsers?: boolean) => {
+  return {
+    queryKey: nonERPUsers ? ["employees", "non-erp-users"] : ["employees"],
+    queryFn: async () => {
+      const response = await privateFetch(
+        `/employees?pageSize=999&populate=stores${nonERPUsers ? "&populate=user&filter[user][$null]" : ""}`,
+      );
 
-    const data = await response.json();
-    const employees = employeesSchema.parse(data);
+      const data = await response.json();
+      const employees = employeesSchema.parse(data);
 
-    return employees.data;
-  },
+      return employees.data;
+    },
+  };
 };
 
 export async function loader() {
   // await sleep(1000 * 1000);
-  return await queryClient.ensureQueryData(employeesQuery);
+  return await queryClient.ensureQueryData(genEmployeesQuery());
 }

@@ -7,6 +7,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { ReactElement, ReactNode, useState } from "react";
 
@@ -14,10 +15,12 @@ export function Modal({
   dialogTriggerChildren,
   children,
   onSubmit,
+  title,
 }: {
   dialogTriggerChildren: ReactElement;
-  children: ReactNode;
+  children?: ReactNode;
   onSubmit: () => void;
+  title: string;
 }) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -39,10 +42,11 @@ export function Modal({
             setDisabled(false);
             setOpen(false);
           }}
-          className="flex h-[190px] w-[400px] flex-col items-center pb-5"
+          className={cn(`flex h-[190px] w-[400px] flex-col items-center pb-5`)}
         >
-          <DialogHeader>
-            <DialogTitle>{children}</DialogTitle>
+          <DialogHeader className="block ">
+            <DialogTitle>{title}</DialogTitle>
+            {children}
           </DialogHeader>
           <DialogFooter className="">
             <TextButton
