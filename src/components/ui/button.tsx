@@ -4,6 +4,7 @@ import magnifyingGlassIcon from "@/assets/magnifying-glass-icon.svg";
 import pfpIcon from "@/assets/pfp-icon.svg";
 import plusIcon from "@/assets/plus-icon.svg";
 import saveIcon from "@/assets/save.svg";
+import circleIcon from "@/assets/circle.svg";
 import trashCanIcon from "@/assets/trash-can-icon.svg";
 import { ComponentProps, ReactNode, forwardRef } from "react";
 import { twMerge } from "tailwind-merge";
@@ -94,8 +95,8 @@ export const IconButtonBorderLess = ({
 
 export const TextButton = forwardRef<
   HTMLButtonElement,
-  ComponentProps<"button">
->(({ children, onClick, ...props }, ref) => {
+  ComponentProps<"button"> & { loading?: boolean; disabled?: boolean }
+>(({ children, onClick, loading, ...props }, ref) => {
   return (
     <button
       ref={ref}
@@ -103,6 +104,7 @@ export const TextButton = forwardRef<
       onClick={onClick}
       {...props}
     >
+      {loading && <img src={circleIcon} className=" h-5 w-5 animate-spin" />}
       {children}
     </button>
   );
@@ -110,7 +112,7 @@ export const TextButton = forwardRef<
 
 export const TextWarningButton = forwardRef<
   HTMLButtonElement,
-  ComponentProps<"button">
+  ComponentProps<"button"> & { disabled?: boolean }
 >(({ children, onClick, ...props }, ref) => {
   return (
     <button

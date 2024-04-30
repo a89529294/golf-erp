@@ -1,8 +1,8 @@
 import {
   ColumnDef,
+  FilterFn,
   flexRender,
   getCoreRowModel,
-  ColumnFiltersState,
   getFilteredRowModel,
   useReactTable,
 } from "@tanstack/react-table";
@@ -15,13 +15,21 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction } from "react";
+
+declare module "@tanstack/react-table" {
+  interface FilterFns {
+    fuzzy: FilterFn<unknown>;
+  }
+}
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   rowSelection: Record<string, boolean>;
   setRowSelection: Dispatch<SetStateAction<Record<string, boolean>>>;
+  globalFilter: string;
+  setGlobalFilter: Dispatch<SetStateAction<string>>;
 }
 
 // Tip: If you find yourself using <DataTable /> in multiple places,
@@ -29,25 +37,35 @@ interface DataTableProps<TData, TValue> {
 // to components/ui/data-table.tsx.
 // <DataTable columns={columns} data={data} />
 
+const fuzzyFilter: FilterFn<unknown> = (row, columnId, value) => {
+  return (row.getValue(columnId) as string)
+    .toLowerCase()
+    .includes(value.toLowerCase());
+};
+
 export function DataTable<TData extends { id: string }, TValue>({
   columns,
   data,
   rowSelection,
   setRowSelection,
+  globalFilter,
+  setGlobalFilter,
 }: DataTableProps<TData, TValue>) {
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-
   const table = useReactTable({
     data: data,
     columns,
+    filterFns: {
+      fuzzy: fuzzyFilter, //define as a filter function that can be used in column definitions
+    },
+    onGlobalFilterChange: setGlobalFilter,
+    globalFilterFn: "fuzzy",
     getCoreRowModel: getCoreRowModel(),
     onRowSelectionChange: setRowSelection,
-    onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     getRowId: (row) => row.id,
     state: {
       rowSelection,
-      columnFilters,
+      globalFilter,
     },
   });
 

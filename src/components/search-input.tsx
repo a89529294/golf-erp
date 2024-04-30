@@ -1,24 +1,28 @@
 import magnifyingGlass from "@/assets/magnifying-glass-icon.svg";
 import x from "@/assets/x.svg";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { motion } from "framer-motion";
 
-export function SearchInput() {
-  const [value, setValue] = useState("");
-
+export function SearchInput({
+  value,
+  setValue,
+}: {
+  value: string;
+  setValue: Dispatch<SetStateAction<string>>;
+}) {
   const [isCursorOut, setIsCursorOut] = useState(true);
   const isActive = !isCursorOut ? true : !!value;
 
   return (
     <motion.label
       className={cn(
-        "flex h-11 cursor-pointer items-center gap-1 border border-line-gray bg-light-gray px-3 ",
+        "flex h-11 cursor-pointer items-center gap-1 border  bg-light-gray px-3 ",
         value && isCursorOut && "border-[1.5px]",
       )}
       animate={{
         width: isActive ? 250 : 46,
-        borderColor: isActive ? "var(--orange)" : "",
+        borderColor: isActive ? "rgb(233 158 24)" : "rgb(182 182 182)", // orange line-gray
       }}
       transition={{ duration: 0.1 }}
     >

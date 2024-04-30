@@ -38,5 +38,6 @@ export const employeesQuery = {
 };
 
 export async function loader() {
+  // await sleep(1000 * 1000);
   return await queryClient.ensureQueryData(employeesQuery);
 }

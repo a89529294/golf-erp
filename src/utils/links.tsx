@@ -20,7 +20,7 @@ export type MultipleLink = {
 };
 
 const SYSTEM_MANAGEMENT_BASE_PATH = "/system-management";
-// const MEMBER_MANAGEMENT_BASE_PATH = "/member-management";
+const MEMBER_MANAGEMENT_BASE_PATH = "/member-management";
 
 export const linksKV = {
   "indoor-simulator": {
@@ -57,25 +57,7 @@ export const linksKV = {
           index: () => import("@/pages/personnel-data-management"),
           new: () => import("@/pages/new-employee"),
         },
-        // elements: { index: <PersonnelDataManagement />, new: <NewEmployee /> },
-        // loaders: {
-        //   index: personnelDataManagementLoader,
-        //   new: newEmployeeLoader,
-        // } as Record<string, LoaderFunction>,
-        // errorElements: {
-        //   index: <ErrorElement />,
-        //   new: <ErrorElement />,
-        // } as Record<string, ReactElement>,
-        // actions: {
-        //   new: newEmployeeAction,
-        // } as Record<string, ActionFunction>,
         type: "multiple" as const,
-      },
-      "app-expenditure-level": {
-        label: "APP消費級距",
-        path: `${SYSTEM_MANAGEMENT_BASE_PATH}/app-expenditure-level`,
-        lazy: () => import("@/pages/app-expenditure-level"),
-        type: "flat" as const,
       },
       "system-operation-management": {
         label: "系統操作管理",
@@ -89,6 +71,12 @@ export const linksKV = {
         lazy: () => import("@/pages/app-permission-management"),
         type: "flat" as const,
       },
+      "app-expenditure-level": {
+        label: "APP消費級距",
+        path: `${SYSTEM_MANAGEMENT_BASE_PATH}/app-expenditure-level`,
+        lazy: () => import("@/pages/app-expenditure-level"),
+        type: "flat" as const,
+      },
     },
   },
   "client-management": {
@@ -97,26 +85,26 @@ export const linksKV = {
     lazy: () => import("@/pages/client-management"),
     type: "flat" as const,
   },
-  // "member-management": {
-  //   label: "會員管理",
-  //   basePath: MEMBER_MANAGEMENT_BASE_PATH,
-  //   path: `${MEMBER_MANAGEMENT_BASE_PATH}/member-profiles`,
-  //   type: "nested" as const,
-  //   subLinks: {
-  //     profiles: {
-  //       label: "查詢基本資料",
-  //       path: `${MEMBER_MANAGEMENT_BASE_PATH}/member-profiles`,
-  //       lazy: () => import("@/pages/member-profiles"),
-  //       type: "flat" as const,
-  //     },
-  //     purchases: {
-  //       label: "儲值紀錄",
-  //       path: `${MEMBER_MANAGEMENT_BASE_PATH}/purchases`,
-  //       lazy: () => import("@/pages/purchases"),
-  //       type: "flat" as const,
-  //     },
-  //   },
-  // },
+  "member-management": {
+    label: "會員管理",
+    basePath: MEMBER_MANAGEMENT_BASE_PATH,
+    path: `${MEMBER_MANAGEMENT_BASE_PATH}/member-profiles`,
+    type: "nested" as const,
+    subLinks: {
+      profiles: {
+        label: "查詢基本資料",
+        path: `${MEMBER_MANAGEMENT_BASE_PATH}/member-profiles`,
+        lazy: () => import("@/pages/member-profiles"),
+        type: "flat" as const,
+      },
+      purchases: {
+        label: "儲值紀錄",
+        path: `${MEMBER_MANAGEMENT_BASE_PATH}/purchases`,
+        lazy: () => import("@/pages/purchases"),
+        type: "flat" as const,
+      },
+    },
+  },
 };
 
 export const links = Object.values(linksKV);

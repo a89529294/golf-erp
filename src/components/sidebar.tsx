@@ -15,13 +15,11 @@ import {
 import { motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { useEffect, useState } from "react";
-import { NavLink, useLocation, useNavigation } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 
 export function Sidebar({ links }: { links: (NestedLink | FlatLink)[] }) {
   const { pathname } = useLocation();
   const [nestedLinksClosed, setNestedLinksClosed] = useState(false);
-  const { state } = useNavigation();
-  console.log(state);
 
   const prevLink = usePrevious(findLinkFromPathname(pathname));
 
@@ -33,8 +31,12 @@ export function Sidebar({ links }: { links: (NestedLink | FlatLink)[] }) {
       prevLink &&
       prevLink.type === "nested" &&
       isBelowLink(getPath(prevLink), pathname)
-    )
+    ) {
+      console.log(getPath(link));
       return pathname.startsWith(getPath(link)) && nestedLinksClosed;
+    }
+
+    console.log(pathname);
     return pathname.startsWith(getPath(link));
   };
 
@@ -70,14 +72,12 @@ export function Sidebar({ links }: { links: (NestedLink | FlatLink)[] }) {
                     <motion.div
                       className="absolute inset-0 -z-10 bg-secondary-dark"
                       layoutId="link-bg"
-                      layout
                     />
                   )}
                   {isPending && (
                     <motion.div
-                      className="absolute inset-0 -z-10 bg-secondary-dark opacity-50"
+                      className="absolute inset-0 -z-10 bg-secondary-dark !opacity-50"
                       layoutId="link-bg"
-                      layout
                     />
                   )}
                 </>

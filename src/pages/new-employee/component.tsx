@@ -32,6 +32,7 @@ import {
   useSubmit,
 } from "react-router-dom";
 import { z } from "zod";
+import { Modal } from "@/components/modal";
 
 const toValueLabelArray = (obj: { name: string; id: string }[]) => {
   const options: Record<string, string> = {};
@@ -107,13 +108,26 @@ export function Component() {
     <MainLayout
       headerChildren={
         <>
-          <IconButton
-            disabled={isMutating}
-            icon="back"
-            onClick={() => navigate(-1)}
-          >
-            返回
-          </IconButton>
+          {form.formState.isDirty ? (
+            <Modal
+              dialogTriggerChildren={
+                <IconButton disabled={isMutating} icon="back">
+                  返回
+                </IconButton>
+              }
+              onSubmit={() => navigate(-1)}
+            >
+              資料尚未儲存，是否返回列表？
+            </Modal>
+          ) : (
+            <IconButton
+              disabled={isMutating}
+              icon="back"
+              onClick={() => navigate(-1)}
+            >
+              返回
+            </IconButton>
+          )}
           <IconButton
             disabled={isMutating}
             icon="save"

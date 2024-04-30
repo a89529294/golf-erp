@@ -16,6 +16,7 @@ import { Link, useLoaderData } from "react-router-dom";
 
 export function Component() {
   const [rowSelection, setRowSelection] = useState({});
+  const [globalFilter, setGlobalFilter] = useState("");
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
   const { data } = useQuery({
     ...employeesQuery,
@@ -25,9 +26,14 @@ export function Component() {
   const { mutateAsync } = useMutation({
     mutationKey: ["delete-employees"],
     mutationFn: async () => {
-      await privateFetch(`/employees/${Object.keys(rowSelection)[0]}`, {
-        method: "DELETE",
-      });
+      const employeeIds = Object.keys(rowSelection);
+      await Promise.all(
+        employeeIds.map((id) =>
+          privateFetch(`/employees/${id}`, {
+            method: "DELETE",
+          }),
+        ),
+      );
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["employees"] });
@@ -59,7 +65,7 @@ export function Component() {
               新增人員
             </Link>
           </IconButton>
-          <SearchInput />
+          <SearchInput value={globalFilter} setValue={setGlobalFilter} />
         </>
       }
     >
@@ -68,6 +74,8 @@ export function Component() {
         data={data}
         rowSelection={rowSelection}
         setRowSelection={setRowSelection}
+        globalFilter={globalFilter}
+        setGlobalFilter={setGlobalFilter}
       />
     </MainLayout>
   );
