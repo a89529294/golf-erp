@@ -2,12 +2,12 @@ import { Modal } from "@/components/modal";
 import { SearchInput } from "@/components/search-input";
 import { IconButton, IconWarningButton } from "@/components/ui/button";
 import { MainLayout } from "@/layouts/main-layout";
-import { columns } from "@/pages/personnel-data-management/data-table/columns";
-import { DataTable } from "@/pages/personnel-data-management/data-table/data-table";
+import { columns } from "@/pages/system-management/personnel-management/data-table/columns";
+import { DataTable } from "@/pages/system-management/personnel-management/data-table/data-table";
 import {
   genEmployeesQuery,
   loader,
-} from "@/pages/personnel-data-management/loader";
+} from "@/pages/system-management/personnel-management/loader";
 import { linksKV } from "@/utils/links";
 import { privateFetch } from "@/utils/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -57,8 +57,9 @@ export function Component() {
           <IconButton icon="plus">
             <Link
               to={
-                linksKV["data-management"].subLinks["personnel-data-management"]
-                  .paths.new
+                linksKV["system-management"].subLinks[
+                  "personnel-system-management"
+                ].paths.new
               }
             >
               新增人員

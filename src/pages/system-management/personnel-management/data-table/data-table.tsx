@@ -70,7 +70,7 @@ export function DataTable<TData extends { id: string }, TValue>({
   });
 
   return (
-    <div className="w-full border border-line-gray">
+    <div className="mb-2.5 w-full border border-line-gray">
       <Table className="relative isolate">
         <TableHeader className="relative z-10">
           {table.getHeaderGroups().map((headerGroup) => (

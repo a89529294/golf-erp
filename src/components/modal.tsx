@@ -44,7 +44,7 @@ export function Modal({
           }}
           className={cn(`flex h-[190px] w-[400px] flex-col items-center pb-5`)}
         >
-          <DialogHeader className="block ">
+          <DialogHeader className="">
             <DialogTitle>{title}</DialogTitle>
             {children}
           </DialogHeader>

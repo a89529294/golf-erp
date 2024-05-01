@@ -25,6 +25,21 @@ const DRIVING_RANGE_BASE_PATH = "/driving-range";
 const SYSTEM_MANAGEMENT_BASE_PATH = "/system-management";
 // const MEMBER_MANAGEMENT_BASE_PATH = "/member-management";
 
+export const permissionsList = {
+  "indoor-simulator": {
+    "basic-operations": "模擬器-基本操作",
+    report: "模擬器-報表",
+  },
+  golf: {
+    "basic-operations": "高爾夫球-基本操作",
+    report: "高爾夫球-報表",
+  },
+  "driving-range": {
+    "basic-operations": "練習場-基本操作",
+    report: "練習場-報表",
+  },
+};
+
 export const linksKV = {
   "indoor-simulator": {
     label: "室內模擬器",
@@ -95,22 +110,25 @@ export const linksKV = {
       },
     },
   },
-  "data-management": {
+  "system-management": {
     label: "系統管理",
     type: "nested" as const,
     basePath: SYSTEM_MANAGEMENT_BASE_PATH,
-    path: `${SYSTEM_MANAGEMENT_BASE_PATH}/personnel-data-management`,
+    path: `${SYSTEM_MANAGEMENT_BASE_PATH}/personnel-management`,
     allowedPermissions: ["管理系統"],
     subLinks: {
-      "personnel-data-management": {
+      "personnel-system-management": {
         label: "人員資料管理",
         paths: {
-          index: `${SYSTEM_MANAGEMENT_BASE_PATH}/personnel-data-management`,
-          new: `${SYSTEM_MANAGEMENT_BASE_PATH}/personnel-data-management/new-employee`,
+          index: `${SYSTEM_MANAGEMENT_BASE_PATH}/personnel-management`,
+          new: `${SYSTEM_MANAGEMENT_BASE_PATH}/personnel-management/new-employee`,
         },
         lazy: {
-          index: () => import("@/pages/personnel-data-management"),
-          new: () => import("@/pages/new-employee"),
+          index: () => import("@/pages/system-management/personnel-management"),
+          new: () =>
+            import(
+              "@/pages/system-management/personnel-management/new-employee"
+            ),
         },
         type: "multiple" as const,
         allowedPermissions: ["管理系統"],
@@ -118,14 +136,16 @@ export const linksKV = {
       "system-operation-management": {
         label: "系統操作管理",
         path: `${SYSTEM_MANAGEMENT_BASE_PATH}/system-operation-management`,
-        lazy: () => import("@/pages/system-operation-management"),
+        lazy: () =>
+          import("@/pages/system-management/system-operation-management"),
         type: "flat" as const,
         allowedPermissions: ["管理系統"],
       },
       "app-permission-management": {
         label: "功能權限管理",
         path: `${SYSTEM_MANAGEMENT_BASE_PATH}/app-permission-management`,
-        lazy: () => import("@/pages/app-permission-management"),
+        lazy: () =>
+          import("@/pages/system-management/app-permission-management"),
         type: "flat" as const,
         allowedPermissions: ["管理系統"],
       },

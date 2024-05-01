@@ -5,7 +5,7 @@ export function MainLayout({
   headerChildren,
   children,
 }: {
-  headerChildren: ReactNode;
+  headerChildren?: ReactNode;
   children: ReactNode;
 }) {
   return (

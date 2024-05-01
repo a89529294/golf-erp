@@ -9,14 +9,14 @@ import {
 import { cn } from "@/lib/utils";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { ReactElement, useEffect, useState } from "react";
-import { columns as employeeColumns } from "@/pages/system-operation-management/new-user-modal/columns";
-import { ModalDataTable } from "@/pages/system-operation-management/new-user-modal/data-table";
-import { Employee } from "@/pages/personnel-data-management/loader";
+import { columns as employeeColumns } from "@/pages/system-management/system-operation-management/new-user-modal/columns";
+import { ModalDataTable } from "@/pages/system-management/system-operation-management/new-user-modal/data-table";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { privateFetch } from "@/utils/utils";
 import { z } from "zod";
-import { userSchema } from "@/pages/system-operation-management/loader";
-import { PasswordModalContent } from "@/pages/system-operation-management/password-modal/modal-content";
+import { userSchema } from "@/pages/system-management/system-operation-management/loader";
+import { PasswordModalContent } from "@/pages/system-management/system-operation-management/password-modal/modal-content";
+import { Employee } from "@/pages/system-management/personnel-management/loader";
 
 const newERPUserReturnSchema = z.object({
   user: userSchema,

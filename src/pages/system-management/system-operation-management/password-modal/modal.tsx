@@ -1,5 +1,5 @@
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { PasswordModalContent } from "@/pages/system-operation-management/password-modal/modal-content";
+import { PasswordModalContent } from "@/pages/system-management/system-operation-management/password-modal/modal-content";
 import { privateFetch } from "@/utils/utils";
 import { useMutation } from "@tanstack/react-query";
 import underscoredGoldStar from "@/assets/underscored-gold-star.svg";

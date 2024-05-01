@@ -31,7 +31,7 @@ export const action: ActionFunction = async ({ request }) => {
   queryClient.invalidateQueries({ queryKey: ["employees"] });
 
   return redirect(
-    linksKV["data-management"].subLinks["personnel-data-management"].paths
+    linksKV["system-management"].subLinks["personnel-system-management"].paths
       .index,
   );
 };

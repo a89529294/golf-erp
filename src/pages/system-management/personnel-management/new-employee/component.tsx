@@ -18,7 +18,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { MainLayout } from "@/layouts/main-layout";
 import { cn } from "@/lib/utils";
-import { loader, storeQuery } from "@/pages/new-employee/loader";
+import {
+  loader,
+  storeQuery,
+} from "@/pages/system-management/personnel-management/new-employee/loader";
 import { storeCategoryArray, storeCategoryMap } from "@/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";

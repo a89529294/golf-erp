@@ -1,6 +1,6 @@
 import { Checkbox } from "@/components/ui/checkbox";
-import { UserWithEmployee } from "@/pages/system-operation-management/loader";
-import { PasswordModal } from "@/pages/system-operation-management/password-modal/modal";
+import { UserWithEmployee } from "@/pages/system-management/system-operation-management/loader";
+import { PasswordModal } from "@/pages/system-management/system-operation-management/password-modal/modal";
 import { StoreCategory, storeCategoryMap } from "@/utils";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 

@@ -1,16 +1,20 @@
-import { NewUserModal } from "@/pages/system-operation-management/new-user-modal/modal";
+import { NewUserModal } from "@/pages/system-management/system-operation-management/new-user-modal/modal";
 import { Modal } from "@/components/modal";
 import { SearchInput } from "@/components/search-input";
 import { IconButton, IconWarningButton } from "@/components/ui/button";
 import { MainLayout } from "@/layouts/main-layout";
-import { genEmployeesQuery } from "@/pages/personnel-data-management/loader";
-import { columns } from "@/pages/system-operation-management/data-table/columns";
-import { DataTable } from "@/pages/system-operation-management/data-table/data-table";
-import { loader, usersQuery } from "@/pages/system-operation-management/loader";
+
+import { columns } from "@/pages/system-management/system-operation-management/data-table/columns";
+import { DataTable } from "@/pages/system-management/system-operation-management/data-table/data-table";
+import {
+  loader,
+  usersQuery,
+} from "@/pages/system-management/system-operation-management/loader";
 import { privateFetch } from "@/utils/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useLoaderData } from "react-router-dom";
+import { genEmployeesQuery } from "@/pages/system-management/personnel-management/loader";
 
 export function Component() {
   const [rowSelection, setRowSelection] = useState({});

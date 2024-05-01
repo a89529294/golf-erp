@@ -1,11 +1,23 @@
 import { Checkbox } from "@/components/ui/checkbox";
-import { Employee } from "@/pages/personnel-data-management/loader";
+import { Employee } from "@/pages/system-management/personnel-management/loader";
 import { StoreCategory, storeCategoryMap } from "@/utils";
 import { ColumnDef } from "@tanstack/react-table";
 
 export const columns: ColumnDef<Employee>[] = [
   {
     id: "select",
+    header: ({ table }) => (
+      <div className="grid h-full place-items-center">
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && "indeterminate")
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      </div>
+    ),
     cell: ({ row }) => (
       <div className="grid h-full place-items-center">
         <Checkbox

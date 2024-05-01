@@ -36,6 +36,7 @@ const button = tv({
     },
     size: {
       wide: "px-8",
+      short: "h-8",
     },
   },
 });
@@ -47,10 +48,30 @@ type IconButtonType = React.DetailedHTMLProps<
   icon: keyof typeof iconMap;
 };
 
-export const IconButton = forwardRef<HTMLButtonElement, IconButtonType>(
-  ({ children, icon, onClick, ...props }, ref) => {
+export const IconShortButton = forwardRef<HTMLButtonElement, IconButtonType>(
+  ({ children, icon, className, onClick, ...props }, ref) => {
     return (
-      <button ref={ref} className={button()} onClick={onClick} {...props}>
+      <button
+        ref={ref}
+        className={cn(button({ size: "short" }), className)}
+        onClick={onClick}
+        {...props}
+      >
+        <img src={iconMap[icon]} />
+        {children}
+      </button>
+    );
+  },
+);
+export const IconButton = forwardRef<HTMLButtonElement, IconButtonType>(
+  ({ children, icon, className, onClick, ...props }, ref) => {
+    return (
+      <button
+        ref={ref}
+        className={cn(button(), className)}
+        onClick={onClick}
+        {...props}
+      >
         <img src={iconMap[icon]} />
         {children}
       </button>

@@ -1,7 +1,7 @@
 import {
   employeeSchema,
   genEmployeesQuery,
-} from "@/pages/personnel-data-management/loader";
+} from "@/pages/system-management/personnel-management/loader";
 import { queryClient } from "@/utils/query-client";
 import {} from "@/utils/types";
 import { privateFetch } from "@/utils/utils";
