@@ -18,6 +18,7 @@ import Login from "./pages/login";
 import RedirectToIndexIfAuthed from "./utils/redirect-to-index-if-authed";
 import RedirectToLoginIfNotAuthed from "./utils/redirect-to-login-if-not-authed";
 import { Toaster } from "sonner";
+import { PermissionGuard } from "@/utils/permission-guard";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -31,35 +32,46 @@ const router = createBrowserRouter(
           <Route element={<DashboardLayout />}>
             <Route index element={<Index />} />
             {links.map((link) => {
-              if (link.type === "flat")
-                return (
-                  <Route path={link.path} lazy={link.lazy} key={link.path} />
-                );
-              else
-                return Object.values(link.subLinks).map((subLink) =>
-                  subLink.type === "multiple" ? (
-                    (
-                      Object.entries(subLink.paths) as [
-                        key: keyof typeof subLink.paths,
-                        path: string,
-                      ][]
-                    ).map(([key, path]) => {
-                      return (
+              // if (link.type === "flat")
+              //   return (
+              //     <Route path={link.path} lazy={link.lazy} key={link.path} />
+              //   );
+              // else
+              return link.subLinks.map((subLink) =>
+                subLink.type === "multiple" ? (
+                  subLink.paths.map((path, idx) => {
+                    return (
+                      <Route
+                        element={
+                          <PermissionGuard
+                            routePermissions={subLink.allowedPermissions}
+                          />
+                        }
+                      >
                         <Route
                           path={path}
-                          lazy={subLink.lazy[key]}
+                          lazy={subLink.lazy[idx]}
                           key={path}
                         />
-                      );
-                    })
-                  ) : (
+                      </Route>
+                    );
+                  })
+                ) : (
+                  <Route
+                    element={
+                      <PermissionGuard
+                        routePermissions={subLink.allowedPermissions}
+                      />
+                    }
+                  >
                     <Route
                       path={subLink.path}
                       lazy={subLink.lazy}
                       key={subLink.path}
                     />
-                  ),
-                );
+                  </Route>
+                ),
+              );
             })}
           </Route>
         </Route>

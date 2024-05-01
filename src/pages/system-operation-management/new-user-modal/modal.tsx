@@ -16,6 +16,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { privateFetch } from "@/utils/utils";
 import { z } from "zod";
 import { userSchema } from "@/pages/system-operation-management/loader";
+import { PasswordModalContent } from "@/pages/system-operation-management/password-modal/modal-content";
 
 const newERPUserReturnSchema = z.object({
   user: userSchema,
@@ -119,29 +120,5 @@ export function NewUserModal({
         )}
       </DialogContent>
     </Dialog>
-  );
-}
-
-function PasswordModalContent({
-  chName,
-  password,
-  onConfirm,
-}: {
-  chName: string;
-  password: string;
-  onConfirm: () => void;
-}) {
-  return (
-    <form
-      className="flex w-[377px] flex-col pb-5"
-      onSubmit={(e) => {
-        e.preventDefault();
-        onConfirm();
-      }}
-    >
-      <div className="bg-light-gray py-2 text-center">{chName}的密碼</div>
-      <div className="pb-11 pt-7 text-center">{password}</div>
-      <TextButton className="self-center">確定</TextButton>
-    </form>
   );
 }

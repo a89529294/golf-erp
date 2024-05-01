@@ -1,5 +1,6 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import { UserWithEmployee } from "@/pages/system-operation-management/loader";
+import { PasswordModal } from "@/pages/system-operation-management/password-modal/modal";
 import { StoreCategory, storeCategoryMap } from "@/utils";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 
@@ -33,7 +34,9 @@ export const columns: ColumnDef<UserWithEmployee>[] = [
   columnHelper.display({
     id: "password",
     header: "密碼",
-    cell: "*****",
+    cell: ({ row }) => {
+      return <PasswordModal id={row.id} chName={row.original.username} />;
+    },
   }),
   {
     accessorKey: "idNumber",

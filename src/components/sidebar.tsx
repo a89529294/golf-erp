@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import {
   FlatLink,
   NestedLink,
+  filterLinksByUserPermissions,
   findLinkFromPathname,
   isBelowLink,
 } from "@/utils/links";
@@ -16,10 +17,14 @@ import { motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
+import { useAuth } from "@/hooks/use-auth";
 
-export function Sidebar({ links }: { links: (NestedLink | FlatLink)[] }) {
+export function Sidebar() {
   const { pathname } = useLocation();
   const [nestedLinksClosed, setNestedLinksClosed] = useState(false);
+  const { user } = useAuth();
+
+  const links = filterLinksByUserPermissions(user!.permissions);
 
   const prevLink = usePrevious(findLinkFromPathname(pathname));
 
@@ -36,7 +41,6 @@ export function Sidebar({ links }: { links: (NestedLink | FlatLink)[] }) {
       return pathname.startsWith(getPath(link)) && nestedLinksClosed;
     }
 
-    console.log(pathname);
     return pathname.startsWith(getPath(link));
   };
 
@@ -94,17 +98,13 @@ export function Sidebar({ links }: { links: (NestedLink | FlatLink)[] }) {
                   );
               }}
             >
-              {Object.values(link.subLinks).map((subLink) => {
+              {link.subLinks.map((subLink) => {
                 const isActive =
                   subLink.type === "multiple"
-                    ? Object.values(subLink.paths).find((p) =>
-                        pathname.startsWith(p),
-                      )
+                    ? subLink.paths.find((p) => pathname.startsWith(p))
                     : pathname === subLink.path;
                 const path =
-                  subLink.type === "multiple"
-                    ? Object.values(subLink.paths)[0]
-                    : subLink.path;
+                  subLink.type === "multiple" ? subLink.paths[0] : subLink.path;
                 return (
                   <NavLink
                     to={path}

@@ -1,6 +1,5 @@
 import { Sidebar } from "@/components/sidebar";
 import { cn } from "@/lib/utils";
-import { links } from "@/utils/links";
 import { Outlet, useNavigation } from "react-router-dom";
 
 export default function DashboardLayout() {
@@ -15,7 +14,7 @@ export default function DashboardLayout() {
           </div>
         </div>
 
-        <Sidebar links={links} />
+        <Sidebar />
       </nav>
       <main
         className={cn(
