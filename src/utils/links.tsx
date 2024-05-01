@@ -38,6 +38,7 @@ export const permissionsList = {
     "basic-operations": "練習場-基本操作",
     report: "練習場-報表",
   },
+  "system-management": "管理系統",
 };
 
 export const linksKV = {

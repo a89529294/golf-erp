@@ -4,6 +4,7 @@ import magnifyingGlassIcon from "@/assets/magnifying-glass-icon.svg";
 import pfpIcon from "@/assets/pfp-icon.svg";
 import plusIcon from "@/assets/plus-icon.svg";
 import saveIcon from "@/assets/save.svg";
+import minusIcon from "@/assets/minus-icon.svg";
 import circleIcon from "@/assets/circle.svg";
 import trashCanIcon from "@/assets/trash-can-icon.svg";
 import { ComponentProps, ReactNode, forwardRef } from "react";
@@ -19,6 +20,7 @@ const iconMap = {
   save: saveIcon,
   back: backIcon,
   trashCan: trashCanIcon,
+  minus: minusIcon,
 };
 
 const button = tv({
@@ -63,6 +65,22 @@ export const IconShortButton = forwardRef<HTMLButtonElement, IconButtonType>(
     );
   },
 );
+export const IconShortWarningButton = forwardRef<
+  HTMLButtonElement,
+  IconButtonType
+>(({ children, icon, className, onClick, ...props }, ref) => {
+  return (
+    <button
+      ref={ref}
+      className={cn(button({ size: "short", color: "warning" }), className)}
+      onClick={onClick}
+      {...props}
+    >
+      <img src={iconMap[icon]} />
+      {children}
+    </button>
+  );
+});
 export const IconButton = forwardRef<HTMLButtonElement, IconButtonType>(
   ({ children, icon, className, onClick, ...props }, ref) => {
     return (

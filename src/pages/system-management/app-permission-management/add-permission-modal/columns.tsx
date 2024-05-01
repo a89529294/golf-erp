@@ -1,13 +1,24 @@
 import { Checkbox } from "@/components/ui/checkbox";
-import { Employee } from "@/pages/system-management/personnel-management/loader";
+import { AppPermissionUser } from "@/pages/system-management/app-permission-management/loader";
 
 import { StoreCategory, storeCategoryMap } from "@/utils";
 import { ColumnDef } from "@tanstack/react-table";
 
-export const columns: ColumnDef<Employee>[] = [
+export const columns: ColumnDef<AppPermissionUser>[] = [
   {
     id: "select",
-
+    header: ({ table }) => (
+      <div className="grid h-full place-items-center">
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && "indeterminate")
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      </div>
+    ),
     cell: ({ row }) => (
       <div className="grid h-full place-items-center">
         <Checkbox
@@ -31,12 +42,12 @@ export const columns: ColumnDef<Employee>[] = [
     header: "電話",
   },
   {
-    accessorKey: "stores.0.category",
+    accessorKey: "storeCategory",
     header: "分類",
     cell: (props) => storeCategoryMap[props.cell.getValue() as StoreCategory],
   },
   {
-    accessorKey: "stores.0.name",
+    accessorKey: "store",
     header: "廠商名稱",
   },
 ];

@@ -18,6 +18,14 @@ const usersSchema = z.object({
   data: z.array(userSchema),
 });
 
+const userWithRolesSchema = userSchema.and(
+  z.object({ roles: z.array(z.string()) }),
+);
+
+export const usersWithRolesSchema = z.object({
+  data: z.array(userWithRolesSchema),
+});
+
 export type User = z.infer<typeof usersSchema>["data"][number];
 export type UserWithEmployee = Required<User>;
 

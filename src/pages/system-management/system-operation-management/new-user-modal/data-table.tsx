@@ -23,11 +23,12 @@ declare module "@tanstack/react-table" {
   }
 }
 
-interface DataTableProps<TData, TValue> {
+interface DataTableProps<TData extends { id: string }, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   rowSelection: Record<string, boolean>;
   setRowSelection: Dispatch<SetStateAction<Record<string, boolean>>>;
+  getRowId?: (row: TData) => string;
 }
 
 const fuzzyFilter: FilterFn<unknown> = (row, columnId, value) => {
@@ -41,8 +42,10 @@ export function ModalDataTable<TData extends { id: string }, TValue>({
   data,
   rowSelection,
   setRowSelection,
+  getRowId,
 }: DataTableProps<TData, TValue>) {
   const [globalFilter, setGlobalFilter] = useState("");
+
   const table = useReactTable({
     data: data,
     columns,
@@ -54,7 +57,11 @@ export function ModalDataTable<TData extends { id: string }, TValue>({
     getCoreRowModel: getCoreRowModel(),
     onRowSelectionChange: setRowSelection,
     getFilteredRowModel: getFilteredRowModel(),
-    getRowId: (row) => row.id,
+    getRowId:
+      getRowId ??
+      function (row) {
+        return row.id;
+      },
     state: {
       rowSelection,
       globalFilter,
@@ -91,7 +98,7 @@ export function ModalDataTable<TData extends { id: string }, TValue>({
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
               <TableRow
-                key={row.id}
+                key={row.original.id}
                 data-state={row.getIsSelected() && "selected"}
               >
                 {row.getVisibleCells().map((cell) => (
