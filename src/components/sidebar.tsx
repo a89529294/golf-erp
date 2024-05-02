@@ -16,11 +16,12 @@ import {
 import { motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { useEffect, useState } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigation } from "react-router-dom";
 import { useAuth } from "@/hooks/use-auth";
 
 export function Sidebar() {
   const { pathname } = useLocation();
+  const state = useNavigation();
   const [nestedLinksClosed, setNestedLinksClosed] = useState(false);
   const { user } = useAuth();
 
@@ -111,7 +112,10 @@ export function Sidebar() {
                     className={() => {
                       let base =
                         "relative py-2.5 pl-10 text-sm transition-colors ";
-                      base += isActive ? "  text-white" : "";
+                      base +=
+                        isActive && state.state !== "loading"
+                          ? "  text-white"
+                          : "";
                       return base;
                     }}
                     key={path}

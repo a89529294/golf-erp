@@ -82,6 +82,7 @@ function Section({
   featureId: string;
 }) {
   const [rowSelection, setRowSelection] = useState(new Set());
+  const [allSelected, setAllSelected] = useState(false);
   const selectedEmployeeIds = Array.from(rowSelection);
   const queryClient = useQueryClient();
   const { mutate, isPending } = useMutation({
@@ -107,7 +108,19 @@ function Section({
     <section>
       <header className="flex items-center gap-1.5">
         <label className="px-6 py-5">
-          <input type="checkbox" className="peer hidden" />
+          <input
+            type="checkbox"
+            className="peer hidden"
+            checked={allSelected}
+            onChange={(e) => {
+              setAllSelected(e.target.checked);
+
+              if (e.target.checked)
+                setRowSelection(new Set(users.map((u) => u.employeeId)));
+              else setRowSelection(new Set());
+              // return e.target.checked;
+            }}
+          />
           <div className="grid h-3 w-3 place-items-center border border-line-gray before:hidden before:h-1.5 before:w-1.5 before:bg-orange peer-checked:border-secondary-dark peer-checked:before:block" />
         </label>
         <h2 className="font-semibold">{title}</h2>
@@ -149,19 +162,25 @@ function Section({
                 <input
                   type="checkbox"
                   className="peer hidden"
+                  checked={rowSelection.has(user.employeeId)}
                   onChange={(e) => {
-                    if (e.target.checked)
+                    if (e.target.checked) {
                       setRowSelection((prev) => {
                         const newSet = new Set(prev);
                         newSet.add(user.employeeId);
                         return newSet;
                       });
-                    else
+
+                      if (users.length === rowSelection.size + 1)
+                        setAllSelected(true);
+                    } else {
                       setRowSelection((prev) => {
                         const newSet = new Set(prev);
                         newSet.delete(user.employeeId);
                         return newSet;
                       });
+                      setAllSelected(false);
+                    }
                   }}
                 />
                 <div className="grid h-3 w-3 place-items-center border border-line-gray before:hidden before:h-1.5 before:w-1.5 before:bg-orange peer-checked:border-secondary-dark peer-checked:before:block" />
@@ -174,7 +193,7 @@ function Section({
             </li>
           ))
         ) : (
-          <li className="text-word-gray flex h-[54px] items-center justify-center border-b border-t border-line-gray">
+          <li className="flex h-[54px] items-center justify-center border-b border-t border-line-gray text-word-gray">
             尚未新增人員
           </li>
         )}
