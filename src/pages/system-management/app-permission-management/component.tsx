@@ -118,7 +118,6 @@ function Section({
               if (e.target.checked)
                 setRowSelection(new Set(users.map((u) => u.employeeId)));
               else setRowSelection(new Set());
-              // return e.target.checked;
             }}
           />
           <div className="grid h-3 w-3 place-items-center border border-line-gray before:hidden before:h-1.5 before:w-1.5 before:bg-orange peer-checked:border-secondary-dark peer-checked:before:block" />

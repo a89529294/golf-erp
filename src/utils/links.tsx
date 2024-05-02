@@ -153,7 +153,7 @@ export const linksKV = {
       "app-expenditure-level": {
         label: "APP消費級距",
         path: `${SYSTEM_MANAGEMENT_BASE_PATH}/app-expenditure-level`,
-        lazy: () => import("@/pages/app-expenditure-level"),
+        lazy: () => import("@/pages/system-management/app-expenditure-level"),
         type: "flat" as const,
         allowedPermissions: ["管理系統"],
       },

@@ -77,6 +77,12 @@
   }
 }
 
+@layer components {
+  .black-circles-before-after {
+    @apply before:block before:h-1 before:w-1 before:-translate-x-1/2 before:-translate-y-[calc(50%-0.5px)] before:rounded-full before:bg-secondary-dark after:absolute after:right-0 after:top-0 after:block after:h-1 after:w-1 after:-translate-y-[calc(50%-0.5px)] after:translate-x-1/2 after:rounded-full after:bg-secondary-dark;
+  }
+}
+
 html,
 body,
 #root {
