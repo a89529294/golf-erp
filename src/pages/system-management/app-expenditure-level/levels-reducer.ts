@@ -68,7 +68,14 @@ export type Action =
       };
     }
   | {
-      type: "reset-save-to-db-state";
+      type: "after-post-level";
+      payload: {
+        oldLevelId: string;
+        newLevelId: string;
+      };
+    }
+  | {
+      type: "after-patch-level";
       payload: {
         levelId: string;
       };
@@ -249,7 +256,20 @@ export const levelsReducer = (state: Level[], action: Action) => {
       };
       return [...state, newLevel];
     }
-    case "reset-save-to-db-state": {
+    case "after-post-level": {
+      console.log("???????");
+      return state.map((prevLevel) =>
+        prevLevel.id === action.payload.oldLevelId
+          ? ({
+              ...prevLevel,
+              disabled: true,
+              saveToDb: false,
+              id: action.payload.newLevelId,
+            } satisfies Level)
+          : prevLevel,
+      );
+    }
+    case "after-patch-level": {
       return state.map((prevLevel) =>
         prevLevel.id === action.payload.levelId
           ? ({

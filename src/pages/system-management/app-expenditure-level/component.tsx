@@ -127,7 +127,7 @@ function Section({
           },
         });
       } else {
-        await privateFetch("/consumer-grade", {
+        const response = await privateFetch("/consumer-grade", {
           method: "POST",
           body: JSON.stringify({
             minConsumption: level.minConsumption,
@@ -139,15 +139,33 @@ function Section({
             "Content-Type": "application/json",
           },
         });
+
+        const x = (await response.json()).id;
+        console.log(x);
+
+        return x;
       }
     },
-    onSuccess: () => toast.success("更新成功"),
+    onSuccess: (data, variables) => {
+      toast.success("更新成功");
+      if (variables.id)
+        dispatch({
+          type: "after-patch-level",
+          payload: { levelId: variables.id },
+        });
+      else
+        dispatch({
+          type: "after-post-level",
+          payload: { oldLevelId: variables.level.id, newLevelId: data },
+        });
+    },
     onError: () => toast.error("更新失敗"),
     onSettled: () =>
       queryClient.invalidateQueries({
         queryKey: ["expenditure-level"],
       }),
   });
+
   const { mutateAsync: deleteLevels, isPending: deletingLevels } = useMutation({
     mutationKey: ["delete-levels"],
     mutationFn: async (ids: string[]) => {
@@ -183,11 +201,6 @@ function Section({
         } else {
           await mutateAsync({ level, id: level.id });
         }
-
-        dispatch({
-          type: "reset-save-to-db-state",
-          payload: { levelId: level.id },
-        });
       }
     })();
   }, [expenditureLevels, mutateAsync]);
