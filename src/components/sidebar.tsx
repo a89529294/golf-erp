@@ -4,45 +4,36 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { useAuth } from "@/hooks/use-auth";
 import { usePrevious } from "@/hooks/use-previous";
 import { cn } from "@/lib/utils";
 import {
   FlatLink,
+  MultipleLink,
   NestedLink,
-  filterLinksByUserPermissions,
+  // filterLinksByUserPermissions,
   findLinkFromPathname,
   isBelowLink,
+  linksKV,
 } from "@/utils/links";
 import { motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { NavLink, useLocation, useNavigation } from "react-router-dom";
-import { useAuth } from "@/hooks/use-auth";
 
 export function Sidebar() {
   const { pathname } = useLocation();
-  const state = useNavigation();
+  const prevLink = usePrevious(findLinkFromPathname(pathname));
   const [nestedLinksClosed, setNestedLinksClosed] = useState(false);
+
   const { user } = useAuth();
 
-  const links = filterLinksByUserPermissions(user!.permissions);
+  // const links = filterLinksByUserPermissions(user!.permissions);
 
-  const prevLink = usePrevious(findLinkFromPathname(pathname));
-
-  const isLinkActive = (link: NestedLink | FlatLink) => {
-    const getPath = (link: NestedLink | FlatLink) =>
-      link.type === "nested" ? link.basePath : link.path;
-
-    if (
-      prevLink &&
-      prevLink.type === "nested" &&
-      isBelowLink(getPath(prevLink), pathname)
-    ) {
-      console.log(getPath(link));
-      return pathname.startsWith(getPath(link)) && nestedLinksClosed;
-    }
-
-    return pathname.startsWith(getPath(link));
+  const isLinkAllowed = (link: NestedLink | FlatLink | MultipleLink) => {
+    return !!user?.permissions.some((up) =>
+      link.allowedPermissions.includes(up),
+    );
   };
 
   useEffect(() => {
@@ -56,53 +47,116 @@ export function Sidebar() {
       className="w-full"
       defaultValue={findLinkFromPathname(pathname)?.path}
     >
-      {links.map((link) => (
-        <AccordionItem value={link.path} key={link.path}>
-          <AccordionTrigger asChild>
-            <NavLink to={link.path} className="group relative block py-3 pl-7">
-              {({ isPending }) => (
-                <>
-                  <div
-                    className={cn(
-                      "flex w-full items-center justify-between pr-4 transition-colors",
-                      isLinkActive(link) && "text-white",
-                    )}
-                  >
-                    {link.label}
-                    {link.type === "nested" && (
-                      <ChevronDown className="transition-transform duration-300 group-data-[state=closed]:-rotate-180" />
-                    )}
-                  </div>
-                  {isLinkActive(link) && (
-                    <motion.div
-                      className="absolute inset-0 -z-10 bg-secondary-dark"
-                      layoutId="link-bg"
-                    />
+      {isLinkAllowed(linksKV["driving-range"]) && (
+        <AccordionItemWrapper
+          link={linksKV["driving-range"]}
+          prevLink={prevLink}
+          nestedLinksClosed={nestedLinksClosed}
+          setNestedLinksClosed={setNestedLinksClosed}
+        />
+      )}
+      {isLinkAllowed(linksKV["golf"]) && (
+        <AccordionItemWrapper
+          link={linksKV["golf"]}
+          prevLink={prevLink}
+          nestedLinksClosed={nestedLinksClosed}
+          setNestedLinksClosed={setNestedLinksClosed}
+        />
+      )}
+      {isLinkAllowed(linksKV["indoor-simulator"]) && (
+        <AccordionItemWrapper
+          link={linksKV["indoor-simulator"]}
+          prevLink={prevLink}
+          nestedLinksClosed={nestedLinksClosed}
+          setNestedLinksClosed={setNestedLinksClosed}
+        />
+      )}
+      {isLinkAllowed(linksKV["system-management"]) && (
+        <AccordionItemWrapper
+          link={linksKV["system-management"]}
+          prevLink={prevLink}
+          nestedLinksClosed={nestedLinksClosed}
+          setNestedLinksClosed={setNestedLinksClosed}
+        />
+      )}
+    </Accordion>
+  );
+}
+
+function AccordionItemWrapper({
+  link,
+  prevLink,
+  nestedLinksClosed,
+  setNestedLinksClosed,
+}: {
+  link: NestedLink;
+  prevLink: NestedLink | null;
+  nestedLinksClosed: boolean;
+  setNestedLinksClosed: Dispatch<SetStateAction<boolean>>;
+}) {
+  const { pathname } = useLocation();
+
+  const state = useNavigation();
+
+  const isLinkActive = (link: NestedLink) => {
+    if (prevLink && isBelowLink(prevLink.basePath, pathname)) {
+      return pathname.startsWith(link.basePath) && nestedLinksClosed;
+    }
+
+    return pathname.startsWith(link.basePath);
+  };
+
+  return (
+    <>
+      <AccordionItem value={link.path} key={link.path}>
+        <AccordionTrigger asChild>
+          <NavLink to={link.path} className="group relative block py-3 pl-7">
+            {({ isPending }) => (
+              <>
+                <div
+                  className={cn(
+                    "flex w-full items-center justify-between pr-4 transition-colors",
+                    isLinkActive(link) && "text-white",
                   )}
-                  {isPending && (
-                    <motion.div
-                      className="absolute inset-0 -z-10 bg-secondary-dark !opacity-50"
-                      layoutId="link-bg"
-                    />
+                >
+                  {link.label}
+                  {link.type === "nested" && (
+                    <ChevronDown className="transition-transform duration-300 group-data-[state=closed]:-rotate-180" />
                   )}
-                </>
-              )}
-            </NavLink>
-          </AccordionTrigger>
-          {link.type === "nested" && (
-            <AccordionContent
-              className="flex flex-col pt-1"
-              onAnimationEnd={(e) => {
-                !link.path.startsWith(pathname) &&
-                  setNestedLinksClosed(
-                    e.currentTarget.dataset.state === "closed",
-                  );
-              }}
-            >
-              {link.subLinks.map((subLink) => {
+                </div>
+                {isLinkActive(link) && (
+                  <motion.div
+                    className="absolute inset-0 -z-10 bg-secondary-dark"
+                    layoutId="link-bg"
+                  />
+                )}
+                {isPending && (
+                  <motion.div
+                    className="absolute inset-0 -z-10 bg-secondary-dark !opacity-50"
+                    layoutId="link-bg"
+                  />
+                )}
+              </>
+            )}
+          </NavLink>
+        </AccordionTrigger>
+        {link.type === "nested" && (
+          <AccordionContent
+            className="flex flex-col pt-1"
+            onAnimationEnd={(e) => {
+              !link.path.startsWith(pathname) &&
+                setNestedLinksClosed(
+                  e.currentTarget.dataset.state === "closed",
+                );
+            }}
+          >
+            {(Object.values(link.subLinks) as (FlatLink | MultipleLink)[]).map(
+              (subLink) => {
                 const isActive =
                   subLink.type === "multiple"
-                    ? subLink.paths.find((p) => pathname.startsWith(p))
+                    ? Object.values(subLink.paths).find((p) =>
+                        pathname.startsWith(p),
+                      )
                     : pathname === subLink.path;
                 const path =
                   subLink.type === "multiple" ? subLink.paths[0] : subLink.path;
@@ -139,11 +193,11 @@ export function Sidebar() {
                     )}
                   </NavLink>
                 );
-              })}
-            </AccordionContent>
-          )}
-        </AccordionItem>
-      ))}
-    </Accordion>
+              },
+            )}
+          </AccordionContent>
+        )}
+      </AccordionItem>
+    </>
   );
 }

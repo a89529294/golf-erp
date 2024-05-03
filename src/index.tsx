@@ -1,4 +1,5 @@
-import { links } from "@/utils/links";
+import { linksKV } from "@/utils/links";
+import { PermissionGuard } from "@/utils/permission-guard";
 import { queryClient } from "@/utils/query-client";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
@@ -10,6 +11,7 @@ import {
   createBrowserRouter,
   createRoutesFromElements,
 } from "react-router-dom";
+import { Toaster } from "sonner";
 import "./index.css";
 import { AuthLayout, authLoader } from "./layouts/auth-layout";
 import DashboardLayout from "./layouts/dashboard-layout";
@@ -17,8 +19,6 @@ import Index from "./pages";
 import Login from "./pages/login";
 import RedirectToIndexIfAuthed from "./utils/redirect-to-index-if-authed";
 import RedirectToLoginIfNotAuthed from "./utils/redirect-to-login-if-not-authed";
-import { Toaster } from "sonner";
-import { PermissionGuard } from "@/utils/permission-guard";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -31,15 +31,63 @@ const router = createBrowserRouter(
         <Route element={<RedirectToLoginIfNotAuthed />}>
           <Route element={<DashboardLayout />}>
             <Route index element={<Index />} />
-            {links.map((link) => {
-              // if (link.type === "flat")
-              //   return (
-              //     <Route path={link.path} lazy={link.lazy} key={link.path} />
-              //   );
-              // else
-              return link.subLinks.map((subLink) =>
-                subLink.type === "multiple" ? (
-                  subLink.paths.map((path, idx) => {
+            {Object.values(linksKV["driving-range"].subLinks).map((subLink) => {
+              return (
+                <Route
+                  element={
+                    <PermissionGuard
+                      routePermissions={subLink.allowedPermissions}
+                    />
+                  }
+                >
+                  <Route
+                    path={subLink.path}
+                    lazy={subLink.lazy}
+                    key={subLink.path}
+                  />
+                </Route>
+              );
+            })}
+            {Object.values(linksKV["golf"].subLinks).map((subLink) => {
+              return (
+                <Route
+                  element={
+                    <PermissionGuard
+                      routePermissions={subLink.allowedPermissions}
+                    />
+                  }
+                >
+                  <Route
+                    path={subLink.path}
+                    lazy={subLink.lazy}
+                    key={subLink.path}
+                  />
+                </Route>
+              );
+            })}
+            {Object.values(linksKV["indoor-simulator"].subLinks).map(
+              (subLink) => {
+                return (
+                  <Route
+                    element={
+                      <PermissionGuard
+                        routePermissions={subLink.allowedPermissions}
+                      />
+                    }
+                  >
+                    <Route
+                      path={subLink.path}
+                      lazy={subLink.lazy}
+                      key={subLink.path}
+                    />
+                  </Route>
+                );
+              },
+            )}
+            {Object.values(linksKV["system-management"].subLinks).map(
+              (subLink) => {
+                return subLink.type === "multiple" ? (
+                  Object.values(subLink.paths).map((path, idx) => {
                     return (
                       <Route
                         element={
@@ -50,7 +98,7 @@ const router = createBrowserRouter(
                       >
                         <Route
                           path={path}
-                          lazy={subLink.lazy[idx]}
+                          lazy={Object.values(subLink.lazy)[idx]}
                           key={path}
                         />
                       </Route>
@@ -70,9 +118,9 @@ const router = createBrowserRouter(
                       key={subLink.path}
                     />
                   </Route>
-                ),
-              );
-            })}
+                );
+              },
+            )}
           </Route>
         </Route>
       </Route>

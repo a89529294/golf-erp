@@ -1,3 +1,5 @@
+import { ErrorBoundary } from "@/components/error-boundary";
 import { Component } from "./component";
+import { loader } from "./loader";
 
-export { Component };
+export { Component, loader, ErrorBoundary };

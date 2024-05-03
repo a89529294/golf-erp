@@ -1,8 +1,11 @@
+import { LazyRouteFunction, NonIndexRouteObject } from "react-router-dom";
+
 export type FlatLink = {
   label: string;
   path: string;
-  lazy: () => Promise<unknown>;
+  lazy: LazyRouteFunction<NonIndexRouteObject>;
   type: "flat";
+  allowedPermissions: string[];
 };
 export type NestedLink = {
   label: string;
@@ -10,13 +13,15 @@ export type NestedLink = {
   basePath: string;
   // element: ReactElement;
   type: "nested";
-  subLinks: (FlatLink | MultipleLink)[];
+  subLinks: Record<string, FlatLink | MultipleLink>;
+  allowedPermissions: string[];
 };
 export type MultipleLink = {
   label: string;
-  paths: string[];
-  lazy: (() => Promise<unknown>)[];
+  paths: Record<string, string>;
+  lazy: Record<string, LazyRouteFunction<NonIndexRouteObject>>;
   type: "multiple";
+  allowedPermissions: string[];
 };
 
 const INDOOR_SIMULATOR_BASE_PATH = "/indoor-simulator";
@@ -41,53 +46,9 @@ export const permissionsList = {
   "system-management": "管理系統",
 };
 
+// if you add/remove new nested links you must also modify
+// src/index.tsx and sidebar.tsx
 export const linksKV = {
-  "indoor-simulator": {
-    label: "室內模擬器",
-    type: "nested" as const,
-    basePath: INDOOR_SIMULATOR_BASE_PATH,
-    path: `${INDOOR_SIMULATOR_BASE_PATH}/basic-operations`,
-    allowedPermissions: ["模擬器-基本操作", "模擬器-報表"],
-    subLinks: {
-      "basic-operations": {
-        label: "基本操作",
-        path: `${INDOOR_SIMULATOR_BASE_PATH}/basic-operations`,
-        lazy: () => import("@/pages/indoor-simulator/basic-operations"),
-        type: "flat" as const,
-        allowedPermissions: ["模擬器-基本操作"],
-      },
-      report: {
-        label: "報表",
-        path: `${INDOOR_SIMULATOR_BASE_PATH}/report`,
-        lazy: () => import("@/pages/indoor-simulator/report"),
-        type: "flat" as const,
-        allowedPermissions: ["模擬器-報表"],
-      },
-    },
-  },
-  golf: {
-    label: "高爾夫球",
-    type: "nested" as const,
-    basePath: GOLF_BASE_PATH,
-    path: `${GOLF_BASE_PATH}/basic-operations`,
-    allowedPermissions: ["高爾夫球-基本操作", "高爾夫球-報表"],
-    subLinks: {
-      "basic-operations": {
-        label: "基本操作",
-        path: `${GOLF_BASE_PATH}/basic-operations`,
-        lazy: () => import("@/pages/golf/basic-operations"),
-        type: "flat" as const,
-        allowedPermissions: ["高爾夫球-基本操作"],
-      },
-      report: {
-        label: "報表",
-        path: `${GOLF_BASE_PATH}/report`,
-        lazy: () => import("@/pages/golf/report"),
-        type: "flat" as const,
-        allowedPermissions: ["高爾夫球-報表"],
-      },
-    },
-  },
   "driving-range": {
     label: "練習場",
     type: "nested" as const,
@@ -111,6 +72,54 @@ export const linksKV = {
       },
     },
   },
+
+  golf: {
+    label: "高爾夫球",
+    type: "nested" as const,
+    basePath: GOLF_BASE_PATH,
+    path: `${GOLF_BASE_PATH}/basic-operations`,
+    allowedPermissions: ["高爾夫球-基本操作", "高爾夫球-報表"],
+    subLinks: {
+      "basic-operations": {
+        label: "基本操作",
+        path: `${GOLF_BASE_PATH}/basic-operations`,
+        lazy: () => import("@/pages/golf/basic-operations"),
+        type: "flat" as const,
+        allowedPermissions: ["高爾夫球-基本操作"],
+      },
+      report: {
+        label: "報表",
+        path: `${GOLF_BASE_PATH}/report`,
+        lazy: () => import("@/pages/golf/report"),
+        type: "flat" as const,
+        allowedPermissions: ["高爾夫球-報表"],
+      },
+    },
+  },
+  "indoor-simulator": {
+    label: "室內模擬器",
+    type: "nested" as const,
+    basePath: INDOOR_SIMULATOR_BASE_PATH,
+    path: `${INDOOR_SIMULATOR_BASE_PATH}/basic-operations`,
+    allowedPermissions: ["模擬器-基本操作", "模擬器-報表"],
+    subLinks: {
+      "basic-operations": {
+        label: "基本操作",
+        path: `${INDOOR_SIMULATOR_BASE_PATH}/basic-operations`,
+        lazy: () => import("@/pages/indoor-simulator/basic-operations"),
+        type: "flat" as const,
+        allowedPermissions: ["模擬器-基本操作"],
+      },
+      report: {
+        label: "報表",
+        path: `${INDOOR_SIMULATOR_BASE_PATH}/report`,
+        lazy: () => import("@/pages/indoor-simulator/report"),
+        type: "flat" as const,
+        allowedPermissions: ["模擬器-報表"],
+      },
+    },
+  },
+
   "system-management": {
     label: "系統管理",
     type: "nested" as const,
@@ -187,19 +196,9 @@ export const linksKV = {
   //   },
   // },
 };
+// } satisfies Record<string, FlatLink | NestedLink>;
 
-export const links = Object.values(linksKV).map((outerLink) => ({
-  ...outerLink,
-  subLinks: Object.values(outerLink.subLinks).map((innerLink) => {
-    if (innerLink.type === "multiple")
-      return {
-        ...innerLink,
-        paths: Object.values(innerLink.paths),
-        lazy: Object.values(innerLink.lazy),
-      };
-    return innerLink;
-  }),
-}));
+const links = Object.values(linksKV);
 
 export const isBelowLink = (prevPath: string, nextPath: string) => {
   return (
@@ -209,26 +208,26 @@ export const isBelowLink = (prevPath: string, nextPath: string) => {
   );
 };
 
-export const findLinkFromPathname = (pathname: string) =>
-  links.find((link) =>
-    pathname.startsWith(link.type === "nested" ? link.basePath : link.path),
-  );
+export const findLinkFromPathname = (pathname: string): NestedLink =>
+  links.find((link) => pathname.startsWith(link.basePath))!;
 
-export function filterLinksByUserPermissions(userPermissions: string[]) {
-  const allowedLinks = [];
+// export function filterLinksByUserPermissions(userPermissions: string[]) {
+//   const allowedLinks = [] as (FlatLink | NestedLink | MultipleLink)[];
 
-  for (const outerLink of links) {
-    if (
-      userPermissions.find((up) => outerLink.allowedPermissions.includes(up))
-    ) {
-      const clonedOuterLink = { ...outerLink };
-      allowedLinks.push(clonedOuterLink);
+//   for (const outerLinkKey in linksKV) {
+//     const outerLink = {...linksKV[outerLinkKey as keyof typeof linksKV]}
+//     if (userPermissions.some(up=> outerLink.allowedPermissions.includes(up)))
+//       {
+//         allowedLinks.push(outerLink);
 
-      clonedOuterLink.subLinks = clonedOuterLink.subLinks.filter((subLink) =>
-        userPermissions.find((up) => subLink.allowedPermissions.includes(up)),
-      );
-    }
-  }
+//         const x =Object.entries(outerLink.subLinks).filter(([key,subLink])=>{
+//           return userPermissions.some(up=>subLink.allowedPermissions.includes(up))
+//         })
 
-  return allowedLinks;
-}
+//         outerLink.subLinks = Object.fromEntries(x)
+//       }
+
+//   }
+
+//   return allowedLinks;
+// }

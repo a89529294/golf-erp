@@ -81,7 +81,6 @@ export function Component() {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
     setIsMutating(true);
     submit(values, {
       method: "post",

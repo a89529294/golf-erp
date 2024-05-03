@@ -9,6 +9,9 @@ export const storeCategoryMap = {
   ground: "練習場",
 };
 
+// TODO figure out how to extract this tuple from above
+export type StoreCategoryTuple = ["golf", "simulator", "ground"];
+
 export type StoreCategory = keyof typeof storeCategoryMap;
 
 export const storeCategoryArray = [

@@ -2,6 +2,7 @@ import { NumberInput } from "@/components/number-input";
 import { IconShortButton } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MainLayout } from "@/layouts/main-layout";
+import { expenditureLevelQuery, loader } from "./loader";
 import {
   Dispatch,
   useEffect,
@@ -14,8 +15,37 @@ import pencilIcon from "@/assets/pencil.svg";
 import greenFileIcon from "@/assets/green-file-icon.svg";
 import redXIcon from "@/assets/red-x-icon.svg";
 import { cn } from "@/lib/utils";
+import {
+  Action,
+  Level,
+  reducer,
+} from "@/pages/system-management/app-expenditure-level/reducer";
+import { useActionData } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { StoreCategory, storeCategoryMap } from "@/utils";
 
 export function Component() {
+  const initialData = useActionData() as Awaited<ReturnType<typeof loader>>;
+  const { data } = useQuery({
+    ...expenditureLevelQuery,
+    initialData,
+  });
+
+  const sections: Record<StoreCategory, Level[]> = {
+    golf: [],
+    ground: [],
+    simulator: [],
+  };
+  data.forEach((level) => {
+    const newLevel = {
+      ...level,
+      disabled: true,
+      errorState: null,
+      snapshot: null,
+    };
+    sections[level.category].push(newLevel);
+  });
+
   const ref = useRef<HTMLDivElement>(null);
   const [containerHeight, setContainerHeight] = useState(0);
 
@@ -39,7 +69,17 @@ export function Component() {
         >
           {containerHeight ? (
             <div className="flex flex-col gap-5 ">
-              <Section />
+              {(Object.entries(sections) as [StoreCategory, Level[]][]).map(
+                ([category, levels]) => {
+                  return (
+                    <Section
+                      category={category}
+                      levels={levels}
+                      key={category}
+                    />
+                  );
+                },
+              )}
             </div>
           ) : null}
         </ScrollArea>
@@ -48,174 +88,34 @@ export function Component() {
   );
 }
 
-const levels = [
-  {
-    id: "1",
-    minConsumption: 0,
-    maxConsumption: 100,
-    canAppointDays: 10,
-    disabled: true,
-    errorState: null,
-    snapshot: null,
-  },
-  {
-    id: "2",
-    minConsumption: 101,
-    maxConsumption: 200,
-    canAppointDays: 20,
-    disabled: true,
-    errorState: null,
-    snapshot: null,
-  },
-];
+// const levels = [
+//   {
+//     id: "1",
+//     minConsumption: 0,
+//     maxConsumption: 100,
+//     canAppointDays: 10,
+//     disabled: true,
+//     errorState: null,
+//     snapshot: null,
+//   },
+//   {
+//     id: "2",
+//     minConsumption: 101,
+//     maxConsumption: 200,
+//     canAppointDays: 20,
+//     disabled: true,
+//     errorState: null,
+//     snapshot: null,
+//   },
+// ];
 
-type Snapshot = {
-  minConsumption: number | "";
-  maxConsumption: number | "";
-  canAppointDays: number | "";
-};
-
-type Level = {
-  id: string;
-  disabled: boolean;
-  errorState: null | {
-    field: string;
-    msg: string;
-  };
-  snapshot: Snapshot | null;
-} & Snapshot;
-
-type Action =
-  | {
-      type: "update-min-consumption";
-      payload: {
-        levelId: string;
-        value: string;
-      };
-    }
-  | {
-      type: "update-max-consumption";
-      payload: {
-        levelId: string;
-        value: string;
-      };
-    }
-  | {
-      type: "update-edit-status-reset";
-      payload: {
-        levelId: string;
-      };
-    }
-  | {
-      type: "update-edit-status-save";
-      payload: {
-        levelId: string;
-      };
-    }
-  | {
-      type: "update-edit-status-enabled";
-      payload: {
-        levelId: string;
-        snapshot: Snapshot;
-      };
-    }
-  | {
-      type: "reset-error-state";
-      payload: {
-        levelId: string;
-      };
-    };
-
-const reducer = (state: Level[], action: Action) => {
-  if (
-    action.type === "update-min-consumption" ||
-    action.type === "update-max-consumption"
-  ) {
-    const numericValue = Number(action.payload.value);
-    if (Number.isNaN(numericValue) || numericValue < 0) return state;
-
-    const isMinConsumption = action.type === "update-min-consumption";
-
-    return state.map((prevLevel) =>
-      prevLevel.id === action.payload.levelId
-        ? {
-            ...prevLevel,
-            [isMinConsumption ? "minConsumption" : "maxConsumption"]:
-              numericValue,
-          }
-        : prevLevel,
-    );
-  } else if (action.type === "update-edit-status-enabled") {
-    return state.map((prevLevel) =>
-      prevLevel.id === action.payload.levelId
-        ? {
-            ...prevLevel,
-            snapshot: action.payload.snapshot,
-            disabled: false,
-          }
-        : prevLevel,
-    );
-  } else if (action.type === "update-edit-status-reset") {
-    return state.map((prevLevel) =>
-      prevLevel.id === action.payload.levelId
-        ? {
-            ...prevLevel,
-            minConsumption: prevLevel.snapshot?.minConsumption ?? "",
-            maxConsumption: prevLevel.snapshot?.maxConsumption ?? "",
-            disabled: true,
-          }
-        : prevLevel,
-    );
-  } else if (action.type === "update-edit-status-save") {
-    const foundLevelIndex = state.findIndex(
-      (prevLevel) => prevLevel.id === action.payload.levelId,
-    );
-    const foundLevel = state[foundLevelIndex];
-    if (foundLevel.minConsumption >= foundLevel.maxConsumption)
-      return state.map((prevLevel) =>
-        prevLevel.id === action.payload.levelId
-          ? {
-              ...prevLevel,
-              errorState: {
-                field: "maxConsumption",
-                msg: "max spending needs to be greater than min spending",
-              },
-            }
-          : prevLevel,
-      );
-    else if (
-      foundLevelIndex > 0 &&
-      state[foundLevelIndex - 1].maxConsumption >= foundLevel.minConsumption
-    ) {
-      return state.map((prevLevel) =>
-        prevLevel.id === action.payload.levelId
-          ? {
-              ...prevLevel,
-              errorState: {
-                field: "minConsumption",
-                msg: "min spending needs to be more than previous max spending",
-              },
-            }
-          : prevLevel,
-      );
-    } else
-      return state.map((prevLevel) =>
-        prevLevel.id === action.payload.levelId
-          ? { ...prevLevel, disabled: true, errorState: null }
-          : prevLevel,
-      );
-  } else if (action.type === "reset-error-state") {
-    return state.map((prevLevel) =>
-      prevLevel.id === action.payload.levelId
-        ? { ...prevLevel, errorState: null }
-        : prevLevel,
-    );
-  } else {
-    throw new Error("unsupported type");
-  }
-};
-
-function Section() {
+function Section({
+  levels,
+  category,
+}: {
+  levels: Level[];
+  category: StoreCategory;
+}) {
   const [expenditureLevels, dispatch] = useReducer(reducer, levels);
   const isSomeLevelBeingEdited = expenditureLevels.some(
     (level) => !level.disabled,
@@ -228,37 +128,34 @@ function Section() {
           <input type="checkbox" className="peer hidden" />
           <div className="grid h-3 w-3 place-items-center border border-line-gray before:hidden before:h-1.5 before:w-1.5 before:bg-orange peer-checked:before:block" />
         </label>
-        <div className="font-semibold">室內模擬器</div>
-        <IconShortButton icon="plus" className="ml-auto mr-px">
+        <div className="font-semibold">{storeCategoryMap[category]}</div>
+        <IconShortButton
+          onClick={() =>
+            dispatch({
+              type: "add-new-level",
+              payload: {
+                levelId: Date.now().toString(),
+              },
+            })
+          }
+          icon="plus"
+          className="ml-auto mr-px"
+          disabled={isSomeLevelBeingEdited}
+        >
           新增級距
         </IconShortButton>
       </header>
 
       <ul className="bg-white">
         {expenditureLevels.map((level) => {
-          return (
-            <Li
-              level={level}
-              dispatch={dispatch}
-              isSomeLevelBeingEdited={isSomeLevelBeingEdited}
-              key={level.id}
-            />
-          );
+          return <Li level={level} dispatch={dispatch} key={level.id} />;
         })}
       </ul>
     </section>
   );
 }
 
-function Li({
-  level,
-  dispatch,
-  isSomeLevelBeingEdited,
-}: {
-  level: Level;
-  dispatch: Dispatch<Action>;
-  isSomeLevelBeingEdited: boolean;
-}) {
+function Li({ level, dispatch }: { level: Level; dispatch: Dispatch<Action> }) {
   const minConsumptionRef = useRef<HTMLInputElement>(null);
   const maxConsumptionRef = useRef<HTMLInputElement>(null);
   const isMinConsumptionError = level.errorState?.field === "minConsumption";
@@ -319,6 +216,7 @@ function Li({
           <div className="black-circles-before-after relative h-px w-4 bg-secondary-dark"></div>
           <div className="relative">
             <NumberInput
+              autoFocus
               disabled={level.disabled}
               value={level.maxConsumption}
               onChange={(e) =>
@@ -352,7 +250,7 @@ function Li({
 
       {level.disabled && (
         <button
-          className="ml-auto disabled:cursor-not-allowed"
+          className="ml-auto"
           onClick={() => {
             dispatch({
               type: "update-edit-status-enabled",
@@ -366,7 +264,6 @@ function Li({
               },
             });
           }}
-          disabled={isSomeLevelBeingEdited}
         >
           <img src={pencilIcon} />
         </button>
