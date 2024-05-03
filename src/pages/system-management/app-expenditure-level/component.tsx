@@ -276,6 +276,11 @@ function Section({
             />
           );
         })}
+        {expenditureLevels.length === 0 && (
+          <li className="flex items-center justify-center border-y border-line-gray py-2.5 pr-5 text-word-gray">
+            尚未新增級距
+          </li>
+        )}
       </ul>
     </section>
   );
