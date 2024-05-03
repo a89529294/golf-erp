@@ -88,27 +88,6 @@ export function Component() {
   );
 }
 
-// const levels = [
-//   {
-//     id: "1",
-//     minConsumption: 0,
-//     maxConsumption: 100,
-//     canAppointDays: 10,
-//     disabled: true,
-//     errorState: null,
-//     snapshot: null,
-//   },
-//   {
-//     id: "2",
-//     minConsumption: 101,
-//     maxConsumption: 200,
-//     canAppointDays: 20,
-//     disabled: true,
-//     errorState: null,
-//     snapshot: null,
-//   },
-// ];
-
 function Section({
   levels,
   category,

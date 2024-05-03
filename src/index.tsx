@@ -39,12 +39,9 @@ const router = createBrowserRouter(
                       routePermissions={subLink.allowedPermissions}
                     />
                   }
+                  key={subLink.path}
                 >
-                  <Route
-                    path={subLink.path}
-                    lazy={subLink.lazy}
-                    key={subLink.path}
-                  />
+                  <Route path={subLink.path} lazy={subLink.lazy} />
                 </Route>
               );
             })}
@@ -56,12 +53,9 @@ const router = createBrowserRouter(
                       routePermissions={subLink.allowedPermissions}
                     />
                   }
+                  key={subLink.path}
                 >
-                  <Route
-                    path={subLink.path}
-                    lazy={subLink.lazy}
-                    key={subLink.path}
-                  />
+                  <Route path={subLink.path} lazy={subLink.lazy} />
                 </Route>
               );
             })}
@@ -74,17 +68,14 @@ const router = createBrowserRouter(
                         routePermissions={subLink.allowedPermissions}
                       />
                     }
+                    key={subLink.path}
                   >
-                    <Route
-                      path={subLink.path}
-                      lazy={subLink.lazy}
-                      key={subLink.path}
-                    />
+                    <Route path={subLink.path} lazy={subLink.lazy} />
                   </Route>
                 );
               },
             )}
-            {Object.values(linksKV["system-management"].subLinks).map(
+            {Object.values(linksKV["system-management"].subLinks).flatMap(
               (subLink) => {
                 return subLink.type === "multiple" ? (
                   Object.values(subLink.paths).map((path, idx) => {
@@ -95,11 +86,11 @@ const router = createBrowserRouter(
                             routePermissions={subLink.allowedPermissions}
                           />
                         }
+                        key={path}
                       >
                         <Route
                           path={path}
                           lazy={Object.values(subLink.lazy)[idx]}
-                          key={path}
                         />
                       </Route>
                     );
@@ -111,12 +102,9 @@ const router = createBrowserRouter(
                         routePermissions={subLink.allowedPermissions}
                       />
                     }
+                    key={subLink.path}
                   >
-                    <Route
-                      path={subLink.path}
-                      lazy={subLink.lazy}
-                      key={subLink.path}
-                    />
+                    <Route path={subLink.path} lazy={subLink.lazy} />
                   </Route>
                 );
               },

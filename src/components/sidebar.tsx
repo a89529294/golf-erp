@@ -107,97 +107,96 @@ function AccordionItemWrapper({
   };
 
   return (
-    <>
-      <AccordionItem value={link.path} key={link.path}>
-        <AccordionTrigger asChild>
-          <NavLink to={link.path} className="group relative block py-3 pl-7">
-            {({ isPending }) => (
-              <>
-                <div
-                  className={cn(
-                    "flex w-full items-center justify-between pr-4 transition-colors",
-                    isLinkActive(link) && "text-white",
-                  )}
+    <AccordionItem value={link.path}>
+      <AccordionTrigger asChild>
+        <NavLink to={link.path} className="group relative block py-3 pl-7">
+          {({ isPending }) => (
+            <>
+              <div
+                className={cn(
+                  "flex w-full items-center justify-between pr-4 transition-colors",
+                  isLinkActive(link) && "text-white",
+                )}
+              >
+                {link.label}
+                {link.type === "nested" && (
+                  <ChevronDown className="transition-transform duration-300 group-data-[state=closed]:-rotate-180" />
+                )}
+              </div>
+              {isLinkActive(link) && (
+                <motion.div
+                  className="absolute inset-0 -z-10 bg-secondary-dark"
+                  layoutId="link-bg"
+                />
+              )}
+              {isPending && (
+                <motion.div
+                  className="absolute inset-0 -z-10 bg-secondary-dark !opacity-50"
+                  layoutId="link-bg"
+                />
+              )}
+            </>
+          )}
+        </NavLink>
+      </AccordionTrigger>
+      {link.type === "nested" && (
+        <AccordionContent
+          className="flex flex-col pt-1"
+          onAnimationEnd={(e) => {
+            !link.path.startsWith(pathname) &&
+              setNestedLinksClosed(e.currentTarget.dataset.state === "closed");
+          }}
+        >
+          {(Object.values(link.subLinks) as (FlatLink | MultipleLink)[]).map(
+            (subLink) => {
+              const isActive =
+                subLink.type === "multiple"
+                  ? Object.values(subLink.paths).find((p) =>
+                      pathname.startsWith(p),
+                    )
+                  : pathname === subLink.path;
+              const path =
+                subLink.type === "multiple"
+                  ? Object.values(subLink.paths)[0]
+                  : subLink.path;
+
+              return (
+                <NavLink
+                  to={path}
+                  className={() => {
+                    let base =
+                      "relative py-2.5 pl-10 text-sm transition-colors ";
+                    base +=
+                      isActive && state.state !== "loading"
+                        ? "  text-white"
+                        : "";
+                    return base;
+                  }}
+                  key={path}
                 >
-                  {link.label}
-                  {link.type === "nested" && (
-                    <ChevronDown className="transition-transform duration-300 group-data-[state=closed]:-rotate-180" />
+                  {({ isPending }) => (
+                    <>
+                      {isActive && (
+                        <motion.div
+                          className="absolute inset-0 -z-10 border-l-[3px] border-secondary-dark bg-orange"
+                          layoutId="nested-link-bg"
+                        />
+                      )}
+                      {isPending && (
+                        <motion.div
+                          className="absolute inset-0 -z-10 border-l-[3px] border-secondary-dark bg-orange/50"
+                          layoutId="nested-link-bg"
+                        />
+                      )}
+                      {subLink.label}
+                    </>
                   )}
-                </div>
-                {isLinkActive(link) && (
-                  <motion.div
-                    className="absolute inset-0 -z-10 bg-secondary-dark"
-                    layoutId="link-bg"
-                  />
-                )}
-                {isPending && (
-                  <motion.div
-                    className="absolute inset-0 -z-10 bg-secondary-dark !opacity-50"
-                    layoutId="link-bg"
-                  />
-                )}
-              </>
-            )}
-          </NavLink>
-        </AccordionTrigger>
-        {link.type === "nested" && (
-          <AccordionContent
-            className="flex flex-col pt-1"
-            onAnimationEnd={(e) => {
-              !link.path.startsWith(pathname) &&
-                setNestedLinksClosed(
-                  e.currentTarget.dataset.state === "closed",
-                );
-            }}
-          >
-            {(Object.values(link.subLinks) as (FlatLink | MultipleLink)[]).map(
-              (subLink) => {
-                const isActive =
-                  subLink.type === "multiple"
-                    ? Object.values(subLink.paths).find((p) =>
-                        pathname.startsWith(p),
-                      )
-                    : pathname === subLink.path;
-                const path =
-                  subLink.type === "multiple" ? subLink.paths[0] : subLink.path;
-                return (
-                  <NavLink
-                    to={path}
-                    className={() => {
-                      let base =
-                        "relative py-2.5 pl-10 text-sm transition-colors ";
-                      base +=
-                        isActive && state.state !== "loading"
-                          ? "  text-white"
-                          : "";
-                      return base;
-                    }}
-                    key={path}
-                  >
-                    {({ isPending }) => (
-                      <>
-                        {isActive && (
-                          <motion.div
-                            className="absolute inset-0 -z-10 border-l-[3px] border-secondary-dark bg-orange"
-                            layoutId="nested-link-bg"
-                          />
-                        )}
-                        {isPending && (
-                          <motion.div
-                            className="absolute inset-0 -z-10 border-l-[3px] border-secondary-dark bg-orange/50"
-                            layoutId="nested-link-bg"
-                          />
-                        )}
-                        {subLink.label}
-                      </>
-                    )}
-                  </NavLink>
-                );
-              },
-            )}
-          </AccordionContent>
-        )}
-      </AccordionItem>
-    </>
+                </NavLink>
+              );
+            },
+          )}
+        </AccordionContent>
+      )}
+    </AccordionItem>
   );
 }
