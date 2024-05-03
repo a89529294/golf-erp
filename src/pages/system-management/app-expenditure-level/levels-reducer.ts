@@ -16,6 +16,8 @@ export type Level = {
     msg: string;
   };
   snapshot: Snapshot | null;
+  saveToDb: "new" | "old" | false;
+  toBeDeleted: boolean;
 } & Snapshot;
 
 export type Action =
@@ -43,6 +45,7 @@ export type Action =
       type: "update-edit-status-save";
       payload: {
         levelId: string;
+        saveToDB: Exclude<Level["saveToDb"], false>;
       };
     }
   | {
@@ -63,9 +66,27 @@ export type Action =
       payload: {
         levelId: string;
       };
+    }
+  | {
+      type: "reset-save-to-db-state";
+      payload: {
+        levelId: string;
+      };
+    }
+  | {
+      type: "prep-delete-levels";
+      payload: {
+        levelIds: string[];
+      };
+    }
+  | {
+      type: "delete-levels";
+      payload: {
+        levelIds: string[];
+      };
     };
 
-export const reducer = (state: Level[], action: Action) => {
+export const levelsReducer = (state: Level[], action: Action) => {
   const { type, payload } = action;
   switch (type) {
     case "update-max-consumption":
@@ -116,6 +137,32 @@ export const reducer = (state: Level[], action: Action) => {
         (prevLevel) => prevLevel.id === action.payload.levelId,
       );
       const foundLevel = state[foundLevelIndex];
+      if (foundLevel.minConsumption === "") {
+        return state.map((prevLevel) =>
+          prevLevel.id === action.payload.levelId
+            ? {
+                ...prevLevel,
+                errorState: {
+                  field: "minConsumption",
+                  msg: "min spending cannot be left blank",
+                },
+              }
+            : prevLevel,
+        );
+      } else if (foundLevel.maxConsumption === "") {
+        return state.map((prevLevel) =>
+          prevLevel.id === action.payload.levelId
+            ? {
+                ...prevLevel,
+                errorState: {
+                  field: "maxConsumption",
+                  msg: "max spending needs to be more than previous max spending",
+                },
+              }
+            : prevLevel,
+        );
+      }
+
       if (foundLevel.minConsumption >= foundLevel.maxConsumption)
         return state.map((prevLevel) =>
           prevLevel.id === action.payload.levelId
@@ -130,7 +177,7 @@ export const reducer = (state: Level[], action: Action) => {
         );
       else if (
         foundLevelIndex > 0 &&
-        state[foundLevelIndex - 1].maxConsumption >= foundLevel.minConsumption
+        +state[foundLevelIndex - 1].maxConsumption >= +foundLevel.minConsumption
       ) {
         return state.map((prevLevel) =>
           prevLevel.id === action.payload.levelId
@@ -144,8 +191,8 @@ export const reducer = (state: Level[], action: Action) => {
             : prevLevel,
         );
       } else if (
-        foundLevelIndex <= state.length - 1 &&
-        foundLevel.maxConsumption >= state[foundLevelIndex + 1].minConsumption
+        foundLevelIndex < state.length - 1 &&
+        +foundLevel.maxConsumption >= +state[foundLevelIndex + 1].minConsumption
       ) {
         return state.map((prevLevel) =>
           prevLevel.id === action.payload.levelId
@@ -161,7 +208,12 @@ export const reducer = (state: Level[], action: Action) => {
       } else {
         return state.map((prevLevel) =>
           prevLevel.id === action.payload.levelId
-            ? { ...prevLevel, disabled: true, errorState: null }
+            ? {
+                ...prevLevel,
+                errorState: null,
+                disabled: false,
+                saveToDb: action.payload.saveToDB,
+              }
             : prevLevel,
         );
       }
@@ -180,7 +232,7 @@ export const reducer = (state: Level[], action: Action) => {
       if (prevLevel && prevLevel.maxConsumption)
         newMinConsumption = prevLevel.maxConsumption + 1;
 
-      const newLevel = {
+      const newLevel: Level = {
         id: payload.levelId,
         minConsumption: newMinConsumption,
         maxConsumption: "",
@@ -192,8 +244,36 @@ export const reducer = (state: Level[], action: Action) => {
           canAppointDays: "",
         },
         disabled: false,
-      } as const;
+        saveToDb: false,
+        toBeDeleted: false,
+      };
       return [...state, newLevel];
+    }
+    case "reset-save-to-db-state": {
+      return state.map((prevLevel) =>
+        prevLevel.id === action.payload.levelId
+          ? ({
+              ...prevLevel,
+              disabled: true,
+              saveToDb: false,
+            } satisfies Level)
+          : prevLevel,
+      );
+    }
+    case "prep-delete-levels": {
+      return state.map((prevLevel) =>
+        action.payload.levelIds.includes(prevLevel.id)
+          ? ({
+              ...prevLevel,
+              toBeDeleted: true,
+            } satisfies Level)
+          : prevLevel,
+      );
+    }
+    case "delete-levels": {
+      return state.filter(
+        (prevLevel) => !action.payload.levelIds.includes(prevLevel.id),
+      );
     }
     default: {
       assertNever(type);

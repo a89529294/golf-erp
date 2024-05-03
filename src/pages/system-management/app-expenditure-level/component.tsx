@@ -1,5 +1,8 @@
 import { NumberInput } from "@/components/number-input";
-import { IconShortButton } from "@/components/ui/button";
+import {
+  IconShortButton,
+  IconShortWarningButton,
+} from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MainLayout } from "@/layouts/main-layout";
 import { expenditureLevelQuery, loader } from "./loader";
@@ -18,11 +21,13 @@ import { cn } from "@/lib/utils";
 import {
   Action,
   Level,
-  reducer,
-} from "@/pages/system-management/app-expenditure-level/reducer";
+  levelsReducer,
+} from "@/pages/system-management/app-expenditure-level/levels-reducer";
 import { useActionData } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { StoreCategory, storeCategoryMap } from "@/utils";
+import { isUUIDV4, privateFetch } from "@/utils/utils";
+import { toast } from "sonner";
 
 export function Component() {
   const initialData = useActionData() as Awaited<ReturnType<typeof loader>>;
@@ -37,11 +42,13 @@ export function Component() {
     simulator: [],
   };
   data.forEach((level) => {
-    const newLevel = {
+    const newLevel: Level = {
       ...level,
       disabled: true,
       errorState: null,
       snapshot: null,
+      saveToDb: false,
+      toBeDeleted: false,
     };
     sections[level.category].push(newLevel);
   });
@@ -95,19 +102,147 @@ function Section({
   levels: Level[];
   category: StoreCategory;
 }) {
-  const [expenditureLevels, dispatch] = useReducer(reducer, levels);
+  levels.sort((a, b) => +a.maxConsumption - +b.minConsumption);
+
+  const [selectedLevels, setSelectedLevels] = useState<string[]>([]);
+  const [expenditureLevels, dispatch] = useReducer(levelsReducer, levels);
   const isSomeLevelBeingEdited = expenditureLevels.some(
     (level) => !level.disabled,
   );
+  const queryClient = useQueryClient();
+  const { mutateAsync } = useMutation({
+    mutationKey: ["save-expenditure-level"],
+    mutationFn: async ({ level, id }: { level: Level; id?: string }) => {
+      if (id) {
+        await privateFetch(`/consumer-grade/${id}`, {
+          method: "PATCH",
+          body: JSON.stringify({
+            minConsumption: level.minConsumption,
+            maxConsumption: level.maxConsumption,
+            canAppointDays: 10,
+            category,
+          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+      } else {
+        await privateFetch("/consumer-grade", {
+          method: "POST",
+          body: JSON.stringify({
+            minConsumption: level.minConsumption,
+            maxConsumption: level.maxConsumption,
+            canAppointDays: 10,
+            category,
+          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+      }
+    },
+    onSuccess: () => toast.success("更新成功"),
+    onError: () => toast.error("更新失敗"),
+    onSettled: () =>
+      queryClient.invalidateQueries({
+        queryKey: ["expenditure-level"],
+      }),
+  });
+  const { mutateAsync: deleteLevels, isPending: deletingLevels } = useMutation({
+    mutationKey: ["delete-levels"],
+    mutationFn: async (ids: string[]) => {
+      const promises = ids.map((id) =>
+        privateFetch(`/consumer-grade/${id}`, {
+          method: "DELETE",
+        }),
+      );
+
+      await Promise.all(promises);
+    },
+    onSettled: () =>
+      queryClient.invalidateQueries({
+        queryKey: ["expenditure-level"],
+      }),
+    onSuccess: () => toast.success("移除成功"),
+    onError: () => toast.error("移除失敗"),
+  });
+
+  const toggleSelected = (id: string) => {
+    if (selectedLevels.includes(id))
+      setSelectedLevels(selectedLevels.filter((l) => l !== id));
+    else setSelectedLevels([...selectedLevels, id]);
+  };
+
+  useEffect(() => {
+    (async () => {
+      const level = expenditureLevels.find((level) => level.saveToDb);
+
+      if (level) {
+        if (level.saveToDb === "new") {
+          await mutateAsync({ level });
+        } else {
+          await mutateAsync({ level, id: level.id });
+        }
+
+        dispatch({
+          type: "reset-save-to-db-state",
+          payload: { levelId: level.id },
+        });
+      }
+    })();
+  }, [expenditureLevels, mutateAsync]);
+
+  useEffect(() => {
+    (async () => {
+      const levelsToBeDeleted = expenditureLevels.filter(
+        (level) => level.toBeDeleted,
+      );
+      if (levelsToBeDeleted.length) {
+        await deleteLevels(levelsToBeDeleted.map((l) => l.id));
+
+        dispatch({
+          type: "delete-levels",
+          payload: { levelIds: levelsToBeDeleted.map((l) => l.id) },
+        });
+        setSelectedLevels([]);
+      }
+    })();
+  }, [expenditureLevels, deleteLevels]);
 
   return (
     <section>
-      <header className="flex items-center ">
+      <header className="flex items-center gap-1">
         <label className="block px-6 py-5">
-          <input type="checkbox" className="peer hidden" />
+          <input
+            type="checkbox"
+            className="peer hidden"
+            checked={
+              selectedLevels.length === levels.length && levels.length !== 0
+            }
+            onChange={() => {
+              if (selectedLevels.length === levels.length)
+                setSelectedLevels([]);
+              else setSelectedLevels(levels.map((level) => level.id));
+            }}
+          />
           <div className="grid h-3 w-3 place-items-center border border-line-gray before:hidden before:h-1.5 before:w-1.5 before:bg-orange peer-checked:before:block" />
         </label>
         <div className="font-semibold">{storeCategoryMap[category]}</div>
+        {selectedLevels.length > 0 && (
+          <IconShortWarningButton
+            icon="minus"
+            className={cn("ml-auto", deletingLevels && "opacity-50")}
+            onClick={() =>
+              dispatch({
+                type: "prep-delete-levels",
+                payload: { levelIds: selectedLevels },
+              })
+            }
+            disabled={deletingLevels}
+          >
+            移除
+          </IconShortWarningButton>
+        )}
         <IconShortButton
           onClick={() =>
             dispatch({
@@ -118,8 +253,12 @@ function Section({
             })
           }
           icon="plus"
-          className="ml-auto mr-px"
-          disabled={isSomeLevelBeingEdited}
+          className={cn(
+            "mr-px",
+            selectedLevels.length === 0 && "ml-auto",
+            deletingLevels && "opacity-50",
+          )}
+          disabled={isSomeLevelBeingEdited || deletingLevels}
         >
           新增級距
         </IconShortButton>
@@ -127,18 +266,38 @@ function Section({
 
       <ul className="bg-white">
         {expenditureLevels.map((level) => {
-          return <Li level={level} dispatch={dispatch} key={level.id} />;
+          return (
+            <Li
+              toggleSelected={toggleSelected}
+              selected={selectedLevels.includes(level.id)}
+              level={level}
+              dispatch={dispatch}
+              key={level.id}
+            />
+          );
         })}
       </ul>
     </section>
   );
 }
 
-function Li({ level, dispatch }: { level: Level; dispatch: Dispatch<Action> }) {
+function Li({
+  level,
+  dispatch,
+  selected,
+  toggleSelected,
+}: {
+  level: Level;
+  dispatch: Dispatch<Action>;
+  selected: boolean;
+  toggleSelected: (s: string) => void;
+}) {
   const minConsumptionRef = useRef<HTMLInputElement>(null);
   const maxConsumptionRef = useRef<HTMLInputElement>(null);
   const isMinConsumptionError = level.errorState?.field === "minConsumption";
   const isMaxConsumptionError = level.errorState?.field === "maxConsumption";
+
+  const autoFocusMinConsumption = level.minConsumption === "";
 
   useEffect(() => {
     if (isMaxConsumptionError) maxConsumptionRef.current?.focus();
@@ -155,7 +314,12 @@ function Li({ level, dispatch }: { level: Level; dispatch: Dispatch<Action> }) {
       )}
     >
       <label className="block px-6 py-6">
-        <input type="checkbox" className="peer hidden" />
+        <input
+          type="checkbox"
+          className="peer hidden"
+          checked={selected}
+          onChange={() => toggleSelected(level.id)}
+        />
         <div className="grid h-3 w-3 place-items-center border border-line-gray before:hidden before:h-1.5 before:w-1.5 before:bg-orange peer-checked:before:block" />
       </label>
 
@@ -164,6 +328,7 @@ function Li({ level, dispatch }: { level: Level; dispatch: Dispatch<Action> }) {
         <div className="flex items-center">
           <div className="relative">
             <NumberInput
+              autoFocus={autoFocusMinConsumption}
               disabled={level.disabled}
               value={level.minConsumption}
               onChange={(e) =>
@@ -195,7 +360,7 @@ function Li({ level, dispatch }: { level: Level; dispatch: Dispatch<Action> }) {
           <div className="black-circles-before-after relative h-px w-4 bg-secondary-dark"></div>
           <div className="relative">
             <NumberInput
-              autoFocus
+              autoFocus={!autoFocusMinConsumption}
               disabled={level.disabled}
               value={level.maxConsumption}
               onChange={(e) =>
@@ -254,9 +419,14 @@ function Li({ level, dispatch }: { level: Level; dispatch: Dispatch<Action> }) {
             onClick={() =>
               dispatch({
                 type: "update-edit-status-save",
-                payload: { levelId: level.id },
+                payload: {
+                  levelId: level.id,
+                  saveToDB: isUUIDV4(level.id) ? "old" : "new",
+                },
               })
             }
+            disabled={!!level.saveToDb}
+            className="disabled:opacity-50"
           >
             <img src={greenFileIcon} />
           </button>
@@ -267,6 +437,8 @@ function Li({ level, dispatch }: { level: Level; dispatch: Dispatch<Action> }) {
                 payload: { levelId: level.id },
               })
             }
+            disabled={!!level.saveToDb}
+            className="disabled:opacity-50"
           >
             <img src={redXIcon} />
           </button>
