@@ -1,4 +1,4 @@
-import { storeCategoryArray } from "@/utils";
+import { storeCategories } from "@/utils";
 import { queryClient } from "@/utils/query-client";
 import {} from "@/utils/types";
 import { privateFetch } from "@/utils/utils";
@@ -12,7 +12,7 @@ export const employeeSchema = z.object({
   stores: z.array(
     z.object({
       name: z.string(),
-      category: z.enum(storeCategoryArray),
+      category: z.enum(storeCategories),
     }),
   ),
 });

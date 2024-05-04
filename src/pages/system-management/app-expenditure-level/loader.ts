@@ -1,4 +1,4 @@
-import { StoreCategoryTuple, storeCategoryMap } from "@/utils";
+import { storeCategories } from "@/utils";
 import { queryClient } from "@/utils/query-client";
 import { privateFetch } from "@/utils/utils";
 import { z } from "zod";
@@ -10,7 +10,7 @@ const responseSchema = z.object({
       minConsumption: z.number(),
       maxConsumption: z.number(),
       canAppointDays: z.number(),
-      category: z.enum(Object.keys(storeCategoryMap) as StoreCategoryTuple),
+      category: z.enum(storeCategories),
     }),
   ),
 });
