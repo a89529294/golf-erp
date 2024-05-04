@@ -10,7 +10,10 @@ export const storeCategoryMap = {
 };
 
 // TODO figure out how to extract this tuple from above
-export type StoreCategoryTuple = ["golf", "simulator", "ground"];
+export const storeCategories = ["golf", "simulator", " ground"] as const;
+export type StoreCategoryTuple = typeof storeCategories;
+export const storeCategoriesWithAll = [...storeCategories, "all"] as const;
+export type StoreCategoryWithAllTuple = typeof storeCategoriesWithAll;
 
 export type StoreCategory = keyof typeof storeCategoryMap;
 
