@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 
 export function usePrevious<K>(v: K) {
-  const state = useRef<typeof v | null>(null);
+  const state = useRef<typeof v | undefined>(undefined);
 
   useEffect(() => {
     state.current = v;

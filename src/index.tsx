@@ -109,6 +109,29 @@ const router = createBrowserRouter(
                 );
               },
             )}
+            {(
+              Object.entries(linksKV["store-management"].paths) as [
+                keyof (typeof linksKV)["store-management"]["paths"],
+                string,
+              ][]
+            ).map(([key, path]) => (
+              <Route
+                element={
+                  <PermissionGuard
+                    routePermissions={
+                      linksKV["store-management"].allowedPermissions
+                    }
+                  />
+                }
+                key={key}
+              >
+                <Route
+                  path={path}
+                  lazy={linksKV["store-management"].lazy[key]}
+                />
+              </Route>
+            ))}
+            ,
           </Route>
         </Route>
       </Route>

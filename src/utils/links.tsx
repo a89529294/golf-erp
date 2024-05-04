@@ -168,13 +168,23 @@ export const linksKV = {
       },
     },
   },
-  // "client-management": {
-  //   label: "廠商管理",
-  //   path: "/client-management",
-  //   lazy: () => import("@/pages/client-management"),
-  //   type: "flat" as const,
-  //   allowedPermissions: ["廠商管理"],
-  // },
+  "store-management": {
+    label: "廠商管理",
+    paths: {
+      index: "/store-management",
+      new: "/store-management/new",
+      details: "/store-management/:storeId",
+      editDetails: "/store-management/:storeId/edit",
+    },
+    lazy: {
+      index: () => import("@/pages/store-management"),
+      new: () => import("@/pages/store-management/new"),
+      details: () => import("@/pages/store-management/details"),
+      editDetails: () => import("@/pages/store-management/edit-details"),
+    },
+    type: "multiple" as const,
+    allowedPermissions: ["廠商管理"],
+  },
   // "member-management": {
   //   label: "會員管理",
   //   basePath: MEMBER_MANAGEMENT_BASE_PATH,
@@ -201,15 +211,61 @@ export const linksKV = {
 const links = Object.values(linksKV);
 
 export const isBelowLink = (prevPath: string, nextPath: string) => {
+  const getPath = (link: NestedLink | MultipleLink) =>
+    link.type === "nested" ? link.path : link.paths.index;
+
   return (
-    links.findIndex((l) => l.path.startsWith(prevPath)) -
-      links.findIndex((l) => l.path.startsWith(nextPath)) <
+    links.findIndex((l) => getPath(l).startsWith(prevPath)) -
+      links.findIndex((l) => getPath(l).startsWith(nextPath)) <
     0
   );
 };
 
-export const findLinkFromPathname = (pathname: string): NestedLink =>
-  links.find((link) => pathname.startsWith(link.basePath))!;
+export const findLinkFromPathname = (
+  pathname: string,
+): NestedLink | MultipleLink | undefined =>
+  links.find((link) =>
+    link.type === "nested"
+      ? pathname.startsWith(link.basePath)
+      : pathname.startsWith(link.paths.index),
+  );
+
+export const sameRouteGroup = (path: string, nextPath: string) => {
+  const getSubPaths = (s: keyof typeof linksKV) => {
+    const obj = linksKV[s];
+    if (obj.type === "multiple") return [];
+
+    return Object.values(obj.subLinks).flatMap((subLink) => {
+      return subLink.type === "flat"
+        ? subLink.path
+        : Object.values(subLink.paths);
+    });
+  };
+
+  const systemManagementPaths = getSubPaths("system-management");
+  const drivingRangePaths = getSubPaths("driving-range");
+  const golfPaths = getSubPaths("golf");
+  const indoorSimulatorPaths = getSubPaths("indoor-simulator");
+
+  if (
+    systemManagementPaths.includes(path) &&
+    systemManagementPaths.includes(nextPath)
+  )
+    return true;
+
+  if (drivingRangePaths.includes(path) && drivingRangePaths.includes(nextPath))
+    return true;
+
+  if (golfPaths.includes(path) && golfPaths.includes(nextPath)) return true;
+
+  if (
+    indoorSimulatorPaths.includes(path) &&
+    indoorSimulatorPaths.includes(path)
+  )
+    return true;
+
+  return false;
+};
 
 // export function filterLinksByUserPermissions(userPermissions: string[]) {
 //   const allowedLinks = [] as (FlatLink | NestedLink | MultipleLink)[];

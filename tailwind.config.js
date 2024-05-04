@@ -78,14 +78,15 @@ module.exports = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
-        "fade-in": {
+        "fade-half-in": {
           from: { opacity: 0 },
-          to: { opacity: 1 },
+          to: { opacity: ".5 !important" },
         },
       },
       animation: {
         "accordion-down": "accordion-down .3s ease-out",
         "accordion-up": "accordion-up .3s ease-out",
+        "fade-half-in": "fade-half-in 10ms ease-out 100ms",
       },
     },
   },

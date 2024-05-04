@@ -40,6 +40,5 @@ export const genEmployeesQuery = (nonERPUsers?: boolean) => {
 };
 
 export async function loader() {
-  // await sleep(1000 * 1000);
   return await queryClient.ensureQueryData(genEmployeesQuery());
 }

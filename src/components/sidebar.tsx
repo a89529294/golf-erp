@@ -15,6 +15,7 @@ import {
   findLinkFromPathname,
   isBelowLink,
   linksKV,
+  sameRouteGroup,
 } from "@/utils/links";
 import { motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
@@ -25,10 +26,7 @@ export function Sidebar() {
   const { pathname } = useLocation();
   const prevLink = usePrevious(findLinkFromPathname(pathname));
   const [nestedLinksClosed, setNestedLinksClosed] = useState(false);
-
   const { user } = useAuth();
-
-  // const links = filterLinksByUserPermissions(user!.permissions);
 
   const isLinkAllowed = (link: NestedLink | FlatLink | MultipleLink) => {
     return !!user?.permissions.some((up) =>
@@ -45,7 +43,14 @@ export function Sidebar() {
       type="single"
       collapsible
       className="w-full"
-      defaultValue={findLinkFromPathname(pathname)?.path}
+      defaultValue={(() => {
+        const linkOnMount = findLinkFromPathname(pathname);
+        if (!linkOnMount) return undefined;
+
+        return linkOnMount.type === "nested"
+          ? linkOnMount.path
+          : linkOnMount.paths.index;
+      })()}
     >
       {isLinkAllowed(linksKV["driving-range"]) && (
         <AccordionItemWrapper
@@ -79,6 +84,14 @@ export function Sidebar() {
           setNestedLinksClosed={setNestedLinksClosed}
         />
       )}
+      {isLinkAllowed(linksKV["store-management"]) && (
+        <AccordionItemWrapper
+          link={linksKV["store-management"]}
+          prevLink={prevLink}
+          nestedLinksClosed={nestedLinksClosed}
+          setNestedLinksClosed={setNestedLinksClosed}
+        />
+      )}
     </Accordion>
   );
 }
@@ -89,33 +102,43 @@ function AccordionItemWrapper({
   nestedLinksClosed,
   setNestedLinksClosed,
 }: {
-  link: NestedLink;
-  prevLink: NestedLink | null;
+  link: NestedLink | MultipleLink;
+  prevLink: NestedLink | MultipleLink | undefined;
   nestedLinksClosed: boolean;
   setNestedLinksClosed: Dispatch<SetStateAction<boolean>>;
 }) {
   const { pathname } = useLocation();
-
   const state = useNavigation();
+  const [inSameRouteGroup, setInSameRouteGroup] = useState(false);
 
-  const isLinkActive = (link: NestedLink) => {
-    if (prevLink && isBelowLink(prevLink.basePath, pathname)) {
-      return pathname.startsWith(link.basePath) && nestedLinksClosed;
+  const getPath = (link: NestedLink | MultipleLink) =>
+    link.type === "nested" ? link.basePath : link.paths.index;
+
+  const isLinkActive = (link: NestedLink | MultipleLink) => {
+    if (prevLink && isBelowLink(getPath(prevLink), pathname)) {
+      return pathname.startsWith(getPath(link)) && nestedLinksClosed;
     }
 
-    return pathname.startsWith(link.basePath);
+    return pathname.startsWith(getPath(link));
   };
 
+  useEffect(() => {
+    if (state.state === "idle") setInSameRouteGroup(false);
+  }, [inSameRouteGroup, state.state]);
+
+  const path = link.type === "nested" ? link.path : link.paths.index;
   return (
-    <AccordionItem value={link.path}>
+    <AccordionItem value={path}>
       <AccordionTrigger asChild>
-        <NavLink to={link.path} className="group relative block py-3 pl-7">
+        <NavLink to={path} className="group relative block py-3 pl-7">
           {({ isPending }) => (
             <>
               <div
                 className={cn(
                   "flex w-full items-center justify-between pr-4 transition-colors",
-                  isLinkActive(link) && "text-white",
+                  isLinkActive(link) &&
+                    state.state !== "loading" &&
+                    "text-white",
                 )}
               >
                 {link.label}
@@ -123,12 +146,34 @@ function AccordionItemWrapper({
                   <ChevronDown className="transition-transform duration-300 group-data-[state=closed]:-rotate-180" />
                 )}
               </div>
-              {isLinkActive(link) && (
-                <motion.div
-                  className="absolute inset-0 -z-10 bg-secondary-dark"
-                  layoutId="link-bg"
-                />
-              )}
+              {/* {isLinkActive(link) &&
+                (state.state === "loading" ? (
+                  <motion.div
+                    className="absolute inset-0 -z-10 bg-secondary-dark !opacity-50"
+                    layoutId="link-bg"
+                  />
+                ) : (
+                  <motion.div
+                    className="absolute inset-0 -z-10 bg-secondary-dark"
+                    layoutId="link-bg"
+                  />
+                ))} */}
+
+              {isLinkActive(link) &&
+                (inSameRouteGroup ? (
+                  <motion.div
+                    className="absolute inset-0 -z-10 bg-secondary-dark"
+                    layoutId="link-bg"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 0.5 }}
+                    transition={{ duration: 0.01, delay: 0.1 }}
+                  />
+                ) : (
+                  <motion.div
+                    className="absolute inset-0 -z-10 bg-secondary-dark"
+                    layoutId="link-bg"
+                  />
+                ))}
               {isPending && (
                 <motion.div
                   className="absolute inset-0 -z-10 bg-secondary-dark !opacity-50"
@@ -167,12 +212,15 @@ function AccordionItemWrapper({
                     let base =
                       "relative py-2.5 pl-10 text-sm transition-colors ";
                     base +=
-                      isActive && state.state !== "loading"
-                        ? "  text-white"
-                        : "";
+                      isActive && state.state !== "loading" ? "text-white" : "";
                     return base;
                   }}
                   key={path}
+                  onClick={() => {
+                    setInSameRouteGroup(
+                      sameRouteGroup(location.pathname, path),
+                    );
+                  }}
                 >
                   {({ isPending }) => (
                     <>
