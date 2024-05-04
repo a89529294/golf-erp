@@ -1,6 +1,8 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Store } from "@/pages/store-management/loader";
+import { StoreCategory, storeCategoryMap } from "@/utils";
 import { ColumnDef } from "@tanstack/react-table";
+import locationIcon from "@/assets/location-icon.svg";
 
 export const columns: ColumnDef<Store>[] = [
   {
@@ -26,28 +28,34 @@ export const columns: ColumnDef<Store>[] = [
         />
       </div>
     ),
+    size: 5,
   },
   {
     id: "name-address",
     header: "廠商名稱 / 地址",
     cell: ({ row }) => (
-      <div className="flex flex-col">
+      <div>
         <p>{row.original.name}</p>
-        <p>
+        <p className="flex gap-1">
+          <img src={locationIcon} />
           {row.original.county + row.original.district + row.original.address}
         </p>
       </div>
     ),
+    size: 25,
   },
   {
     accessorKey: "category",
     header: "類別",
+    cell: ({ row }) => storeCategoryMap[row.original.category as StoreCategory],
+    size: 15,
   },
   {
     // TODO change this once telphone column is added
     id: "telphone",
     header: "市話",
     cell: () => "022223333",
+    size: 15,
   },
   {
     id: "contact-name-phone",
@@ -58,5 +66,6 @@ export const columns: ColumnDef<Store>[] = [
         <p>021233211</p>
       </div>
     ),
+    size: undefined,
   },
 ];

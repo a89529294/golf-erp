@@ -186,7 +186,7 @@ function AccordionItemWrapper({
       </AccordionTrigger>
       {link.type === "nested" && (
         <AccordionContent
-          className="flex flex-col pt-1"
+          className="flex flex-col bg-white pt-1"
           onAnimationEnd={(e) => {
             !link.path.startsWith(pathname) &&
               setNestedLinksClosed(e.currentTarget.dataset.state === "closed");
@@ -226,17 +226,17 @@ function AccordionItemWrapper({
                     <>
                       {isActive && (
                         <motion.div
-                          className="absolute inset-0 -z-10 border-l-[3px] border-secondary-dark bg-orange"
+                          className="absolute inset-0  border-l-[3px] border-secondary-dark bg-orange"
                           layoutId="nested-link-bg"
                         />
                       )}
                       {isPending && (
                         <motion.div
-                          className="absolute inset-0 -z-10 border-l-[3px] border-secondary-dark bg-orange/50"
+                          className="absolute inset-0  border-l-[3px] border-secondary-dark bg-orange/50"
                           layoutId="nested-link-bg"
                         />
                       )}
-                      {subLink.label}
+                      <div className="relative">{subLink.label}</div>
                     </>
                   )}
                 </NavLink>

@@ -9,11 +9,14 @@ import {
   StoreCategory,
   StoreCategoryWithAllTuple,
   storeCategoriesWithAll,
+  storeCategoryWithAllMap,
 } from "@/utils";
 import { linksKV } from "@/utils/links";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Link, useLoaderData, useSearchParams } from "react-router-dom";
+import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 export function Component() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -55,21 +58,38 @@ export function Component() {
             />
           ) : null}
           <IconButton icon="plus">
-            <Link
-              to={
-                linksKV["system-management"].subLinks[
-                  "personnel-system-management"
-                ].paths.new
-              }
-            >
-              新增廠商
-            </Link>
+            <Link to={linksKV["store-management"].paths["new"]}>新增廠商</Link>
           </IconButton>
           <SearchInput value={globalFilter} setValue={setGlobalFilter} />
         </>
       }
     >
-      <div className="flex w-full flex-col gap-1 border border-line-gray bg-light-gray p-1">
+      <div className="flex w-full flex-col border border-line-gray bg-light-gray p-1">
+        <nav>
+          <ul className="flex items-center gap-3 py-2 pl-5">
+            {Object.entries(storeCategoryWithAllMap).map(([key, value]) => (
+              <li key={key}>
+                <Link
+                  to={`?category=${key}`}
+                  className="relative grid h-9 place-items-center rounded-full border border-line-gray bg-white px-5"
+                >
+                  {category === key && (
+                    <motion.div
+                      className="absolute inset-0 rounded-full bg-black"
+                      layoutId="category-tab"
+                    />
+                  )}
+                  <div
+                    className={cn("relative", category === key && "text-white")}
+                  >
+                    {value}
+                  </div>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
         <DataTable
           columns={columns}
           data={filteredData}

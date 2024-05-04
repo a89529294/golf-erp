@@ -9,16 +9,15 @@ export const storeCategoryMap = {
   ground: "練習場",
 };
 
+export const storeCategoryWithAllMap = {
+  all: "全部",
+  ...storeCategoryMap,
+};
+
 // TODO figure out how to extract this tuple from above
-export const storeCategories = ["golf", "simulator", " ground"] as const;
+export const storeCategories = ["golf", "simulator", "ground"] as const;
 export type StoreCategoryTuple = typeof storeCategories;
-export const storeCategoriesWithAll = [...storeCategories, "all"] as const;
+export const storeCategoriesWithAll = ["all", ...storeCategories] as const;
 export type StoreCategoryWithAllTuple = typeof storeCategoriesWithAll;
 
 export type StoreCategory = keyof typeof storeCategoryMap;
-
-export const storeCategoryArray = [
-  Object.keys(storeCategoryMap)[0],
-  Object.keys(storeCategoryMap)[1],
-  Object.keys(storeCategoryMap)[2],
-] as const;

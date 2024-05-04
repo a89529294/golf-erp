@@ -18,11 +18,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { MainLayout } from "@/layouts/main-layout";
 import { cn } from "@/lib/utils";
-import {
-  loader,
-  storeQuery,
-} from "@/pages/system-management/personnel-management/new-employee/loader";
-import { storeCategoryArray, storeCategoryMap } from "@/utils";
+import { loader } from "@/pages/system-management/personnel-management/new-employee/loader";
+import { storeCategories, storeCategoryMap } from "@/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -36,6 +33,7 @@ import {
 } from "react-router-dom";
 import { z } from "zod";
 import { Modal } from "@/components/modal";
+import { storeQuery } from "@/pages/store-management/loader";
 
 const toValueLabelArray = (obj: { name: string; id: string }[]) => {
   const options: Record<string, string> = {};
@@ -47,7 +45,7 @@ const formSchema = z.object({
   idNumber: z.string().min(1, { message: "請填入編號" }),
   name: z.string().min(1, { message: "請填入姓名" }),
   phoneno: z.string().min(1, { message: "請填入電話" }),
-  category: z.enum(storeCategoryArray),
+  category: z.enum(storeCategories),
   storeId: z.union([z.string(), z.undefined()]).refine((v) => v, {
     message: "請選擇店家",
   }),
@@ -66,7 +64,7 @@ export function Component() {
       idNumber: "",
       name: "",
       phoneno: "",
-      category: storeCategoryArray[0],
+      category: storeCategories[0],
       storeId: undefined,
     },
   });
@@ -148,7 +146,7 @@ export function Component() {
             className="flex flex-col items-center pt-12"
           >
             <section className="flex w-fit flex-col gap-6 border border-line-gray px-16 pb-10">
-              <div className="-mx-16 bg-light-gray py-1.5 text-center text-black">
+              <div className="-mx-16 mb-4 bg-light-gray py-1.5 text-center text-black">
                 基本資料
               </div>
               <EmployeeFormField form={form} name={"idNumber"} label="編號" />
