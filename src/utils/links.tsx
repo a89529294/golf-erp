@@ -173,14 +173,12 @@ export const linksKV = {
     paths: {
       index: "/store-management",
       new: "/store-management/new",
-      details: "/store-management/:storeId",
-      editDetails: "/store-management/:storeId/edit",
+      details: "/store-management/details/:storeId",
     },
     lazy: {
       index: () => import("@/pages/store-management"),
       new: () => import("@/pages/store-management/new"),
       details: () => import("@/pages/store-management/details"),
-      editDetails: () => import("@/pages/store-management/edit-details"),
     },
     type: "multiple" as const,
     allowedPermissions: ["廠商管理"],

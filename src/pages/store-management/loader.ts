@@ -1,29 +1,36 @@
+import { employeeSchema } from "@/pages/system-management/personnel-management/loader";
+import { storeCategories } from "@/utils";
 import { queryClient } from "@/utils/query-client";
 import { privateFetch } from "@/utils/utils";
 import { z } from "zod";
 
+export const storeSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  businessHours: z.string(),
+  telphone: z.string(),
+  contact: z.string(),
+  contactPhone: z.string(),
+  category: z.enum(storeCategories),
+  county: z.string(),
+  district: z.string(),
+  address: z.string(),
+  employees: z.array(employeeSchema),
+});
+
 const storesSchema = z.object({
-  data: z.array(
-    z.object({
-      id: z.string(),
-      name: z.string(),
-      category: z.string(),
-      county: z.string(),
-      district: z.string(),
-      address: z.string(),
-    }),
-  ),
+  data: z.array(storeSchema),
 });
 
 export type Store = z.infer<typeof storesSchema>["data"][number];
 
-export const storeQuery = {
+export const storesQuery = {
   queryKey: ["stores"],
   queryFn: async () => {
     const responses = await Promise.all([
-      privateFetch("/store/golf?pageSize=99"),
-      privateFetch("/store/ground?pageSize=99"),
-      privateFetch("/store/simulator?pageSize=99"),
+      privateFetch("/store/golf?pageSize=99&populate=employees"),
+      privateFetch("/store/ground?pageSize=99&populate=employees"),
+      privateFetch("/store/simulator?pageSize=99&populate=employees"),
     ]);
 
     const x = {
@@ -37,5 +44,5 @@ export const storeQuery = {
 };
 
 export async function loader() {
-  return await queryClient.ensureQueryData(storeQuery);
+  return await queryClient.ensureQueryData(storesQuery);
 }

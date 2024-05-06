@@ -7,7 +7,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
-import { ModalDataTable } from "@/pages/system-management/system-operation-management/new-user-modal/data-table";
 import { privateFetch } from "@/utils/utils";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -15,6 +14,7 @@ import { ReactElement, useState } from "react";
 import { columns as userColumns } from "./columns";
 import { toast } from "sonner";
 import { AppPermissionUser } from "@/pages/system-management/app-permission-management/loader";
+import { ModalDataTable } from "@/components/select-employees-modal/data-table";
 
 // const newERPUserReturnSchema = z.object({
 //   user: userSchema,

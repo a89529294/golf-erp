@@ -33,7 +33,7 @@ import {
 } from "react-router-dom";
 import { z } from "zod";
 import { Modal } from "@/components/modal";
-import { storeQuery } from "@/pages/store-management/loader";
+import { storesQuery } from "@/pages/store-management/loader";
 
 const toValueLabelArray = (obj: { name: string; id: string }[]) => {
   const options: Record<string, string> = {};
@@ -57,7 +57,7 @@ export function Component() {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
-  const { data: stores } = useQuery({ ...storeQuery, initialData });
+  const { data: stores } = useQuery({ ...storesQuery, initialData });
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {

@@ -9,12 +9,14 @@ export const employeeSchema = z.object({
   id: z.string(),
   idNumber: z.string(),
   telphone: z.string(),
-  stores: z.array(
-    z.object({
-      name: z.string(),
-      category: z.enum(storeCategories),
-    }),
-  ),
+  stores: z
+    .array(
+      z.object({
+        name: z.string(),
+        category: z.enum(storeCategories),
+      }),
+    )
+    .optional(),
 });
 
 const employeesSchema = z.object({

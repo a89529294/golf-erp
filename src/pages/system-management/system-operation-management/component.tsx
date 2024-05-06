@@ -1,4 +1,3 @@
-import { NewUserModal } from "@/pages/system-management/system-operation-management/new-user-modal/modal";
 import { Modal } from "@/components/modal";
 import { SearchInput } from "@/components/search-input";
 import { IconButton, IconWarningButton } from "@/components/ui/button";
@@ -15,6 +14,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useLoaderData } from "react-router-dom";
 import { genEmployeesQuery } from "@/pages/system-management/personnel-management/loader";
+import { AddEmployeeAsERPUserModal } from "@/components/select-employees-modal/add-employee-as-erp-user-modal";
 
 export function Component() {
   const [rowSelection, setRowSelection] = useState({});
@@ -60,7 +60,7 @@ export function Component() {
               title="確定刪除選取員工?"
             />
           ) : null}
-          <NewUserModal
+          <AddEmployeeAsERPUserModal
             dialogTriggerChildren={
               <IconButton icon="plus">新增系統操作人員</IconButton>
             }

@@ -9,21 +9,21 @@ import {
 import { cn } from "@/lib/utils";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { ReactElement, useEffect, useState } from "react";
-import { columns as employeeColumns } from "@/pages/system-management/system-operation-management/new-user-modal/columns";
-import { ModalDataTable } from "@/pages/system-management/system-operation-management/new-user-modal/data-table";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { privateFetch } from "@/utils/utils";
 import { z } from "zod";
 import { userSchema } from "@/pages/system-management/system-operation-management/loader";
 import { PasswordModalContent } from "@/pages/system-management/system-operation-management/password-modal/modal-content";
 import { Employee } from "@/pages/system-management/personnel-management/loader";
+import { ModalDataTable } from "@/components/select-employees-modal/data-table";
+import { columns as employeeColumns } from "./columns";
 
 const newERPUserReturnSchema = z.object({
   user: userSchema,
   password: z.string(),
 });
 
-export function NewUserModal({
+export function AddEmployeeAsERPUserModal({
   dialogTriggerChildren,
   employees,
 }: {
@@ -64,7 +64,6 @@ export function NewUserModal({
   });
 
   const numberOfNewUsers = Object.keys(rowSelection).length;
-  // only allow 1 new user at a time
   useEffect(() => {
     if (numberOfNewUsers > 1) {
       setRowSelection((prev) => {

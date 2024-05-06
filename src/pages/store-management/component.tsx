@@ -4,7 +4,7 @@ import { IconButton, IconWarningButton } from "@/components/ui/button";
 import { MainLayout } from "@/layouts/main-layout";
 import { columns } from "@/pages/store-management/data-table/columns";
 import { DataTable } from "@/pages/store-management/data-table/data-table";
-import { loader, storeQuery } from "@/pages/store-management/loader";
+import { loader, storesQuery } from "@/pages/store-management/loader";
 import {
   StoreCategory,
   StoreCategoryWithAllTuple,
@@ -24,7 +24,7 @@ export function Component() {
   const [globalFilter, setGlobalFilter] = useState("");
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
   const { data } = useQuery({
-    ...storeQuery,
+    ...storesQuery,
     initialData,
   });
 

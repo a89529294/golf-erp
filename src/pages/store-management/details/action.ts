@@ -6,23 +6,24 @@ import { toast } from "sonner";
 
 export const action: ActionFunction = async ({ request }) => {
   const body = await request.json();
+  const { storeId, ...rest } = body;
 
-  const response = await privateFetch("/store", {
-    method: "POST",
-    body: JSON.stringify(body),
+  const response = await privateFetch(`/store/${storeId}`, {
+    method: "PATCH",
+    body: JSON.stringify(rest),
     headers: {
       "Content-Type": "application/json",
     },
   });
 
+  const url = new URL(request.url);
   if (!response.ok) {
-    toast.error("新增廠商失敗");
-    const url = new URL(request.url);
+    toast.error("更新廠商失敗");
 
     return redirect(`${url.pathname}/?error=true`);
   }
 
-  toast.success("新增廠商成功");
+  toast.success("更新廠商成功");
   queryClient.invalidateQueries({ queryKey: ["stores"] });
 
   return redirect(linksKV["store-management"].paths.index);

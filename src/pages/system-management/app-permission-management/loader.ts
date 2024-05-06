@@ -78,9 +78,10 @@ export const erpFeaturesWithUsersQuery = {
           telphone: user.employee?.telphone ?? "",
           storeCategory:
             storeCategoryMap[
-              user.employee?.stores[0].category as keyof typeof storeCategoryMap
+              user.employee?.stores?.[0]
+                .category as keyof typeof storeCategoryMap
             ] ?? "",
-          store: user.employee?.stores[0].name ?? "",
+          store: user.employee?.stores?.[0].name ?? "",
           employeeId: user.employee?.id ?? "",
         })),
       });
@@ -93,9 +94,9 @@ export const erpFeaturesWithUsersQuery = {
       telphone: user.employee?.telphone ?? "",
       storeCategory:
         storeCategoryMap[
-          user.employee?.stores[0].category as keyof typeof storeCategoryMap
+          user.employee?.stores?.[0].category as keyof typeof storeCategoryMap
         ] ?? "",
-      store: user.employee?.stores[0].name ?? "",
+      store: user.employee?.stores?.[0].name ?? "",
       employeeId: user.employee?.id ?? "",
     }));
 

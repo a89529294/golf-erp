@@ -17,6 +17,8 @@ import {
 } from "@/components/ui/table";
 import { Dispatch, SetStateAction } from "react";
 import { cn } from "@/lib/utils";
+import { Link } from "react-router-dom";
+import blackFileIcon from "@/assets/black-file-icon.svg";
 
 declare module "@tanstack/react-table" {
   interface FilterFns {
@@ -72,7 +74,6 @@ export function DataTable<TData extends { id: string }, TValue>({
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id} className="border-b-line-gray">
               {headerGroup.headers.map((header) => {
-                console.log(header.column.getSize());
                 return (
                   <TableHead
                     key={header.id}
@@ -105,11 +106,19 @@ export function DataTable<TData extends { id: string }, TValue>({
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
-                className="border-b-line-gray bg-white data-[state=selected]:border-b-orange"
+                className="group relative border-b-line-gray bg-white data-[state=selected]:border-b-orange"
               >
-                {row.getVisibleCells().map((cell) => (
+                {row.getVisibleCells().map((cell, idx) => (
                   <TableCell key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    {row.getVisibleCells().length === idx + 1 && (
+                      <Link
+                        className="absolute right-5 top-1/2 hidden -translate-y-1/2 group-hover:block"
+                        to={`/store-management/details/${row.original.id}`}
+                      >
+                        <img src={blackFileIcon} />
+                      </Link>
+                    )}
                   </TableCell>
                 ))}
               </TableRow>
