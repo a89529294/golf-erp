@@ -188,7 +188,7 @@ function Section({
               <div className="mr-20 w-28">{user.chName}</div>
               <div className="mr-14 w-28">{user.telphone}</div>
               <div className="mr-20 w-28">{user.storeCategory}</div>
-              <div>{user.store}</div>
+              <div>{user.store?.name}</div>
             </li>
           ))
         ) : (

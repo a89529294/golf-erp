@@ -12,6 +12,7 @@ export const employeeSchema = z.object({
   stores: z
     .array(
       z.object({
+        id: z.string(),
         name: z.string(),
         category: z.enum(storeCategories),
       }),

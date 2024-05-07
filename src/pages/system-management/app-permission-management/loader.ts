@@ -24,7 +24,10 @@ export type AppPermissionUser = {
   chName: string;
   telphone: string;
   storeCategory: string;
-  store: string;
+  store: {
+    name: string;
+    id: string;
+  } | null;
   employeeId: string;
 };
 
@@ -43,7 +46,9 @@ export const erpFeaturesWithUsersQuery = {
       .data.map((user) => ({
         ...user,
         roles: user.roles.map((r) => r.slice(8)),
-      }));
+      }))
+      .filter((user) => user.employee);
+
     const erpFeatures = erpFeaturesResponseSchema
       .parse(await responses[1].json())
       .map((v) => ({
@@ -81,7 +86,12 @@ export const erpFeaturesWithUsersQuery = {
               user.employee?.stores?.[0]
                 ?.category as keyof typeof storeCategoryMap
             ] ?? "",
-          store: user.employee?.stores?.[0]?.name ?? "",
+          store: user.employee?.stores?.[0]
+            ? {
+                name: user.employee.stores[0].name,
+                id: user.employee.stores[0].id,
+              }
+            : null,
           employeeId: user.employee?.id ?? "",
         })),
       });
@@ -96,7 +106,12 @@ export const erpFeaturesWithUsersQuery = {
         storeCategoryMap[
           user.employee?.stores?.[0]?.category as keyof typeof storeCategoryMap
         ] ?? "",
-      store: user.employee?.stores?.[0]?.name ?? "",
+      store: user.employee?.stores?.[0]
+        ? {
+            name: user.employee.stores[0].name,
+            id: user.employee.stores[0].id,
+          }
+        : null,
       employeeId: user.employee?.id ?? "",
     }));
 

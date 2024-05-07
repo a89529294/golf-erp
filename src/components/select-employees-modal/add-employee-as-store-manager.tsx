@@ -12,6 +12,7 @@ import { Employee } from "@/pages/system-management/personnel-management/loader"
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { ReactElement, useState } from "react";
 import { columns as employeeColumns } from "./columns";
+import { EmployeesModalSearchHeader } from "@/components/employees-modal-search-header";
 
 export function AddEmployeeAsStoreManagerModal({
   dialogTriggerChildren,
@@ -24,6 +25,14 @@ export function AddEmployeeAsStoreManagerModal({
 }) {
   const [open, setOpen] = useState(false);
   const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
+
+  const [selectedStoreId, setSelectedStoreId] = useState<string | undefined>(
+    undefined,
+  );
+  const [globalFilter, setGlobalFilter] = useState("");
+  const filteredEmployees = selectedStoreId
+    ? employees.filter((u) => u.stores?.[0]?.id === selectedStoreId)
+    : employees;
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -40,14 +49,19 @@ export function AddEmployeeAsStoreManagerModal({
           className={cn(`flex h-[610px] w-[790px] flex-col pb-5`)}
         >
           <DialogHeader className="relative isolate mb-5 block overflow-auto px-14">
-            <div className="sticky top-0 z-10 -mx-14 -mb-px h-[110px] border-b border-b-line-gray bg-white [clip-path:polygon(0_0,100%_0,100%_calc(100%-1px),calc(100%-56px)_calc(100%-1px),calc(100%-56px)_100%,56px_100%,56px_calc(100%-1px),0_calc(100%-1px))]">
-              <h1 className="bg-light-gray py-2 text-center">選擇人員</h1>
-            </div>
+            <EmployeesModalSearchHeader
+              globalFilter={globalFilter}
+              setGlobalFilter={setGlobalFilter}
+              selectedStoreId={selectedStoreId}
+              setSelectedStoreId={setSelectedStoreId}
+            />
             <ModalDataTable
               columns={employeeColumns}
-              data={employees}
+              data={filteredEmployees}
               rowSelection={rowSelection}
               setRowSelection={setRowSelection}
+              globalFilter={globalFilter}
+              setGlobalFilter={setGlobalFilter}
             />
           </DialogHeader>
           <DialogFooter className="justify-center ">

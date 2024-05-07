@@ -15,7 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 
 declare module "@tanstack/react-table" {
   interface FilterFns {
@@ -29,6 +29,8 @@ interface DataTableProps<TData extends { id: string }, TValue> {
   rowSelection: Record<string, boolean>;
   setRowSelection: Dispatch<SetStateAction<Record<string, boolean>>>;
   getRowId?: (row: TData) => string;
+  globalFilter: string;
+  setGlobalFilter: Dispatch<SetStateAction<string>>;
 }
 
 const fuzzyFilter: FilterFn<unknown> = (row, columnId, value) => {
@@ -43,9 +45,9 @@ export function ModalDataTable<TData extends { id: string }, TValue>({
   rowSelection,
   setRowSelection,
   getRowId,
+  globalFilter,
+  setGlobalFilter,
 }: DataTableProps<TData, TValue>) {
-  const [globalFilter, setGlobalFilter] = useState("");
-
   const table = useReactTable({
     data: data,
     columns,
@@ -111,7 +113,7 @@ export function ModalDataTable<TData extends { id: string }, TValue>({
           ) : (
             <TableRow>
               <TableCell colSpan={columns.length} className="h-24 text-center">
-                長無資料
+                查無資料
               </TableCell>
             </TableRow>
           )}

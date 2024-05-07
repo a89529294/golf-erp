@@ -17,6 +17,7 @@ import { PasswordModalContent } from "@/pages/system-management/system-operation
 import { Employee } from "@/pages/system-management/personnel-management/loader";
 import { ModalDataTable } from "@/components/select-employees-modal/data-table";
 import { columns as employeeColumns } from "./columns";
+import { EmployeesModalSearchHeader } from "@/components/employees-modal-search-header";
 
 const newERPUserReturnSchema = z.object({
   user: userSchema,
@@ -63,6 +64,14 @@ export function AddEmployeeAsERPUserModal({
     },
   });
 
+  const [selectedStoreId, setSelectedStoreId] = useState<string | undefined>(
+    undefined,
+  );
+  const [globalFilter, setGlobalFilter] = useState("");
+  const filteredEmployees = selectedStoreId
+    ? employees.filter((u) => u.stores?.[0]?.id === selectedStoreId)
+    : employees;
+
   const numberOfNewUsers = Object.keys(rowSelection).length;
   useEffect(() => {
     if (numberOfNewUsers > 1) {
@@ -92,14 +101,19 @@ export function AddEmployeeAsERPUserModal({
             className={cn(`flex h-[610px] w-[790px] flex-col pb-5`)}
           >
             <DialogHeader className="relative isolate mb-5 block overflow-auto px-14">
-              <div className="sticky top-0 z-10 -mx-14 -mb-px h-[110px] border-b border-b-line-gray bg-white [clip-path:polygon(0_0,100%_0,100%_calc(100%-1px),calc(100%-56px)_calc(100%-1px),calc(100%-56px)_100%,56px_100%,56px_calc(100%-1px),0_calc(100%-1px))]">
-                <h1 className="bg-light-gray py-2 text-center">選擇人員</h1>
-              </div>
+              <EmployeesModalSearchHeader
+                globalFilter={globalFilter}
+                setGlobalFilter={setGlobalFilter}
+                selectedStoreId={selectedStoreId}
+                setSelectedStoreId={setSelectedStoreId}
+              />
               <ModalDataTable
                 columns={employeeColumns}
-                data={employees}
+                data={filteredEmployees}
                 rowSelection={rowSelection}
                 setRowSelection={setRowSelection}
+                globalFilter={globalFilter}
+                setGlobalFilter={setGlobalFilter}
               />
             </DialogHeader>
             <DialogFooter className="justify-center ">

@@ -1,3 +1,5 @@
+import { EmployeesModalSearchHeader } from "@/components/employees-modal-search-header";
+import { ModalDataTable } from "@/components/select-employees-modal/data-table";
 import { TextButton, TextWarningButton } from "@/components/ui/button";
 import {
   Dialog,
@@ -7,14 +9,13 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
+import { AppPermissionUser } from "@/pages/system-management/app-permission-management/loader";
 import { privateFetch } from "@/utils/utils";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ReactElement, useState } from "react";
-import { columns as userColumns } from "./columns";
 import { toast } from "sonner";
-import { AppPermissionUser } from "@/pages/system-management/app-permission-management/loader";
-import { ModalDataTable } from "@/components/select-employees-modal/data-table";
+import { columns as userColumns } from "./columns";
 
 // const newERPUserReturnSchema = z.object({
 //   user: userSchema,
@@ -59,6 +60,14 @@ export function AddPermissionModal({
     },
   });
 
+  const [selectedStoreId, setSelectedStoreId] = useState<string | undefined>(
+    undefined,
+  );
+  const [globalFilter, setGlobalFilter] = useState("");
+  const filteredUsers = selectedStoreId
+    ? allUsers.filter((u) => u.store?.id === selectedStoreId)
+    : allUsers;
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{dialogTriggerChildren}</DialogTrigger>
@@ -73,15 +82,20 @@ export function AddPermissionModal({
             className={cn(`flex h-[610px] w-[790px] flex-col pb-5`)}
           >
             <DialogHeader className="relative isolate mb-5 block overflow-auto px-14">
-              <div className="sticky top-0 z-10 -mx-14 -mb-px h-[110px] border-b border-b-line-gray bg-white [clip-path:polygon(0_0,100%_0,100%_calc(100%-1px),calc(100%-56px)_calc(100%-1px),calc(100%-56px)_100%,56px_100%,56px_calc(100%-1px),0_calc(100%-1px))]">
-                <h1 className="bg-light-gray py-2 text-center">選擇人員</h1>
-              </div>
+              <EmployeesModalSearchHeader
+                globalFilter={globalFilter}
+                setGlobalFilter={setGlobalFilter}
+                selectedStoreId={selectedStoreId}
+                setSelectedStoreId={setSelectedStoreId}
+              />
               <ModalDataTable
                 columns={userColumns}
-                data={allUsers}
+                data={filteredUsers}
                 rowSelection={rowSelection}
                 setRowSelection={setRowSelection}
                 getRowId={(row) => row.employeeId}
+                globalFilter={globalFilter}
+                setGlobalFilter={setGlobalFilter}
               />
             </DialogHeader>
             <DialogFooter className="justify-center ">
