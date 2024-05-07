@@ -25,6 +25,7 @@ import { NavLink, useLocation, useNavigation } from "react-router-dom";
 export function Sidebar() {
   const { pathname } = useLocation();
   const prevLink = usePrevious(findLinkFromPathname(pathname));
+  const [nextLinkPath, setNextLinkPath] = useState("");
   const [nestedLinksClosed, setNestedLinksClosed] = useState(false);
   const { user } = useAuth();
 
@@ -58,6 +59,8 @@ export function Sidebar() {
           prevLink={prevLink}
           nestedLinksClosed={nestedLinksClosed}
           setNestedLinksClosed={setNestedLinksClosed}
+          nextLinkPath={nextLinkPath}
+          setNextLinkPath={setNextLinkPath}
         />
       )}
       {isLinkAllowed(linksKV["golf"]) && (
@@ -66,6 +69,8 @@ export function Sidebar() {
           prevLink={prevLink}
           nestedLinksClosed={nestedLinksClosed}
           setNestedLinksClosed={setNestedLinksClosed}
+          nextLinkPath={nextLinkPath}
+          setNextLinkPath={setNextLinkPath}
         />
       )}
       {isLinkAllowed(linksKV["indoor-simulator"]) && (
@@ -74,6 +79,8 @@ export function Sidebar() {
           prevLink={prevLink}
           nestedLinksClosed={nestedLinksClosed}
           setNestedLinksClosed={setNestedLinksClosed}
+          nextLinkPath={nextLinkPath}
+          setNextLinkPath={setNextLinkPath}
         />
       )}
       {isLinkAllowed(linksKV["system-management"]) && (
@@ -82,6 +89,8 @@ export function Sidebar() {
           prevLink={prevLink}
           nestedLinksClosed={nestedLinksClosed}
           setNestedLinksClosed={setNestedLinksClosed}
+          nextLinkPath={nextLinkPath}
+          setNextLinkPath={setNextLinkPath}
         />
       )}
       {isLinkAllowed(linksKV["store-management"]) && (
@@ -90,6 +99,8 @@ export function Sidebar() {
           prevLink={prevLink}
           nestedLinksClosed={nestedLinksClosed}
           setNestedLinksClosed={setNestedLinksClosed}
+          nextLinkPath={nextLinkPath}
+          setNextLinkPath={setNextLinkPath}
         />
       )}
     </Accordion>
@@ -106,6 +117,8 @@ function AccordionItemWrapper({
   prevLink: NestedLink | MultipleLink | undefined;
   nestedLinksClosed: boolean;
   setNestedLinksClosed: Dispatch<SetStateAction<boolean>>;
+  setNextLinkPath: Dispatch<SetStateAction<string>>;
+  nextLinkPath: string | null;
 }) {
   const { pathname } = useLocation();
   const state = useNavigation();
@@ -115,7 +128,7 @@ function AccordionItemWrapper({
     link.type === "nested" ? link.basePath : link.paths.index;
 
   const isLinkActive = (link: NestedLink | MultipleLink) => {
-    if (prevLink && isBelowLink(getPath(prevLink), pathname)) {
+    if (prevLink && isBelowLink(getPath(prevLink), pathname ?? "")) {
       return pathname.startsWith(getPath(link)) && nestedLinksClosed;
     }
 
@@ -127,8 +140,9 @@ function AccordionItemWrapper({
   }, [inSameRouteGroup, state.state]);
 
   const path = link.type === "nested" ? link.path : link.paths.index;
+
   return (
-    <AccordionItem value={path}>
+    <AccordionItem value={path} className="overflow-hidden">
       <AccordionTrigger asChild>
         <NavLink to={path} className="group relative block py-3 pl-7">
           {({ isPending }) => (
@@ -146,18 +160,6 @@ function AccordionItemWrapper({
                   <ChevronDown className="transition-transform duration-300 group-data-[state=closed]:-rotate-180" />
                 )}
               </div>
-              {/* {isLinkActive(link) &&
-                (state.state === "loading" ? (
-                  <motion.div
-                    className="absolute inset-0 -z-10 bg-secondary-dark !opacity-50"
-                    layoutId="link-bg"
-                  />
-                ) : (
-                  <motion.div
-                    className="absolute inset-0 -z-10 bg-secondary-dark"
-                    layoutId="link-bg"
-                  />
-                ))} */}
 
               {isLinkActive(link) &&
                 (inSameRouteGroup ? (
@@ -187,9 +189,9 @@ function AccordionItemWrapper({
       {link.type === "nested" && (
         <AccordionContent
           className="flex flex-col bg-white pt-1"
-          onAnimationEnd={(e) => {
-            !link.path.startsWith(pathname) &&
-              setNestedLinksClosed(e.currentTarget.dataset.state === "closed");
+          onAnimationEnd={() => {
+            console.log(pathname, link.path);
+            if (!pathname.startsWith(link.path)) setNestedLinksClosed(true);
           }}
         >
           {(Object.values(link.subLinks) as (FlatLink | MultipleLink)[]).map(

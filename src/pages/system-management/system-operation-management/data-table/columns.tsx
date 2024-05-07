@@ -56,12 +56,19 @@ export const columns: ColumnDef<UserWithEmployee>[] = [
   {
     accessorKey: "storeCategory",
     header: "分類",
-    accessorFn: (user) =>
-      storeCategoryMap[user.employee.stores?.[0].category as StoreCategory],
+    accessorFn: (user) => {
+      if (!user.employee.stores || !user.employee.stores[0]) return "";
+      return storeCategoryMap[
+        user.employee.stores?.[0].category as StoreCategory
+      ];
+    },
   },
   {
     accessorKey: "storeName",
     header: "廠商名稱",
-    accessorFn: (user) => user.employee.stores?.[0].name,
+    accessorFn: (user) => {
+      if (!user.employee.stores || !user.employee.stores[0]) return "";
+      return user.employee.stores?.[0].name;
+    },
   },
 ];
