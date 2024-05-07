@@ -25,7 +25,7 @@ export function Component() {
     initialData: initialData.users,
   });
   const { data: employees } = useQuery({
-    ...genEmployeesQuery(true),
+    ...genEmployeesQuery("non-erp-users"),
     initialData: initialData.employees,
   });
   const queryClient = useQueryClient();

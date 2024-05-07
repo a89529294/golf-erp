@@ -26,18 +26,32 @@ const employeesSchema = z.object({
 
 export type Employee = z.infer<typeof employeesSchema>["data"][number];
 
-export const genEmployeesQuery = (nonERPUsers?: boolean) => {
+export const genEmployeesQuery = (
+  criteria?: "non-erp-users" | "employees-with-no-store" | undefined,
+) => {
+  const keyMap = {
+    "non-erp-users": ["employees", "non-erp-users"],
+    "employees-with-no-store": ["employees", "no-store"],
+  };
+
   return {
-    queryKey: nonERPUsers ? ["employees", "non-erp-users"] : ["employees"],
+    queryKey: criteria ? keyMap[criteria] : ["employees"],
     queryFn: async () => {
       const response = await privateFetch(
-        `/employees?pageSize=999&populate=stores${nonERPUsers ? "&populate=user&filter[user][$null]" : ""}`,
+        `/employees?pageSize=999&populate=stores${criteria === "non-erp-users" ? "&populate=user&filter[user][$null]" : ""}`,
       );
 
       const data = await response.json();
       const employees = employeesSchema.parse(data);
 
-      return employees.data;
+      const filteredEmployees =
+        criteria === "employees-with-no-store"
+          ? employees.data.filter((e) =>
+              e.stores ? e.stores.length === 0 : false,
+            )
+          : employees.data;
+
+      return filteredEmployees;
     },
   };
 };

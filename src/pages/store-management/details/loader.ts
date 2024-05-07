@@ -7,7 +7,7 @@ import { privateFetch } from "@/utils/utils";
 import { LoaderFunctionArgs, redirect } from "react-router";
 
 export const genStoreQuery = (storeId: string) => ({
-  queryKey: ["store", storeId],
+  queryKey: ["stores", storeId],
   queryFn: async () => {
     const response = await privateFetch(`/store/${storeId}?populate=employees`);
     const data = await response.json();

@@ -93,6 +93,9 @@ export function Component() {
     ...genEmployeesQuery(),
     initialData: initialData[1],
   });
+  const filteredEmployees = employees.filter((e) =>
+    e.stores && e.stores[0] ? e.stores[0].id === storeId : true,
+  );
 
   const { data: store } = useQuery({
     ...genStoreQuery(storeId ?? ""),
@@ -165,6 +168,7 @@ export function Component() {
     if (dirtyFields.employees)
       changedFields.employeeIds = transformedValues.employeeIds;
 
+    console.log(changedFields);
     // console.log(transformedValues);
     setIsMutating(true);
     submit(
@@ -391,7 +395,8 @@ export function Component() {
                       disabled && "cursor-not-allowed opacity-50",
                     )}
                   >
-                    {employee.chName} <span className="text-word-gray">/</span>{" "}
+                    {employee.chName}
+                    <span className="px-1 text-word-gray">/</span>
                     {employee.telphone}
                     {!disabled && (
                       <button
@@ -402,6 +407,7 @@ export function Component() {
                             form
                               .getValues("employees")
                               .filter((e) => e.id !== employee.id),
+                            { shouldDirty: true },
                           )
                         }
                       >
@@ -426,10 +432,13 @@ export function Component() {
                         </div>
                       </button>
                     }
-                    employees={employees}
+                    employees={filteredEmployees}
                     onConfirm={(selectedEmployees: Employee[]) => {
-                      form.setValue("employees", selectedEmployees);
+                      form.setValue("employees", selectedEmployees, {
+                        shouldDirty: true,
+                      });
                     }}
+                    selectedEmployees={form.getValues("employees")}
                   />
                 )}
               </div>

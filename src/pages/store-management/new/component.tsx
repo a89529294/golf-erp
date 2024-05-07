@@ -83,9 +83,10 @@ export function Component() {
     initialData: initialData[0],
   });
   const { data: employees } = useQuery({
-    ...genEmployeesQuery(),
+    ...genEmployeesQuery("employees-with-no-store"),
     initialData: initialData[1],
   });
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {

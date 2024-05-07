@@ -47,7 +47,7 @@ export const usersQuery = {
 export async function loader() {
   const data = await Promise.all([
     queryClient.ensureQueryData(usersQuery),
-    queryClient.ensureQueryData(genEmployeesQuery(true)),
+    queryClient.ensureQueryData(genEmployeesQuery("non-erp-users")),
   ]);
 
   return {

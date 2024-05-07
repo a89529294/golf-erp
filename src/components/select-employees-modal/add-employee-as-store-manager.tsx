@@ -18,13 +18,25 @@ export function AddEmployeeAsStoreManagerModal({
   dialogTriggerChildren,
   employees,
   onConfirm,
+  selectedEmployees,
 }: {
   dialogTriggerChildren: ReactElement;
   employees: Employee[];
   onConfirm: (selectedEmployees: Employee[]) => void;
+  selectedEmployees?: Employee[];
 }) {
   const [open, setOpen] = useState(false);
-  const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
+  const [rowSelection, setRowSelection] = useState<Record<string, boolean>>(
+    selectedEmployees
+      ? (() => {
+          const obj: Record<string, true> = {};
+          console.log("!???");
+          selectedEmployees.forEach((e) => (obj[e.id] = true));
+
+          return obj;
+        })()
+      : {},
+  );
 
   const [selectedStoreId, setSelectedStoreId] = useState<string | undefined>(
     undefined,
