@@ -12,13 +12,16 @@ import {
   storeCategoryWithAllMap,
 } from "@/utils";
 import { linksKV } from "@/utils/links";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Link, useLoaderData, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { privateFetch } from "@/utils/utils";
+import { toast } from "sonner";
 
 export function Component() {
+  const queryClient = useQueryClient();
   const [searchParams, setSearchParams] = useSearchParams();
   const [rowSelection, setRowSelection] = useState({});
   const [globalFilter, setGlobalFilter] = useState("");
@@ -26,6 +29,25 @@ export function Component() {
   const { data } = useQuery({
     ...storesQuery,
     initialData,
+  });
+  const { mutate: deleteStore, isPending } = useMutation({
+    mutationKey: ["delete-stores"],
+    mutationFn: async () => {
+      await Promise.all(
+        Object.keys(rowSelection).map((id) =>
+          privateFetch(`/store/${id}`, {
+            method: "DELETE",
+          }),
+        ),
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["stores"],
+      });
+      toast.success("刪除廠商成功");
+    },
+    onError: () => toast.error("刪除廠商失敗"),
   });
 
   const category = searchParams.get("category");
@@ -51,16 +73,22 @@ export function Component() {
           {Object.keys(rowSelection).length ? (
             <Modal
               dialogTriggerChildren={
-                <IconWarningButton icon="trashCan">刪除</IconWarningButton>
+                <IconWarningButton disabled={isPending} icon="trashCan">
+                  刪除
+                </IconWarningButton>
               }
-              onSubmit={() => {}}
+              onSubmit={deleteStore}
               title="確定刪除選取廠商?"
             />
           ) : null}
-          <IconButton icon="plus">
+          <IconButton icon="plus" disabled={isPending}>
             <Link to={linksKV["store-management"].paths["new"]}>新增廠商</Link>
           </IconButton>
-          <SearchInput value={globalFilter} setValue={setGlobalFilter} />
+          <SearchInput
+            disabled={isPending}
+            value={globalFilter}
+            setValue={setGlobalFilter}
+          />
         </>
       }
     >

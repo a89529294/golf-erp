@@ -21,7 +21,7 @@ import { cn } from "@/lib/utils";
 import { storeCategories, storeCategoryMap } from "@/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
-import { UseFormReturn, useForm } from "react-hook-form";
+import { UseFormReturn, useForm, useFormContext } from "react-hook-form";
 import {
   useLoaderData,
   useLocation,
@@ -100,7 +100,6 @@ export function Component() {
   const { data: store } = useQuery({
     ...genStoreQuery(storeId ?? ""),
     initialData: initialData[2],
-    enabled: !!storeId,
   });
 
   const currentCountyName = store.county;
@@ -209,7 +208,7 @@ export function Component() {
             <IconButton
               disabled={isMutating}
               icon="back"
-              onClick={() => setDisabled(true)}
+              onClick={() => navigate(-1)}
             >
               返回
             </IconButton>
@@ -253,8 +252,8 @@ export function Component() {
               </div>
               <StoreFormField
                 disabled={!!disabled}
-                form={form}
-                name={"name"}
+                // form={form}
+                name="name"
                 label="廠商名稱"
               />
               <StoreFormSelectField
@@ -265,7 +264,6 @@ export function Component() {
               />
               <div className="flex">
                 <FormField
-                  disabled={!!disabled}
                   control={form.control}
                   name="openingHoursStart"
                   render={({ field }) => (
@@ -281,6 +279,7 @@ export function Component() {
                             placeholder={`請輸入起始營業時間`}
                             type="time"
                             {...field}
+                            disabled={!!disabled}
                           />
                         </FormControl>
                       </div>
@@ -289,7 +288,6 @@ export function Component() {
                   )}
                 />
                 <FormField
-                  disabled={!!disabled}
                   control={form.control}
                   name="openingHoursEnd"
                   render={({ field }) => (
@@ -303,6 +301,7 @@ export function Component() {
                           placeholder={`請輸入結束營業時間`}
                           type="time"
                           {...field}
+                          disabled={!!disabled}
                         />
                       </FormControl>
 
@@ -314,7 +313,6 @@ export function Component() {
 
               <div className="flex">
                 <FormField
-                  disabled={!!disabled}
                   control={form.control}
                   name="phoneAreaCode"
                   render={({ field }) => (
@@ -329,6 +327,7 @@ export function Component() {
                             )}
                             placeholder={`02`}
                             {...field}
+                            disabled={!!disabled}
                           />
                         </FormControl>
                       </div>
@@ -337,7 +336,6 @@ export function Component() {
                   )}
                 />
                 <FormField
-                  disabled={!!disabled}
                   control={form.control}
                   name="phone"
                   render={({ field }) => (
@@ -350,6 +348,7 @@ export function Component() {
                           )}
                           placeholder={`12345678`}
                           {...field}
+                          disabled={!!disabled}
                         />
                       </FormControl>
 
@@ -361,13 +360,11 @@ export function Component() {
 
               <StoreFormField
                 disabled={!!disabled}
-                form={form}
                 name={"contact"}
                 label="聯絡人"
               />
               <StoreFormField
                 disabled={!!disabled}
-                form={form}
                 name={"contactPhone"}
                 label="聯絡電話"
               />
@@ -451,19 +448,20 @@ export function Component() {
 }
 
 function StoreFormField({
-  form,
+  // form,
   name,
   label,
   disabled,
 }: {
-  form: UseFormReturn<z.infer<typeof formSchema>, unknown, undefined>;
+  // form: UseFormReturn<z.infer<typeof formSchema>, unknown, undefined>;
   name: Exclude<keyof z.infer<typeof formSchema>, "employees">;
   label: string;
   disabled: boolean;
 }) {
+  const form = useFormContext();
+
   return (
     <FormField
-      disabled={disabled}
       control={form.control}
       name={name}
       render={({ field }) => (
@@ -478,6 +476,7 @@ function StoreFormField({
                 )}
                 placeholder={`請輸入${label}`}
                 {...field}
+                disabled={disabled}
               />
             </FormControl>
           </div>
@@ -637,7 +636,6 @@ function StoreFormAddressSelectFields({
       />
 
       <FormField
-        disabled={disabled}
         control={form.control}
         name={names[2]}
         render={({ field }) => (
@@ -651,6 +649,7 @@ function StoreFormAddressSelectFields({
                   )}
                   placeholder={`請輸入${label}`}
                   {...field}
+                  disabled={disabled}
                 />
               </FormControl>
             </div>

@@ -7,9 +7,11 @@ import { motion } from "framer-motion";
 export function SearchInput({
   value,
   setValue,
+  disabled,
 }: {
   value: string;
   setValue: Dispatch<SetStateAction<string>>;
+  disabled?: boolean;
 }) {
   const [isCursorOut, setIsCursorOut] = useState(true);
   const isActive = !isCursorOut ? true : !!value;
@@ -19,6 +21,7 @@ export function SearchInput({
       className={cn(
         "flex h-11 cursor-pointer items-center gap-1 border  bg-light-gray px-3 ",
         value && isCursorOut && "border-[1.5px]",
+        disabled && " cursor-not-allowed opacity-50",
       )}
       animate={{
         width: isActive ? 250 : 46,
@@ -35,6 +38,7 @@ export function SearchInput({
         className={cn("w-0 bg-transparent outline-none", isActive && "w-40")}
         value={value}
         onChange={(e) => setValue(e.target.value)}
+        disabled={disabled}
       />
       <img
         src={x}

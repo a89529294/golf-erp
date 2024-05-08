@@ -1,8 +1,8 @@
+import locationIcon from "@/assets/location-icon.svg";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Store } from "@/pages/store-management/loader";
-import { StoreCategory, storeCategoryMap } from "@/utils";
+import { storeCategoryMap } from "@/utils";
 import { ColumnDef } from "@tanstack/react-table";
-import locationIcon from "@/assets/location-icon.svg";
 
 export const columns: ColumnDef<Store>[] = [
   {
@@ -43,29 +43,31 @@ export const columns: ColumnDef<Store>[] = [
       </div>
     ),
     size: 25,
+    accessorFn: (row) =>
+      `${row.name} ${row.county} ${row.district} ${row.address}`,
   },
   {
     accessorKey: "category",
     header: "類別",
-    cell: ({ row }) => storeCategoryMap[row.original.category as StoreCategory],
     size: 15,
+    accessorFn: (row) => storeCategoryMap[row.category],
   },
   {
     // TODO change this once telphone column is added
-    id: "telphone",
+    accessorKey: "telphone",
     header: "市話",
-    cell: () => "022223333",
     size: 15,
   },
   {
     id: "contact-name-phone",
     header: "聯絡人 / 電話",
-    cell: () => (
-      <div>
-        <p>王小明</p>
-        <p>021233211</p>
-      </div>
-    ),
     size: undefined,
+    accessorFn: (row) => `${row.contact} ${row.contactPhone}`,
+    cell: ({ row }) => (
+      <>
+        <p>{row.original.contact}</p>
+        <p>{row.original.contactPhone}</p>
+      </>
+    ),
   },
 ];

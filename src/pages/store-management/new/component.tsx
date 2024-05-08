@@ -185,8 +185,18 @@ export function Component() {
               <div className="-mx-12 mb-4 bg-light-gray py-1.5 text-center text-black">
                 基本資料
               </div>
-              <StoreFormField form={form} name={"name"} label="廠商名稱" />
-              <StoreFormSelectField form={form} name="category" label="類別" />
+              <StoreFormField
+                disabled={isMutating}
+                form={form}
+                name={"name"}
+                label="廠商名稱"
+              />
+              <StoreFormSelectField
+                disabled={isMutating}
+                form={form}
+                name="category"
+                label="類別"
+              />
               <div className="flex">
                 <FormField
                   control={form.control}
@@ -204,6 +214,7 @@ export function Component() {
                             placeholder={`請輸入起始營業時間`}
                             type="time"
                             {...field}
+                            disabled={isMutating}
                           />
                         </FormControl>
                       </div>
@@ -225,6 +236,7 @@ export function Component() {
                           placeholder={`請輸入結束營業時間`}
                           type="time"
                           {...field}
+                          disabled={isMutating}
                         />
                       </FormControl>
 
@@ -250,6 +262,7 @@ export function Component() {
                             )}
                             placeholder={`02`}
                             {...field}
+                            disabled={isMutating}
                           />
                         </FormControl>
                       </div>
@@ -270,6 +283,7 @@ export function Component() {
                           )}
                           placeholder={`12345678`}
                           {...field}
+                          disabled={isMutating}
                         />
                       </FormControl>
 
@@ -279,8 +293,14 @@ export function Component() {
                 />
               </div>
 
-              <StoreFormField form={form} name={"contact"} label="聯絡人" />
               <StoreFormField
+                disabled={isMutating}
+                form={form}
+                name={"contact"}
+                label="聯絡人"
+              />
+              <StoreFormField
+                disabled={isMutating}
                 form={form}
                 name={"contactPhone"}
                 label="聯絡電話"
@@ -291,6 +311,7 @@ export function Component() {
                 label="地址"
                 counties={counties}
                 districts={districts}
+                disabled={isMutating}
               />
             </section>
             <section className=" flex w-fit flex-col gap-6 border border-line-gray px-12 pb-10">
@@ -302,7 +323,12 @@ export function Component() {
                 <div className="flex w-[468px] gap-5" key={employee.id}>
                   <div className="w-20">{idx === 0 && "系統管理者"}</div>
 
-                  <div className="flex flex-1 items-center border-b border-orange pb-1 pl-1">
+                  <div
+                    className={cn(
+                      "flex flex-1 items-center border-b border-orange pb-1 pl-1",
+                      isMutating && "opacity-50",
+                    )}
+                  >
                     {employee.chName} <span className="text-word-gray">/</span>{" "}
                     {employee.telphone}
                     <button
@@ -315,6 +341,7 @@ export function Component() {
                             .filter((e) => e.id !== employee.id),
                         )
                       }
+                      disabled={isMutating}
                     >
                       <img src={redMinusIcon} />
                     </button>
@@ -329,7 +356,13 @@ export function Component() {
 
                 <AddEmployeeAsStoreManagerModal
                   dialogTriggerChildren={
-                    <button className="flex flex-1 items-center border-b border-line-gray pb-1 pl-1">
+                    <button
+                      className={cn(
+                        "flex flex-1 items-center border-b border-line-gray pb-1 pl-1",
+                        isMutating && "cursor-not-allowed opacity-50",
+                      )}
+                      disabled={isMutating}
+                    >
                       <div className="ml-auto mr-1">
                         <img src={greenPlusIcon} />
                       </div>
@@ -353,10 +386,12 @@ function StoreFormField({
   form,
   name,
   label,
+  disabled,
 }: {
   form: UseFormReturn<z.infer<typeof formSchema>, unknown, undefined>;
   name: Exclude<keyof z.infer<typeof formSchema>, "employees">;
   label: string;
+  disabled: boolean;
 }) {
   return (
     <FormField
@@ -374,6 +409,7 @@ function StoreFormField({
                 )}
                 placeholder={`請輸入${label}`}
                 {...field}
+                disabled={disabled}
               />
             </FormControl>
           </div>
@@ -388,10 +424,12 @@ function StoreFormSelectField({
   form,
   name,
   label,
+  disabled,
 }: {
   form: UseFormReturn<z.infer<typeof formSchema>, unknown, undefined>;
   name: Exclude<keyof z.infer<typeof formSchema>, "employees">;
   label: string;
+  disabled: boolean;
 }) {
   return (
     <FormField
@@ -401,7 +439,11 @@ function StoreFormSelectField({
         <FormItem className="flex flex-col gap-1">
           <div className="flex items-baseline gap-5">
             <FormLabel className="w-16">{label}</FormLabel>
-            <Select onValueChange={field.onChange} defaultValue={field.value}>
+            <Select
+              disabled={disabled}
+              onValueChange={field.onChange}
+              defaultValue={field.value}
+            >
               <FormControl>
                 <SelectTrigger
                   className={cn(
@@ -435,6 +477,7 @@ function StoreFormAddressSelectFields({
   label,
   counties,
   districts,
+  disabled,
 }: {
   form: UseFormReturn<z.infer<typeof formSchema>, unknown, undefined>;
   names: [
@@ -445,6 +488,7 @@ function StoreFormAddressSelectFields({
   label: string;
   counties: { countyname: string; countycode: string }[];
   districts: { townname: string }[] | undefined;
+  disabled: boolean;
 }) {
   return (
     <div className="grid grid-cols-[270px_186px] gap-3">
@@ -455,7 +499,11 @@ function StoreFormAddressSelectFields({
           <FormItem className="flex flex-col gap-1">
             <div className="flex items-baseline gap-5">
               <FormLabel className="w-16">{label}</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select
+                disabled={disabled}
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+              >
                 <FormControl>
                   <SelectTrigger
                     className={cn(
@@ -486,7 +534,11 @@ function StoreFormAddressSelectFields({
         render={({ field }) => (
           <FormItem className="flex flex-col gap-1">
             <div className="flex items-baseline gap-5">
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select
+                disabled={disabled}
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+              >
                 <FormControl>
                   <SelectTrigger
                     className={cn(
@@ -530,6 +582,7 @@ function StoreFormAddressSelectFields({
                   )}
                   placeholder={`請輸入${label}`}
                   {...field}
+                  disabled={disabled}
                 />
               </FormControl>
             </div>

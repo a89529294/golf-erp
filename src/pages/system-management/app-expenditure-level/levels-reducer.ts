@@ -42,6 +42,12 @@ export type Action =
       };
     }
   | {
+      type: "update-db-error";
+      payload: {
+        levelId: string;
+      };
+    }
+  | {
       type: "update-edit-status-save";
       payload: {
         levelId: string;
@@ -137,6 +143,19 @@ export const levelsReducer = (state: Level[], action: Action) => {
               disabled: true,
             }
           : prevLevel,
+      ) as Level[];
+    }
+    case "update-db-error": {
+      return state.map((prevLevel) =>
+        prevLevel.id === action.payload.levelId
+          ? ({
+              ...prevLevel,
+              minConsumption: prevLevel.snapshot?.minConsumption ?? "",
+              maxConsumption: prevLevel.snapshot?.maxConsumption ?? "",
+              disabled: false,
+              saveToDb: false,
+            } as Level)
+          : prevLevel,
       );
     }
     case "update-edit-status-save": {
@@ -218,7 +237,7 @@ export const levelsReducer = (state: Level[], action: Action) => {
             ? {
                 ...prevLevel,
                 errorState: null,
-                disabled: false,
+                disabled: true,
                 saveToDb: action.payload.saveToDB,
               }
             : prevLevel,
@@ -257,7 +276,6 @@ export const levelsReducer = (state: Level[], action: Action) => {
       return [...state, newLevel];
     }
     case "after-post-level": {
-      console.log("???????");
       return state.map((prevLevel) =>
         prevLevel.id === action.payload.oldLevelId
           ? ({

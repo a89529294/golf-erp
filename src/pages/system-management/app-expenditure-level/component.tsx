@@ -9,6 +9,7 @@ import { expenditureLevelQuery, loader } from "./loader";
 import {
   Dispatch,
   useEffect,
+  useId,
   useLayoutEffect,
   useReducer,
   useRef,
@@ -112,8 +113,16 @@ function Section({
   const queryClient = useQueryClient();
   const { mutateAsync } = useMutation({
     mutationKey: ["save-expenditure-level"],
-    mutationFn: async ({ level, id }: { level: Level; id?: string }) => {
-      if (id) {
+    mutationFn: async ({
+      level,
+      type,
+      id,
+    }: {
+      level: Level;
+      id: string;
+      type: "old" | "new";
+    }) => {
+      if (type === "old") {
         await privateFetch(`/consumer-grade/${id}`, {
           method: "PATCH",
           body: JSON.stringify({
@@ -140,10 +149,7 @@ function Section({
           },
         });
 
-        const x = (await response.json()).id;
-        console.log(x);
-
-        return x;
+        return (await response.json()).id;
       }
     },
     onSuccess: (data, variables) => {
@@ -159,7 +165,13 @@ function Section({
           payload: { oldLevelId: variables.level.id, newLevelId: data },
         });
     },
-    onError: () => toast.error("更新失敗"),
+    onError: (_data, variables) => {
+      toast.error("更新失敗");
+      dispatch({
+        type: "update-db-error",
+        payload: { levelId: variables.id },
+      });
+    },
     onSettled: () =>
       queryClient.invalidateQueries({
         queryKey: ["expenditure-level"],
@@ -197,9 +209,9 @@ function Section({
 
       if (level) {
         if (level.saveToDb === "new") {
-          await mutateAsync({ level });
+          await mutateAsync({ level, type: "new", id: level.id });
         } else {
-          await mutateAsync({ level, id: level.id });
+          await mutateAsync({ level, type: "old", id: level.id });
         }
       }
     })();
@@ -310,6 +322,7 @@ function Li({
   selected: boolean;
   toggleSelected: (s: string) => void;
 }) {
+  const formId = useId();
   const minConsumptionRef = useRef<HTMLInputElement>(null);
   const maxConsumptionRef = useRef<HTMLInputElement>(null);
   const isMinConsumptionError = level.errorState?.field === "minConsumption";
@@ -341,7 +354,20 @@ function Li({
         <div className="grid h-3 w-3 place-items-center border border-line-gray before:hidden before:h-1.5 before:w-1.5 before:bg-orange peer-checked:before:block" />
       </label>
 
-      <div className="flex items-center gap-2.5">
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          dispatch({
+            type: "update-edit-status-save",
+            payload: {
+              levelId: level.id,
+              saveToDB: isUUIDV4(level.id) ? "old" : "new",
+            },
+          });
+        }}
+        className="flex items-center gap-2.5"
+        id={formId}
+      >
         消費級距
         <div className="flex items-center">
           <div className="relative">
@@ -408,7 +434,8 @@ function Li({
             )}
           </div>
         </div>
-      </div>
+        <button className="invisible" type="submit" />
+      </form>
 
       {level.disabled && (
         <button
@@ -434,15 +461,8 @@ function Li({
       {!level.disabled && (
         <div className="ml-auto flex gap-4">
           <button
-            onClick={() =>
-              dispatch({
-                type: "update-edit-status-save",
-                payload: {
-                  levelId: level.id,
-                  saveToDB: isUUIDV4(level.id) ? "old" : "new",
-                },
-              })
-            }
+            type="submit"
+            form={formId}
             disabled={!!level.saveToDb}
             className="disabled:opacity-50"
           >

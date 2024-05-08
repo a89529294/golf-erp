@@ -11,6 +11,8 @@ export async function privateFetch(...args: Parameters<typeof fetch>) {
     ...args[1],
   });
   if (response.status === 401) throw new Error("401");
+
+  if (!response.ok) throw new Error("unhandled error");
   return response;
 }
 
