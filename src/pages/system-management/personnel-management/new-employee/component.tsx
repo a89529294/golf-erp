@@ -46,9 +46,7 @@ const formSchema = z.object({
   name: z.string().min(1, { message: "請填入姓名" }),
   phoneno: z.string().min(1, { message: "請填入電話" }),
   category: z.enum(storeCategories),
-  storeId: z.union([z.string(), z.undefined()]).refine((v) => v, {
-    message: "請選擇店家",
-  }),
+  storeId: z.union([z.string(), z.undefined()]),
 });
 
 export function Component() {
@@ -149,9 +147,24 @@ export function Component() {
               <div className="-mx-16 mb-4 bg-light-gray py-1.5 text-center text-black">
                 基本資料
               </div>
-              <EmployeeFormField form={form} name={"idNumber"} label="編號" />
-              <EmployeeFormField form={form} name={"name"} label="姓名" />
-              <EmployeeFormField form={form} name={"phoneno"} label="電話" />
+              <EmployeeFormField
+                form={form}
+                name={"idNumber"}
+                label="編號"
+                isMutating={isMutating}
+              />
+              <EmployeeFormField
+                form={form}
+                name={"name"}
+                label="姓名"
+                isMutating={isMutating}
+              />
+              <EmployeeFormField
+                form={form}
+                name={"phoneno"}
+                label="電話"
+                isMutating={isMutating}
+              />
             </section>
             <section className="flex w-fit flex-col gap-6 border border-line-gray px-16 pb-10">
               <div className="-mx-16 bg-light-gray py-1.5 text-center text-black">
@@ -162,6 +175,7 @@ export function Component() {
                 name="category"
                 label="類別"
                 options={storeCategoryMap}
+                isMutating={isMutating}
               />
               <EmployeeFormSelectField
                 form={form}
@@ -169,6 +183,7 @@ export function Component() {
                 label="店名"
                 options={storeOptions}
                 key={categorySelected}
+                isMutating={isMutating}
               />
             </section>
           </form>
@@ -182,10 +197,12 @@ function EmployeeFormField({
   form,
   name,
   label,
+  isMutating,
 }: {
   form: UseFormReturn<z.infer<typeof formSchema>, unknown, undefined>;
   name: keyof z.infer<typeof formSchema>;
   label: string;
+  isMutating: boolean;
 }) {
   return (
     <FormField
@@ -194,7 +211,7 @@ function EmployeeFormField({
       render={({ field }) => (
         <FormItem className="flex flex-col gap-1">
           <div className="flex items-baseline gap-7">
-            <FormLabel>{label}</FormLabel>
+            <FormLabel required>{label}</FormLabel>
             <FormControl>
               <Input
                 className={cn(
@@ -203,6 +220,7 @@ function EmployeeFormField({
                 )}
                 placeholder={`請輸入${label}`}
                 {...field}
+                disabled={isMutating}
               />
             </FormControl>
           </div>
@@ -218,12 +236,16 @@ function EmployeeFormSelectField({
   name,
   label,
   options,
+  isMutating,
 }: {
   form: UseFormReturn<z.infer<typeof formSchema>, unknown, undefined>;
   name: keyof z.infer<typeof formSchema>;
   label: string;
   options: Record<string, string>;
+  isMutating: boolean;
 }) {
+  const [selectKey, setSelectKey] = useState(0);
+
   return (
     <FormField
       control={form.control}
@@ -232,7 +254,19 @@ function EmployeeFormSelectField({
         <FormItem className="flex flex-col gap-1">
           <div className="flex items-baseline gap-7">
             <FormLabel>{label}</FormLabel>
-            <Select onValueChange={field.onChange} defaultValue={field.value}>
+            <Select
+              disabled={isMutating}
+              onValueChange={(v) => {
+                if (v === "reset") {
+                  setSelectKey(selectKey + 1);
+                  field.onChange(undefined);
+                } else {
+                  field.onChange(v);
+                }
+              }}
+              defaultValue={field.value}
+              key={selectKey}
+            >
               <FormControl>
                 <SelectTrigger
                   className={cn(
@@ -245,6 +279,7 @@ function EmployeeFormSelectField({
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
+                <SelectItem value="reset">清空</SelectItem>
                 {Object.entries(options).map(([value, label]) => (
                   <SelectItem value={value} key={value}>
                     {label}

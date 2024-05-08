@@ -13,6 +13,7 @@ import { privateFetch } from "@/utils/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Link, useLoaderData } from "react-router-dom";
+import { toast } from "sonner";
 
 export function Component() {
   const [rowSelection, setRowSelection] = useState({});
@@ -38,7 +39,9 @@ export function Component() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["employees"] });
       setRowSelection({});
+      toast.success("成功刪除員工");
     },
+    onError: () => toast.error("刪除員工失敗"),
   });
 
   return (

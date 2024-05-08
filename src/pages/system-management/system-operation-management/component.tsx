@@ -15,6 +15,7 @@ import { useState } from "react";
 import { useLoaderData } from "react-router-dom";
 import { genEmployeesQuery } from "@/pages/system-management/personnel-management/loader";
 import { AddEmployeeAsERPUserModal } from "@/components/select-employees-modal/add-employee-as-erp-user-modal";
+import { toast } from "sonner";
 
 export function Component() {
   const [rowSelection, setRowSelection] = useState({});
@@ -30,21 +31,23 @@ export function Component() {
   });
   const queryClient = useQueryClient();
   const { mutateAsync } = useMutation({
-    mutationKey: ["delete-employees"],
+    mutationKey: ["delete-users"],
     mutationFn: async () => {
-      const employeeIds = Object.keys(rowSelection);
+      const userIds = Object.keys(rowSelection);
       await Promise.all(
-        employeeIds.map((id) =>
-          privateFetch(`/employees/${id}`, {
+        userIds.map((id) =>
+          privateFetch(`/users/${id}`, {
             method: "DELETE",
           }),
         ),
       );
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["employees"] });
+      queryClient.invalidateQueries({ queryKey: ["users"] });
       setRowSelection({});
+      toast.success("移除員工系統權限");
     },
+    onError: () => toast.error("刪除員工系統權限失敗"),
   });
 
   return (
@@ -57,7 +60,7 @@ export function Component() {
                 <IconWarningButton icon="trashCan">刪除</IconWarningButton>
               }
               onSubmit={mutateAsync}
-              title="確定刪除選取員工?"
+              title="確定移除選取員工系統權限?"
             />
           ) : null}
           <AddEmployeeAsERPUserModal

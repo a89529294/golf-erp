@@ -82,7 +82,6 @@ function Section({
   featureId: string;
 }) {
   const [rowSelection, setRowSelection] = useState(new Set());
-  const [allSelected, setAllSelected] = useState(false);
   const selectedEmployeeIds = Array.from(rowSelection);
   const queryClient = useQueryClient();
   const { mutate, isPending } = useMutation({
@@ -100,8 +99,10 @@ function Section({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["erp-features-with-users"] });
-      toast.success("成功刪除權限");
+      toast.success("成功刪除管理權限");
+      setRowSelection(new Set());
     },
+    onError: () => toast.error("刪除管理權限失敗"),
   });
 
   return (
@@ -111,10 +112,8 @@ function Section({
           <input
             type="checkbox"
             className="peer hidden"
-            checked={allSelected}
+            checked={users.length === rowSelection.size && users.length > 0}
             onChange={(e) => {
-              setAllSelected(e.target.checked);
-
               if (e.target.checked)
                 setRowSelection(new Set(users.map((u) => u.employeeId)));
               else setRowSelection(new Set());
@@ -169,16 +168,12 @@ function Section({
                         newSet.add(user.employeeId);
                         return newSet;
                       });
-
-                      if (users.length === rowSelection.size + 1)
-                        setAllSelected(true);
                     } else {
                       setRowSelection((prev) => {
                         const newSet = new Set(prev);
                         newSet.delete(user.employeeId);
                         return newSet;
                       });
-                      setAllSelected(false);
                     }
                   }}
                 />

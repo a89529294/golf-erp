@@ -13,7 +13,7 @@ export const action: ActionFunction = async ({ request }) => {
       idNumber: body.idNumber,
       chName: body.name,
       telphone: body.phoneno,
-      storeId: body.storeId,
+      ...(body.storeId ? { storeId: body.storeId } : {}),
     }),
     headers: {
       "Content-Type": "application/json",

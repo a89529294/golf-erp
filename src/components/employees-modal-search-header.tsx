@@ -50,7 +50,7 @@ export function EmployeesModalSearchHeader({
           <SelectContent>
             <SelectGroup>
               <SelectItem value="reset" className="text-muted-foreground">
-                選擇店家
+                清空
               </SelectItem>
               {flattenedStores.map((store) => (
                 <SelectItem value={store.id} key={store.id}>
