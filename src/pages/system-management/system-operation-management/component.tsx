@@ -35,15 +35,18 @@ export function Component() {
     mutationFn: async () => {
       const userIds = Object.keys(rowSelection);
       await Promise.all(
-        userIds.map((id) =>
-          privateFetch(`/users/${id}`, {
-            method: "DELETE",
-          }),
-        ),
+        users
+          .filter((u) => userIds.includes(u.id))
+          .map((user) =>
+            privateFetch(`/employees/${user.employee.id}/erp-user`, {
+              method: "DELETE",
+            }),
+          ),
       );
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
+      queryClient.invalidateQueries({ queryKey: ["employees"] });
       setRowSelection({});
       toast.success("移除員工系統權限");
     },
