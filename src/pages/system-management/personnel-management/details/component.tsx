@@ -18,7 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { MainLayout } from "@/layouts/main-layout";
 import { cn } from "@/lib/utils";
-import { loader } from "@/pages/system-management/personnel-management/new-employee/loader";
+import { loader } from "@/pages/system-management/personnel-management/details/loader";
 import { storeCategories, storeCategoryMap } from "@/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
@@ -28,12 +28,14 @@ import {
   useLoaderData,
   useLocation,
   useNavigate,
+  useParams,
   useSearchParams,
   useSubmit,
 } from "react-router-dom";
 import { z } from "zod";
 import { Modal } from "@/components/modal";
 import { storesQuery } from "@/pages/store-management/loader";
+import { genEmployeeQuery } from "@/pages/system-management/personnel-management/details/loader";
 
 const toValueLabelArray = (obj: { name: string; id: string }[]) => {
   const options: Record<string, string> = {};
@@ -50,20 +52,29 @@ const formSchema = z.object({
 });
 
 export function Component() {
+  const [disabled, setDisabled] = useState(true);
   const submit = useSubmit();
   const { pathname } = useLocation();
+  const { id } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
-  const { data: stores } = useQuery({ ...storesQuery, initialData });
+  const { data: stores } = useQuery({
+    ...storesQuery,
+    initialData: initialData[1],
+  });
+  const { data: employee } = useQuery({
+    ...genEmployeeQuery(id!),
+    initialData: initialData[0],
+  });
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      idNumber: "",
-      name: "",
-      phoneno: "",
-      category: storeCategories[0],
-      storeId: undefined,
+      idNumber: employee.idNumber,
+      name: employee.chName,
+      phoneno: employee.telphone,
+      category: employee.stores?.[0].category ?? storeCategories[0],
+      storeId: employee.stores?.[0].id,
     },
   });
   const [storeOptions, setStoreOptions] = useState(() => {
@@ -114,9 +125,9 @@ export function Component() {
                 </IconButton>
               }
               onSubmit={() => navigate(-1)}
-              title="資料尚未儲存，是否返回列表？"
+              title="資料尚未儲存，是否返回？"
             />
-          ) : (
+          ) : disabled ? (
             <IconButton
               disabled={isMutating}
               icon="back"
@@ -124,14 +135,30 @@ export function Component() {
             >
               返回
             </IconButton>
+          ) : (
+            <IconButton icon="back" onClick={() => setDisabled(true)}>
+              返回
+            </IconButton>
           )}
-          <IconButton
-            disabled={isMutating}
-            icon="save"
-            form="new-employee-form"
-          >
-            儲存
-          </IconButton>
+          {disabled ? (
+            <IconButton
+              type="button"
+              icon="pencil"
+              onClick={(e) => setDisabled(false)}
+              key="edit-btn"
+            >
+              編輯
+            </IconButton>
+          ) : (
+            <IconButton
+              disabled={isMutating}
+              icon="save"
+              form="new-employee-form"
+              key="save-btn"
+            >
+              儲存
+            </IconButton>
+          )}
         </>
       }
     >
@@ -152,18 +179,21 @@ export function Component() {
                 name={"idNumber"}
                 label="編號"
                 isMutating={isMutating}
+                disabled={disabled}
               />
               <EmployeeFormField
                 form={form}
                 name={"name"}
                 label="姓名"
                 isMutating={isMutating}
+                disabled={disabled}
               />
               <EmployeeFormField
                 form={form}
                 name={"phoneno"}
                 label="電話"
                 isMutating={isMutating}
+                disabled={disabled}
               />
             </section>
             <section className="flex w-fit flex-col gap-6 border border-line-gray px-16 pb-10">
@@ -198,11 +228,13 @@ function EmployeeFormField({
   name,
   label,
   isMutating,
+  disabled,
 }: {
   form: UseFormReturn<z.infer<typeof formSchema>, unknown, undefined>;
   name: keyof z.infer<typeof formSchema>;
   label: string;
   isMutating: boolean;
+  disabled: boolean;
 }) {
   return (
     <FormField
@@ -220,7 +252,7 @@ function EmployeeFormField({
                 )}
                 placeholder={`請輸入${label}`}
                 {...field}
-                disabled={isMutating}
+                disabled={isMutating || disabled}
               />
             </FormControl>
           </div>

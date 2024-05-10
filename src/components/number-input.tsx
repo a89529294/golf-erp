@@ -6,7 +6,12 @@ type NumberInputProps = ComponentProps<"input"> & {
   myRef: RefObject<HTMLInputElement>;
 };
 
-export function NumberInput({ className, myRef, ...props }: NumberInputProps) {
+export function NumberInput({
+  className,
+  myRef,
+  value,
+  ...props
+}: NumberInputProps) {
   return (
     <Input
       type="text"
@@ -15,6 +20,7 @@ export function NumberInput({ className, myRef, ...props }: NumberInputProps) {
         className,
       )}
       ref={myRef}
+      value={new Intl.NumberFormat().format(value ? +value : 0)}
       {...props}
     />
   );

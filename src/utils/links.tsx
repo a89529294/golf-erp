@@ -161,14 +161,15 @@ export const linksKV = {
         label: "人員資料管理",
         paths: {
           index: `${SYSTEM_MANAGEMENT_BASE_PATH}/personnel-management`,
-          new: `${SYSTEM_MANAGEMENT_BASE_PATH}/personnel-management/new-employee`,
+          new: `${SYSTEM_MANAGEMENT_BASE_PATH}/personnel-management/new`,
+          details: `${SYSTEM_MANAGEMENT_BASE_PATH}/personnel-management/details/:id`,
         },
         lazy: {
           index: () => import("@/pages/system-management/personnel-management"),
           new: () =>
-            import(
-              "@/pages/system-management/personnel-management/new-employee"
-            ),
+            import("@/pages/system-management/personnel-management/new"),
+          details: () =>
+            import("@/pages/system-management/personnel-management/details"),
         },
         type: "multiple" as const,
         allowedPermissions: ["管理系統"],

@@ -1,7 +1,10 @@
+import pencilIcon from "@/assets/pencil.svg";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Employee } from "@/pages/system-management/personnel-management/loader";
 import { storeCategoryMap } from "@/utils";
+import { linksKV } from "@/utils/links";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
+import { Link } from "react-router-dom";
 
 const columnHelper = createColumnHelper<Employee>();
 
@@ -54,4 +57,20 @@ export const columns = [
       header: "廠商名稱",
     },
   ),
+  columnHelper.display({
+    id: "details",
+    header: "",
+    cell: ({ row }) => {
+      return (
+        <Link
+          className="block h-5 w-5"
+          to={linksKV["system-management"].subLinks[
+            "personnel-system-management"
+          ].paths.details.replace(":id", row.original.id)}
+        >
+          <img src={pencilIcon} className="hidden group-hover:block" />
+        </Link>
+      );
+    },
+  }),
 ] as ColumnDef<Employee, unknown>[];

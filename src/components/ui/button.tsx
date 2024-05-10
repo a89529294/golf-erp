@@ -7,6 +7,7 @@ import saveIcon from "@/assets/save.svg";
 import minusIcon from "@/assets/minus-icon.svg";
 import circleIcon from "@/assets/circle.svg";
 import trashCanIcon from "@/assets/trash-can-icon.svg";
+import pencilIcon from "@/assets/pencil.svg";
 import { ComponentProps, ReactNode, forwardRef } from "react";
 import { twMerge } from "tailwind-merge";
 
@@ -22,6 +23,7 @@ const iconMap = {
   back: backIcon,
   trashCan: trashCanIcon,
   minus: minusIcon,
+  pencil: pencilIcon,
 };
 
 type IconButtonType = ComponentProps<"button"> & {
