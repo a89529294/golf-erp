@@ -144,7 +144,7 @@ export function Component() {
             <IconButton
               type="button"
               icon="pencil"
-              onClick={(e) => setDisabled(false)}
+              onClick={() => setDisabled(false)}
               key="edit-btn"
             >
               編輯
