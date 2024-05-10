@@ -100,13 +100,43 @@ export const linksKV = {
     label: "室內模擬器",
     type: "nested" as const,
     basePath: INDOOR_SIMULATOR_BASE_PATH,
-    path: `${INDOOR_SIMULATOR_BASE_PATH}/basic-operations`,
+    path: `${INDOOR_SIMULATOR_BASE_PATH}/member-management`,
     allowedPermissions: ["模擬器-基本操作", "模擬器-報表"],
     subLinks: {
-      "basic-operations": {
-        label: "基本操作",
-        path: `${INDOOR_SIMULATOR_BASE_PATH}/basic-operations`,
-        lazy: () => import("@/pages/indoor-simulator/basic-operations"),
+      "member-management": {
+        label: "會員管理",
+        path: `${INDOOR_SIMULATOR_BASE_PATH}/member-management`,
+        lazy: () => import("@/pages/indoor-simulator/member-management"),
+        type: "flat" as const,
+        allowedPermissions: ["模擬器-基本操作"],
+      },
+      "site-management": {
+        label: "場地管理",
+        paths: {
+          index: `${INDOOR_SIMULATOR_BASE_PATH}/site-management`,
+          new: `${INDOOR_SIMULATOR_BASE_PATH}/site-management/new`,
+          details: `${INDOOR_SIMULATOR_BASE_PATH}/site-management/details`,
+        },
+        lazy: {
+          index: () => import("@/pages/indoor-simulator/site-management"),
+          new: () => import("@/pages/indoor-simulator/site-management/new"),
+          details: () =>
+            import("@/pages/indoor-simulator/site-management/details"),
+        },
+        type: "multiple" as const,
+        allowedPermissions: ["模擬器-基本操作"],
+      },
+      "appointment-management": {
+        label: "預約管理",
+        path: `${INDOOR_SIMULATOR_BASE_PATH}/appointment-management`,
+        lazy: () => import("@/pages/indoor-simulator/appointment-management"),
+        type: "flat" as const,
+        allowedPermissions: ["模擬器-基本操作"],
+      },
+      "repair-report": {
+        label: "報修回報",
+        path: `${INDOOR_SIMULATOR_BASE_PATH}/repair-report`,
+        lazy: () => import("@/pages/indoor-simulator/repair-report"),
         type: "flat" as const,
         allowedPermissions: ["模擬器-基本操作"],
       },
@@ -264,24 +294,3 @@ export const sameRouteGroup = (path: string, nextPath: string) => {
 
   return false;
 };
-
-// export function filterLinksByUserPermissions(userPermissions: string[]) {
-//   const allowedLinks = [] as (FlatLink | NestedLink | MultipleLink)[];
-
-//   for (const outerLinkKey in linksKV) {
-//     const outerLink = {...linksKV[outerLinkKey as keyof typeof linksKV]}
-//     if (userPermissions.some(up=> outerLink.allowedPermissions.includes(up)))
-//       {
-//         allowedLinks.push(outerLink);
-
-//         const x =Object.entries(outerLink.subLinks).filter(([key,subLink])=>{
-//           return userPermissions.some(up=>subLink.allowedPermissions.includes(up))
-//         })
-
-//         outerLink.subLinks = Object.fromEntries(x)
-//       }
-
-//   }
-
-//   return allowedLinks;
-// }

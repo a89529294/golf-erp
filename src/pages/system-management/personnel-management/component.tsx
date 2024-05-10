@@ -1,7 +1,9 @@
 import { Modal } from "@/components/modal";
 import { SearchInput } from "@/components/search-input";
-import { IconButton, IconWarningButton } from "@/components/ui/button";
+import { IconWarningButton } from "@/components/ui/button";
+import { button } from "@/components/ui/button-cn";
 import { MainLayout } from "@/layouts/main-layout";
+import plusIcon from "@/assets/plus-icon.svg";
 import { columns } from "@/pages/system-management/personnel-management/data-table/columns";
 import { DataTable } from "@/pages/system-management/personnel-management/data-table/data-table";
 import {
@@ -57,17 +59,19 @@ export function Component() {
               title="確定刪除選取員工?"
             />
           ) : null}
-          <IconButton icon="plus">
-            <Link
-              to={
-                linksKV["system-management"].subLinks[
-                  "personnel-system-management"
-                ].paths.new
-              }
-            >
-              新增人員
-            </Link>
-          </IconButton>
+
+          <Link
+            to={
+              linksKV["system-management"].subLinks[
+                "personnel-system-management"
+              ].paths.new
+            }
+            className={button()}
+          >
+            <img src={plusIcon} />
+            新增人員
+          </Link>
+
           <SearchInput value={globalFilter} setValue={setGlobalFilter} />
         </>
       }

@@ -1,7 +1,10 @@
 import { Modal } from "@/components/modal";
 import { SearchInput } from "@/components/search-input";
-import { IconButton, IconWarningButton } from "@/components/ui/button";
+import { IconWarningButton } from "@/components/ui/button";
+import { button } from "@/components/ui/button-cn";
+import plusIcon from "@/assets/plus-icon.svg";
 import { MainLayout } from "@/layouts/main-layout";
+import { cn } from "@/lib/utils";
 import { columns } from "@/pages/store-management/data-table/columns";
 import { DataTable } from "@/pages/store-management/data-table/data-table";
 import { loader, storesQuery } from "@/pages/store-management/loader";
@@ -12,12 +15,11 @@ import {
   storeCategoryWithAllMap,
 } from "@/utils";
 import { linksKV } from "@/utils/links";
+import { privateFetch } from "@/utils/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Link, useLoaderData, useSearchParams } from "react-router-dom";
-import { motion } from "framer-motion";
-import { cn } from "@/lib/utils";
-import { privateFetch } from "@/utils/utils";
 import { toast } from "sonner";
 
 export function Component() {
@@ -81,9 +83,15 @@ export function Component() {
               title="確定刪除選取廠商?"
             />
           ) : null}
-          <IconButton icon="plus" disabled={isPending}>
-            <Link to={linksKV["store-management"].paths["new"]}>新增廠商</Link>
-          </IconButton>
+
+          <Link
+            className={button()}
+            to={linksKV["store-management"].paths["new"]}
+          >
+            <img src={plusIcon} />
+            新增廠商
+          </Link>
+
           <SearchInput
             disabled={isPending}
             value={globalFilter}
