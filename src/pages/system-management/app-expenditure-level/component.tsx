@@ -369,7 +369,7 @@ function Li({
         id={formId}
       >
         消費級距
-        <div className="flex items-center">
+        <div className="isolate flex items-center">
           <div className="relative">
             <NumberInput
               autoFocus={autoFocusMinConsumption}
@@ -401,7 +401,9 @@ function Li({
               </p>
             )}
           </div>
-          <div className="black-circles-before-after relative h-px w-4 bg-secondary-dark"></div>
+
+          <div className="black-circles-before-after relative z-10 h-px w-4 bg-secondary-dark"></div>
+
           <div className="relative">
             <NumberInput
               autoFocus={!autoFocusMinConsumption}
