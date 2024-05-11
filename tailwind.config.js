@@ -53,8 +53,10 @@ module.exports = {
           foreground: "hsl(var(--card-foreground))",
         },
         "light-gray": "#f5f5f5",
+        "mid-gray": "#e4e4e4",
         "line-gray": "#b6b6b6",
         "word-gray": "#c4c4c4",
+        "word-darker-gray": "#ababab",
         "light-blue": "#88CED5",
         "secondary-dark": "#0D152B",
         "hover-orange": "#feeed1",
@@ -62,6 +64,7 @@ module.exports = {
         "line-red": "#cf2121",
         "line-red-hover": "#ef2121",
         "word-red": "#c51b1b",
+        "secondary-purple": "#262873",
         orange: "rgb(var(--orange) / <alpha-value>)",
       },
       borderRadius: {

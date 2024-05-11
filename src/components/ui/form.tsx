@@ -96,6 +96,7 @@ const FormLabel = React.forwardRef<
     <Label
       ref={ref}
       className={cn(
+        "whitespace-nowrap",
         error && "text-destructive",
         required &&
           "relative after:absolute after:ml-0.5 after:text-destructive after:content-['*']",

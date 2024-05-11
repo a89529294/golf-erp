@@ -6,6 +6,8 @@ import { MainLayout } from "@/layouts/main-layout";
 import { linksKV } from "@/utils/links";
 import { useLayoutEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import pencilIcon from "@/assets/pencil.svg";
+import trashCanIcon from "@/assets/trash-can-icon.svg";
 
 const sections = [
   {
@@ -91,7 +93,15 @@ export function Component() {
   const [height, setHeight] = useState(0);
 
   useLayoutEffect(() => {
-    if (ref.current) setHeight(ref.current.clientHeight);
+    if (ref.current) {
+      setHeight(ref.current.clientHeight);
+
+      const setHeightIfRef = () =>
+        ref.current && setHeight(ref.current.clientHeight);
+      window.addEventListener("resize", setHeightIfRef);
+
+      return () => window.removeEventListener("resize", setHeightIfRef);
+    }
   }, []);
 
   return (
@@ -112,25 +122,26 @@ export function Component() {
         </>
       }
     >
-      <ScrollArea
-        ref={ref}
-        className="mb-2.5 w-full  overflow-auto border border-line-gray bg-light-gray p-5"
-        style={{ height: height ? height : "auto" }}
-      >
-        {height && (
-          <div className="space-y-2.5">
-            {sections.map((section) => (
-              <Section
-                key={section.id}
-                name={section.name}
-                desc={section.desc}
-                openingDates={section.openingDates}
-                openingHours={section.openingHours}
-              />
-            ))}
-          </div>
-        )}
-      </ScrollArea>
+      <div className="w-full" ref={ref}>
+        <ScrollArea
+          className="mb-2.5 w-full  overflow-auto border border-line-gray bg-light-gray p-5"
+          style={{ height }}
+        >
+          {height && (
+            <div className="space-y-2.5">
+              {sections.map((section) => (
+                <Section
+                  key={section.id}
+                  name={section.name}
+                  desc={section.desc}
+                  openingDates={section.openingDates}
+                  openingHours={section.openingHours}
+                />
+              ))}
+            </div>
+          )}
+        </ScrollArea>
+      </div>
     </MainLayout>
   );
 }
@@ -154,11 +165,13 @@ function Section({
     <section className="flex gap-4 border border-line-gray bg-white p-4">
       <div className="h-32 w-32 bg-[#c1c1c1]" />
       <div className="grow-[89] basis-0 bg-light-gray px-4 pb-5 pt-2.5">
-        <h2>{name}</h2>
+        <h2 className="text-secondary-purple text-lg font-semibold">{name}</h2>
         <p>{desc}</p>
       </div>
       <div className="grow-[42] basis-0 bg-light-gray px-4 pb-5 pt-2.5">
-        <h2>場地開放日期</h2>
+        <h2 className="text-word-darker-gray text-lg font-semibold">
+          場地開放日期
+        </h2>
         {openingDates.map((d, i) => (
           <p key={i} className="flex justify-between font-mono">
             {d[0]}
@@ -168,7 +181,9 @@ function Section({
         ))}
       </div>
       <div className="grow-[56] basis-0 bg-light-gray px-4 pb-5 pt-2.5">
-        <h2>場地開放日期</h2>
+        <h2 className="text-word-darker-gray text-lg font-semibold">
+          場地開放日期
+        </h2>
         {openingHours.map((h, i) => (
           <p key={i} className="flex justify-between font-mono">
             {h.hours}
@@ -178,6 +193,14 @@ function Section({
             {h.fee}
           </p>
         ))}
+      </div>
+      <div className="flex flex-col gap-4 self-start">
+        <button>
+          <img src={pencilIcon} />
+        </button>
+        <button>
+          <img src={trashCanIcon} />
+        </button>
       </div>
     </section>
   );
