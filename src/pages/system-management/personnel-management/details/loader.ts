@@ -7,7 +7,7 @@ import { LoaderFunctionArgs } from "react-router-dom";
 export const genEmployeeQuery = (id: string) => ({
   queryKey: ["employee", id],
   queryFn: async () => {
-    const response = await privateFetch(`/employees/${id}`);
+    const response = await privateFetch(`/employees/${id}?populate=stores`);
     const employee = employeeSchema.parse(await response.json());
     return employee;
   },

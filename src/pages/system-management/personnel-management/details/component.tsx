@@ -15,11 +15,16 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+import { Modal } from "@/components/modal";
 import { Input } from "@/components/ui/input";
 import { MainLayout } from "@/layouts/main-layout";
 import { cn } from "@/lib/utils";
-import { loader } from "@/pages/system-management/personnel-management/details/loader";
-import { storeCategories, storeCategoryMap } from "@/utils";
+import { storesQuery } from "@/pages/store-management/loader";
+import {
+  genEmployeeQuery,
+  loader,
+} from "@/pages/system-management/personnel-management/details/loader";
+import { StoreCategory, storeCategories, storeCategoryMap } from "@/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -33,9 +38,6 @@ import {
   useSubmit,
 } from "react-router-dom";
 import { z } from "zod";
-import { Modal } from "@/components/modal";
-import { storesQuery } from "@/pages/store-management/loader";
-import { genEmployeeQuery } from "@/pages/system-management/personnel-management/details/loader";
 
 const toValueLabelArray = (obj: { name: string; id: string }[]) => {
   const options: Record<string, string> = {};
@@ -51,6 +53,7 @@ const formSchema = z.object({
   storeId: z.union([z.string(), z.undefined()]),
 });
 
+// TODO fix flickering when selecting clear store option
 export function Component() {
   const [disabled, setDisabled] = useState(true);
   const submit = useSubmit();
@@ -73,12 +76,14 @@ export function Component() {
       idNumber: employee.idNumber,
       name: employee.chName,
       phoneno: employee.telphone,
-      category: employee.stores?.[0].category ?? storeCategories[0],
-      storeId: employee.stores?.[0].id,
+      category: employee.stores?.[0]?.category ?? storeCategories[0],
+      storeId: employee.stores?.[0]?.id,
     },
   });
   const [storeOptions, setStoreOptions] = useState(() => {
-    return toValueLabelArray(stores.golf);
+    return toValueLabelArray(
+      stores[employee.stores?.[0]?.category ?? storeCategories[0]],
+    );
   });
   const [isMutating, setIsMutating] = useState(false);
 
@@ -88,23 +93,33 @@ export function Component() {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
+    const changedValues: Record<string, string | null> = {};
+
+    for (const k in form.formState.dirtyFields) {
+      const key = k as keyof typeof values;
+      if (key === "category") continue;
+      else if (key === "phoneno") changedValues["telphone"] = values["phoneno"];
+      else changedValues[key] = values[key] ?? null;
+    }
+
     setIsMutating(true);
-    submit(values, {
+    submit(changedValues, {
       method: "post",
       action: pathname,
       encType: "application/json",
     });
   }
 
-  useEffect(() => {
-    if (categorySelected === "golf")
-      setStoreOptions(toValueLabelArray(stores.golf));
-    if (categorySelected === "ground")
-      setStoreOptions(toValueLabelArray(stores.ground));
-    if (categorySelected === "simulator")
-      setStoreOptions(toValueLabelArray(stores.simulator));
-    form.resetField("storeId");
-  }, [categorySelected, stores, form]);
+  // useEffect(() => {
+  //   if (isMount) return;
+  //   if (categorySelected === "golf")
+  //     setStoreOptions(toValueLabelArray(stores.golf));
+  //   if (categorySelected === "ground")
+  //     setStoreOptions(toValueLabelArray(stores.ground));
+  //   if (categorySelected === "simulator")
+  //     setStoreOptions(toValueLabelArray(stores.simulator));
+  //   form.setValue("storeId", "", { shouldDirty: true });
+  // }, [categorySelected, stores, form, isMount]);
 
   useEffect(() => {
     if (searchParams.get("error")) {
@@ -113,11 +128,18 @@ export function Component() {
     }
   }, [searchParams, setSearchParams]);
 
+  const dirtyFields = form.formState.dirtyFields;
+  const isBasicInfoDirty =
+    dirtyFields.idNumber || dirtyFields.name || dirtyFields.phoneno;
+  const isCategoryStoreDirty = dirtyFields.storeId;
+
+  console.log(dirtyFields);
+
   return (
     <MainLayout
       headerChildren={
         <>
-          {form.formState.isDirty ? (
+          {isBasicInfoDirty || isCategoryStoreDirty ? (
             <Modal
               dialogTriggerChildren={
                 <IconButton disabled={isMutating} icon="back">
@@ -144,17 +166,25 @@ export function Component() {
             <IconButton
               type="button"
               icon="pencil"
-              onClick={() => setDisabled(false)}
-              key="edit-btn"
+              onClick={(e) => {
+                // necessary to prevent the save button from firing
+                e.nativeEvent.stopImmediatePropagation();
+                setTimeout(() => {
+                  setDisabled(false);
+                }, 0);
+              }}
+              // key="edit-btn"
             >
               編輯
             </IconButton>
           ) : (
             <IconButton
-              disabled={isMutating}
+              disabled={
+                isMutating || !(isBasicInfoDirty || isCategoryStoreDirty)
+              }
               icon="save"
               form="new-employee-form"
-              key="save-btn"
+              // key="save-btn"
             >
               儲存
             </IconButton>
@@ -178,22 +208,19 @@ export function Component() {
                 form={form}
                 name={"idNumber"}
                 label="編號"
-                isMutating={isMutating}
-                disabled={disabled}
+                disabled={disabled || isMutating}
               />
               <EmployeeFormField
                 form={form}
                 name={"name"}
                 label="姓名"
-                isMutating={isMutating}
-                disabled={disabled}
+                disabled={disabled || isMutating}
               />
               <EmployeeFormField
                 form={form}
                 name={"phoneno"}
                 label="電話"
-                isMutating={isMutating}
-                disabled={disabled}
+                disabled={disabled || isMutating}
               />
             </section>
             <section className="flex w-fit flex-col gap-6 border border-line-gray px-16 pb-10">
@@ -205,15 +232,24 @@ export function Component() {
                 name="category"
                 label="類別"
                 options={storeCategoryMap}
-                isMutating={isMutating}
+                disabled={isMutating || disabled}
+                onChange={(newCategory: string) => {
+                  setStoreOptions(
+                    toValueLabelArray(stores[newCategory as StoreCategory]),
+                  );
+                  form.setValue("storeId", "", { shouldDirty: true });
+                }}
               />
               <EmployeeFormSelectField
                 form={form}
                 name="storeId"
                 label="店名"
-                options={storeOptions}
+                options={{
+                  reset: "清空",
+                  ...storeOptions,
+                }}
                 key={categorySelected}
-                isMutating={isMutating}
+                disabled={isMutating || disabled}
               />
             </section>
           </form>
@@ -227,13 +263,13 @@ function EmployeeFormField({
   form,
   name,
   label,
-  isMutating,
+
   disabled,
 }: {
   form: UseFormReturn<z.infer<typeof formSchema>, unknown, undefined>;
   name: keyof z.infer<typeof formSchema>;
   label: string;
-  isMutating: boolean;
+
   disabled: boolean;
 }) {
   return (
@@ -252,7 +288,7 @@ function EmployeeFormField({
                 )}
                 placeholder={`請輸入${label}`}
                 {...field}
-                disabled={isMutating || disabled}
+                disabled={disabled}
               />
             </FormControl>
           </div>
@@ -268,15 +304,19 @@ function EmployeeFormSelectField({
   name,
   label,
   options,
-  isMutating,
+  disabled,
+  onChange,
 }: {
   form: UseFormReturn<z.infer<typeof formSchema>, unknown, undefined>;
   name: keyof z.infer<typeof formSchema>;
   label: string;
   options: Record<string, string>;
-  isMutating: boolean;
+  disabled: boolean;
+  onChange?: (v: string) => void;
 }) {
-  const [selectKey, setSelectKey] = useState(0);
+  // const [selectKey, setSelectKey] = useState(0);
+
+  if (name === "storeId") console.log(form.getValues("storeId"));
 
   return (
     <FormField
@@ -287,17 +327,19 @@ function EmployeeFormSelectField({
           <div className="flex items-baseline gap-7">
             <FormLabel>{label}</FormLabel>
             <Select
-              disabled={isMutating}
+              disabled={disabled}
               onValueChange={(v) => {
                 if (v === "reset") {
-                  setSelectKey(selectKey + 1);
-                  field.onChange(undefined);
+                  // setSelectKey(selectKey + 1);
+                  field.onChange("");
+                  onChange && onChange("");
                 } else {
                   field.onChange(v);
+                  onChange && onChange(v);
                 }
               }}
               defaultValue={field.value}
-              key={selectKey}
+              // key={selectKey}
             >
               <FormControl>
                 <SelectTrigger
@@ -306,12 +348,10 @@ function EmployeeFormSelectField({
                     field.value && "border-b-orange",
                   )}
                 >
-                  {/* <SelectValue placeholder={`選擇${label}`} /> */}
                   <SelectValue placeholder={`選擇${label}`} />
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                <SelectItem value="reset">清空</SelectItem>
                 {Object.entries(options).map(([value, label]) => (
                   <SelectItem value={value} key={value}>
                     {label}
