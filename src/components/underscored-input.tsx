@@ -18,7 +18,7 @@ export const UnderscoredInput = forwardRef<
     <Input
       ref={ref}
       className={cn(
-        "rounded-none border-0 border-b border-secondary-dark focus:border-orange",
+        "rounded-none border-0 border-b border-secondary-dark bg-transparent focus:border-orange",
         thickBorder && "border-b-[1.5px] border-orange",
         className,
       )}
