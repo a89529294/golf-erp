@@ -24,7 +24,6 @@ export const UnderscoredInput = forwardRef<
       )}
       onBlur={(e) => {
         setThickBorder(!!e.currentTarget.value);
-        console.log(e.currentTarget.value);
         onBlur && onBlur(e);
       }}
       onFocus={(e) => {
