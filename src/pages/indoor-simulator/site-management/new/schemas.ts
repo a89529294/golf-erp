@@ -4,18 +4,22 @@ export const fileWithIdSchema = z.object({
   file: z.instanceof(File),
   id: z.string(),
 });
+export const existingImgSchema = z.object({
+  id: z.string(),
+  src: z.string(),
+});
 
 export type FileWithId = z.infer<typeof fileWithIdSchema>;
+export type ExistingImg = z.infer<typeof existingImgSchema>;
 
-export const formSchema = z.object({
+const baseIndoorSimulatorSiteSchema = z.object({
   name: z.string().min(1),
   description: z.string().min(1),
-  imageFiles: z.array(fileWithIdSchema),
   openingDates: z.array(
     z.object({
       id: z.string(),
-      start: z.date().optional(),
-      end: z.date().optional(),
+      start: z.union([z.date(), z.undefined()]),
+      end: z.union([z.date(), z.undefined()]),
       saved: z.boolean(),
     }),
   ),
@@ -30,5 +34,18 @@ export const formSchema = z.object({
   ),
 });
 
-export type DateRange = z.infer<typeof formSchema>["openingDates"][number];
-export type TimeRange = z.infer<typeof formSchema>["openingHours"][number];
+export const newIndoorSimulatorSiteSchema =
+  baseIndoorSimulatorSiteSchema.extend({
+    imageFiles: z.array(fileWithIdSchema),
+  });
+export const existingIndoorSimulatorSiteSchema =
+  baseIndoorSimulatorSiteSchema.extend({
+    imageFiles: z.array(z.union([existingImgSchema, fileWithIdSchema])),
+  });
+
+export type DateRange = z.infer<
+  typeof baseIndoorSimulatorSiteSchema
+>["openingDates"][number];
+export type TimeRange = z.infer<
+  typeof baseIndoorSimulatorSiteSchema
+>["openingHours"][number];

@@ -1,20 +1,25 @@
-import { useRef, useState } from "react";
-import { type TimeRange } from "../schemas";
+import greenFileIcon from "@/assets/green-file-icon.svg";
+import redXIcon from "@/assets/red-x-icon.svg";
+import trashCanIcon from "@/assets/trash-can-icon.svg";
 import { UnderscoredInput } from "@/components/underscored-input";
 import { cn } from "@/lib/utils";
 import { onChange } from "@/pages/indoor-simulator/site-management/new/helpers";
-import greenFileIcon from "@/assets/green-file-icon.svg";
-import trashCanIcon from "@/assets/trash-can-icon.svg";
-import redXIcon from "@/assets/red-x-icon.svg";
+import { useRef, useState } from "react";
+import { useFormContext } from "react-hook-form";
+import { type TimeRange } from "../schemas";
 
 export function TimeRangeRow({
   data,
   onSave,
   onRemove,
+  onEdit,
+  disabled,
 }: {
   data: TimeRange;
   onSave: (tr: TimeRange) => void;
   onRemove(): void;
+  onEdit(): void;
+  disabled?: boolean;
 }) {
   const [start, setStart] = useState(data.start);
   const [end, setEnd] = useState(data.end);
@@ -27,6 +32,10 @@ export function TimeRangeRow({
     end: false,
     fee: false,
   });
+  const {
+    formState: { errors },
+  } = useFormContext();
+  console.log(errors);
 
   function onSaveTimeRange() {
     const startError = start.length !== 5;
@@ -61,6 +70,7 @@ export function TimeRangeRow({
       className={cn(
         "flex items-center border-b-[1.5px] border-b-transparent pb-4 pl-8 pr-5 pt-5 text-secondary-dark ",
         !data.saved && "border-b-orange bg-hover-orange",
+        disabled && "opacity-50",
       )}
     >
       <UnderscoredInput
@@ -73,11 +83,14 @@ export function TimeRangeRow({
           onChange(e, start, setStart, "start", start, end, endRef, feeRef);
           setEnd("");
         }}
-        placeholder="開始時間"
+        placeholder="00:00"
         inputMode="numeric"
         ref={startRef}
-        onFocus={() => clearFieldError("start")}
-        autoFocus
+        onFocus={() => {
+          clearFieldError("start");
+          onEdit();
+        }}
+        disabled={disabled}
       />
 
       <span className="px-2.5 text-secondary-dark">～</span>
@@ -87,10 +100,10 @@ export function TimeRangeRow({
           errorFields["end"] && "border-b-destructive",
         )}
         value={end}
-        onChange={(e) =>
-          onChange(e, end, setEnd, "end", start, end, endRef, feeRef)
-        }
-        placeholder="結束時間"
+        onChange={(e) => {
+          onChange(e, end, setEnd, "end", start, end, endRef, feeRef);
+        }}
+        placeholder="23:00"
         inputMode="numeric"
         ref={endRef}
         onKeyDown={(e) => {
@@ -99,7 +112,11 @@ export function TimeRangeRow({
             e.preventDefault();
           }
         }}
-        onFocus={() => clearFieldError("end")}
+        onFocus={() => {
+          clearFieldError("end");
+          onEdit();
+        }}
+        disabled={disabled}
       />
 
       <UnderscoredInput
@@ -110,21 +127,29 @@ export function TimeRangeRow({
         )}
         value={fee}
         onChange={(e) => {
-          console.log(e.target.value);
           if (e.target.value === "") return setFee("");
           const numericValue = +e.target.value;
           if (!Number.isNaN(numericValue) && numericValue >= 0)
             setFee(numericValue);
         }}
         placeholder="價錢"
-        onFocus={() => clearFieldError("fee")}
+        onFocus={() => {
+          clearFieldError("fee");
+          onEdit();
+        }}
+        disabled={disabled}
       />
       <span>元</span>
 
       <div className="ml-auto flex gap-4">
         {data.saved ? (
           <>
-            <button type="button" onClick={onRemove}>
+            <button
+              type="button"
+              onClick={onRemove}
+              disabled={disabled}
+              className={cn(disabled && "cursor-not-allowed")}
+            >
               <img src={trashCanIcon} />
             </button>
           </>

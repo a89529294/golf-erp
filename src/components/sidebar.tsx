@@ -190,7 +190,6 @@ function AccordionItemWrapper({
         <AccordionContent
           className="flex flex-col bg-white pt-1"
           onAnimationEnd={() => {
-            console.log(pathname, link.path);
             if (!pathname.startsWith(link.path)) setNestedLinksClosed(true);
           }}
         >

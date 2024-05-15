@@ -8,12 +8,14 @@ export function Section({
   inputButtonElement,
   inputButtonText,
   children,
+  disabled,
 }: {
   title: string;
   subTitle?: string;
   inputButtonElement: React.ReactElement;
   inputButtonText: string;
   children: React.ReactNode;
+  disabled?: boolean;
 }) {
   return (
     <section>
@@ -23,8 +25,13 @@ export function Section({
           <span className="ml-1 text-sm text-word-red">{subTitle}</span>
         )}
 
-        <label className="relative ml-auto bg-white">
-          <div className={cn(button({ size: "short" }), "cursor-pointer")}>
+        <label
+          className={cn(
+            "relative ml-auto cursor-pointer bg-white",
+            disabled && "cursor-not-allowed opacity-50",
+          )}
+        >
+          <div className={cn(button({ size: "short" }))}>
             <img src={plusIcon} />
             {inputButtonText}
           </div>

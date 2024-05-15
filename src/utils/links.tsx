@@ -115,7 +115,7 @@ export const linksKV = {
         paths: {
           index: `${INDOOR_SIMULATOR_BASE_PATH}/site-management`,
           new: `${INDOOR_SIMULATOR_BASE_PATH}/site-management/new`,
-          details: `${INDOOR_SIMULATOR_BASE_PATH}/site-management/details`,
+          details: `${INDOOR_SIMULATOR_BASE_PATH}/site-management/details/:id`,
         },
         lazy: {
           index: () => import("@/pages/indoor-simulator/site-management"),

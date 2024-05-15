@@ -10,17 +10,18 @@ import {
   type DateRange,
   type FileWithId,
   type TimeRange,
-  formSchema,
+  newIndoorSimulatorSiteSchema,
 } from "@/pages/indoor-simulator/site-management/new/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 
 export function Component() {
   const navigate = useNavigate();
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof newIndoorSimulatorSiteSchema>>({
+    resolver: zodResolver(newIndoorSimulatorSiteSchema),
     defaultValues: {
       name: "",
       description: "",
@@ -29,8 +30,10 @@ export function Component() {
       openingHours: [],
     },
   });
+  const [newTimeRangeDisabled, setNewTimeRangeDisabled] = useState(false);
+  const [newDateRangeDisabled, setNewDateRangeDisabled] = useState(false);
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: z.infer<typeof newIndoorSimulatorSiteSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log(values);
@@ -62,22 +65,41 @@ export function Component() {
   }
 
   function onAddNewOpeningDateRange() {
+    if (form.formState.errors.openingDates) return;
     const openingDates = form.getValues("openingDates");
-    form.setValue("openingDates", [
-      ...openingDates,
+    form.setValue(
+      "openingDates",
+      [
+        ...openingDates,
+        {
+          id: crypto.randomUUID(),
+          start: undefined,
+          end: undefined,
+          saved: false,
+        },
+      ],
       {
-        id: crypto.randomUUID(),
-        start: undefined,
-        end: undefined,
-        saved: false,
+        shouldValidate: true,
       },
-    ]);
+    );
+  }
+
+  function onEditOpeningDateRange(id: string) {
+    form.setValue(
+      "openingDates",
+      form
+        .getValues("openingDates")
+        .map((v) =>
+          v.id === id ? { ...v, saved: false } : { ...v, saved: true },
+        ),
+    );
   }
 
   function onRemoveOpeningDateRange(id: string) {
     form.setValue(
       "openingDates",
       form.getValues("openingDates").filter((od) => od.id !== id),
+      { shouldValidate: true },
     );
   }
 
@@ -87,27 +109,46 @@ export function Component() {
       form
         .getValues("openingDates")
         .map((od) => (od.id === dateRange.id ? dateRange : od)),
+      { shouldValidate: true },
     );
   }
 
   function onAddNewOpeningHoursRange() {
-    form.setValue("openingHours", [
-      ...form.getValues("openingHours"),
-      {
-        id: crypto.randomUUID(),
-        start: "",
-        end: "",
-        fee: "",
-        saved: false,
-      },
-    ]);
+    if ("openingHours" in form.formState.errors) return;
+    form.setValue(
+      "openingHours",
+      [
+        ...form.getValues("openingHours"),
+        {
+          id: crypto.randomUUID(),
+          start: "",
+          end: "",
+          fee: "",
+          saved: false,
+        },
+      ],
+      { shouldValidate: true },
+    );
+  }
+
+  function onEditOpeningTimeRange(id: string) {
+    form.setValue(
+      "openingHours",
+      form
+        .getValues("openingHours")
+        .map((v) =>
+          v.id === id ? { ...v, saved: false } : { ...v, saved: true },
+        ),
+    );
   }
 
   function onRemoveOpeningTimeRange(id: string) {
-    console.log(id);
     form.setValue(
       "openingHours",
       form.getValues("openingHours").filter((v) => v.id !== id),
+      {
+        shouldValidate: true,
+      },
     );
   }
 
@@ -117,8 +158,20 @@ export function Component() {
       form
         .getValues("openingHours")
         .map((v) => (v.id === timeRange.id ? timeRange : v)),
+      {
+        shouldValidate: true,
+      },
     );
   }
+
+  useEffect(() => {
+    setNewTimeRangeDisabled(!!form.formState.errors.openingHours);
+  }, [form.formState.errors.openingHours]);
+
+  useEffect(() => {
+    console.log(form.formState.errors.openingDates);
+    setNewDateRangeDisabled(!!form.formState.errors.openingDates);
+  }, [form.formState.errors.openingDates]);
 
   return (
     <MainLayout
@@ -127,7 +180,7 @@ export function Component() {
           <IconButton icon="back" onClick={() => navigate(-1)}>
             返回
           </IconButton>
-          <IconButton icon="save" onClick={() => {}}>
+          <IconButton icon="save" form="new-site" onClick={() => {}}>
             儲存
           </IconButton>
         </>
@@ -139,8 +192,9 @@ export function Component() {
         </h1>
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(onSubmit)}
+            onSubmit={form.handleSubmit(onSubmit, (e) => console.log(e))}
             className="space-y-10 px-56"
+            id="new-site"
           >
             <section className="space-y-6 border border-line-gray bg-white px-12 py-10">
               <FormTextField name="name" label="場地名稱" />
@@ -188,6 +242,7 @@ export function Component() {
                   onClick={onAddNewOpeningDateRange}
                 />
               }
+              disabled={newDateRangeDisabled}
             >
               {form.watch("openingDates").length ? (
                 <ul>
@@ -200,6 +255,7 @@ export function Component() {
                           onSaveOpeningDateRange(dateRange)
                         }
                         data={dateRange}
+                        onEdit={() => onEditOpeningDateRange(dateRange.id)}
                       />
                     );
                   })}
@@ -219,6 +275,7 @@ export function Component() {
                   onClick={onAddNewOpeningHoursRange}
                 />
               }
+              disabled={newTimeRangeDisabled}
             >
               {form.watch("openingHours").length ? (
                 <ul>
@@ -230,6 +287,7 @@ export function Component() {
                         onSave={(timeRange: TimeRange) =>
                           onSaveOpeningTimeRange(timeRange)
                         }
+                        onEdit={() => onEditOpeningTimeRange(hours.id)}
                         data={hours}
                       />
                     );

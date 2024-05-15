@@ -11,13 +11,17 @@ export function DateRangeRow({
   onRemove,
   onSave,
   data,
+  onEdit,
+  disabled,
 }: {
   onRemove: () => void;
   onSave: (dr: DateRange) => void;
   data: DateRange;
+  onEdit: () => void;
+  disabled?: boolean;
 }) {
-  const [start, setStart] = useState(data.start);
-  const [end, setEnd] = useState(data.end);
+  const [start, setStart] = useState<Date | undefined>(data.start);
+  const [end, setEnd] = useState<Date | undefined>(data.end);
   const [errorFields, setErrorFields] = useState({
     start: false,
     end: false,
@@ -43,6 +47,7 @@ export function DateRangeRow({
       className={cn(
         "flex items-center border-b-[1.5px] border-b-transparent pb-4 pl-8 pr-5 pt-5 ",
         !data.saved && "border-b-orange bg-hover-orange",
+        disabled && "opacity-50",
       )}
     >
       <DatePicker
@@ -51,6 +56,8 @@ export function DateRangeRow({
         error={!!errorFields["start"]}
         clearError={() => setErrorFields((ef) => ({ ...ef, start: false }))}
         toDate={end ? addDays(end, -1) : undefined}
+        onEdit={onEdit}
+        disabled={disabled}
       />
       <span className="px-2.5 text-secondary-dark">～</span>
       <DatePicker
@@ -59,12 +66,19 @@ export function DateRangeRow({
         error={!!errorFields["end"]}
         clearError={() => setErrorFields((ef) => ({ ...ef, end: false }))}
         fromDate={start ? addDays(start, 1) : undefined}
+        onEdit={onEdit}
+        disabled={disabled}
       />
 
       <div className="ml-auto flex gap-4">
         {data.saved ? (
           <>
-            <button type="button" onClick={onRemove}>
+            <button
+              type="button"
+              onClick={onRemove}
+              disabled={disabled}
+              className={cn(disabled && "cursor-not-allowed")}
+            >
               <img src={trashCanIcon} />
             </button>
           </>

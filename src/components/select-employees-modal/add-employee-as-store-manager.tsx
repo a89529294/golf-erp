@@ -30,7 +30,7 @@ export function AddEmployeeAsStoreManagerModal({
     selectedEmployees
       ? (() => {
           const obj: Record<string, true> = {};
-          console.log("!???");
+
           selectedEmployees.forEach((e) => (obj[e.id] = true));
 
           return obj;

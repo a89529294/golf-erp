@@ -16,6 +16,8 @@ export function DatePicker({
   clearError,
   fromDate,
   toDate,
+  onEdit,
+  disabled,
 }: {
   date: Date | undefined;
   setDate: React.Dispatch<React.SetStateAction<Date | undefined>>;
@@ -23,6 +25,8 @@ export function DatePicker({
   clearError: () => void;
   fromDate?: Date | undefined;
   toDate?: Date | undefined;
+  onEdit: () => void;
+  disabled?: boolean;
 }) {
   const [open, setOpen] = React.useState(false);
 
@@ -44,7 +48,10 @@ export function DatePicker({
             "flex h-7 w-44 items-center border-b border-secondary-dark text-secondary-dark",
             !date && "text-word-gray",
             error && "border-b-destructive",
+            disabled && "cursor-not-allowed",
           )}
+          onFocus={onEdit}
+          disabled={disabled}
         >
           <span className="flex-1">
             {date ? minguoDate : <span>日期</span>}

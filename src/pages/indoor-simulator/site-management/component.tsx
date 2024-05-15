@@ -165,11 +165,11 @@ function Section({
     <section className="flex gap-4 border border-line-gray bg-white p-4">
       <div className="h-32 w-32 bg-[#c1c1c1]" />
       <div className="grow-[89] basis-0 bg-light-gray px-4 pb-5 pt-2.5">
-        <h2 className="text-secondary-purple text-lg font-semibold">{name}</h2>
+        <h2 className="text-lg font-semibold text-secondary-purple">{name}</h2>
         <p>{desc}</p>
       </div>
       <div className="grow-[42] basis-0 bg-light-gray px-4 pb-5 pt-2.5">
-        <h2 className="text-word-darker-gray text-lg font-semibold">
+        <h2 className="text-lg font-semibold text-word-darker-gray">
           場地開放日期
         </h2>
         {openingDates.map((d, i) => (
@@ -181,7 +181,7 @@ function Section({
         ))}
       </div>
       <div className="grow-[56] basis-0 bg-light-gray px-4 pb-5 pt-2.5">
-        <h2 className="text-word-darker-gray text-lg font-semibold">
+        <h2 className="text-lg font-semibold text-word-darker-gray">
           場地開放日期
         </h2>
         {openingHours.map((h, i) => (
@@ -195,9 +195,9 @@ function Section({
         ))}
       </div>
       <div className="flex flex-col gap-4 self-start">
-        <button>
+        <Link to="/indoor-simulator/site-management/details/1">
           <img src={pencilIcon} />
-        </button>
+        </Link>
         <button>
           <img src={trashCanIcon} />
         </button>
