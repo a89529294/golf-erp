@@ -77,13 +77,42 @@ export const linksKV = {
     label: "高爾夫球",
     type: "nested" as const,
     basePath: GOLF_BASE_PATH,
-    path: `${GOLF_BASE_PATH}/basic-operations`,
+    path: `${GOLF_BASE_PATH}/member-management`,
     allowedPermissions: ["高爾夫球-基本操作", "高爾夫球-報表"],
     subLinks: {
-      "basic-operations": {
-        label: "基本操作",
-        path: `${GOLF_BASE_PATH}/basic-operations`,
-        lazy: () => import("@/pages/golf/basic-operations"),
+      "member-management": {
+        label: "會員管理",
+        path: `${GOLF_BASE_PATH}/member-management`,
+        lazy: () => import("@/pages/golf/member-management"),
+        type: "flat" as const,
+        allowedPermissions: ["高爾夫球-基本操作"],
+      },
+      "site-management": {
+        label: "場地管理",
+        paths: {
+          index: `${GOLF_BASE_PATH}/site-management`,
+          new: `${GOLF_BASE_PATH}/site-management/new`,
+          details: `${GOLF_BASE_PATH}/site-management/details/:id`,
+        },
+        lazy: {
+          index: () => import("@/pages/golf/site-management"),
+          new: () => import("@/pages/golf/site-management/new"),
+          details: () => import("@/pages/golf/site-management/details"),
+        },
+        type: "multiple" as const,
+        allowedPermissions: ["高爾夫球-基本操作"],
+      },
+      "appointment-management": {
+        label: "預約管理",
+        path: `${GOLF_BASE_PATH}/appointment-management`,
+        lazy: () => import("@/pages/golf/appointment-management"),
+        type: "flat" as const,
+        allowedPermissions: ["高爾夫球-基本操作"],
+      },
+      "repair-report": {
+        label: "報修回報",
+        path: `${GOLF_BASE_PATH}/repair-report`,
+        lazy: () => import("@/pages/golf/repair-report"),
         type: "flat" as const,
         allowedPermissions: ["高爾夫球-基本操作"],
       },

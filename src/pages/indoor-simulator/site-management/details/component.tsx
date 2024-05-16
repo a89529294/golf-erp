@@ -225,7 +225,7 @@ export function Component() {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit, (e) => console.log(e))}
-            className="space-y-10 px-56"
+            className="space-y-10 px-48"
             id="edit-site"
           >
             <section className="space-y-6 border border-line-gray bg-white px-12 py-10">

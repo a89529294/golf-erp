@@ -38,10 +38,13 @@ export const newIndoorSimulatorSiteSchema =
   baseIndoorSimulatorSiteSchema.extend({
     imageFiles: z.array(fileWithIdSchema),
   });
+
 export const existingIndoorSimulatorSiteSchema =
   baseIndoorSimulatorSiteSchema.extend({
     imageFiles: z.array(z.union([existingImgSchema, fileWithIdSchema])),
   });
+
+export type BaseNewSite = z.infer<typeof newIndoorSimulatorSiteSchema>;
 
 export type DateRange = z.infer<
   typeof baseIndoorSimulatorSiteSchema

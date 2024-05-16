@@ -1,8 +1,8 @@
 import { CategoryMain } from "@/components/category/category-main";
 import {
-  indoorSimulatorSiteManagementQuery,
+  golfSiteManagementQuery,
   loader,
-} from "@/pages/indoor-simulator/site-management/loader";
+} from "@/pages/golf/site-management/loader";
 import { linksKV } from "@/utils/links";
 import { useLoaderData } from "react-router-dom";
 
@@ -12,11 +12,9 @@ export function Component() {
   return (
     <CategoryMain
       initialData={initialData}
-      queryObject={indoorSimulatorSiteManagementQuery}
-      newSiteHref={
-        linksKV["indoor-simulator"].subLinks["site-management"].paths.new
-      }
-      siteDetailsHref="/indoor-simulator/site-management/details/"
+      queryObject={golfSiteManagementQuery}
+      newSiteHref={linksKV["golf"].subLinks["site-management"].paths.new}
+      siteDetailsHref="/golf/site-management/details/"
     />
   );
 }
