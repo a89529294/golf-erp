@@ -103,9 +103,10 @@ export function Component() {
   });
 
   const currentCountyName = store.county;
-  const currentCountyCode = counties.find(
+  const oldCountyCode = counties.find(
     (c) => c.countyname === currentCountyName,
   )?.countycode;
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -117,7 +118,7 @@ export function Component() {
       phone: store.telphone.split("-")[1],
       contact: store.contact,
       contactPhone: store.contactPhone,
-      county: currentCountyCode,
+      county: oldCountyCode,
       district: store.district,
       address: store.address,
       employees: employees.filter((e) =>
@@ -125,6 +126,8 @@ export function Component() {
       ),
     },
   });
+
+  const currentCountyCode = form.watch("county");
 
   const { data: districts } = useQuery({
     ...generateDistrictQuery(currentCountyCode ?? ""),
@@ -237,7 +240,7 @@ export function Component() {
       }
     >
       <div className="mb-2.5 w-full border border-line-gray p-1 ">
-        <div className="bg-light-gray py-2.5  text-center">建立人員資料</div>
+        <div className="bg-light-gray py-2.5  text-center">建立廠商資料</div>
         <Form {...form}>
           <form
             id="edit-store-form"
@@ -568,7 +571,11 @@ function StoreFormAddressSelectFields({
               <FormLabel className="w-16">{label}</FormLabel>
               <Select
                 disabled={disabled}
-                onValueChange={field.onChange}
+                onValueChange={(v) => {
+                  field.onChange(v);
+                  console.log(v);
+                  form.setValue("district", "");
+                }}
                 defaultValue={field.value}
               >
                 <FormControl>
@@ -603,7 +610,10 @@ function StoreFormAddressSelectFields({
             <div className="flex items-baseline gap-5">
               <Select
                 disabled={disabled}
-                onValueChange={field.onChange}
+                onValueChange={(v) => {
+                  field.onChange(v);
+                }}
+                value={form.watch("district")}
                 defaultValue={field.value}
               >
                 <FormControl>
@@ -615,7 +625,7 @@ function StoreFormAddressSelectFields({
                   >
                     <SelectValue
                       placeholder={
-                        form.getValues("county") ? "選擇鄉鎮" : "先選擇縣市"
+                        form.watch("county") ? "選擇鄉鎮" : "先選擇縣市"
                       }
                     />
                   </SelectTrigger>

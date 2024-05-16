@@ -104,7 +104,7 @@ export function Component() {
       employees: [],
     },
   });
-  const currentCounty = form.getValues("county");
+  const currentCounty = form.watch("county");
   const { data: districts } = useQuery({
     ...generateDistrictQuery(currentCounty),
     enabled: !!currentCounty,
@@ -172,7 +172,7 @@ export function Component() {
       }
     >
       <div className="mb-2.5 w-full border border-line-gray p-1">
-        <div className="bg-light-gray py-2.5  text-center">建立人員資料</div>
+        <div className="bg-light-gray py-2.5  text-center">建立廠商資料</div>
         <Form {...form}>
           <form
             id="new-store-form"
@@ -501,7 +501,10 @@ function StoreFormAddressSelectFields({
               <FormLabel className="w-16">{label}</FormLabel>
               <Select
                 disabled={disabled}
-                onValueChange={field.onChange}
+                onValueChange={(v) => {
+                  field.onChange(v);
+                  form.resetField("district");
+                }}
                 defaultValue={field.value}
               >
                 <FormControl>
@@ -537,6 +540,7 @@ function StoreFormAddressSelectFields({
               <Select
                 disabled={disabled}
                 onValueChange={field.onChange}
+                value={form.watch("district")}
                 defaultValue={field.value}
               >
                 <FormControl>
@@ -548,7 +552,7 @@ function StoreFormAddressSelectFields({
                   >
                     <SelectValue
                       placeholder={
-                        form.getValues("county") ? "選擇鄉鎮" : "先選擇縣市"
+                        form.watch("county") ? "選擇鄉鎮" : "先選擇縣市"
                       }
                     />
                   </SelectTrigger>
@@ -567,7 +571,6 @@ function StoreFormAddressSelectFields({
           </FormItem>
         )}
       />
-
       <FormField
         control={form.control}
         name={names[2]}
