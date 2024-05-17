@@ -45,6 +45,9 @@ export const existingIndoorSimulatorSiteSchema =
   });
 
 export type BaseNewSite = z.infer<typeof newIndoorSimulatorSiteSchema>;
+export type BaseExistingSite = z.infer<
+  typeof existingIndoorSimulatorSiteSchema
+>;
 
 export type DateRange = z.infer<
   typeof baseIndoorSimulatorSiteSchema

@@ -2,7 +2,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { WeekdayRow } from "@/pages/golf/site-management/components/weekday-row";
 import {
-  WeekDayContent,
+  WeekdayContent,
   Weekday,
 } from "@/pages/golf/site-management/new/schemas";
 import { motion } from "framer-motion";
@@ -49,10 +49,12 @@ export const WeekDayTabs = ({
   onEdit,
   onRemove,
   onSave,
+  disabled,
 }: {
   onEdit: (weekday: Weekday, id: string) => void;
   onRemove: (weekday: Weekday, id: string) => void;
-  onSave: (weekday: Weekday, content: WeekDayContent) => void;
+  onSave: (weekday: Weekday, content: WeekdayContent) => void;
+  disabled?: boolean;
 }) => {
   const form = useFormContext();
   const [activeValue, setActiveValue] = React.useState("monday");
@@ -60,37 +62,53 @@ export const WeekDayTabs = ({
   return (
     <Tabs value={activeValue} onValueChange={setActiveValue}>
       <WeekDayTabsList>
-        <WeekDayTabsTrigger value="monday" isActive={"monday" === activeValue}>
+        <WeekDayTabsTrigger
+          disabled={disabled}
+          value="monday"
+          isActive={"monday" === activeValue}
+        >
           星期一
         </WeekDayTabsTrigger>
         <WeekDayTabsTrigger
           value="tuesday"
           isActive={"tuesday" === activeValue}
+          disabled={disabled}
         >
           星期二
         </WeekDayTabsTrigger>
         <WeekDayTabsTrigger
           value="wednesday"
           isActive={"wednesday" === activeValue}
+          disabled={disabled}
         >
           星期三
         </WeekDayTabsTrigger>
         <WeekDayTabsTrigger
           value="thursday"
           isActive={"thursday" === activeValue}
+          disabled={disabled}
         >
           星期四
         </WeekDayTabsTrigger>
-        <WeekDayTabsTrigger value="friday" isActive={"friday" === activeValue}>
+        <WeekDayTabsTrigger
+          value="friday"
+          isActive={"friday" === activeValue}
+          disabled={disabled}
+        >
           星期五
         </WeekDayTabsTrigger>
         <WeekDayTabsTrigger
           value="saturday"
           isActive={"saturday" === activeValue}
+          disabled={disabled}
         >
           星期六
         </WeekDayTabsTrigger>
-        <WeekDayTabsTrigger value="sunday" isActive={"sunday" === activeValue}>
+        <WeekDayTabsTrigger
+          value="sunday"
+          isActive={"sunday" === activeValue}
+          disabled={disabled}
+        >
           星期日
         </WeekDayTabsTrigger>
       </WeekDayTabsList>
@@ -108,14 +126,15 @@ export const WeekDayTabs = ({
         <TabsContent value={day} key={day}>
           {form.watch(day).length ? (
             <ul>
-              {form.getValues(day).map((content: WeekDayContent) => {
+              {form.getValues(day).map((content: WeekdayContent) => {
                 return (
                   <WeekdayRow
                     key={content.id}
                     onRemove={() => onRemove(day, content.id)}
-                    onSave={(content: WeekDayContent) => onSave(day, content)}
+                    onSave={(content: WeekdayContent) => onSave(day, content)}
                     onEdit={() => onEdit(day, content.id)}
                     data={content}
+                    disabled={disabled}
                   />
                 );
               })}

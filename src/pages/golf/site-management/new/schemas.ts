@@ -1,29 +1,58 @@
-import { newIndoorSimulatorSiteSchema } from "@/pages/indoor-simulator/site-management/new/schemas";
+import {
+  existingIndoorSimulatorSiteSchema,
+  newIndoorSimulatorSiteSchema,
+} from "@/pages/indoor-simulator/site-management/new/schemas";
 import { z } from "zod";
 
-const weekDaySchema = z.object({
-  id: z.string(),
-  start: z.string(),
-  end: z.string(),
-  fee: z.union([z.number(), z.literal("")]),
-  numberOfGroups: z.union([z.number(), z.literal("")]),
-  numberOfGolfBalls: z.union([z.number(), z.literal("")]),
-  saved: z.boolean(),
-});
+const weekdaySchema = z.array(
+  z.object({
+    id: z.string(),
+    title: z.string(),
+    start: z.string(),
+    end: z.string(),
+    numberOfGroups: z.union([z.number(), z.literal("")]),
+    subRows: z.array(
+      z.object({
+        id: z.string(),
+        memberLevel: z.union([
+          z.literal("guest"),
+          z.literal("member"),
+          z.literal("group-member"),
+        ]),
+        partyOf1Fee: z.union([z.number(), z.literal("")]),
+        partyOf2Fee: z.union([z.number(), z.literal("")]),
+        partyOf3Fee: z.union([z.number(), z.literal("")]),
+        partyOf4Fee: z.union([z.number(), z.literal("")]),
+      }),
+    ),
+    saved: z.boolean(),
+  }),
+);
 
-export type WeekDayContent = z.infer<typeof weekDaySchema>;
+export type MemberLevel = z.infer<
+  typeof weekdaySchema
+>[number]["subRows"][number]["memberLevel"];
+export type WeekdayContent = z.infer<typeof weekdaySchema>[number];
+export type WeekdaySubRow = z.infer<
+  typeof weekdaySchema
+>[number]["subRows"][number];
 
-export const newGolfSiteSchema = newIndoorSimulatorSiteSchema.extend({
-  monday: z.array(weekDaySchema),
-  tuesday: z.array(weekDaySchema),
-  wednesday: z.array(weekDaySchema),
-  thursday: z.array(weekDaySchema),
-  friday: z.array(weekDaySchema),
-  saturday: z.array(weekDaySchema),
-  sunday: z.array(weekDaySchema),
-});
+const obj = {
+  monday: weekdaySchema,
+  tuesday: weekdaySchema,
+  wednesday: weekdaySchema,
+  thursday: weekdaySchema,
+  friday: weekdaySchema,
+  saturday: weekdaySchema,
+  sunday: weekdaySchema,
+};
+
+export const newGolfSiteSchema = newIndoorSimulatorSiteSchema.extend(obj);
+export const existingGolfSiteSchema =
+  existingIndoorSimulatorSiteSchema.extend(obj);
 
 export type NewGolfSite = z.infer<typeof newGolfSiteSchema>;
+export type ExistingGolfSite = z.infer<typeof existingGolfSiteSchema>;
 
 export const weekdays = [
   { en: "monday", cn: "星期一" },

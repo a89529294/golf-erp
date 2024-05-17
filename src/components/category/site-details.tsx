@@ -1,6 +1,6 @@
 import { WeekDayTabs } from "@/components/weekday-tabs";
 import {
-  NewGolfSite,
+  ExistingGolfSite,
   WeekdayContent,
   Weekday,
 } from "@/pages/golf/site-management/new/schemas";
@@ -10,20 +10,23 @@ import { PreviewImage } from "@/pages/indoor-simulator/site-management/new/compo
 import { Section } from "@/pages/indoor-simulator/site-management/new/components/section";
 import { TimeRangeRow } from "@/pages/indoor-simulator/site-management/new/components/time-range-row";
 import {
-  BaseNewSite,
+  BaseExistingSite,
+  ExistingImg,
+  existingIndoorSimulatorSiteSchema,
   type DateRange,
   type FileWithId,
   type TimeRange,
 } from "@/pages/indoor-simulator/site-management/new/schemas";
 import { useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
+import { z } from "zod";
 
-export function NewSite() {
-  const form = useFormContext<BaseNewSite | NewGolfSite>();
+export function SiteDetails({ formDisabled }: { formDisabled: boolean }) {
+  const form = useFormContext<BaseExistingSite | ExistingGolfSite>();
   const [newTimeRangeDisabled, setNewTimeRangeDisabled] = useState(false);
   const [newDateRangeDisabled, setNewDateRangeDisabled] = useState(false);
 
-  function onSubmit(values: NewGolfSite | BaseNewSite) {
+  function onSubmit(values: z.infer<typeof existingIndoorSimulatorSiteSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log(values);
@@ -41,7 +44,7 @@ export function NewSite() {
     const files = e.target.files;
     if (!files) return;
 
-    let filesArray: FileWithId[] = [];
+    let filesArray: (FileWithId | ExistingImg)[] = [];
 
     filesArray = Array.from(files).map((file) => ({
       file: file,
@@ -163,12 +166,12 @@ export function NewSite() {
         ...form.getValues(day),
         {
           id: crypto.randomUUID(),
-          title: "",
           start: "",
           end: "",
+          saved: false,
           numberOfGroups: "",
           subRows: [],
-          saved: false,
+          title: "",
         },
       ],
       { shouldValidate: true },
@@ -176,6 +179,7 @@ export function NewSite() {
   }
 
   function onEditWeekdayTimeRange(day: Weekday, id: string) {
+    console.log(day, id);
     form.setValue(
       day,
       form
@@ -190,6 +194,8 @@ export function NewSite() {
     );
   }
   function onSaveWeekdayTimeRange(day: Weekday, content: WeekdayContent) {
+    console.log(day, content.id);
+
     form.setValue(
       day,
       form
@@ -203,7 +209,6 @@ export function NewSite() {
   }, [form.formState.errors.openingHours]);
 
   useEffect(() => {
-    console.log(form.formState.errors.openingDates);
     setNewDateRangeDisabled(!!form.formState.errors.openingDates);
   }, [form.formState.errors.openingDates]);
 
@@ -211,11 +216,15 @@ export function NewSite() {
     <form
       onSubmit={form.handleSubmit(onSubmit, (e) => console.log(e))}
       className="space-y-10 px-20"
-      id="new-site"
+      id="edit-site"
     >
       <section className="space-y-6 border border-line-gray bg-white px-12 py-10">
-        <FormTextField name="name" label="場地名稱" />
-        <FormTextField name="description" label="場地簡介" />
+        <FormTextField name="name" label="場地名稱" disabled={formDisabled} />
+        <FormTextField
+          name="description"
+          label="場地簡介"
+          disabled={formDisabled}
+        />
       </section>
 
       <Section
@@ -229,8 +238,10 @@ export function NewSite() {
             accept="image/png, image/jpeg"
             multiple
             onChange={onAddNewImages}
+            disabled={formDisabled}
           />
         }
+        disabled={formDisabled}
       >
         {form.watch("imageFiles").length ? (
           <div className="grid grid-cols-[repeat(auto-fill,minmax(130px,1fr))] px-3 py-5">
@@ -240,6 +251,7 @@ export function NewSite() {
                   key={file.id}
                   file={file}
                   onRemoveImage={onRemoveImage}
+                  disabled={formDisabled}
                 />
               );
             })}
@@ -259,7 +271,7 @@ export function NewSite() {
             onClick={onAddNewOpeningDateRange}
           />
         }
-        disabled={newDateRangeDisabled}
+        disabled={newDateRangeDisabled || formDisabled}
       >
         {form.watch("openingDates").length ? (
           <ul>
@@ -273,6 +285,7 @@ export function NewSite() {
                   }
                   data={dateRange}
                   onEdit={() => onEditOpeningDateRange(dateRange.id)}
+                  disabled={formDisabled}
                 />
               );
             })}
@@ -293,12 +306,13 @@ export function NewSite() {
               onClick={() => onAddNewWeekdayTimeRange("monday")}
             />
           }
-          disabled={newTimeRangeDisabled}
+          disabled={newTimeRangeDisabled || formDisabled}
         >
           <WeekDayTabs
             onEdit={onEditWeekdayTimeRange}
             onRemove={onRemoveWeekdayTimeRange}
             onSave={onSaveWeekdayTimeRange}
+            disabled={formDisabled}
           />
         </Section>
       ) : (
