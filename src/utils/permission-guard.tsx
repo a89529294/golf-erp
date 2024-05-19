@@ -11,6 +11,9 @@ export function PermissionGuard({
   // user will always exist, this component is only under <RedirectToLoginIfNotAuthed/>
   const userPermissions = user!.permissions;
 
+  // if route has no permission requirement, let everyone through
+  if (routePermissions.length === 0) return <Outlet />;
+
   if (
     userPermissions.filter((up) => routePermissions.includes(up)).length === 0
   )

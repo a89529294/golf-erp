@@ -100,3 +100,16 @@ input::-webkit-inner-spin-button {
 input[type="number"] {
   -moz-appearance: textfield;
 }
+
+/* the following three declarations are for react day picker */
+.rdp [aria-hidden="true"] {
+  @apply hidden;
+}
+
+.rdp-vhidden {
+  @apply hidden;
+}
+
+select::-webkit-scrollbar {
+  display: none;
+}

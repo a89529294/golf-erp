@@ -28,7 +28,6 @@ const INDOOR_SIMULATOR_BASE_PATH = "/indoor-simulator";
 const GOLF_BASE_PATH = "/golf";
 const DRIVING_RANGE_BASE_PATH = "/driving-range";
 const SYSTEM_MANAGEMENT_BASE_PATH = "/system-management";
-// const MEMBER_MANAGEMENT_BASE_PATH = "/member-management";
 
 export const permissionsList = {
   "indoor-simulator": {
@@ -230,6 +229,7 @@ export const linksKV = {
   },
   "store-management": {
     label: "廠商管理",
+    type: "multiple" as const,
     paths: {
       index: "/store-management",
       new: "/store-management/new",
@@ -240,29 +240,23 @@ export const linksKV = {
       new: () => import("@/pages/store-management/new"),
       details: () => import("@/pages/store-management/details"),
     },
-    type: "multiple" as const,
     allowedPermissions: ["廠商管理"],
   },
-  // "member-management": {
-  //   label: "會員管理",
-  //   basePath: MEMBER_MANAGEMENT_BASE_PATH,
-  //   path: `${MEMBER_MANAGEMENT_BASE_PATH}/member-profiles`,
-  //   type: "nested" as const,
-  //   subLinks: {
-  //     profiles: {
-  //       label: "查詢基本資料",
-  //       path: `${MEMBER_MANAGEMENT_BASE_PATH}/member-profiles`,
-  //       lazy: () => import("@/pages/member-profiles"),
-  //       type: "flat" as const,
-  //     },
-  //     purchases: {
-  //       label: "儲值紀錄",
-  //       path: `${MEMBER_MANAGEMENT_BASE_PATH}/purchases`,
-  //       lazy: () => import("@/pages/purchases"),
-  //       type: "flat" as const,
-  //     },
-  //   },
-  // },
+  "member-management": {
+    label: "會員管理",
+    type: "multiple" as const,
+    paths: {
+      index: "/member-management",
+      new: "/member-management/new",
+      details: "/member-management/details/:id",
+    },
+    lazy: {
+      index: () => import("@/pages/member-management"),
+      new: () => import("@/pages/member-management/new"),
+      details: () => import("@/pages/member-management/details"),
+    },
+    allowedPermissions: [],
+  },
 };
 // } satisfies Record<string, FlatLink | NestedLink>;
 

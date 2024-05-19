@@ -30,6 +30,8 @@ export function Sidebar() {
   const { user } = useAuth();
 
   const isLinkAllowed = (link: NestedLink | FlatLink | MultipleLink) => {
+    if (link.allowedPermissions.length === 0) return true;
+
     return !!user?.permissions.some((up) =>
       link.allowedPermissions.includes(up),
     );
@@ -96,6 +98,16 @@ export function Sidebar() {
       {isLinkAllowed(linksKV["store-management"]) && (
         <AccordionItemWrapper
           link={linksKV["store-management"]}
+          prevLink={prevLink}
+          nestedLinksClosed={nestedLinksClosed}
+          setNestedLinksClosed={setNestedLinksClosed}
+          nextLinkPath={nextLinkPath}
+          setNextLinkPath={setNextLinkPath}
+        />
+      )}
+      {isLinkAllowed(linksKV["member-management"]) && (
+        <AccordionItemWrapper
+          link={linksKV["member-management"]}
           prevLink={prevLink}
           nestedLinksClosed={nestedLinksClosed}
           setNestedLinksClosed={setNestedLinksClosed}

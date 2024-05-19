@@ -1,7 +1,7 @@
-import * as React from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { DayPicker } from "react-day-picker";
 import { zhTW } from "date-fns/locale";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import * as React from "react";
+import { DayPicker } from "react-day-picker";
 
 import { cn } from "@/lib/utils";
 
@@ -53,6 +53,7 @@ function Calendar({
         day_range_middle:
           "aria-selected:bg-accent aria-selected:text-accent-foreground",
         day_hidden: "invisible",
+        caption_dropdowns: "flex",
         ...classNames,
       }}
       components={{
@@ -60,6 +61,9 @@ function Calendar({
         IconRight: () => <ChevronRight className="h-4 w-4" />,
       }}
       onDayClick={onDaySelect}
+      captionLayout="dropdown"
+      fromYear={1900}
+      toYear={2025}
       {...props}
     />
   );
