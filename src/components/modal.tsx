@@ -41,6 +41,7 @@ export function Modal({
             setLoading(false);
             setDisabled(false);
             setOpen(false);
+            e.stopPropagation();
           }}
           className={cn(`flex h-[190px] w-[400px] flex-col items-center pb-5`)}
         >

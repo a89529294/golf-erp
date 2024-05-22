@@ -57,6 +57,7 @@ export const columns: ColumnDef<Store>[] = [
     accessorKey: "telphone",
     header: "市話",
     size: 15,
+    accessorFn: (row) => row.telphone ?? "",
   },
   {
     id: "contact-name-phone",

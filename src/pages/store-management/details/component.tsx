@@ -32,7 +32,7 @@ import {
 } from "react-router-dom";
 import { z } from "zod";
 import { Modal } from "@/components/modal";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { loader } from "@/pages/store-management/details/loader";
 import {
   countyQuery,
@@ -48,6 +48,8 @@ import {
 } from "@/pages/system-management/personnel-management/loader";
 import { AddEmployeeAsStoreManagerModal } from "@/components/select-employees-modal/add-employee-as-store-manager";
 import { genStoreQuery } from "./loader";
+import { privateFetch } from "@/utils/utils";
+import { toast } from "sonner";
 
 const formSchema = z
   .object({
@@ -75,6 +77,7 @@ const formSchema = z
   );
 
 export function Component() {
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const submit = useSubmit();
@@ -137,6 +140,20 @@ export function Component() {
     ...generateDistrictQuery(currentCountyCode ?? ""),
     enabled: !!currentCountyCode,
   });
+  const { mutateAsync: deleteStore } = useMutation({
+    mutationKey: ["delete-store"],
+    mutationFn: async (id: string) => {
+      return await privateFetch(`/store/${id}`, { method: "DELETE" });
+    },
+    onSuccess: () => {
+      navigate(-1);
+      toast.success("刪除成功");
+      queryClient.invalidateQueries({ queryKey: ["stores"] });
+    },
+    onError: () => {
+      toast.error("刪除失敗");
+    },
+  });
   const [isMutating, setIsMutating] = useState(false);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
@@ -146,7 +163,7 @@ export function Component() {
       name: values.name,
       category: values.category,
       businessHours: `${values.openingHoursStart}-${values.openingHoursEnd}`,
-      telphone: `${values.phoneAreaCode} ${values.phone}`,
+      telphone: `${values.phoneAreaCode}-${values.phone}`,
       contact: values.contact,
       contactPhone: values.contactPhone,
       county:
@@ -174,8 +191,6 @@ export function Component() {
     if (dirtyFields.employees)
       changedFields.employeeIds = transformedValues.employeeIds;
 
-    console.log(changedFields);
-    // console.log(transformedValues);
     setIsMutating(true);
     submit(
       {
@@ -201,31 +216,47 @@ export function Component() {
     <MainLayout
       headerChildren={
         <>
-          {form.formState.isDirty ? (
+          {disabled ? (
+            <IconButton
+              disabled={isMutating}
+              icon="back"
+              onClick={() => navigate(-1)}
+              type="button"
+            >
+              返回
+            </IconButton>
+          ) : form.formState.isDirty ? (
             <Modal
               dialogTriggerChildren={
-                <IconButton disabled={isMutating} icon="back">
+                <IconButton disabled={isMutating} icon="back" type="button">
                   返回
                 </IconButton>
               }
-              onSubmit={() => navigate(-1)}
-              title="資料尚未儲存，是否返回列表？"
+              onSubmit={() => {
+                setDisabled(true);
+                form.reset();
+              }}
+              title="資料尚未儲存，是否返回檢視？"
             />
           ) : (
             <IconButton
               disabled={isMutating}
               icon="back"
-              onClick={() => navigate(-1)}
+              onClick={() => setDisabled(true)}
+              type="button"
             >
               返回
             </IconButton>
           )}
+
           {disabled ? (
             <IconButton
               icon="save"
               type="button"
               onClick={() => {
-                setDisabled(false);
+                setTimeout(() => {
+                  setDisabled(false);
+                }, 0);
               }}
             >
               編輯
@@ -240,6 +271,20 @@ export function Component() {
               儲存
             </IconButton>
           )}
+
+          <Modal
+            dialogTriggerChildren={
+              <IconButton disabled={isMutating} icon="trashCan" type="button">
+                刪除
+              </IconButton>
+            }
+            onSubmit={async () => {
+              setIsMutating(true);
+              await deleteStore(storeId!);
+              setIsMutating(false);
+            }}
+            title={`是否刪除${store.name}`}
+          />
         </>
       }
     >
@@ -384,7 +429,7 @@ export function Component() {
                 disabled={!!disabled}
               />
             </section>
-            <section className="flex w-fit flex-col gap-6 border border-line-gray  px-12 pb-10">
+            <section className="flex w-fit flex-col gap-6 border border-line-gray px-12 pb-10">
               <div className="-mx-12 mb-4 bg-light-gray py-1.5 text-center text-black">
                 系統管理
               </div>
