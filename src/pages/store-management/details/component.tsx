@@ -112,11 +112,15 @@ export function Component() {
     defaultValues: {
       name: store.name,
       category: store.category,
-      openingHoursStart: store.businessHours.split("-")[0],
-      openingHoursEnd: store.businessHours.split("-")[1],
-      phoneAreaCode: store.telphone.split("-")[0],
-      phone: store.telphone.split("-")[1],
-      contact: store.contact,
+      openingHoursStart: store.businessHours
+        ? store.businessHours.split("-")[0]
+        : "",
+      openingHoursEnd: store.businessHours
+        ? store.businessHours.split("-")[1]
+        : "",
+      phoneAreaCode: store.telphone ? store.telphone.split("-")[0] : "",
+      phone: store.telphone ? store.telphone.split("-")[1] : "",
+      contact: store.contact ?? "",
       contactPhone: store.contactPhone,
       county: oldCountyCode,
       district: store.district,
@@ -380,7 +384,7 @@ export function Component() {
                 disabled={!!disabled}
               />
             </section>
-            <section className=" flex w-fit flex-col gap-6 border border-line-gray px-12 pb-10">
+            <section className="flex w-fit flex-col gap-6 border border-line-gray  px-12 pb-10">
               <div className="-mx-12 mb-4 bg-light-gray py-1.5 text-center text-black">
                 系統管理
               </div>

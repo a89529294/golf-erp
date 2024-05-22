@@ -225,6 +225,13 @@ export const linksKV = {
         type: "flat" as const,
         allowedPermissions: ["管理系統"],
       },
+      "banner-carousel": {
+        label: "Banner 設定",
+        path: `${SYSTEM_MANAGEMENT_BASE_PATH}/banner-carousel`,
+        lazy: () => import("@/pages/system-management/banner-carousel"),
+        type: "flat" as const,
+        allowedPermissions: ["管理系統"],
+      },
     },
   },
   "store-management": {

@@ -38,7 +38,7 @@ export function MemberForm({
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit, (e) => console.log(e))}
-          id="edit-member-form"
+          id="member-form"
           className="space-y-4 border border-line-gray p-1"
         >
           <div className="grid grid-cols-[152fr_110fr_110fr_110fr_110fr_80fr_120fr_152fr] gap-x-10 pt-2.5">

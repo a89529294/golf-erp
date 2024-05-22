@@ -72,7 +72,7 @@ export function Component() {
               編輯
             </IconButton>
           ) : (
-            <IconButton icon="save" type="submit" form="edit-member-form">
+            <IconButton icon="save" type="submit" form="member-form">
               儲存
             </IconButton>
           )}

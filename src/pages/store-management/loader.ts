@@ -7,9 +7,9 @@ import { z } from "zod";
 export const storeSchema = z.object({
   id: z.string(),
   name: z.string(),
-  businessHours: z.string(),
-  telphone: z.string(),
-  contact: z.string(),
+  businessHours: z.string().nullable(),
+  telphone: z.string().nullable(),
+  contact: z.string().nullable(),
   contactPhone: z.string(),
   category: z.enum(storeCategories),
   county: z.string(),
