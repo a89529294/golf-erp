@@ -1,10 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
-import { WeekdayRow } from "@/pages/golf/site-management/components/weekday-row";
-import {
-  WeekdayContent,
-  Weekday,
-} from "@/pages/golf/site-management/new/schemas";
+import { WeekdayRow } from "@/components/category/weekday-row";
+import { Weekday, WeekdayContent } from "@/utils/category/schemas";
 import { motion } from "framer-motion";
 import React from "react";
 import { useFormContext } from "react-hook-form";

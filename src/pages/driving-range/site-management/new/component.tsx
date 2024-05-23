@@ -3,29 +3,24 @@ import { IconButton } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { MainLayout } from "@/layouts/main-layout";
 import { equipments } from "@/utils/category/equipment";
-import { NewGolfCourse, newGolfCourseSchema } from "@/utils/category/schemas";
-
+import { newDrivingRangeSchema } from "@/utils/category/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { z } from "zod";
 
 export function Component() {
   const navigate = useNavigate();
-  const form = useForm<NewGolfCourse>({
-    resolver: zodResolver(newGolfCourseSchema),
+  const form = useForm<z.infer<typeof newDrivingRangeSchema>>({
+    resolver: zodResolver(newDrivingRangeSchema),
     defaultValues: {
       name: "",
       description: "",
       equipments: equipments,
       imageFiles: [],
       openingDates: [],
-      monday: [],
-      tuesday: [],
-      wednesday: [],
-      thursday: [],
-      friday: [],
-      saturday: [],
-      sunday: [],
+      venueSettings: [],
+      costPerBox: 0,
     },
   });
 
@@ -47,7 +42,7 @@ export function Component() {
           建立場地資料
         </h1>
         <Form {...form}>
-          <NewSite type="golf" />
+          <NewSite type="driving-range" />
         </Form>
       </div>
     </MainLayout>

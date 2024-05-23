@@ -1,11 +1,11 @@
 import { DatePicker } from "@/components/date-picker";
-import { type DateRange } from "@/pages/indoor-simulator/site-management/new/schemas";
 import { addDays } from "date-fns";
 import { useState } from "react";
 import greenFileIcon from "@/assets/green-file-icon.svg";
 import trashCanIcon from "@/assets/trash-can-icon.svg";
 import redXIcon from "@/assets/red-x-icon.svg";
 import { cn } from "@/lib/utils";
+import { DateRange } from "@/utils/category/schemas";
 
 export function DateRangeRow({
   onRemove,

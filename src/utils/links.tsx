@@ -52,13 +52,43 @@ export const linksKV = {
     label: "練習場",
     type: "nested" as const,
     basePath: DRIVING_RANGE_BASE_PATH,
-    path: `${DRIVING_RANGE_BASE_PATH}/basic-operations`,
+    path: `${DRIVING_RANGE_BASE_PATH}/member-management`,
     allowedPermissions: ["練習場-基本操作", "練習場-報表"],
     subLinks: {
-      "basic-operations": {
-        label: "基本操作",
-        path: `${DRIVING_RANGE_BASE_PATH}/basic-operations`,
-        lazy: () => import("@/pages/driving-range/basic-operations"),
+      "member-management": {
+        label: "會員管理",
+        path: `${DRIVING_RANGE_BASE_PATH}/member-management`,
+        lazy: () => import("@/pages/driving-range/member-management"),
+        type: "flat" as const,
+        allowedPermissions: ["練習場-基本操作"],
+      },
+      "site-management": {
+        label: "場地管理",
+        paths: {
+          index: `${DRIVING_RANGE_BASE_PATH}/site-management`,
+          new: `${DRIVING_RANGE_BASE_PATH}/site-management/new`,
+          details: `${DRIVING_RANGE_BASE_PATH}/site-management/details/:id`,
+        },
+        lazy: {
+          index: () => import("@/pages/driving-range/site-management"),
+          new: () => import("@/pages/driving-range/site-management/new"),
+          details: () =>
+            import("@/pages/driving-range/site-management/details"),
+        },
+        type: "multiple" as const,
+        allowedPermissions: ["練習場-基本操作"],
+      },
+      "appointment-management": {
+        label: "預約管理",
+        path: `${DRIVING_RANGE_BASE_PATH}/appointment-management`,
+        lazy: () => import("@/pages/driving-range/appointment-management"),
+        type: "flat" as const,
+        allowedPermissions: ["練習場-基本操作"],
+      },
+      "repair-report": {
+        label: "報修回報",
+        path: `${DRIVING_RANGE_BASE_PATH}/repair-report`,
+        lazy: () => import("@/pages/driving-range/repair-report"),
         type: "flat" as const,
         allowedPermissions: ["練習場-基本操作"],
       },
@@ -71,7 +101,6 @@ export const linksKV = {
       },
     },
   },
-
   golf: {
     label: "高爾夫球",
     type: "nested" as const,

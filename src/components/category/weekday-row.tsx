@@ -12,12 +12,12 @@ import {
 } from "@/components/ui/select";
 import { UnderscoredInput } from "@/components/underscored-input";
 import { cn } from "@/lib/utils";
+import { onChange } from "@/pages/indoor-simulator/site-management/new/helpers";
 import {
   MemberLevel,
   WeekdayContent,
   WeekdaySubRow,
-} from "@/pages/golf/site-management/new/schemas";
-import { onChange } from "@/pages/indoor-simulator/site-management/new/helpers";
+} from "@/utils/category/schemas";
 import { useRef, useState } from "react";
 
 export function WeekdayRow({

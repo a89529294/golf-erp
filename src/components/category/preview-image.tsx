@@ -1,7 +1,7 @@
-import { ExistingImg, FileWithId } from "../schemas";
 import React from "react";
 import redXIcon from "@/assets/red-x-icon.svg";
 import { cn } from "@/lib/utils";
+import { FileWithId, ExistingImg } from "@/utils/category/schemas";
 
 export function PreviewImage({
   file,

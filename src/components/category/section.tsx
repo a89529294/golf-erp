@@ -5,15 +5,16 @@ import plusIcon from "@/assets/plus-icon.svg";
 export function Section({
   title,
   subTitle,
-  inputButtonElement,
-  inputButtonText,
+  inputButton,
   children,
   disabled,
 }: {
   title: string;
   subTitle?: string;
-  inputButtonElement: React.ReactElement;
-  inputButtonText: string;
+  inputButton?: {
+    element: React.ReactElement;
+    text: string;
+  };
   children: React.ReactNode;
   disabled?: boolean;
 }) {
@@ -25,18 +26,20 @@ export function Section({
           <span className="ml-1 text-sm text-word-red">{subTitle}</span>
         )}
 
-        <label
-          className={cn(
-            "relative ml-auto cursor-pointer bg-white",
-            disabled && "cursor-not-allowed opacity-50",
-          )}
-        >
-          <div className={cn(button({ size: "short" }))}>
-            <img src={plusIcon} />
-            {inputButtonText}
-          </div>
-          {inputButtonElement}
-        </label>
+        {inputButton && (
+          <label
+            className={cn(
+              "relative ml-auto cursor-pointer bg-white",
+              disabled && "cursor-not-allowed opacity-50",
+            )}
+          >
+            <div className={cn(button({ size: "short" }))}>
+              <img src={plusIcon} />
+              {inputButton.text}
+            </div>
+            {inputButton.element}
+          </label>
+        )}
       </header>
 
       <div className="border-y border-line-gray bg-white text-center text-word-gray">

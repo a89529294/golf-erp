@@ -5,6 +5,33 @@ const sections = [
     id: "1",
     name: "場地A",
     desc: "說明簡介說明簡介說明簡介說明簡介說明簡介說明簡介說明簡介說明簡介說明簡介說明簡介說明簡介說明簡介說明簡介說明簡介說明簡介說明簡介說明簡介說明簡介說明簡介說明簡介說明簡介說明簡介",
+    equipments: [
+      {
+        id: "1",
+        label: "過山車電動麻將",
+        selected: true,
+      },
+      {
+        id: "2",
+        label: "冷暖空調",
+        selected: true,
+      },
+      {
+        id: "3",
+        label: "沙發",
+        selected: true,
+      },
+      {
+        id: "4",
+        label: "VIP包廂",
+        selected: true,
+      },
+      {
+        id: "5",
+        label: "茶几",
+        selected: true,
+      },
+    ],
     openingDates: [
       ["113-07-01", "113-10-01"],
       ["113-07-01", "113-10-01"],

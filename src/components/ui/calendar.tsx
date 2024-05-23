@@ -63,7 +63,7 @@ function Calendar({
       onDayClick={onDaySelect}
       captionLayout="dropdown"
       fromYear={1900}
-      toYear={2025}
+      toYear={2030}
       {...props}
     />
   );

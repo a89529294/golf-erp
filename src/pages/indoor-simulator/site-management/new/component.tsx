@@ -2,7 +2,8 @@ import { NewSite } from "@/components/category/new-site";
 import { IconButton } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { MainLayout } from "@/layouts/main-layout";
-import { newIndoorSimulatorSiteSchema } from "@/pages/indoor-simulator/site-management/new/schemas";
+import { equipments } from "@/utils/category/equipment";
+import { newIndoorSimulatorSchema } from "@/utils/category/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -10,11 +11,12 @@ import { z } from "zod";
 
 export function Component() {
   const navigate = useNavigate();
-  const form = useForm<z.infer<typeof newIndoorSimulatorSiteSchema>>({
-    resolver: zodResolver(newIndoorSimulatorSiteSchema),
+  const form = useForm<z.infer<typeof newIndoorSimulatorSchema>>({
+    resolver: zodResolver(newIndoorSimulatorSchema),
     defaultValues: {
       name: "",
       description: "",
+      equipments: equipments,
       imageFiles: [],
       openingDates: [],
       openingHours: [],
@@ -39,7 +41,7 @@ export function Component() {
           建立場地資料
         </h1>
         <Form {...form}>
-          <NewSite />
+          <NewSite type="indoor-simulator" />
         </Form>
       </div>
     </MainLayout>

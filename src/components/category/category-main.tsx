@@ -5,6 +5,7 @@ import { SearchInput } from "@/components/search-input";
 import { button } from "@/components/ui/button-cn";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MainLayout } from "@/layouts/main-layout";
+import { cn } from "@/lib/utils";
 import { UseQueryOptions, useQuery } from "@tanstack/react-query";
 import { useLayoutEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
@@ -14,6 +15,11 @@ export function CategoryMain<
     id: string;
     name: string;
     desc: string;
+    equipments: {
+      id: string;
+      label: string;
+      selected: boolean;
+    }[];
     openingDates: [string, string][];
     openingHours: { hours: string; duration: string; fee: string }[];
   }[],
@@ -74,6 +80,7 @@ export function CategoryMain<
                   id={section.id}
                   name={section.name}
                   desc={section.desc}
+                  equipments={section.equipments}
                   openingDates={section.openingDates}
                   openingHours={section.openingHours}
                   siteDetailsHref={siteDetailsHref}
@@ -91,6 +98,7 @@ function Section({
   id,
   name,
   desc,
+  equipments,
   openingDates,
   openingHours,
   siteDetailsHref,
@@ -98,6 +106,11 @@ function Section({
   id: string;
   name: string;
   desc: string;
+  equipments: {
+    id: string;
+    label: string;
+    selected: boolean;
+  }[];
   openingDates: [string, string][];
   openingHours: {
     hours: string;
@@ -107,41 +120,46 @@ function Section({
   siteDetailsHref: string;
 }) {
   return (
-    <section className="flex gap-4 border border-line-gray bg-white p-4">
-      <div className="h-32 w-32 bg-[#c1c1c1]" />
+    <section className="flex gap-2.5 border border-line-gray bg-white p-4">
+      <div className="mr-1.5 h-32 w-32 bg-[#c1c1c1]" />
+
       <div className="flex-1 basis-0 bg-light-gray px-4 pb-5 pt-2.5">
         <h2 className="text-lg font-semibold text-secondary-purple">{name}</h2>
         <p>{desc}</p>
       </div>
-      <div className="w-min basis-0 whitespace-nowrap bg-light-gray px-4 pb-5 pt-2.5">
-        <h2 className="text-lg font-semibold text-word-darker-gray">
-          場地開放日期
-        </h2>
-        <div className="space-y-1">
-          {openingDates.map((d, i) => (
-            <p key={i} className="flex justify-between font-mono">
-              {d[0]}
-              <span>～</span>
-              {d[1]}
-            </p>
-          ))}
-        </div>
-      </div>
-      <div className="w-min basis-0 whitespace-nowrap bg-light-gray px-4 pb-5 pt-2.5">
-        <h2 className="text-lg font-semibold text-word-darker-gray">
-          場地開放時間
-        </h2>
-        <div className="space-y-1">
-          {openingHours.map((h, i) => (
-            <p key={i} className="flex justify-between font-mono">
-              {h.hours}
-              <span className="px-2.5 text-line-gray">|</span>
-              {h.duration}
-              {h.fee}
-            </p>
-          ))}
-        </div>
-      </div>
+
+      <MiddleSection
+        header="場地設備"
+        list={equipments}
+        liContentRenderer={(e) => <>{e.label}</>}
+        useOrderedList
+      />
+
+      <MiddleSection
+        header="場地開放日期"
+        list={openingDates}
+        liContentRenderer={(d) => (
+          <>
+            {d[0]}
+            <span>～</span>
+            {d[1]}
+          </>
+        )}
+      />
+
+      <MiddleSection
+        header="場地開放時間"
+        list={openingHours}
+        liContentRenderer={(h) => (
+          <>
+            {h.hours}
+            <span className="px-2.5 text-line-gray">|</span>
+            {h.duration}
+            {h.fee}
+          </>
+        )}
+      />
+
       <div className="flex flex-col gap-4 self-start">
         <Link to={siteDetailsHref + id}>
           <img src={pencilIcon} />
@@ -151,5 +169,39 @@ function Section({
         </button>
       </div>
     </section>
+  );
+}
+
+function MiddleSection<T>({
+  header,
+  useOrderedList,
+  list,
+  liContentRenderer,
+}: {
+  header: string;
+  useOrderedList?: boolean;
+  list: T[];
+  liContentRenderer: (arg: T) => React.ReactElement;
+}) {
+  const As = useOrderedList ? "ol" : "ul";
+  return (
+    <div className="w-min basis-0 whitespace-nowrap bg-light-gray px-4 pb-5 pt-2.5">
+      <h2 className="text-lg font-semibold text-word-darker-gray">{header}</h2>
+      <As
+        className={cn(
+          "space-y-1",
+          useOrderedList && "list-inside list-decimal",
+        )}
+      >
+        {list.map((h, i) => (
+          <li key={i} className="">
+            {/* this wrapper is necessary if you set li to flex, the list marker disappears */}
+            <div className="inline-flex justify-between font-mono ">
+              {liContentRenderer(h)}
+            </div>
+          </li>
+        ))}
+      </As>
+    </div>
   );
 }

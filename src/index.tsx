@@ -32,7 +32,25 @@ const router = createBrowserRouter(
           <Route element={<DashboardLayout />}>
             <Route index element={<Index />} />
             {Object.values(linksKV["driving-range"].subLinks).map((subLink) => {
-              return (
+              return subLink.type === "multiple" ? (
+                Object.values(subLink.paths).map((path, idx) => {
+                  return (
+                    <Route
+                      element={
+                        <PermissionGuard
+                          routePermissions={subLink.allowedPermissions}
+                        />
+                      }
+                      key={path}
+                    >
+                      <Route
+                        path={path}
+                        lazy={Object.values(subLink.lazy)[idx]}
+                      />
+                    </Route>
+                  );
+                })
+              ) : (
                 <Route
                   element={
                     <PermissionGuard

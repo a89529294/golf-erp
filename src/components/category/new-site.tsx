@@ -1,29 +1,41 @@
+import { DateRangeRow } from "@/components/category/date-range-row";
+import { FormTextField } from "@/components/category/form-text-field";
+import { PreviewImage } from "@/components/category/preview-image";
+import { Section } from "@/components/category/section";
+import { TimeRangeRow } from "@/components/category/time-range-row";
 import { WeekDayTabs } from "@/components/weekday-tabs";
+import { cn } from "@/lib/utils";
 import {
-  NewGolfSite,
-  WeekdayContent,
+  DateRange,
+  FileWithId,
+  NewDrivingRange,
+  NewGolfCourse,
+  NewIndoorSimulator,
+  TimeRange,
+  VenueSettingsRowContent,
   Weekday,
-} from "@/pages/golf/site-management/new/schemas";
-import { DateRangeRow } from "@/pages/indoor-simulator/site-management/new/components/date-range-row";
-import { FormTextField } from "@/pages/indoor-simulator/site-management/new/components/form-text-field";
-import { PreviewImage } from "@/pages/indoor-simulator/site-management/new/components/preview-image";
-import { Section } from "@/pages/indoor-simulator/site-management/new/components/section";
-import { TimeRangeRow } from "@/pages/indoor-simulator/site-management/new/components/time-range-row";
-import {
-  BaseNewSite,
-  type DateRange,
-  type FileWithId,
-  type TimeRange,
-} from "@/pages/indoor-simulator/site-management/new/schemas";
+  WeekdayContent,
+} from "@/utils/category/schemas";
+
 import { useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
+import { VenueSettingsRow } from "./venue-settings-row";
 
-export function NewSite() {
-  const form = useFormContext<BaseNewSite | NewGolfSite>();
+export function NewSite({
+  type,
+}: {
+  type: "golf" | "indoor-simulator" | "driving-range";
+}) {
+  const form = useFormContext<
+    NewGolfCourse | NewIndoorSimulator | NewDrivingRange
+  >();
+
   const [newTimeRangeDisabled, setNewTimeRangeDisabled] = useState(false);
   const [newDateRangeDisabled, setNewDateRangeDisabled] = useState(false);
 
-  function onSubmit(values: NewGolfSite | BaseNewSite) {
+  function onSubmit(
+    values: NewGolfCourse | NewIndoorSimulator | NewDrivingRange,
+  ) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log(values);
@@ -198,12 +210,78 @@ export function NewSite() {
     );
   }
 
-  useEffect(() => {
-    setNewTimeRangeDisabled(!!form.formState.errors.openingHours);
-  }, [form.formState.errors.openingHours]);
+  function onSelectEquipment(id: string) {
+    form.setValue(
+      "equipments",
+      form
+        .getValues("equipments")
+        .map((v) => (v.id === id ? { ...v, selected: !v.selected } : v)),
+    );
+  }
+
+  function onAddNewVenueSettingsRow() {
+    form.setValue(
+      "venueSettings",
+      [
+        ...form.getValues("venueSettings"),
+        {
+          id: crypto.randomUUID(),
+          start: "",
+          end: "",
+          fee: "",
+          saved: false,
+          numberOfGroups: "",
+          numberOfBalls: "",
+        },
+      ],
+      { shouldValidate: true },
+    );
+  }
+
+  function onEditVenueSettingsRow(id: string) {
+    console.log(id);
+    // form.setValue(
+    //   "openingHours",
+    //   form
+    //     .getValues("openingHours")
+    //     .map((v) =>
+    //       v.id === id ? { ...v, saved: false } : { ...v, saved: true },
+    //     ),
+    // );
+  }
+
+  function onRemoveVenueSettingsRow(id: string) {
+    form.setValue(
+      "venueSettings",
+      form.getValues("venueSettings").filter((v) => v.id !== id),
+      {
+        shouldValidate: true,
+      },
+    );
+  }
+
+  function onSaveVenueSettingsRow(venueSettingsRow: VenueSettingsRowContent) {
+    form.setValue(
+      "venueSettings",
+      form
+        .getValues("venueSettings")
+        .map((v) => (v.id === venueSettingsRow.id ? venueSettingsRow : v)),
+      {
+        shouldValidate: true,
+      },
+    );
+  }
+
+  const x =
+    "openingHours" in form.formState.errors
+      ? form.formState.errors.openingHours
+      : "";
 
   useEffect(() => {
-    console.log(form.formState.errors.openingDates);
+    if ("openingHours" in form.formState.errors) setNewTimeRangeDisabled(!!x);
+  }, [x, form.formState.errors]);
+
+  useEffect(() => {
     setNewDateRangeDisabled(!!form.formState.errors.openingDates);
   }, [form.formState.errors.openingDates]);
 
@@ -218,19 +296,42 @@ export function NewSite() {
         <FormTextField name="description" label="場地簡介" />
       </section>
 
+      <Section title="設備配置">
+        <div className="flex flex-wrap gap-3 p-5 text-secondary-dark">
+          {form.watch("equipments").map((e) => {
+            return (
+              <button
+                type="button"
+                className={cn(
+                  "rounded-full border border-line-gray px-5 py-3 ",
+                  e.selected &&
+                    "border-secondary-dark bg-secondary-dark text-white",
+                )}
+                key={e.id}
+                onClick={() => onSelectEquipment(e.id)}
+              >
+                {e.label}
+              </button>
+            );
+          })}
+        </div>
+      </Section>
+
       <Section
         title="場地圖片"
         subTitle="(圖片上限10張)"
-        inputButtonText="新增圖片"
-        inputButtonElement={
-          <input
-            type="file"
-            className="hidden"
-            accept="image/png, image/jpeg"
-            multiple
-            onChange={onAddNewImages}
-          />
-        }
+        inputButton={{
+          text: "新增圖片",
+          element: (
+            <input
+              type="file"
+              className="hidden"
+              accept="image/png, image/jpeg"
+              multiple
+              onChange={onAddNewImages}
+            />
+          ),
+        }}
       >
         {form.watch("imageFiles").length ? (
           <div className="grid grid-cols-[repeat(auto-fill,minmax(130px,1fr))] px-3 py-5">
@@ -251,14 +352,16 @@ export function NewSite() {
 
       <Section
         title="場地開放日期"
-        inputButtonText="新增日期"
-        inputButtonElement={
-          <input
-            type="button"
-            className="hidden"
-            onClick={onAddNewOpeningDateRange}
-          />
-        }
+        inputButton={{
+          text: "新增日期",
+          element: (
+            <input
+              type="button"
+              className="hidden"
+              onClick={onAddNewOpeningDateRange}
+            />
+          ),
+        }}
         disabled={newDateRangeDisabled}
       >
         {form.watch("openingDates").length ? (
@@ -282,17 +385,19 @@ export function NewSite() {
         )}
       </Section>
 
-      {form.getValues("monday") ? (
+      {type === "golf" && (
         <Section
           title="場地開放時間"
-          inputButtonText="新增時間"
-          inputButtonElement={
-            <input
-              type="button"
-              className="hidden"
-              onClick={() => onAddNewWeekdayTimeRange("monday")}
-            />
-          }
+          inputButton={{
+            text: "新增時間",
+            element: (
+              <input
+                type="button"
+                className="hidden"
+                onClick={() => onAddNewWeekdayTimeRange("monday")}
+              />
+            ),
+          }}
           disabled={newTimeRangeDisabled}
         >
           <WeekDayTabs
@@ -301,17 +406,21 @@ export function NewSite() {
             onSave={onSaveWeekdayTimeRange}
           />
         </Section>
-      ) : (
+      )}
+
+      {type === "indoor-simulator" && (
         <Section
           title="場地開放時間"
-          inputButtonText="新增時間"
-          inputButtonElement={
-            <input
-              type="button"
-              className="hidden"
-              onClick={onAddNewOpeningHoursRange}
-            />
-          }
+          inputButton={{
+            text: "新增時間",
+            element: (
+              <input
+                type="button"
+                className="hidden"
+                onClick={onAddNewOpeningHoursRange}
+              />
+            ),
+          }}
           disabled={newTimeRangeDisabled}
         >
           {form.watch("openingHours").length ? (
@@ -326,6 +435,43 @@ export function NewSite() {
                     }
                     onEdit={() => onEditOpeningTimeRange(hours.id)}
                     data={hours}
+                  />
+                );
+              })}
+            </ul>
+          ) : (
+            <p className="py-2.5">尚未新增開放時間</p>
+          )}
+        </Section>
+      )}
+
+      {type === "driving-range" && (
+        <Section
+          title="場地開放設定"
+          inputButton={{
+            text: "新增設定",
+            element: (
+              <input
+                type="button"
+                className="hidden"
+                onClick={onAddNewVenueSettingsRow}
+              />
+            ),
+          }}
+          disabled={false}
+        >
+          {form.watch("venueSettings").length ? (
+            <ul>
+              {form.getValues("venueSettings").map((settings) => {
+                return (
+                  <VenueSettingsRow
+                    key={settings.id}
+                    onRemove={() => onRemoveVenueSettingsRow(settings.id)}
+                    onSave={(settings: VenueSettingsRowContent) =>
+                      onSaveVenueSettingsRow(settings)
+                    }
+                    onEdit={() => onEditVenueSettingsRow(settings.id)}
+                    data={settings}
                   />
                 );
               })}

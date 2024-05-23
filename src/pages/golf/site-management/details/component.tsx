@@ -1,11 +1,6 @@
 import { IconButton } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { MainLayout } from "@/layouts/main-layout";
-import {
-  ExistingGolfSite,
-  newGolfSiteSchema,
-} from "@/pages/golf/site-management/new/schemas";
-
 import { SiteDetails } from "@/components/category/site-details";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
@@ -13,6 +8,10 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useLoaderData, useNavigate, useParams } from "react-router-dom";
 import { genGolfSiteDetailsQuery, loader } from "./loader";
+import {
+  ExistingGolfCourse,
+  existingGolfCourseSchema,
+} from "@/utils/category/schemas";
 
 export function Component() {
   const [formDisabled, setFormDisabled] = useState(true);
@@ -24,14 +23,13 @@ export function Component() {
     initialData,
   });
 
-  const form = useForm<ExistingGolfSite>({
-    resolver: zodResolver(newGolfSiteSchema),
+  const form = useForm<ExistingGolfCourse>({
+    resolver: zodResolver(existingGolfCourseSchema),
     defaultValues: {
       name: data.name,
       description: data.desc,
       imageFiles: data.imageFiles,
       openingDates: data.openingDates,
-      openingHours: [],
       monday: data.monday,
       tuesday: data.tuesday,
       wednesday: data.wednesday,

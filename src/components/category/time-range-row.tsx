@@ -4,9 +4,8 @@ import trashCanIcon from "@/assets/trash-can-icon.svg";
 import { UnderscoredInput } from "@/components/underscored-input";
 import { cn } from "@/lib/utils";
 import { onChange } from "@/pages/indoor-simulator/site-management/new/helpers";
+import { TimeRange } from "@/utils/category/schemas";
 import { useRef, useState } from "react";
-import { useFormContext } from "react-hook-form";
-import { type TimeRange } from "../schemas";
 
 export function TimeRangeRow({
   data,
@@ -32,10 +31,6 @@ export function TimeRangeRow({
     end: false,
     fee: false,
   });
-  const {
-    formState: { errors },
-  } = useFormContext();
-  console.log(errors);
 
   function onSaveTimeRange() {
     const startError = start.length !== 5;

@@ -1,32 +1,28 @@
 import { WeekDayTabs } from "@/components/weekday-tabs";
+import { DateRangeRow } from "@/components/category/date-range-row";
+import { FormTextField } from "@/components/category/form-text-field";
+import { PreviewImage } from "@/components/category/preview-image";
+import { Section } from "@/components/category/section";
+import { TimeRangeRow } from "@/components/category/time-range-row";
 import {
-  ExistingGolfSite,
-  WeekdayContent,
-  Weekday,
-} from "@/pages/golf/site-management/new/schemas";
-import { DateRangeRow } from "@/pages/indoor-simulator/site-management/new/components/date-range-row";
-import { FormTextField } from "@/pages/indoor-simulator/site-management/new/components/form-text-field";
-import { PreviewImage } from "@/pages/indoor-simulator/site-management/new/components/preview-image";
-import { Section } from "@/pages/indoor-simulator/site-management/new/components/section";
-import { TimeRangeRow } from "@/pages/indoor-simulator/site-management/new/components/time-range-row";
-import {
-  BaseExistingSite,
+  DateRange,
+  ExistingGolfCourse,
   ExistingImg,
-  existingIndoorSimulatorSiteSchema,
-  type DateRange,
-  type FileWithId,
-  type TimeRange,
-} from "@/pages/indoor-simulator/site-management/new/schemas";
+  ExistingIndoorSimulator,
+  FileWithId,
+  TimeRange,
+  Weekday,
+  WeekdayContent,
+} from "@/utils/category/schemas";
 import { useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
-import { z } from "zod";
 
 export function SiteDetails({ formDisabled }: { formDisabled: boolean }) {
-  const form = useFormContext<BaseExistingSite | ExistingGolfSite>();
+  const form = useFormContext<ExistingIndoorSimulator | ExistingGolfCourse>();
   const [newTimeRangeDisabled, setNewTimeRangeDisabled] = useState(false);
   const [newDateRangeDisabled, setNewDateRangeDisabled] = useState(false);
 
-  function onSubmit(values: z.infer<typeof existingIndoorSimulatorSiteSchema>) {
+  function onSubmit(values: ExistingGolfCourse | ExistingIndoorSimulator) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log(values);
@@ -194,8 +190,6 @@ export function SiteDetails({ formDisabled }: { formDisabled: boolean }) {
     );
   }
   function onSaveWeekdayTimeRange(day: Weekday, content: WeekdayContent) {
-    console.log(day, content.id);
-
     form.setValue(
       day,
       form
@@ -204,9 +198,14 @@ export function SiteDetails({ formDisabled }: { formDisabled: boolean }) {
     );
   }
 
+  const x =
+    "openingHours" in form.formState.errors
+      ? form.formState.errors.openingHours
+      : "";
+
   useEffect(() => {
-    setNewTimeRangeDisabled(!!form.formState.errors.openingHours);
-  }, [form.formState.errors.openingHours]);
+    if ("openingHours" in form.formState.errors) setNewTimeRangeDisabled(!!x);
+  }, [x, form.formState.errors]);
 
   useEffect(() => {
     setNewDateRangeDisabled(!!form.formState.errors.openingDates);
@@ -230,17 +229,19 @@ export function SiteDetails({ formDisabled }: { formDisabled: boolean }) {
       <Section
         title="場地圖片"
         subTitle="(圖片上限10張)"
-        inputButtonText="新增圖片"
-        inputButtonElement={
-          <input
-            type="file"
-            className="hidden"
-            accept="image/png, image/jpeg"
-            multiple
-            onChange={onAddNewImages}
-            disabled={formDisabled}
-          />
-        }
+        inputButton={{
+          text: "新增圖片",
+          element: (
+            <input
+              type="file"
+              className="hidden"
+              accept="image/png, image/jpeg"
+              multiple
+              onChange={onAddNewImages}
+              disabled={formDisabled}
+            />
+          ),
+        }}
         disabled={formDisabled}
       >
         {form.watch("imageFiles").length ? (
@@ -263,14 +264,16 @@ export function SiteDetails({ formDisabled }: { formDisabled: boolean }) {
 
       <Section
         title="場地開放日期"
-        inputButtonText="新增日期"
-        inputButtonElement={
-          <input
-            type="button"
-            className="hidden"
-            onClick={onAddNewOpeningDateRange}
-          />
-        }
+        inputButton={{
+          text: "新增日期",
+          element: (
+            <input
+              type="button"
+              className="hidden"
+              onClick={onAddNewOpeningDateRange}
+            />
+          ),
+        }}
         disabled={newDateRangeDisabled || formDisabled}
       >
         {form.watch("openingDates").length ? (
@@ -298,14 +301,16 @@ export function SiteDetails({ formDisabled }: { formDisabled: boolean }) {
       {form.getValues("monday") ? (
         <Section
           title="場地開放時間"
-          inputButtonText="新增時間"
-          inputButtonElement={
-            <input
-              type="button"
-              className="hidden"
-              onClick={() => onAddNewWeekdayTimeRange("monday")}
-            />
-          }
+          inputButton={{
+            text: "新增時間",
+            element: (
+              <input
+                type="button"
+                className="hidden"
+                onClick={() => onAddNewWeekdayTimeRange("monday")}
+              />
+            ),
+          }}
           disabled={newTimeRangeDisabled || formDisabled}
         >
           <WeekDayTabs
@@ -318,14 +323,16 @@ export function SiteDetails({ formDisabled }: { formDisabled: boolean }) {
       ) : (
         <Section
           title="場地開放時間"
-          inputButtonText="新增時間"
-          inputButtonElement={
-            <input
-              type="button"
-              className="hidden"
-              onClick={onAddNewOpeningHoursRange}
-            />
-          }
+          inputButton={{
+            text: "新增時間",
+            element: (
+              <input
+                type="button"
+                className="hidden"
+                onClick={onAddNewOpeningHoursRange}
+              />
+            ),
+          }}
           disabled={newTimeRangeDisabled}
         >
           {form.watch("openingHours").length ? (
@@ -340,6 +347,7 @@ export function SiteDetails({ formDisabled }: { formDisabled: boolean }) {
                     }
                     onEdit={() => onEditOpeningTimeRange(hours.id)}
                     data={hours}
+                    disabled={formDisabled}
                   />
                 );
               })}

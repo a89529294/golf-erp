@@ -25,6 +25,7 @@ export const genGolfSiteDetailsQuery = (id: string) => ({
           fee: 100,
           numberOfGroups: 10,
           numberOfGolfBalls: 100,
+          subRows: [],
           saved: true,
         },
       ],
@@ -37,6 +38,7 @@ export const genGolfSiteDetailsQuery = (id: string) => ({
           fee: 100,
           numberOfGroups: 10,
           numberOfGolfBalls: 100,
+          subRows: [],
           saved: true,
         },
         {
@@ -46,6 +48,7 @@ export const genGolfSiteDetailsQuery = (id: string) => ({
           fee: 100,
           numberOfGroups: 10,
           numberOfGolfBalls: 100,
+          subRows: [],
           saved: true,
         },
       ],

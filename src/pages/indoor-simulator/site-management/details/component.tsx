@@ -3,7 +3,6 @@ import { IconButton } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { MainLayout } from "@/layouts/main-layout";
 import { indoorSimulatorSiteQuery } from "@/pages/indoor-simulator/site-management/details/loader";
-import { existingIndoorSimulatorSiteSchema } from "@/pages/indoor-simulator/site-management/new/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
@@ -11,6 +10,7 @@ import { useForm } from "react-hook-form";
 import { useLoaderData, useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { loader } from "./loader";
+import { existingIndoorSimulatorSchema } from "@/utils/category/schemas";
 
 export function Component() {
   const [formDisabled, setFormDisabled] = useState(true);
@@ -20,8 +20,8 @@ export function Component() {
     initialData,
   });
   const navigate = useNavigate();
-  const form = useForm<z.infer<typeof existingIndoorSimulatorSiteSchema>>({
-    resolver: zodResolver(existingIndoorSimulatorSiteSchema),
+  const form = useForm<z.infer<typeof existingIndoorSimulatorSchema>>({
+    resolver: zodResolver(existingIndoorSimulatorSchema),
     defaultValues: {
       name: data.name,
       description: data.description,

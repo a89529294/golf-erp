@@ -213,7 +213,7 @@ const sections = [
   },
 ];
 
-export const indoorSimulatorSiteManagementQuery = {
+export const drivingRangeManagementQuery = {
   queryKey: ["indoor-simulator-index"],
   queryFn: async () => {
     return sections;
@@ -221,5 +221,5 @@ export const indoorSimulatorSiteManagementQuery = {
 };
 
 export async function loader() {
-  return await queryClient.ensureQueryData(indoorSimulatorSiteManagementQuery);
+  return await queryClient.ensureQueryData(drivingRangeManagementQuery);
 }
