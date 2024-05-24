@@ -64,24 +64,10 @@ export function Component() {
   const onUploadBanners: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     const imageArray = e.target.files ? Array.from(e.target.files) : [];
     addBanners(imageArray);
-    // imageArray.forEach((img) => {
-    //   //   const fileReader = new FileReader();
-    //   //   fileReader.readAsDataURL(img);
-    //   //   fileReader.addEventListener("load", () => {
-    //   //     setImages((pv) => [
-    //   //       ...pv,
-    //   //       {
-    //   //         id: crypto.randomUUID(),
-    //   //         data: fileReader.result as string,
-    //   //       },
-    //   //     ]);
-    //   //   });
-    // });
   };
 
   const onRemoveBanner = (name: string) => {
     deleteBanner(name);
-    // setImages((pv) => pv.filter((pImg) => pImg.id !== id));
   };
 
   const isPending = isAdding || isDeleting;
@@ -111,15 +97,18 @@ export function Component() {
             </label>
           </header>
 
-          <ul className="relative grid auto-rows-[110px] grid-cols-[repeat(auto-fill,minmax(340px,1fr))] gap-5 border-t border-line-gray bg-white p-5">
+          <ul className="relative grid auto-rows-[160px] grid-cols-[repeat(auto-fill,minmax(340px,1fr))] gap-5 border-t border-line-gray bg-white p-5">
             {data.map((img) => (
               <li
                 className={cn("relative", isPending && "opacity-50")}
                 key={img.id}
               >
-                <img src={img.data} className="h-full w-full object-contain" />
+                <img
+                  src={img.data}
+                  className="h-full w-full border border-line-gray object-contain"
+                />
                 <button
-                  className="absolute right-0 top-0 -translate-y-1/2 translate-x-1/2 rounded-full border border-line-red"
+                  className="absolute right-0 top-0 -translate-y-1/2 translate-x-1/2 rounded-full border border-line-red bg-white"
                   onClick={() => onRemoveBanner(img.name)}
                 >
                   <img src={redXIcon} />

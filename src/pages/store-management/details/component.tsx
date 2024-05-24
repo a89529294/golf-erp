@@ -120,6 +120,8 @@ export function Component() {
       telphone: `${values.phoneAreaCode}-${values.phone}`,
       contact: values.contact,
       contactPhone: values.contactPhone,
+      latitude: values.latitude,
+      longitude: values.longitude,
       county:
         counties.find((c) => c.countycode === values.county)?.countyname ?? "",
       district: values.district,
@@ -138,6 +140,10 @@ export function Component() {
     if (dirtyFields.contact) changedFields.contact = transformedValues.contact;
     if (dirtyFields.contactPhone)
       changedFields.contactPhone = transformedValues.contactPhone;
+    if (dirtyFields.latitude)
+      changedFields.latitude = transformedValues.latitude;
+    if (dirtyFields.longitude)
+      changedFields.longitude = transformedValues.longitude;
     if (dirtyFields.county) changedFields.county = transformedValues.county;
     if (dirtyFields.district)
       changedFields.district = transformedValues.district;
