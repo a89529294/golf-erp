@@ -21,15 +21,16 @@ import { useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { VenueSettingsRow } from "./venue-settings-row";
 
-export function NewSite({
+export function Site({
   type,
+  formDisabled,
 }: {
   type: "golf" | "indoor-simulator" | "driving-range";
+  formDisabled: boolean;
 }) {
   const form = useFormContext<
     NewGolfCourse | NewIndoorSimulator | NewDrivingRange
   >();
-
   const [newTimeRangeDisabled, setNewTimeRangeDisabled] = useState(false);
   const [newDateRangeDisabled, setNewDateRangeDisabled] = useState(false);
 
@@ -239,15 +240,14 @@ export function NewSite({
   }
 
   function onEditVenueSettingsRow(id: string) {
-    console.log(id);
-    // form.setValue(
-    //   "openingHours",
-    //   form
-    //     .getValues("openingHours")
-    //     .map((v) =>
-    //       v.id === id ? { ...v, saved: false } : { ...v, saved: true },
-    //     ),
-    // );
+    form.setValue(
+      "venueSettings",
+      form
+        .getValues("venueSettings")
+        .map((v) =>
+          v.id === id ? { ...v, saved: false } : { ...v, saved: true },
+        ),
+    );
   }
 
   function onRemoveVenueSettingsRow(id: string) {
@@ -292,23 +292,28 @@ export function NewSite({
       id="new-site"
     >
       <section className="space-y-6 border border-line-gray bg-white px-12 py-10">
-        <FormTextField name="name" label="場地名稱" />
-        <FormTextField name="description" label="場地簡介" />
+        <FormTextField name="name" label="場地名稱" disabled={formDisabled} />
+        <FormTextField
+          name="description"
+          label="場地簡介"
+          disabled={formDisabled}
+        />
       </section>
 
       <Section title="設備配置">
-        <div className="flex flex-wrap gap-3 p-5 text-secondary-dark">
+        <div className={cn("flex flex-wrap gap-3 p-5 text-secondary-dark")}>
           {form.watch("equipments").map((e) => {
             return (
               <button
                 type="button"
                 className={cn(
-                  "rounded-full border border-line-gray px-5 py-3 ",
+                  "rounded-full border border-line-gray px-5 py-3 disabled:cursor-not-allowed disabled:opacity-50",
                   e.selected &&
                     "border-secondary-dark bg-secondary-dark text-white",
                 )}
                 key={e.id}
                 onClick={() => onSelectEquipment(e.id)}
+                disabled={formDisabled}
               >
                 {e.label}
               </button>
@@ -332,15 +337,21 @@ export function NewSite({
             />
           ),
         }}
+        disabled={formDisabled}
       >
         {form.watch("imageFiles").length ? (
-          <div className="grid grid-cols-[repeat(auto-fill,minmax(130px,1fr))] px-3 py-5">
+          <div
+            className={cn(
+              "grid grid-cols-[repeat(auto-fill,minmax(130px,1fr))] px-3 py-5",
+            )}
+          >
             {form.getValues("imageFiles").map((file) => {
               return (
                 <PreviewImage
                   key={file.id}
                   file={file}
                   onRemoveImage={onRemoveImage}
+                  disabled={formDisabled}
                 />
               );
             })}
@@ -362,7 +373,7 @@ export function NewSite({
             />
           ),
         }}
-        disabled={newDateRangeDisabled}
+        disabled={newDateRangeDisabled || formDisabled}
       >
         {form.watch("openingDates").length ? (
           <ul>
@@ -376,6 +387,7 @@ export function NewSite({
                   }
                   data={dateRange}
                   onEdit={() => onEditOpeningDateRange(dateRange.id)}
+                  disabled={formDisabled}
                 />
               );
             })}
@@ -458,7 +470,7 @@ export function NewSite({
               />
             ),
           }}
-          disabled={false}
+          disabled={formDisabled}
         >
           {form.watch("venueSettings").length ? (
             <ul>
@@ -472,6 +484,7 @@ export function NewSite({
                     }
                     onEdit={() => onEditVenueSettingsRow(settings.id)}
                     data={settings}
+                    formDisabled={formDisabled}
                   />
                 );
               })}

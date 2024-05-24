@@ -5,20 +5,21 @@ import { UnderscoredInput } from "../underscored-input";
 import { onChange } from "@/pages/indoor-simulator/site-management/new/helpers";
 import greenFileIcon from "@/assets/green-file-icon.svg";
 import redXIcon from "@/assets/red-x-icon.svg";
-import trashCanIcon from "@/assets/trash-can-icon.svg";
+import blackTrashCanIcon from "@/assets/black-trash-can-icon.svg";
+import pencilIcon from "@/assets/pencil.svg";
 
 export function VenueSettingsRow({
   onRemove,
   onSave,
   onEdit,
   data,
-  disabled,
+  formDisabled,
 }: {
   data: VenueSettingsRowContent;
   onRemove(): void;
   onEdit(): void;
   onSave(arg: VenueSettingsRowContent): void;
-  disabled?: boolean;
+  formDisabled?: boolean;
 }) {
   const [start, setStart] = useState(data.start);
   const [end, setEnd] = useState(data.end);
@@ -35,6 +36,7 @@ export function VenueSettingsRow({
     numberOfGroups: false,
     numberOfBalls: false,
   });
+  const disabled = data.saved;
 
   function onSaveTimeRange() {
     const startError = start.length !== 5;
@@ -71,15 +73,22 @@ export function VenueSettingsRow({
     });
   }
 
+  const disabledClassNames = disabled ? "" : undefined;
+
   return (
     <li
       className={cn(
-        "flex items-center gap-1.5 border-b-[1.5px] border-b-transparent p-2 pr-5 text-secondary-dark ",
+        "flex items-center gap-1.5 border-b-[1.5px] border-b-transparent p-2 pr-5 text-secondary-dark",
         !data.saved && "border-b-orange bg-hover-orange",
-        disabled && "opacity-50",
+        formDisabled && "opacity-50",
       )}
     >
-      <div className="flex gap-1.5 rounded bg-white px-4 pb-1.5 pt-2.5">
+      <div
+        className={cn(
+          "flex gap-1.5 rounded bg-white px-4 pb-1.5 pt-2.5",
+          disabled && "bg-light-gray",
+        )}
+      >
         <UnderscoredInput
           className={cn(
             "h-7 w-16 px-1 text-center ",
@@ -98,6 +107,7 @@ export function VenueSettingsRow({
             onEdit();
           }}
           disabled={disabled}
+          disabledClassNames={disabledClassNames}
         />
 
         <span className="text-secondary-dark">～</span>
@@ -124,6 +134,7 @@ export function VenueSettingsRow({
             onEdit();
           }}
           disabled={disabled}
+          disabledClassNames={disabledClassNames}
         />
       </div>
 
@@ -139,6 +150,7 @@ export function VenueSettingsRow({
         placeholder="價錢"
         state={fee}
         setState={setFee}
+        disabledClassNames={disabledClassNames}
       />
 
       <NumberCell
@@ -152,6 +164,7 @@ export function VenueSettingsRow({
         placeholder="數量"
         state={numberOfGroups}
         setState={setNumberOfGroups}
+        disabledClassNames={disabledClassNames}
       />
 
       <NumberCell
@@ -165,18 +178,17 @@ export function VenueSettingsRow({
         placeholder="數量"
         state={numberOfBalls}
         setState={setNumberOfBalls}
+        disabledClassNames={disabledClassNames}
       />
 
       <div className="ml-auto flex gap-4">
         {data.saved ? (
           <>
-            <button
-              type="button"
-              onClick={onRemove}
-              disabled={disabled}
-              className={cn(disabled && "cursor-not-allowed")}
-            >
-              <img src={trashCanIcon} />
+            <button type="button" onClick={onEdit} className="">
+              <img src={pencilIcon} />
+            </button>
+            <button type="button" onClick={onRemove} className="">
+              <img src={blackTrashCanIcon} />
             </button>
           </>
         ) : (
@@ -206,6 +218,7 @@ function NumberCell<E>({
   clearFieldError,
   disabled,
   unit,
+  disabledClassNames,
 }: {
   label: string;
   myRef?: React.RefObject<HTMLInputElement>;
@@ -218,9 +231,15 @@ function NumberCell<E>({
   clearFieldError(arg: keyof E): void;
   disabled?: boolean;
   unit: string;
+  disabledClassNames?: string;
 }) {
   return (
-    <div className="flex gap-1.5 rounded bg-white px-4 pb-1.5 pt-2.5">
+    <div
+      className={cn(
+        "flex gap-1.5 rounded bg-white px-4 pb-1.5 pt-2.5",
+        disabled && "bg-light-gray",
+      )}
+    >
       <span>{label}</span>
       <UnderscoredInput
         ref={myRef}
@@ -241,6 +260,7 @@ function NumberCell<E>({
           onEdit();
         }}
         disabled={disabled}
+        disabledClassNames={disabledClassNames}
       />
       <span>{unit}</span>
     </div>

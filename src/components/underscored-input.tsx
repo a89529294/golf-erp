@@ -10,7 +10,9 @@ import { ComponentPropsWithoutRef, forwardRef, useState } from "react";
 
 export const UnderscoredInput = forwardRef<
   HTMLInputElement,
-  ComponentPropsWithoutRef<typeof Input>
+  ComponentPropsWithoutRef<typeof Input> & {
+    disabledClassNames?: string;
+  }
 >(({ className, onBlur, onFocus, ...rest }, ref) => {
   const [thickBorder, setThickBorder] = useState(false);
 

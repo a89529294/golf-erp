@@ -1,4 +1,4 @@
-import { NewSite } from "@/components/category/new-site";
+import { Site } from "@/components/category/site";
 import { IconButton } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { MainLayout } from "@/layouts/main-layout";
@@ -47,7 +47,7 @@ export function Component() {
           建立場地資料
         </h1>
         <Form {...form}>
-          <NewSite type="golf" />
+          <Site type="golf" formDisabled={false} />
         </Form>
       </div>
     </MainLayout>

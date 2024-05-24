@@ -1,8 +1,9 @@
-import { SiteDetails } from "@/components/category/site-details";
+import { Site } from "@/components/category/site";
 import { IconButton } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { MainLayout } from "@/layouts/main-layout";
 import { indoorSimulatorSiteQuery } from "@/pages/indoor-simulator/site-management/details/loader";
+import { existingIndoorSimulatorSchema } from "@/utils/category/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
@@ -10,7 +11,6 @@ import { useForm } from "react-hook-form";
 import { useLoaderData, useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { loader } from "./loader";
-import { existingIndoorSimulatorSchema } from "@/utils/category/schemas";
 
 export function Component() {
   const [formDisabled, setFormDisabled] = useState(true);
@@ -64,7 +64,7 @@ export function Component() {
           {formDisabled ? "檢視場地資料" : "編輯場地資料"}
         </h1>
         <Form {...form}>
-          <SiteDetails formDisabled={formDisabled} />
+          <Site formDisabled={formDisabled} type="indoor-simulator" />
         </Form>
       </div>
     </MainLayout>
