@@ -11,6 +11,8 @@ export const storeSchema = z.object({
   telphone: z.string().nullable(),
   contact: z.string().nullable(),
   contactPhone: z.string(),
+  latitude: z.string().nullable(),
+  longitude: z.string().nullable(),
   category: z.enum(storeCategories),
   county: z.string(),
   district: z.string(),

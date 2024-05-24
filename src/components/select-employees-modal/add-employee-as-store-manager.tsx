@@ -37,13 +37,18 @@ export function AddEmployeeAsStoreManagerModal({
         })()
       : {},
   );
+  console.log(rowSelection);
 
   const [selectedStoreId, setSelectedStoreId] = useState<string | undefined>(
     undefined,
   );
   const [globalFilter, setGlobalFilter] = useState("");
   const filteredEmployees = selectedStoreId
-    ? employees.filter((u) => u.stores?.[0]?.id === selectedStoreId)
+    ? employees.filter((e) => {
+        if (e.stores)
+          return e.stores.map((s) => s.id).includes(selectedStoreId);
+        return false;
+      })
     : employees;
 
   return (
@@ -68,7 +73,10 @@ export function AddEmployeeAsStoreManagerModal({
               setSelectedStoreId={setSelectedStoreId}
             />
             <ModalDataTable
-              columns={employeeColumns}
+              columns={[
+                ...employeeColumns.slice(0, -2),
+                employeeColumns.at(-1)!,
+              ]}
               data={filteredEmployees}
               rowSelection={rowSelection}
               setRowSelection={setRowSelection}
