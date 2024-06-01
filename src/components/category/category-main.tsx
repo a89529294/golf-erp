@@ -4,44 +4,60 @@ import trashCanIcon from "@/assets/trash-can-icon.svg";
 import { SearchInput } from "@/components/search-input";
 import { button } from "@/components/ui/button-cn";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { MainLayout } from "@/layouts/main-layout";
 import { cn } from "@/lib/utils";
-import { UseQueryOptions, useQuery } from "@tanstack/react-query";
+import { StoreWithoutEmployees } from "@/pages/store-management/loader";
+import { getDifferenceInHoursAndMinutes, toMinguoDate } from "@/utils";
+import { equipments } from "@/utils/category/equipment";
+import { genericSitesSchema } from "@/utils/category/schemas";
+import { privateFetch } from "@/utils/utils";
+import { useQuery } from "@tanstack/react-query";
 import { useLayoutEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
-export function CategoryMain<
-  K extends {
-    id: string;
-    name: string;
-    desc: string;
-    equipments: {
-      id: string;
-      label: string;
-      selected: boolean;
-    }[];
-    openingDates: [string, string][];
-    openingHours: { hours: string; duration: string; fee: string }[];
-  }[],
->({
-  initialData,
-  queryObject,
+export function CategoryMain({
   newSiteHref,
   siteDetailsHref,
+  stores,
+  type,
 }: {
-  initialData: K;
-  queryObject: UseQueryOptions<K>;
+  type: "golf" | "ground" | "simulator";
   newSiteHref: string;
   siteDetailsHref: string;
+  stores: StoreWithoutEmployees[];
 }) {
-  const { data } = useQuery({
-    ...queryObject,
-    initialData,
-  });
+  // const { data } = useQuery({
+  //   ...queryObject,
+  //   initialData,
+  // });
 
+  const [storeId, setStoreId] = useState<string>();
+  const { data: sites } = useQuery({
+    queryKey: ["sites-for-store", storeId],
+    queryFn: async () => {
+      const response = await privateFetch(
+        `/store/${storeId}/${type}?populate=*`,
+      );
+      const sites = genericSitesSchema.parse(await response.json()).data;
+
+      return sites;
+    },
+    enabled: !!storeId,
+  });
   const [globalFilter, setGlobalFilter] = useState("");
   const ref = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState(0);
+
+  const onStoreValueChange = (storeId: string) => {
+    setStoreId(storeId);
+  };
 
   useLayoutEffect(() => {
     if (ref.current) {
@@ -64,6 +80,18 @@ export function CategoryMain<
             新增場地
           </Link>
           <SearchInput value={globalFilter} setValue={setGlobalFilter} />
+          <Select onValueChange={onStoreValueChange}>
+            <SelectTrigger className="h-11 w-[280px] rounded-none border-0 border-b border-secondary-dark">
+              <SelectValue placeholder="選擇廠商" />
+            </SelectTrigger>
+            <SelectContent className="w-[280px]">
+              {stores.map((g) => (
+                <SelectItem key={g.id} value={g.id}>
+                  {g.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </>
       }
     >
@@ -74,18 +102,55 @@ export function CategoryMain<
         >
           {height && (
             <div className="space-y-2.5">
-              {data!.map((section) => (
-                <Section
-                  key={section.id}
-                  id={section.id}
-                  name={section.name}
-                  desc={section.desc}
-                  equipments={section.equipments}
-                  openingDates={section.openingDates}
-                  openingHours={section.openingHours}
-                  siteDetailsHref={siteDetailsHref}
-                />
-              ))}
+              {sites?.map((section) => {
+                const openingDates = (
+                  section.openDays
+                    ? section.openDays.toSorted(
+                        (a, b) => a.sequence - b.sequence,
+                      )
+                    : []
+                ).map(
+                  (v) =>
+                    [
+                      toMinguoDate(new Date(v.startDay)),
+                      toMinguoDate(new Date(v.endDay)),
+                    ] as const,
+                );
+
+                const openingHours = (
+                  section.openTimes
+                    ? section.openTimes.toSorted(
+                        (a, b) => a.sequence - b.sequence,
+                      )
+                    : []
+                ).map((v) => {
+                  const startHour = +v.startTime.slice(11, 16).split(":")[0];
+                  const startMin = +v.startTime.slice(11, 16).split(":")[1];
+                  const endHour = +v.endTime.slice(11, 16).split(":")[0];
+                  const endMin = +v.endTime.slice(11, 16).split(":")[1];
+                  return {
+                    hours: `${v.startTime.slice(11, 16)}～${v.endTime.slice(11, 16)}`,
+                    duration: getDifferenceInHoursAndMinutes(
+                      startHour * 60 + startMin,
+                      endHour * 60 + endMin,
+                    ),
+                    fee: `${v.pricePerHour}元`,
+                  };
+                });
+
+                return (
+                  <Section
+                    key={section.id}
+                    id={section.id}
+                    name={section.name}
+                    desc={section.introduce}
+                    equipments={equipments.slice(0, 5)}
+                    openingDates={openingDates}
+                    openingHours={openingHours}
+                    siteDetailsHref={siteDetailsHref}
+                  />
+                );
+              })}
             </div>
           )}
         </ScrollArea>
@@ -111,7 +176,7 @@ function Section({
     label: string;
     selected: boolean;
   }[];
-  openingDates: [string, string][];
+  openingDates: Readonly<[string, string]>[];
   openingHours: {
     hours: string;
     duration: string;
@@ -155,6 +220,7 @@ function Section({
             {h.hours}
             <span className="px-2.5 text-line-gray">|</span>
             {h.duration}
+            <div className="w-1" />
             {h.fee}
           </>
         )}

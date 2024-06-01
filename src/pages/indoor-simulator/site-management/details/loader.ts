@@ -1,5 +1,6 @@
 import images from "@/temp/images.json";
 import { queryClient } from "@/utils/query-client";
+import { indoorSimulatorStoresQuery } from "../loader";
 
 export const indoorSimulatorSiteQuery = {
   queryKey: ["indoor-simulator-site", "1"],
@@ -38,5 +39,8 @@ export const indoorSimulatorSiteQuery = {
 };
 
 export async function loader() {
-  return await queryClient.ensureQueryData(indoorSimulatorSiteQuery);
+  return {
+    details: await queryClient.ensureQueryData(indoorSimulatorSiteQuery),
+    stores: await queryClient.ensureQueryData(indoorSimulatorStoresQuery),
+  };
 }

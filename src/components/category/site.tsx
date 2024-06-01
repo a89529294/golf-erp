@@ -7,270 +7,73 @@ import { WeekDayTabs } from "@/components/weekday-tabs";
 import { cn } from "@/lib/utils";
 import {
   DateRange,
-  FileWithId,
   NewDrivingRange,
   NewGolfCourse,
   NewIndoorSimulator,
   TimeRange,
   VenueSettingsRowContent,
-  Weekday,
-  WeekdayContent,
 } from "@/utils/category/schemas";
-
-import { useEffect, useState } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import React, { useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { VenueSettingsRow } from "./venue-settings-row";
+import {
+  onAddNewImages,
+  onAddNewOpeningDateRange,
+  onAddNewOpeningHoursRange,
+  onAddNewVenueSettingsRow,
+  onAddNewWeekdayTimeRange,
+  onEditOpeningDateRange,
+  onEditOpeningTimeRange,
+  onEditVenueSettingsRow,
+  onEditWeekdayTimeRange,
+  onRemoveImage,
+  onRemoveOpeningDateRange,
+  onRemoveOpeningTimeRange,
+  onRemoveVenueSettingsRow,
+  onRemoveWeekdayTimeRange,
+  onSaveOpeningDateRange,
+  onSaveOpeningTimeRange,
+  onSaveVenueSettingsRow,
+  onSaveWeekdayTimeRange,
+  onSelectEquipment,
+} from "./helper-functions";
+import { StoreWithoutEmployees } from "@/pages/store-management/loader";
+import { UnderscoredInput } from "@/components/underscored-input";
+
+type S = {
+  golf: NewGolfCourse;
+  "indoor-simulator": NewIndoorSimulator;
+  "driving-range": NewDrivingRange;
+};
 
 export function Site({
   type,
   formDisabled,
+  stores,
+  addNewSite,
 }: {
   type: "golf" | "indoor-simulator" | "driving-range";
   formDisabled: boolean;
-}) {
-  const form = useFormContext<
-    NewGolfCourse | NewIndoorSimulator | NewDrivingRange
-  >();
+  stores: StoreWithoutEmployees[];
+  addNewSite: (v: S[typeof type]) => void;
+}): React.ReactElement {
+  const form = useFormContext<S[typeof type]>();
   const [newTimeRangeDisabled, setNewTimeRangeDisabled] = useState(false);
   const [newDateRangeDisabled, setNewDateRangeDisabled] = useState(false);
-
-  function onSubmit(
-    values: NewGolfCourse | NewIndoorSimulator | NewDrivingRange,
-  ) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
-  }
-
-  function onRemoveImage(id: string) {
-    const imageFiles = form.getValues("imageFiles");
-    form.setValue(
-      "imageFiles",
-      imageFiles.filter((f) => f.id !== id),
-    );
-  }
-
-  function onAddNewImages(e: React.ChangeEvent<HTMLInputElement>) {
-    const files = e.target.files;
-    if (!files) return;
-
-    let filesArray: FileWithId[] = [];
-
-    filesArray = Array.from(files).map((file) => ({
-      file: file,
-      id: crypto.randomUUID(),
-    }));
-
-    form.setValue("imageFiles", [
-      ...form.getValues("imageFiles"),
-      ...filesArray,
-    ]);
-  }
-
-  function onAddNewOpeningDateRange() {
-    if (form.formState.errors.openingDates) return;
-    const openingDates = form.getValues("openingDates");
-    form.setValue(
-      "openingDates",
-      [
-        ...openingDates,
-        {
-          id: crypto.randomUUID(),
-          start: undefined,
-          end: undefined,
-          saved: false,
-        },
-      ],
-      {
-        shouldValidate: true,
-      },
-    );
-  }
-
-  function onEditOpeningDateRange(id: string) {
-    form.setValue(
-      "openingDates",
-      form
-        .getValues("openingDates")
-        .map((v) =>
-          v.id === id ? { ...v, saved: false } : { ...v, saved: true },
-        ),
-    );
-  }
-
-  function onRemoveOpeningDateRange(id: string) {
-    form.setValue(
-      "openingDates",
-      form.getValues("openingDates").filter((od) => od.id !== id),
-      { shouldValidate: true },
-    );
-  }
-
-  function onSaveOpeningDateRange(dateRange: DateRange) {
-    form.setValue(
-      "openingDates",
-      form
-        .getValues("openingDates")
-        .map((od) => (od.id === dateRange.id ? dateRange : od)),
-      { shouldValidate: true },
-    );
-  }
-
-  function onAddNewOpeningHoursRange() {
-    if ("openingHours" in form.formState.errors) return;
-    form.setValue(
-      "openingHours",
-      [
-        ...form.getValues("openingHours"),
-        {
-          id: crypto.randomUUID(),
-          start: "",
-          end: "",
-          fee: "",
-          saved: false,
-        },
-      ],
-      { shouldValidate: true },
-    );
-  }
-
-  function onEditOpeningTimeRange(id: string) {
-    form.setValue(
-      "openingHours",
-      form
-        .getValues("openingHours")
-        .map((v) =>
-          v.id === id ? { ...v, saved: false } : { ...v, saved: true },
-        ),
-    );
-  }
-
-  function onRemoveOpeningTimeRange(id: string) {
-    form.setValue(
-      "openingHours",
-      form.getValues("openingHours").filter((v) => v.id !== id),
-      {
-        shouldValidate: true,
-      },
-    );
-  }
-
-  function onSaveOpeningTimeRange(timeRange: TimeRange) {
-    form.setValue(
-      "openingHours",
-      form
-        .getValues("openingHours")
-        .map((v) => (v.id === timeRange.id ? timeRange : v)),
-      {
-        shouldValidate: true,
-      },
-    );
-  }
-
-  function onAddNewWeekdayTimeRange(day: Weekday) {
-    // if ("openingHours" in form.formState.errors) return;
-
-    form.setValue(
-      day,
-      [
-        ...form.getValues(day),
-        {
-          id: crypto.randomUUID(),
-          title: "",
-          start: "",
-          end: "",
-          numberOfGroups: "",
-          subRows: [],
-          saved: false,
-        },
-      ],
-      { shouldValidate: true },
-    );
-  }
-
-  function onEditWeekdayTimeRange(day: Weekday, id: string) {
-    form.setValue(
-      day,
-      form
-        .getValues(day)
-        .map((d) => (d.id === id ? { ...d, saved: false } : d)),
-    );
-  }
-  function onRemoveWeekdayTimeRange(day: Weekday, id: string) {
-    form.setValue(
-      day,
-      form.getValues(day).filter((d) => d.id !== id),
-    );
-  }
-  function onSaveWeekdayTimeRange(day: Weekday, content: WeekdayContent) {
-    form.setValue(
-      day,
-      form
-        .getValues(day)
-        .map((d) => (d.id === content.id ? { ...content, saved: true } : d)),
-    );
-  }
-
-  function onSelectEquipment(id: string) {
-    form.setValue(
-      "equipments",
-      form
-        .getValues("equipments")
-        .map((v) => (v.id === id ? { ...v, selected: !v.selected } : v)),
-    );
-  }
-
-  function onAddNewVenueSettingsRow() {
-    form.setValue(
-      "venueSettings",
-      [
-        ...form.getValues("venueSettings"),
-        {
-          id: crypto.randomUUID(),
-          start: "",
-          end: "",
-          fee: "",
-          saved: false,
-          numberOfGroups: "",
-          numberOfBalls: "",
-        },
-      ],
-      { shouldValidate: true },
-    );
-  }
-
-  function onEditVenueSettingsRow(id: string) {
-    form.setValue(
-      "venueSettings",
-      form
-        .getValues("venueSettings")
-        .map((v) =>
-          v.id === id ? { ...v, saved: false } : { ...v, saved: true },
-        ),
-    );
-  }
-
-  function onRemoveVenueSettingsRow(id: string) {
-    form.setValue(
-      "venueSettings",
-      form.getValues("venueSettings").filter((v) => v.id !== id),
-      {
-        shouldValidate: true,
-      },
-    );
-  }
-
-  function onSaveVenueSettingsRow(venueSettingsRow: VenueSettingsRowContent) {
-    form.setValue(
-      "venueSettings",
-      form
-        .getValues("venueSettings")
-        .map((v) => (v.id === venueSettingsRow.id ? venueSettingsRow : v)),
-      {
-        shouldValidate: true,
-      },
-    );
-  }
 
   const x =
     "openingHours" in form.formState.errors
@@ -287,7 +90,12 @@ export function Site({
 
   return (
     <form
-      onSubmit={form.handleSubmit(onSubmit, (e) => console.log(e))}
+      onSubmit={form.handleSubmit(
+        (v) => {
+          addNewSite(v);
+        },
+        (e) => console.log(e),
+      )}
       className="space-y-10 px-20"
       id="new-site"
     >
@@ -297,6 +105,33 @@ export function Site({
           name="description"
           label="場地簡介"
           disabled={formDisabled}
+        />
+        <FormField
+          control={form.control}
+          name="storeId"
+          render={({ field }) => (
+            <FormItem className="flex items-baseline gap-5">
+              <FormLabel>綁定廠商</FormLabel>
+              <Select onValueChange={field.onChange}>
+                <FormControl>
+                  <SelectTrigger
+                    disabled={formDisabled}
+                    className="h-7 rounded-none border-0 border-b border-secondary-dark pl-0"
+                  >
+                    <SelectValue placeholder="選擇廠商" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {stores.map((store) => (
+                    <SelectItem key={store.id} value={store.id}>
+                      {store.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
         />
       </section>
 
@@ -312,7 +147,7 @@ export function Site({
                     "border-secondary-dark bg-secondary-dark text-white",
                 )}
                 key={e.id}
-                onClick={() => onSelectEquipment(e.id)}
+                onClick={() => onSelectEquipment(e.id, form)}
                 disabled={formDisabled}
               >
                 {e.label}
@@ -333,7 +168,7 @@ export function Site({
               className="hidden"
               accept="image/png, image/jpeg"
               multiple
-              onChange={onAddNewImages}
+              onChange={(e) => onAddNewImages(e, form)}
             />
           ),
         }}
@@ -350,7 +185,7 @@ export function Site({
                 <PreviewImage
                   key={file.id}
                   file={file}
-                  onRemoveImage={onRemoveImage}
+                  onRemoveImage={(id) => onRemoveImage(id, form)}
                   disabled={formDisabled}
                 />
               );
@@ -369,7 +204,7 @@ export function Site({
             <input
               type="button"
               className="hidden"
-              onClick={onAddNewOpeningDateRange}
+              onClick={() => onAddNewOpeningDateRange(form)}
             />
           ),
         }}
@@ -381,12 +216,12 @@ export function Site({
               return (
                 <DateRangeRow
                   key={dateRange.id}
-                  onRemove={() => onRemoveOpeningDateRange(dateRange.id)}
+                  onRemove={() => onRemoveOpeningDateRange(dateRange.id, form)}
                   onSave={(dateRange: DateRange) =>
-                    onSaveOpeningDateRange(dateRange)
+                    onSaveOpeningDateRange(dateRange, form)
                   }
                   data={dateRange}
-                  onEdit={() => onEditOpeningDateRange(dateRange.id)}
+                  onEdit={() => onEditOpeningDateRange(dateRange.id, form)}
                   disabled={formDisabled}
                 />
               );
@@ -406,16 +241,20 @@ export function Site({
               <input
                 type="button"
                 className="hidden"
-                onClick={() => onAddNewWeekdayTimeRange("monday")}
+                onClick={() => onAddNewWeekdayTimeRange("monday", form)}
               />
             ),
           }}
           disabled={newTimeRangeDisabled}
         >
           <WeekDayTabs
-            onEdit={onEditWeekdayTimeRange}
-            onRemove={onRemoveWeekdayTimeRange}
-            onSave={onSaveWeekdayTimeRange}
+            onEdit={(weekday, id) => onEditWeekdayTimeRange(weekday, id, form)}
+            onRemove={(weekday, id) =>
+              onRemoveWeekdayTimeRange(weekday, id, form)
+            }
+            onSave={(weekday, content) =>
+              onSaveWeekdayTimeRange(weekday, content, form)
+            }
           />
         </Section>
       )}
@@ -429,7 +268,7 @@ export function Site({
               <input
                 type="button"
                 className="hidden"
-                onClick={onAddNewOpeningHoursRange}
+                onClick={() => onAddNewOpeningHoursRange(form)}
               />
             ),
           }}
@@ -441,11 +280,11 @@ export function Site({
                 return (
                   <TimeRangeRow
                     key={hours.id}
-                    onRemove={() => onRemoveOpeningTimeRange(hours.id)}
+                    onRemove={() => onRemoveOpeningTimeRange(hours.id, form)}
                     onSave={(timeRange: TimeRange) =>
-                      onSaveOpeningTimeRange(timeRange)
+                      onSaveOpeningTimeRange(timeRange, form)
                     }
-                    onEdit={() => onEditOpeningTimeRange(hours.id)}
+                    onEdit={() => onEditOpeningTimeRange(hours.id, form)}
                     data={hours}
                   />
                 );
@@ -458,41 +297,75 @@ export function Site({
       )}
 
       {type === "driving-range" && (
-        <Section
-          title="場地開放設定"
-          inputButton={{
-            text: "新增設定",
-            element: (
-              <input
-                type="button"
-                className="hidden"
-                onClick={onAddNewVenueSettingsRow}
+        <>
+          <Section
+            title="場地開放設定"
+            inputButton={{
+              text: "新增設定",
+              element: (
+                <input
+                  type="button"
+                  className="hidden"
+                  onClick={() => onAddNewVenueSettingsRow(form)}
+                />
+              ),
+            }}
+            disabled={formDisabled}
+          >
+            {form.watch("venueSettings").length ? (
+              <ul>
+                {form.getValues("venueSettings").map((settings) => {
+                  return (
+                    <VenueSettingsRow
+                      key={settings.id}
+                      onRemove={() =>
+                        onRemoveVenueSettingsRow(settings.id, form)
+                      }
+                      onSave={(settings: VenueSettingsRowContent) =>
+                        onSaveVenueSettingsRow(settings, form)
+                      }
+                      onEdit={() => onEditVenueSettingsRow(settings.id, form)}
+                      data={settings}
+                      formDisabled={formDisabled}
+                    />
+                  );
+                })}
+              </ul>
+            ) : (
+              <p className="py-2.5">尚未新增開放時間</p>
+            )}
+          </Section>
+
+          <Section title="">
+            <div className="flex justify-between px-5 pb-2.5 pt-4">
+              <p className="font-medium text-secondary-dark">球費單盒計價</p>
+              <FormField
+                control={form.control}
+                name="costPerBox"
+                render={({ field }) => (
+                  <FormItem className="flex items-baseline gap-1.5">
+                    <FormControl>
+                      <UnderscoredInput
+                        placeholder={`價錢`}
+                        className="h-7 w-28 p-0 pb-1 text-center text-secondary-dark"
+                        disabled={formDisabled}
+                        {...field}
+                        onChange={(e) => {
+                          const value = Number.isNaN(+e.target.value)
+                            ? field.value
+                            : +e.target.value;
+                          field.onChange(value);
+                        }}
+                      />
+                    </FormControl>
+                    <FormLabel className="text-secondary-dark">盒/元</FormLabel>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            ),
-          }}
-          disabled={formDisabled}
-        >
-          {form.watch("venueSettings").length ? (
-            <ul>
-              {form.getValues("venueSettings").map((settings) => {
-                return (
-                  <VenueSettingsRow
-                    key={settings.id}
-                    onRemove={() => onRemoveVenueSettingsRow(settings.id)}
-                    onSave={(settings: VenueSettingsRowContent) =>
-                      onSaveVenueSettingsRow(settings)
-                    }
-                    onEdit={() => onEditVenueSettingsRow(settings.id)}
-                    data={settings}
-                    formDisabled={formDisabled}
-                  />
-                );
-              })}
-            </ul>
-          ) : (
-            <p className="py-2.5">尚未新增開放時間</p>
-          )}
-        </Section>
+            </div>
+          </Section>
+        </>
       )}
     </form>
   );

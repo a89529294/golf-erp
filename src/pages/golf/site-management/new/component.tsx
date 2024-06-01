@@ -6,10 +6,18 @@ import { equipments } from "@/utils/category/equipment";
 import { NewGolfCourse, newGolfCourseSchema } from "@/utils/category/schemas";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useLoaderData, useNavigate } from "react-router-dom";
+import { loader } from "./loader";
+import { golfStoresQuery } from "../loader";
 
 export function Component() {
+  const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
+  const { data: stores } = useQuery({
+    ...golfStoresQuery,
+    initialData,
+  });
   const navigate = useNavigate();
   const form = useForm<NewGolfCourse>({
     resolver: zodResolver(newGolfCourseSchema),
@@ -47,7 +55,12 @@ export function Component() {
           建立場地資料
         </h1>
         <Form {...form}>
-          <Site type="golf" formDisabled={false} />
+          <Site
+            type="golf"
+            formDisabled={false}
+            stores={stores}
+            addNewSite={() => {}}
+          />
         </Form>
       </div>
     </MainLayout>

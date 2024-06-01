@@ -1,6 +1,7 @@
 import images from "@/temp/images.json";
 import { queryClient } from "@/utils/query-client";
 import { LoaderFunctionArgs } from "react-router-dom";
+import { groundStoresQuery } from "../loader";
 
 export const genDrivingRangeDetailsQuery = (id: string) => ({
   queryKey: ["driving-range-details", id],
@@ -35,7 +36,10 @@ export const genDrivingRangeDetailsQuery = (id: string) => ({
 });
 
 export async function loader({ params }: LoaderFunctionArgs) {
-  return await queryClient.ensureQueryData(
-    genDrivingRangeDetailsQuery(params.id!),
-  );
+  return {
+    details: await queryClient.ensureQueryData(
+      genDrivingRangeDetailsQuery(params.id!),
+    ),
+    stores: await queryClient.ensureQueryData(groundStoresQuery),
+  };
 }

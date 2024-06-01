@@ -11,13 +11,18 @@ import { useForm } from "react-hook-form";
 import { useLoaderData, useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { loader } from "./loader";
+import { indoorSimulatorStoresQuery } from "../loader";
 
 export function Component() {
   const [formDisabled, setFormDisabled] = useState(true);
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
   const { data } = useQuery({
     ...indoorSimulatorSiteQuery,
-    initialData,
+    initialData: initialData.details,
+  });
+  const { data: stores } = useQuery({
+    ...indoorSimulatorStoresQuery,
+    initialData: initialData.stores,
   });
   const navigate = useNavigate();
   const form = useForm<z.infer<typeof existingIndoorSimulatorSchema>>({
@@ -64,7 +69,12 @@ export function Component() {
           {formDisabled ? "檢視場地資料" : "編輯場地資料"}
         </h1>
         <Form {...form}>
-          <Site formDisabled={formDisabled} type="indoor-simulator" />
+          <Site
+            addNewSite={() => {}}
+            stores={stores}
+            formDisabled={formDisabled}
+            type="indoor-simulator"
+          />
         </Form>
       </div>
     </MainLayout>

@@ -8,6 +8,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { toMinguoDate } from "@/utils";
 
 export function DatePicker({
   date,
@@ -30,10 +31,6 @@ export function DatePicker({
 }) {
   const [open, setOpen] = React.useState(false);
 
-  const minguoDate = date
-    ? `${date.getFullYear() - 1911}-${date.getMonth() + 1}-${date.getDate()}`
-    : "";
-
   return (
     <Popover
       open={open}
@@ -54,7 +51,7 @@ export function DatePicker({
           disabled={disabled}
         >
           <span className="flex-1">
-            {date ? minguoDate : <span>日期</span>}
+            {date ? toMinguoDate(date) : <span>日期</span>}
           </span>
           <CalendarIcon className="h-4 w-4 text-black" />
         </button>
@@ -63,7 +60,10 @@ export function DatePicker({
         <Calendar
           mode="single"
           selected={date}
-          onSelect={setDate}
+          onSelect={(e) => {
+            if (e) e.setHours(8);
+            setDate(e);
+          }}
           initialFocus
           onDaySelect={() => setOpen(false)}
           fromDate={fromDate}

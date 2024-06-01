@@ -11,13 +11,18 @@ import { useLoaderData, useNavigate, useParams } from "react-router-dom";
 import { z } from "zod";
 import { genDrivingRangeDetailsQuery, loader } from "./loader";
 import { useState } from "react";
+import { groundStoresQuery } from "../loader";
 
 export function Component() {
   const { id } = useParams();
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
   const { data } = useQuery({
     ...genDrivingRangeDetailsQuery(id!),
-    initialData,
+    initialData: initialData.details,
+  });
+  const { data: stores } = useQuery({
+    ...groundStoresQuery,
+    initialData: initialData.stores,
   });
   const navigate = useNavigate();
   const form = useForm<z.infer<typeof existingDrivingRangeSchema>>({
@@ -66,7 +71,12 @@ export function Component() {
           編輯場地資料
         </h1>
         <Form {...form}>
-          <Site type="driving-range" formDisabled={formDisabled} />
+          <Site
+            addNewSite={() => {}}
+            stores={stores}
+            type="driving-range"
+            formDisabled={formDisabled}
+          />
         </Form>
       </div>
     </MainLayout>

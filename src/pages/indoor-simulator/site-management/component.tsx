@@ -1,18 +1,22 @@
 import { CategoryMain } from "@/components/category/category-main";
 import {
-  indoorSimulatorSiteManagementQuery,
+  indoorSimulatorStoresQuery,
   loader,
 } from "@/pages/indoor-simulator/site-management/loader";
 import { linksKV } from "@/utils/links";
+import { useQuery } from "@tanstack/react-query";
 import { useLoaderData } from "react-router-dom";
 
 export function Component() {
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
-
+  const { data: stores } = useQuery({
+    ...indoorSimulatorStoresQuery,
+    initialData,
+  });
   return (
     <CategoryMain
-      initialData={initialData}
-      queryObject={indoorSimulatorSiteManagementQuery}
+      stores={stores}
+      type="simulator"
       newSiteHref={
         linksKV["indoor-simulator"].subLinks["site-management"].paths.new
       }

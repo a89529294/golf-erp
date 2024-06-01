@@ -13,8 +13,13 @@ type ExistingImg = z.infer<typeof existingImgSchema>;
 
 const nameSchema = { name: z.string().min(1) };
 const descriptionSchema = { description: z.string().min(1) };
+const storeIdSchema = { storeId: z.string().min(1) };
 
-const baseSchema = z.object({}).extend(nameSchema).extend(descriptionSchema);
+const baseSchema = z
+  .object({})
+  .extend(nameSchema)
+  .extend(descriptionSchema)
+  .extend(storeIdSchema);
 
 const equipmentsSchema = {
   equipments: z.array(
@@ -123,7 +128,9 @@ const newIndoorSimulatorSchema = baseSchema
   .extend(newImagesSchema)
   .extend(openingDatesSchema)
   .extend(openingHoursSchema);
-type NewIndoorSimulator = z.infer<typeof newIndoorSimulatorSchema>;
+type NewIndoorSimulator = z.infer<typeof newIndoorSimulatorSchema> & {
+  category: "indoor-simulator";
+};
 
 const existingIndoorSimulatorSchema = baseSchema
   .extend(equipmentsSchema)
@@ -137,7 +144,7 @@ const newGolfCourseSchema = baseSchema
   .extend(newImagesSchema)
   .extend(openingDatesSchema)
   .extend(weekDaysSchema);
-type NewGolfCourse = z.infer<typeof newGolfCourseSchema>;
+type NewGolfCourse = z.infer<typeof newGolfCourseSchema> & { category: "golf" };
 
 const existingGolfCourseSchema = baseSchema
   .extend(equipmentsSchema)
@@ -152,7 +159,9 @@ const newDrivingRangeSchema = baseSchema
   .extend(openingDatesSchema)
   .extend(venueSettingsSchema)
   .extend(costPerBoxSchema);
-type NewDrivingRange = z.infer<typeof newDrivingRangeSchema>;
+type NewDrivingRange = z.infer<typeof newDrivingRangeSchema> & {
+  category: "driving-range";
+};
 
 const existingDrivingRangeSchema = baseSchema
   .extend(equipmentsSchema)
@@ -161,6 +170,40 @@ const existingDrivingRangeSchema = baseSchema
   .extend(venueSettingsSchema)
   .extend(costPerBoxSchema);
 type ExistingDrivingRange = z.infer<typeof existingDrivingRangeSchema>;
+
+const genericSitesSchema = z.object({
+  data: z.array(
+    z.object({
+      id: z.string(),
+      name: z.string(),
+      coverImages: z.array(z.string()),
+      introduce: z.string(),
+      openDays: z
+        .array(
+          z.object({
+            id: z.string(),
+            startDay: z.string(),
+            endDay: z.string(),
+            sequence: z.number(),
+          }),
+        )
+        .optional(),
+      openTimes: z
+        .array(
+          z.object({
+            id: z.string(),
+            startTime: z.string(),
+            endTime: z.string(),
+            pricePerHour: z.number(),
+            openQuantity: z.number(),
+            openBallQuantity: z.number(),
+            sequence: z.number(),
+          }),
+        )
+        .optional(),
+    }),
+  ),
+});
 
 export {
   weekdays,
@@ -185,4 +228,5 @@ export {
   existingGolfCourseSchema,
   newDrivingRangeSchema,
   existingDrivingRangeSchema,
+  genericSitesSchema,
 };

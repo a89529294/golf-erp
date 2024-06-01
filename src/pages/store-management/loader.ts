@@ -20,25 +20,32 @@ export const storeSchema = z.object({
   employees: z.array(employeeSchema),
 });
 
-const storesSchema = z.object({
+export const storesSchema = z.object({
   data: z.array(storeSchema),
 });
 
+export const storesWithoutEmployeesSchema = z.object({
+  data: z.array(storeSchema.omit({ employees: true })),
+});
+
 export type Store = z.infer<typeof storesSchema>["data"][number];
+export type StoreWithoutEmployees = z.infer<
+  typeof storesWithoutEmployeesSchema
+>["data"][number];
 
 export const storesQuery = {
   queryKey: ["stores"],
   queryFn: async () => {
-    const responses = await Promise.all([
-      privateFetch("/store/golf?pageSize=99&populate=employees"),
-      privateFetch("/store/ground?pageSize=99&populate=employees"),
-      privateFetch("/store/simulator?pageSize=99&populate=employees"),
-    ]);
+    const response = await privateFetch(
+      "/store?pageSize=99&populate=employees",
+    );
+
+    const data = storesSchema.parse(await response.json()).data;
 
     const x = {
-      golf: storesSchema.parse(await responses[0].json()).data,
-      ground: storesSchema.parse(await responses[1].json()).data,
-      simulator: storesSchema.parse(await responses[2].json()).data,
+      golf: data.filter((s) => s.category === "golf"),
+      ground: data.filter((s) => s.category === "ground"),
+      simulator: data.filter((s) => s.category === "simulator"),
     };
 
     return x;

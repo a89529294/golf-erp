@@ -21,3 +21,15 @@ export const storeCategoriesWithAll = ["all", ...storeCategories] as const;
 export type StoreCategoryWithAllTuple = typeof storeCategoriesWithAll;
 
 export type StoreCategory = keyof typeof storeCategoryMap;
+
+export const toMinguoDate = (date: Date) =>
+  date
+    ? `${date.getFullYear() - 1911}-${date.getMonth() + 1}-${date.getDate()}`
+    : "";
+
+export const getDifferenceInHoursAndMinutes = (start: number, end: number) => {
+  const differenceInMinutes = end - start;
+  const hours = Math.floor(differenceInMinutes / 60);
+  const minutes = differenceInMinutes % 60;
+  return `${hours}小時${minutes}分鐘`;
+};

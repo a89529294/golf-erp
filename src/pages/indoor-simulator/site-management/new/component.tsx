@@ -6,10 +6,18 @@ import { equipments } from "@/utils/category/equipment";
 import { newIndoorSimulatorSchema } from "@/utils/category/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useLoaderData, useNavigate } from "react-router-dom";
 import { z } from "zod";
+import { loader } from "./loader";
+import { useQuery } from "@tanstack/react-query";
+import { indoorSimulatorStoresQuery } from "../loader";
 
 export function Component() {
+  const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
+  const { data: stores } = useQuery({
+    ...indoorSimulatorStoresQuery,
+    initialData,
+  });
   const navigate = useNavigate();
   const form = useForm<z.infer<typeof newIndoorSimulatorSchema>>({
     resolver: zodResolver(newIndoorSimulatorSchema),
@@ -41,7 +49,12 @@ export function Component() {
           建立場地資料
         </h1>
         <Form {...form}>
-          <Site type="indoor-simulator" formDisabled={false} />
+          <Site
+            type="indoor-simulator"
+            formDisabled={false}
+            stores={stores}
+            addNewSite={() => {}}
+          />
         </Form>
       </div>
     </MainLayout>

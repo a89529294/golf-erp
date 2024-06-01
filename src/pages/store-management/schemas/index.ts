@@ -3,19 +3,19 @@ import { storeCategories } from "@/utils";
 import { z } from "zod";
 export const formSchema = z
   .object({
-    name: z.string().min(1, { message: "請輸入廠商名稱" }),
+    name: z.string().trim().min(1, { message: "請輸入廠商名稱" }),
     category: z.enum(storeCategories),
     openingHoursStart: z.string().min(1, { message: "請輸入營業時間" }),
     openingHoursEnd: z.string().min(1, { message: "請輸入營業時間" }),
-    phoneAreaCode: z.string().length(2, { message: "請填入區域碼" }),
-    phone: z.string().min(1, { message: "請填入電話" }),
-    contact: z.string().min(1, { message: "請填入聯絡人姓名" }),
-    contactPhone: z.string().min(1, { message: "請填入聯絡人電話" }),
-    latitude: z.string().min(1, { message: "請填入緯度" }),
-    longitude: z.string().min(1, { message: "請填入經度" }),
+    phoneAreaCode: z.string().trim().length(2, { message: "請填入區域碼" }),
+    phone: z.string().trim().min(1, { message: "請填入電話" }),
+    contact: z.string().trim().min(1, { message: "請填入聯絡人姓名" }),
+    contactPhone: z.string().trim().min(1, { message: "請填入聯絡人電話" }),
+    latitude: z.string().trim().min(1, { message: "請填入緯度" }),
+    longitude: z.string().trim().min(1, { message: "請填入經度" }),
     county: z.string().min(1, { message: "請選擇縣市" }),
     district: z.string().min(1, { message: "請選擇地區" }),
-    address: z.string().min(1, { message: "請填入地址" }),
+    address: z.string().trim().min(1, { message: "請填入地址" }),
     employees: z.array(employeeSchema),
   })
   .refine(

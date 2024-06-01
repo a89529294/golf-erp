@@ -12,6 +12,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useLoaderData, useNavigate, useParams } from "react-router-dom";
 import { genGolfSiteDetailsQuery, loader } from "./loader";
+import { golfStoresQuery } from "../loader";
 
 export function Component() {
   const [formDisabled, setFormDisabled] = useState(true);
@@ -20,7 +21,11 @@ export function Component() {
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
   const { data } = useQuery({
     ...genGolfSiteDetailsQuery(id!),
-    initialData,
+    initialData: initialData.details,
+  });
+  const { data: stores } = useQuery({
+    ...golfStoresQuery,
+    initialData: initialData.stores,
   });
 
   const form = useForm<ExistingGolfCourse>({
@@ -73,7 +78,12 @@ export function Component() {
           建立場地資料
         </h1>
         <Form {...form}>
-          <Site formDisabled={formDisabled} type={"golf"} />
+          <Site
+            addNewSite={() => {}}
+            stores={stores}
+            formDisabled={formDisabled}
+            type={"golf"}
+          />
         </Form>
       </div>
     </MainLayout>

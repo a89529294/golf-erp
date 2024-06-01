@@ -1,6 +1,7 @@
 import images from "@/temp/images.json";
 import { queryClient } from "@/utils/query-client";
 import { LoaderFunctionArgs } from "react-router-dom";
+import { golfStoresQuery } from "../loader";
 
 export const genGolfSiteDetailsQuery = (id: string) => ({
   queryKey: ["golf-site-details", id],
@@ -62,5 +63,10 @@ export const genGolfSiteDetailsQuery = (id: string) => ({
 });
 
 export async function loader({ params }: LoaderFunctionArgs) {
-  return await queryClient.ensureQueryData(genGolfSiteDetailsQuery(params.id!));
+  return {
+    details: await queryClient.ensureQueryData(
+      genGolfSiteDetailsQuery(params.id!),
+    ),
+    stores: await queryClient.ensureQueryData(golfStoresQuery),
+  };
 }
