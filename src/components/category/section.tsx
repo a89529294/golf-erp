@@ -1,6 +1,7 @@
+import plusIcon from "@/assets/plus-icon.svg";
 import { button } from "@/components/ui/button-cn";
 import { cn } from "@/lib/utils";
-import plusIcon from "@/assets/plus-icon.svg";
+import { useRef } from "react";
 
 export function Section({
   title,
@@ -18,8 +19,10 @@ export function Section({
   children: React.ReactNode;
   disabled?: boolean;
 }) {
+  const sectionRef = useRef<HTMLElement>(null);
+
   return (
-    <section>
+    <section ref={sectionRef}>
       <header className="flex items-center py-2.5 pl-5 ">
         <span className="font-semibold">{title}</span>
         {subTitle && (
@@ -32,6 +35,7 @@ export function Section({
               "relative ml-auto cursor-pointer bg-white",
               disabled && "cursor-not-allowed opacity-50",
             )}
+            onClickCapture={(e) => disabled && e.stopPropagation()}
           >
             <div className={cn(button({ size: "short" }))}>
               <img src={plusIcon} />

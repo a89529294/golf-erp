@@ -21,7 +21,6 @@ export function PreviewImage({
     const reader = new FileReader();
     reader.readAsDataURL(file.file);
     reader.onload = (e) => {
-      console.log(e.target?.result);
       setImgSrc((e.target?.result ?? "") as string);
     };
   }, [file]);

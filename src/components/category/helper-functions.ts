@@ -1,5 +1,8 @@
 import {
   DateRange,
+  ExistingDrivingRange,
+  ExistingGolfCourse,
+  ExistingIndoorSimulator,
   FileWithId,
   NewDrivingRange,
   NewGolfCourse,
@@ -12,7 +15,7 @@ import {
 import { UseFormReturn } from "react-hook-form";
 
 // export function onSubmit<
-//   T extends NewGolfCourse | NewIndoorSimulator | NewDrivingRange,
+//   T extends NewGolfCourse | NewIndoorSimulator | NewDrivingRange | ExistingGolfCourse | ExistingDrivingRange | ExistingIndoorSimulator,
 // >(values: T, addNewSite: (v: T) => void) {
 //   // Do something with the form values.
 //   // ✅ This will be type-safe and validated.
@@ -25,7 +28,14 @@ import { UseFormReturn } from "react-hook-form";
 
 export function onRemoveImage(
   id: string,
-  form: UseFormReturn<NewGolfCourse | NewIndoorSimulator | NewDrivingRange>,
+  form: UseFormReturn<
+    | NewGolfCourse
+    | NewIndoorSimulator
+    | NewDrivingRange
+    | ExistingGolfCourse
+    | ExistingDrivingRange
+    | ExistingIndoorSimulator
+  >,
 ) {
   const imageFiles = form.getValues("imageFiles");
   form.setValue(
@@ -36,7 +46,14 @@ export function onRemoveImage(
 
 export function onAddNewImages(
   e: React.ChangeEvent<HTMLInputElement>,
-  form: UseFormReturn<NewGolfCourse | NewIndoorSimulator | NewDrivingRange>,
+  form: UseFormReturn<
+    | NewGolfCourse
+    | NewIndoorSimulator
+    | NewDrivingRange
+    | ExistingGolfCourse
+    | ExistingDrivingRange
+    | ExistingIndoorSimulator
+  >,
 ) {
   const files = e.target.files;
   if (!files) return;
@@ -52,7 +69,14 @@ export function onAddNewImages(
 }
 
 export function onAddNewOpeningDateRange(
-  form: UseFormReturn<NewGolfCourse | NewIndoorSimulator | NewDrivingRange>,
+  form: UseFormReturn<
+    | NewGolfCourse
+    | NewIndoorSimulator
+    | NewDrivingRange
+    | ExistingGolfCourse
+    | ExistingDrivingRange
+    | ExistingIndoorSimulator
+  >,
 ) {
   if (form.formState.errors.openingDates) return;
   const openingDates = form.getValues("openingDates");
@@ -68,14 +92,21 @@ export function onAddNewOpeningDateRange(
       },
     ],
     {
-      shouldValidate: true,
+      shouldValidate: false,
     },
   );
 }
 
 export function onEditOpeningDateRange(
   id: string,
-  form: UseFormReturn<NewGolfCourse | NewIndoorSimulator | NewDrivingRange>,
+  form: UseFormReturn<
+    | NewGolfCourse
+    | NewIndoorSimulator
+    | NewDrivingRange
+    | ExistingGolfCourse
+    | ExistingDrivingRange
+    | ExistingIndoorSimulator
+  >,
 ) {
   form.setValue(
     "openingDates",
@@ -89,7 +120,14 @@ export function onEditOpeningDateRange(
 
 export function onRemoveOpeningDateRange(
   id: string,
-  form: UseFormReturn<NewGolfCourse | NewIndoorSimulator | NewDrivingRange>,
+  form: UseFormReturn<
+    | NewGolfCourse
+    | NewIndoorSimulator
+    | NewDrivingRange
+    | ExistingGolfCourse
+    | ExistingDrivingRange
+    | ExistingIndoorSimulator
+  >,
 ) {
   form.setValue(
     "openingDates",
@@ -100,7 +138,14 @@ export function onRemoveOpeningDateRange(
 
 export function onSaveOpeningDateRange(
   dateRange: DateRange,
-  form: UseFormReturn<NewGolfCourse | NewIndoorSimulator | NewDrivingRange>,
+  form: UseFormReturn<
+    | NewGolfCourse
+    | NewIndoorSimulator
+    | NewDrivingRange
+    | ExistingGolfCourse
+    | ExistingDrivingRange
+    | ExistingIndoorSimulator
+  >,
 ) {
   form.setValue(
     "openingDates",
@@ -112,7 +157,14 @@ export function onSaveOpeningDateRange(
 }
 
 export function onAddNewOpeningHoursRange(
-  form: UseFormReturn<NewGolfCourse | NewIndoorSimulator | NewDrivingRange>,
+  form: UseFormReturn<
+    | NewGolfCourse
+    | NewIndoorSimulator
+    | NewDrivingRange
+    | ExistingGolfCourse
+    | ExistingDrivingRange
+    | ExistingIndoorSimulator
+  >,
 ) {
   if ("openingHours" in form.formState.errors) return;
   form.setValue(
@@ -133,7 +185,14 @@ export function onAddNewOpeningHoursRange(
 
 export function onEditOpeningTimeRange(
   id: string,
-  form: UseFormReturn<NewGolfCourse | NewIndoorSimulator | NewDrivingRange>,
+  form: UseFormReturn<
+    | NewGolfCourse
+    | NewIndoorSimulator
+    | NewDrivingRange
+    | ExistingGolfCourse
+    | ExistingDrivingRange
+    | ExistingIndoorSimulator
+  >,
 ) {
   form.setValue(
     "openingHours",
@@ -147,7 +206,14 @@ export function onEditOpeningTimeRange(
 
 export function onRemoveOpeningTimeRange(
   id: string,
-  form: UseFormReturn<NewGolfCourse | NewIndoorSimulator | NewDrivingRange>,
+  form: UseFormReturn<
+    | NewGolfCourse
+    | NewIndoorSimulator
+    | NewDrivingRange
+    | ExistingGolfCourse
+    | ExistingDrivingRange
+    | ExistingIndoorSimulator
+  >,
 ) {
   form.setValue(
     "openingHours",
@@ -160,7 +226,14 @@ export function onRemoveOpeningTimeRange(
 
 export function onSaveOpeningTimeRange(
   timeRange: TimeRange,
-  form: UseFormReturn<NewGolfCourse | NewIndoorSimulator | NewDrivingRange>,
+  form: UseFormReturn<
+    | NewGolfCourse
+    | NewIndoorSimulator
+    | NewDrivingRange
+    | ExistingGolfCourse
+    | ExistingDrivingRange
+    | ExistingIndoorSimulator
+  >,
 ) {
   form.setValue(
     "openingHours",
@@ -175,7 +248,14 @@ export function onSaveOpeningTimeRange(
 
 export function onAddNewWeekdayTimeRange(
   day: Weekday,
-  form: UseFormReturn<NewGolfCourse | NewIndoorSimulator | NewDrivingRange>,
+  form: UseFormReturn<
+    | NewGolfCourse
+    | NewIndoorSimulator
+    | NewDrivingRange
+    | ExistingGolfCourse
+    | ExistingDrivingRange
+    | ExistingIndoorSimulator
+  >,
 ) {
   // if ("openingHours" in form.formState.errors) return;
 
@@ -200,7 +280,14 @@ export function onAddNewWeekdayTimeRange(
 export function onEditWeekdayTimeRange(
   day: Weekday,
   id: string,
-  form: UseFormReturn<NewGolfCourse | NewIndoorSimulator | NewDrivingRange>,
+  form: UseFormReturn<
+    | NewGolfCourse
+    | NewIndoorSimulator
+    | NewDrivingRange
+    | ExistingGolfCourse
+    | ExistingDrivingRange
+    | ExistingIndoorSimulator
+  >,
 ) {
   form.setValue(
     day,
@@ -210,7 +297,14 @@ export function onEditWeekdayTimeRange(
 export function onRemoveWeekdayTimeRange(
   day: Weekday,
   id: string,
-  form: UseFormReturn<NewGolfCourse | NewIndoorSimulator | NewDrivingRange>,
+  form: UseFormReturn<
+    | NewGolfCourse
+    | NewIndoorSimulator
+    | NewDrivingRange
+    | ExistingGolfCourse
+    | ExistingDrivingRange
+    | ExistingIndoorSimulator
+  >,
 ) {
   form.setValue(
     day,
@@ -220,7 +314,14 @@ export function onRemoveWeekdayTimeRange(
 export function onSaveWeekdayTimeRange(
   day: Weekday,
   content: WeekdayContent,
-  form: UseFormReturn<NewGolfCourse | NewIndoorSimulator | NewDrivingRange>,
+  form: UseFormReturn<
+    | NewGolfCourse
+    | NewIndoorSimulator
+    | NewDrivingRange
+    | ExistingGolfCourse
+    | ExistingDrivingRange
+    | ExistingIndoorSimulator
+  >,
 ) {
   form.setValue(
     day,
@@ -232,7 +333,14 @@ export function onSaveWeekdayTimeRange(
 
 export function onSelectEquipment(
   id: string,
-  form: UseFormReturn<NewGolfCourse | NewIndoorSimulator | NewDrivingRange>,
+  form: UseFormReturn<
+    | NewGolfCourse
+    | NewIndoorSimulator
+    | NewDrivingRange
+    | ExistingGolfCourse
+    | ExistingDrivingRange
+    | ExistingIndoorSimulator
+  >,
 ) {
   form.setValue(
     "equipments",
@@ -243,7 +351,14 @@ export function onSelectEquipment(
 }
 
 export function onAddNewVenueSettingsRow(
-  form: UseFormReturn<NewGolfCourse | NewIndoorSimulator | NewDrivingRange>,
+  form: UseFormReturn<
+    | NewGolfCourse
+    | NewIndoorSimulator
+    | NewDrivingRange
+    | ExistingGolfCourse
+    | ExistingDrivingRange
+    | ExistingIndoorSimulator
+  >,
 ) {
   form.setValue(
     "venueSettings",
@@ -259,13 +374,20 @@ export function onAddNewVenueSettingsRow(
         numberOfBalls: "",
       },
     ],
-    { shouldValidate: true },
+    { shouldValidate: false },
   );
 }
 
 export function onEditVenueSettingsRow(
   id: string,
-  form: UseFormReturn<NewGolfCourse | NewIndoorSimulator | NewDrivingRange>,
+  form: UseFormReturn<
+    | NewGolfCourse
+    | NewIndoorSimulator
+    | NewDrivingRange
+    | ExistingGolfCourse
+    | ExistingDrivingRange
+    | ExistingIndoorSimulator
+  >,
 ) {
   form.setValue(
     "venueSettings",
@@ -279,7 +401,14 @@ export function onEditVenueSettingsRow(
 
 export function onRemoveVenueSettingsRow(
   id: string,
-  form: UseFormReturn<NewGolfCourse | NewIndoorSimulator | NewDrivingRange>,
+  form: UseFormReturn<
+    | NewGolfCourse
+    | NewIndoorSimulator
+    | NewDrivingRange
+    | ExistingGolfCourse
+    | ExistingDrivingRange
+    | ExistingIndoorSimulator
+  >,
 ) {
   form.setValue(
     "venueSettings",
@@ -292,7 +421,14 @@ export function onRemoveVenueSettingsRow(
 
 export function onSaveVenueSettingsRow(
   venueSettingsRow: VenueSettingsRowContent,
-  form: UseFormReturn<NewGolfCourse | NewIndoorSimulator | NewDrivingRange>,
+  form: UseFormReturn<
+    | NewGolfCourse
+    | NewIndoorSimulator
+    | NewDrivingRange
+    | ExistingGolfCourse
+    | ExistingDrivingRange
+    | ExistingIndoorSimulator
+  >,
 ) {
   form.setValue(
     "venueSettings",

@@ -11,9 +11,11 @@ const existingImgSchema = z.object({
 });
 type ExistingImg = z.infer<typeof existingImgSchema>;
 
-const nameSchema = { name: z.string().min(1) };
-const descriptionSchema = { description: z.string().min(1) };
-const storeIdSchema = { storeId: z.string().min(1) };
+const nameSchema = { name: z.string().min(1, { message: "請填入場地名" }) };
+const descriptionSchema = {
+  description: z.string().min(1, { message: "請填入場地簡介" }),
+};
+const storeIdSchema = { storeId: z.string().min(1, { message: "請綁定廠商" }) };
 
 const baseSchema = z
   .object({})
@@ -35,14 +37,24 @@ const existingImagesSchema = {
   imageFiles: z.array(z.union([existingImgSchema, fileWithIdSchema])),
 };
 const openingDatesSchema = {
-  openingDates: z.array(
-    z.object({
-      id: z.string(),
-      start: z.union([z.date(), z.undefined()]),
-      end: z.union([z.date(), z.undefined()]),
-      saved: z.boolean(),
+  openingDates: z
+    .array(
+      z.object({
+        id: z.string(),
+        start: z.union([z.date(), z.undefined()]),
+        end: z.union([z.date(), z.undefined()]),
+        saved: z.boolean(),
+      }),
+    )
+    .superRefine((dates, ctx) => {
+      const errorIds = dates.map((d) => (d.saved ? "" : d.id)).filter((v) => v);
+      errorIds.forEach((id) =>
+        ctx.addIssue({
+          code: "custom",
+          message: id,
+        }),
+      );
     }),
-  ),
 };
 type DateRange = z.infer<typeof openingDatesSchema.openingDates>[number];
 const openingHoursSchema = {
@@ -104,23 +116,33 @@ const weekdays = [
 ] as const;
 type Weekday = (typeof weekdays)[number]["en"];
 const venueSettingsSchema = {
-  venueSettings: z.array(
-    z.object({
-      id: z.string(),
-      start: z.string(),
-      end: z.string(),
-      fee: z.union([z.literal(""), z.number()]),
-      numberOfGroups: z.union([z.literal(""), z.number()]),
-      numberOfBalls: z.union([z.literal(""), z.number()]),
-      saved: z.boolean(),
+  venueSettings: z
+    .array(
+      z.object({
+        id: z.string(),
+        start: z.string(),
+        end: z.string(),
+        fee: z.union([z.literal(""), z.number()]),
+        numberOfGroups: z.union([z.literal(""), z.number()]),
+        numberOfBalls: z.union([z.literal(""), z.number()]),
+        saved: z.boolean(),
+      }),
+    )
+    .superRefine((settings, ctx) => {
+      settings.forEach((s) => {
+        if (!s.saved)
+          ctx.addIssue({
+            code: "custom",
+            message: s.id,
+          });
+      });
     }),
-  ),
 };
 type VenueSettingsRowContent = z.infer<
   (typeof venueSettingsSchema)["venueSettings"]
 >[number];
 const costPerBoxSchema = {
-  costPerBox: z.number(),
+  costPerBox: z.number().min(1, { message: "請填入價錢" }),
 };
 
 const newIndoorSimulatorSchema = baseSchema

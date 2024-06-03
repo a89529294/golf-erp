@@ -14,6 +14,8 @@ function Calendar({
   className,
   classNames,
   showOutsideDays = true,
+  fromDate,
+  toDate,
   ...props
 }: CalendarProps) {
   return (
@@ -64,6 +66,9 @@ function Calendar({
       captionLayout="dropdown"
       fromYear={1900}
       toYear={2030}
+      disabled={
+        fromDate ? { before: fromDate } : toDate ? { after: toDate } : false
+      }
       {...props}
     />
   );

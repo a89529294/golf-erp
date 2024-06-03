@@ -30,6 +30,7 @@ export function Component() {
     defaultValues: {
       name: "",
       description: "",
+      storeId: "",
       equipments: equipments,
       imageFiles: [],
       openingDates: [],
@@ -81,9 +82,9 @@ export function Component() {
       navigate(
         linksKV["driving-range"]["subLinks"]["site-management"]["paths"][
           "index"
-        ],
+        ] + `?storeId=${form.getValues("storeId")}`,
       );
-      toast("新增場地");
+      toast.success("新增場地");
     },
   });
 
@@ -91,10 +92,14 @@ export function Component() {
     <MainLayout
       headerChildren={
         <>
-          <IconButton icon="back" onClick={() => navigate(-1)}>
+          <IconButton
+            disabled={isPending}
+            icon="back"
+            onClick={() => navigate(-1)}
+          >
             返回
           </IconButton>
-          <IconButton icon="save" form="new-site" onClick={() => {}}>
+          <IconButton disabled={isPending} icon="save" form="new-site">
             儲存
           </IconButton>
         </>

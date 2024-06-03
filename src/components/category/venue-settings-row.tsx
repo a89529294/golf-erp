@@ -14,12 +14,14 @@ export function VenueSettingsRow({
   onEdit,
   data,
   formDisabled,
+  errorMessage,
 }: {
   data: VenueSettingsRowContent;
   onRemove(): void;
   onEdit(): void;
   onSave(arg: VenueSettingsRowContent): void;
   formDisabled?: boolean;
+  errorMessage?: string;
 }) {
   const [start, setStart] = useState(data.start);
   const [end, setEnd] = useState(data.end);
@@ -193,6 +195,7 @@ export function VenueSettingsRow({
           </>
         ) : (
           <>
+            <span className="text-red-500">{errorMessage}</span>
             <button type="button" onClick={onSaveTimeRange}>
               <img src={greenFileIcon} />
             </button>

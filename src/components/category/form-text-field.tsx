@@ -23,8 +23,8 @@ export function FormTextField({
       control={form.control}
       name={name}
       render={({ field }) => (
-        <FormItem className="flex items-baseline gap-5">
-          <FormLabel>{label}</FormLabel>
+        <FormItem className="grid grid-cols-[auto_1fr] items-baseline gap-x-5">
+          <FormLabel className="">{label}</FormLabel>
           <FormControl>
             <UnderscoredInput
               placeholder={`請輸入${label}`}
@@ -33,7 +33,8 @@ export function FormTextField({
               {...field}
             />
           </FormControl>
-          <FormMessage />
+
+          <FormMessage className="col-start-2" />
         </FormItem>
       )}
     />

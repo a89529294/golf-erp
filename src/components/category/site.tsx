@@ -3,23 +3,6 @@ import { FormTextField } from "@/components/category/form-text-field";
 import { PreviewImage } from "@/components/category/preview-image";
 import { Section } from "@/components/category/section";
 import { TimeRangeRow } from "@/components/category/time-range-row";
-import { WeekDayTabs } from "@/components/weekday-tabs";
-import { cn } from "@/lib/utils";
-import {
-  DateRange,
-  NewDrivingRange,
-  NewGolfCourse,
-  NewIndoorSimulator,
-  TimeRange,
-  VenueSettingsRowContent,
-} from "@/utils/category/schemas";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   FormControl,
   FormField,
@@ -27,9 +10,30 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import React, { useEffect, useState } from "react";
-import { useFormContext } from "react-hook-form";
-import { VenueSettingsRow } from "./venue-settings-row";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { UnderscoredInput } from "@/components/underscored-input";
+import { WeekDayTabs } from "@/components/weekday-tabs";
+import { cn } from "@/lib/utils";
+import { StoreWithoutEmployees } from "@/pages/store-management/loader";
+import {
+  DateRange,
+  ExistingDrivingRange,
+  ExistingGolfCourse,
+  ExistingIndoorSimulator,
+  NewDrivingRange,
+  NewGolfCourse,
+  NewIndoorSimulator,
+  TimeRange,
+  VenueSettingsRowContent,
+} from "@/utils/category/schemas";
+import React, { useEffect, useRef, useState } from "react";
+import { UseFormReturn, useFormContext } from "react-hook-form";
 import {
   onAddNewImages,
   onAddNewOpeningDateRange,
@@ -51,13 +55,15 @@ import {
   onSaveWeekdayTimeRange,
   onSelectEquipment,
 } from "./helper-functions";
-import { StoreWithoutEmployees } from "@/pages/store-management/loader";
-import { UnderscoredInput } from "@/components/underscored-input";
+import { VenueSettingsRow } from "./venue-settings-row";
 
 type S = {
   golf: NewGolfCourse;
   "indoor-simulator": NewIndoorSimulator;
   "driving-range": NewDrivingRange;
+  "existing-golf": ExistingGolfCourse;
+  "existing-indoor-simulator": ExistingIndoorSimulator;
+  "existing-driving-range": ExistingDrivingRange;
 };
 
 export function Site({
@@ -66,11 +72,12 @@ export function Site({
   stores,
   addNewSite,
 }: {
-  type: "golf" | "indoor-simulator" | "driving-range";
+  type: keyof S;
   formDisabled: boolean;
   stores: StoreWithoutEmployees[];
   addNewSite: (v: S[typeof type]) => void;
 }): React.ReactElement {
+  const openingDateRangeRef = useRef<HTMLLIElement>(null);
   const form = useFormContext<S[typeof type]>();
   const [newTimeRangeDisabled, setNewTimeRangeDisabled] = useState(false);
   const [newDateRangeDisabled, setNewDateRangeDisabled] = useState(false);
@@ -85,8 +92,12 @@ export function Site({
   }, [x, form.formState.errors]);
 
   useEffect(() => {
-    setNewDateRangeDisabled(!!form.formState.errors.openingDates);
-  }, [form.formState.errors.openingDates]);
+    setNewDateRangeDisabled(
+      !!form.getValues("openingDates").some((d) => !d.saved),
+    );
+  }, [form]);
+
+  console.log(form.formState.errors);
 
   return (
     <form
@@ -94,7 +105,10 @@ export function Site({
         (v) => {
           addNewSite(v);
         },
-        (e) => console.log(e),
+        (e) => {
+          console.log(e.openingDates);
+          e.openingDates && openingDateRangeRef.current?.scrollIntoView();
+        },
       )}
       className="space-y-10 px-20"
       id="new-site"
@@ -110,7 +124,7 @@ export function Site({
           control={form.control}
           name="storeId"
           render={({ field }) => (
-            <FormItem className="flex items-baseline gap-5">
+            <FormItem className="grid grid-cols-[auto_1fr] items-baseline gap-x-5">
               <FormLabel>綁定廠商</FormLabel>
               <Select onValueChange={field.onChange}>
                 <FormControl>
@@ -129,7 +143,7 @@ export function Site({
                   ))}
                 </SelectContent>
               </Select>
-              <FormMessage />
+              <FormMessage className="col-start-2" />
             </FormItem>
           )}
         />
@@ -213,8 +227,12 @@ export function Site({
         {form.watch("openingDates").length ? (
           <ul>
             {form.getValues("openingDates").map((dateRange) => {
+              const hasError =
+                dateRange.id === form.formState.errors.openingDates?.message &&
+                form.formState.isSubmitted;
               return (
                 <DateRangeRow
+                  myRef={openingDateRangeRef}
                   key={dateRange.id}
                   onRemove={() => onRemoveOpeningDateRange(dateRange.id, form)}
                   onSave={(dateRange: DateRange) =>
@@ -223,6 +241,7 @@ export function Site({
                   data={dateRange}
                   onEdit={() => onEditOpeningDateRange(dateRange.id, form)}
                   disabled={formDisabled}
+                  errorMessage={hasError ? "請先儲存" : ""}
                 />
               );
             })}
@@ -296,7 +315,7 @@ export function Site({
         </Section>
       )}
 
-      {type === "driving-range" && (
+      {(type === "driving-range" || type === "existing-driving-range") && (
         <>
           <Section
             title="場地開放設定"
@@ -327,6 +346,16 @@ export function Site({
                       onEdit={() => onEditVenueSettingsRow(settings.id, form)}
                       data={settings}
                       formDisabled={formDisabled}
+                      errorMessage={
+                        (
+                          form as
+                            | UseFormReturn<NewDrivingRange>
+                            | UseFormReturn<ExistingDrivingRange>
+                        ).formState.errors.venueSettings?.message ===
+                        settings.id
+                          ? "請先儲存"
+                          : ""
+                      }
                     />
                   );
                 })}

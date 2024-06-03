@@ -19,8 +19,9 @@ import { equipments } from "@/utils/category/equipment";
 import { genericSitesSchema } from "@/utils/category/schemas";
 import { privateFetch } from "@/utils/utils";
 import { useQuery } from "@tanstack/react-query";
-import { useLayoutEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
+import { Spinner } from "../ui/spinner";
 
 export function CategoryMain({
   newSiteHref,
@@ -33,13 +34,13 @@ export function CategoryMain({
   siteDetailsHref: string;
   stores: StoreWithoutEmployees[];
 }) {
-  // const { data } = useQuery({
-  //   ...queryObject,
-  //   initialData,
-  // });
-
+  const [searchParams, setSearchParams] = useSearchParams();
   const [storeId, setStoreId] = useState<string>();
-  const { data: sites } = useQuery({
+  const {
+    data: sites,
+    isPending,
+    fetchStatus,
+  } = useQuery({
     queryKey: ["sites-for-store", storeId],
     queryFn: async () => {
       const response = await privateFetch(
@@ -57,18 +58,23 @@ export function CategoryMain({
 
   const onStoreValueChange = (storeId: string) => {
     setStoreId(storeId);
+    setSearchParams({
+      storeId,
+    });
   };
 
+  useEffect(() => {
+    setStoreId(searchParams.get("storeId") ?? undefined);
+  }, [searchParams]);
+
   useLayoutEffect(() => {
-    if (ref.current) {
-      setHeight(ref.current.clientHeight);
+    const setHeightIfRef = () =>
+      ref.current && setHeight(ref.current.clientHeight - 10); // - 10 because of pb-2.5
+    setHeightIfRef();
 
-      const setHeightIfRef = () =>
-        ref.current && setHeight(ref.current.clientHeight);
-      window.addEventListener("resize", setHeightIfRef);
+    window.addEventListener("resize", setHeightIfRef);
 
-      return () => window.removeEventListener("resize", setHeightIfRef);
-    }
+    return () => window.removeEventListener("resize", setHeightIfRef);
   }, []);
 
   return (
@@ -80,7 +86,10 @@ export function CategoryMain({
             新增場地
           </Link>
           <SearchInput value={globalFilter} setValue={setGlobalFilter} />
-          <Select onValueChange={onStoreValueChange}>
+          <Select
+            onValueChange={onStoreValueChange}
+            defaultValue={searchParams.get("storeId") ?? undefined}
+          >
             <SelectTrigger className="h-11 w-[280px] rounded-none border-0 border-b border-secondary-dark">
               <SelectValue placeholder="選擇廠商" />
             </SelectTrigger>
@@ -95,13 +104,21 @@ export function CategoryMain({
         </>
       }
     >
-      <div className="w-full" ref={ref}>
+      <div className="w-full flex-1 pb-2.5" ref={ref}>
         <ScrollArea
-          className="mb-2.5 w-full  overflow-auto border border-line-gray bg-light-gray p-5"
-          style={{ height }}
+          className="w-full overflow-auto border border-line-gray bg-light-gray p-5"
+          style={{ height: height }}
         >
           {height && (
-            <div className="space-y-2.5">
+            <div className="relative h-full space-y-2.5">
+              {isPending && fetchStatus === "idle" && (
+                <p className="font-medium">請先選廠商</p>
+              )}
+              {isPending && fetchStatus === "fetching" && (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <Spinner />
+                </div>
+              )}
               {sites?.map((section) => {
                 const openingDates = (
                   section.openDays

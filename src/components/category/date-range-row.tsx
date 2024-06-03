@@ -13,12 +13,16 @@ export function DateRangeRow({
   data,
   onEdit,
   disabled,
+  errorMessage,
+  myRef,
 }: {
   onRemove: () => void;
   onSave: (dr: DateRange) => void;
   data: DateRange;
   onEdit: () => void;
   disabled?: boolean;
+  errorMessage?: string;
+  myRef?: React.RefObject<HTMLLIElement>;
 }) {
   const [start, setStart] = useState<Date | undefined>(data.start);
   const [end, setEnd] = useState<Date | undefined>(data.end);
@@ -42,6 +46,14 @@ export function DateRangeRow({
     }
   }
 
+  const errorMsg = errorFields.start
+    ? "請選起始日"
+    : errorFields.end
+      ? "請選結束日"
+      : errorMessage
+        ? errorMessage
+        : "";
+
   return (
     <li
       className={cn(
@@ -49,6 +61,7 @@ export function DateRangeRow({
         !data.saved && "border-b-orange bg-hover-orange",
         disabled && "opacity-50",
       )}
+      ref={myRef}
     >
       <DatePicker
         date={start}
@@ -71,6 +84,7 @@ export function DateRangeRow({
       />
 
       <div className="ml-auto flex gap-4">
+        {errorMsg && <span className="text-red-500">{errorMsg}</span>}
         {data.saved ? (
           <>
             <button
