@@ -99,6 +99,8 @@ export function Component() {
       const key = k as keyof typeof values;
       if (key === "category") continue;
       else if (key === "phoneno") changedValues["telphone"] = values["phoneno"];
+      else if (key === "name") changedValues["chName"] = values["name"];
+      else if (values["storeId"] === "") changedValues["storeId"] = null;
       else changedValues[key] = values[key] ?? null;
     }
 

@@ -5,7 +5,15 @@ export const bannerQuery = {
   queryKey: ["banners"],
   queryFn: async () => {
     const response = await privateFetch("/erp-features/banner");
-    const data = (await response.json()) as { id: string; name: string }[];
+    const data = (await response.json()) as {
+      id: string;
+      name: string;
+      createdAt: string;
+    }[];
+    data.sort(
+      (a, b) =>
+        new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+    );
     const ids = data.map((d) => ({ id: d.id, name: d.name }));
 
     const promises: Promise<Response>[] = [];

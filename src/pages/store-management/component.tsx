@@ -102,21 +102,29 @@ export function Component() {
     >
       <div className="flex w-full flex-col border border-line-gray bg-light-gray p-1">
         <nav>
-          <ul className="flex items-center gap-3 py-2 pl-5">
+          <ul className="isolate flex items-center gap-3 py-2 pl-5">
             {Object.entries(storeCategoryWithAllMap).map(([key, value]) => (
               <li key={key}>
                 <Link
                   to={`?category=${key}`}
-                  className="relative grid h-9 place-items-center rounded-full border border-line-gray bg-white px-5"
+                  className={cn(
+                    "relative grid h-9 place-items-center rounded-full border border-line-gray bg-white px-5",
+                  )}
                 >
                   {category === key && (
                     <motion.div
-                      className="absolute inset-0 rounded-full bg-black"
+                      className="absolute inset-0 z-10 rounded-full bg-black"
                       layoutId="category-tab"
+                      transition={{
+                        duration: 0.3,
+                      }}
                     />
                   )}
                   <div
-                    className={cn("relative", category === key && "text-white")}
+                    className={cn(
+                      "relative z-20 transition-colors duration-300",
+                      category === key && "text-white",
+                    )}
                   >
                     {value}
                   </div>

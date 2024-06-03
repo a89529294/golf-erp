@@ -279,7 +279,6 @@ function EmployeeFormSelectField({
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                <SelectItem value="reset">清空</SelectItem>
                 {Object.entries(options).map(([value, label]) => (
                   <SelectItem value={value} key={value}>
                     {label}

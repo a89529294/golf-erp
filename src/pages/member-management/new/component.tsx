@@ -5,14 +5,18 @@ import { MainLayout } from "@/layouts/main-layout";
 import { linksKV } from "@/utils/links";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { MemberForm } from "../components/member-form";
 import { memberFormSchema } from "../schemas";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { privateFetch } from "@/utils/utils";
+import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 export function Component() {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const form = useForm<z.infer<typeof memberFormSchema>>({
     resolver: zodResolver(memberFormSchema),
     defaultValues: {
@@ -24,7 +28,7 @@ export function Component() {
       birthday: "",
     },
   });
-  const { mutate } = useMutation<
+  const { mutate, isPending } = useMutation<
     z.infer<typeof memberFormSchema>,
     Error,
     z.infer<typeof memberFormSchema>
@@ -45,6 +49,14 @@ export function Component() {
 
       return await response.json();
     },
+    onSuccess() {
+      queryClient.invalidateQueries({ queryKey: ["members"] });
+      navigate(linksKV["member-management"].paths.index);
+      toast.success("新增會員成功");
+    },
+    onError() {
+      toast.error("新增會員失敗");
+    },
   });
 
   function onSubmit(values: z.infer<typeof memberFormSchema>) {
@@ -56,24 +68,39 @@ export function Component() {
     });
   }
 
+  console.log(window.location.pathname);
+
   return (
     <MainLayout
       headerChildren={
         <>
           <Link
-            className={button()}
-            to={linksKV["member-management"].paths["index"]}
+            className={cn(
+              button(),
+              isPending ? "cursor-not-allowed opacity-50" : "",
+            )}
+            to={
+              isPending
+                ? window.location.pathname
+                : linksKV["member-management"].paths["index"]
+            }
           >
             <img src={backIcon} />
             返回
           </Link>
-          <IconButton icon="save" type="submit" form="member-form">
+
+          <IconButton
+            icon="save"
+            type="submit"
+            form="member-form"
+            disabled={isPending}
+          >
             儲存
           </IconButton>
         </>
       }
     >
-      <MemberForm form={form} disabled={false} onSubmit={onSubmit} />
+      <MemberForm form={form} disabled={isPending} onSubmit={onSubmit} />
     </MainLayout>
   );
 }
