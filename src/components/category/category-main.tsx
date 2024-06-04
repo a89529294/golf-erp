@@ -19,8 +19,8 @@ import { equipments } from "@/utils/category/equipment";
 import { genericSitesSchema } from "@/utils/category/schemas";
 import { privateFetch } from "@/utils/utils";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { useLayoutEffect, useRef, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Spinner } from "../ui/spinner";
 
 export function CategoryMain({
@@ -34,8 +34,8 @@ export function CategoryMain({
   siteDetailsHref: string;
   stores: StoreWithoutEmployees[];
 }) {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [storeId, setStoreId] = useState<string>();
+  const navigate = useNavigate();
+  const { storeId } = useParams();
   const {
     data: sites,
     isPending,
@@ -57,15 +57,8 @@ export function CategoryMain({
   const [height, setHeight] = useState(0);
 
   const onStoreValueChange = (storeId: string) => {
-    setStoreId(storeId);
-    setSearchParams({
-      storeId,
-    });
+    navigate(`/driving-range/site-management/${storeId}`);
   };
-
-  useEffect(() => {
-    setStoreId(searchParams.get("storeId") ?? undefined);
-  }, [searchParams]);
 
   useLayoutEffect(() => {
     const setHeightIfRef = () =>
@@ -86,10 +79,7 @@ export function CategoryMain({
             新增場地
           </Link>
           <SearchInput value={globalFilter} setValue={setGlobalFilter} />
-          <Select
-            onValueChange={onStoreValueChange}
-            defaultValue={searchParams.get("storeId") ?? undefined}
-          >
+          <Select onValueChange={onStoreValueChange} defaultValue={storeId}>
             <SelectTrigger className="h-11 w-[280px] rounded-none border-0 border-b border-secondary-dark">
               <SelectValue placeholder="選擇廠商" />
             </SelectTrigger>
@@ -106,7 +96,7 @@ export function CategoryMain({
     >
       <div className="w-full flex-1 pb-2.5" ref={ref}>
         <ScrollArea
-          className="w-full overflow-auto border border-line-gray bg-light-gray p-5"
+          className="w-full p-5 overflow-auto border border-line-gray bg-light-gray"
           style={{ height: height }}
         >
           {height && (
@@ -243,8 +233,8 @@ function Section({
         )}
       />
 
-      <div className="flex flex-col gap-4 self-start">
-        <Link to={siteDetailsHref + id}>
+      <div className="flex flex-col self-start gap-4">
+        <Link to={`${siteDetailsHref}/${id}`}>
           <img src={pencilIcon} />
         </Link>
         <button>

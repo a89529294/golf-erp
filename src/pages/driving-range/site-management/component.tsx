@@ -5,9 +5,10 @@ import {
 } from "@/pages/driving-range/site-management/loader";
 import { linksKV } from "@/utils/links";
 import { useQuery } from "@tanstack/react-query";
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useParams } from "react-router-dom";
 
 export function Component() {
+  const { storeId } = useParams();
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
   const { data: stores } = useQuery({
     ...groundStoresQuery,
@@ -20,7 +21,7 @@ export function Component() {
       newSiteHref={
         linksKV["driving-range"].subLinks["site-management"].paths.new
       }
-      siteDetailsHref="/driving-range/site-management/details/"
+      siteDetailsHref={`/driving-range/site-management/${storeId}`}
       stores={stores}
     />
   );

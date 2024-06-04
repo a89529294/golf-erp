@@ -1,3 +1,5 @@
+import { privateFetch } from "./utils";
+
 export const base_url =
   "https://shinjhu-golf-reservation-system-be.caprover.credot-web.com";
 
@@ -32,4 +34,19 @@ export const getDifferenceInHoursAndMinutes = (start: number, end: number) => {
   const hours = Math.floor(differenceInMinutes / 60);
   const minutes = differenceInMinutes % 60;
   return `${hours}小時${minutes}分鐘`;
+};
+
+export const fromImageIdsToSrc = async (ids: string[]) => {
+  const promises: Promise<Response>[] = [];
+
+  ids.forEach((id) => promises.push(privateFetch(`/file/download/${id}`)));
+
+  const preImages = await Promise.all(promises);
+
+  const promises2: Promise<Blob>[] = [];
+  preImages.forEach((response) => promises2.push(response.blob()));
+
+  const images = await Promise.all(promises2);
+
+  return images.map((blob) => URL.createObjectURL(blob));
 };

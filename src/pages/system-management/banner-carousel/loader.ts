@@ -1,3 +1,4 @@
+import { fromImageIdsToSrc } from "@/utils";
 import { queryClient } from "@/utils/query-client";
 import { privateFetch } from "@/utils/utils";
 
@@ -16,21 +17,12 @@ export const bannerQuery = {
     );
     const ids = data.map((d) => ({ id: d.id, name: d.name }));
 
-    const promises: Promise<Response>[] = [];
+    const images = await fromImageIdsToSrc(ids.map((v) => v.id));
 
-    ids.forEach((id) => promises.push(privateFetch(`/file/download/${id.id}`)));
-
-    const preImages = await Promise.all(promises);
-
-    const promises2: Promise<Blob>[] = [];
-    preImages.forEach((response) => promises2.push(response.blob()));
-
-    const images = await Promise.all(promises2);
-
-    return images.map((blob, idx) => ({
+    return images.map((tempURL, idx) => ({
       id: ids[idx].id,
       name: ids[idx].name,
-      data: URL.createObjectURL(blob),
+      data: tempURL,
     }));
   },
 };

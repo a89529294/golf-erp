@@ -80,7 +80,6 @@ export function Site({
   const openingDateRangeRef = useRef<HTMLLIElement>(null);
   const form = useFormContext<S[typeof type]>();
   const [newTimeRangeDisabled, setNewTimeRangeDisabled] = useState(false);
-  const [newDateRangeDisabled, setNewDateRangeDisabled] = useState(false);
 
   const x =
     "openingHours" in form.formState.errors
@@ -90,12 +89,6 @@ export function Site({
   useEffect(() => {
     if ("openingHours" in form.formState.errors) setNewTimeRangeDisabled(!!x);
   }, [x, form.formState.errors]);
-
-  useEffect(() => {
-    setNewDateRangeDisabled(
-      !!form.getValues("openingDates").some((d) => !d.saved),
-    );
-  }, [form]);
 
   console.log(form.formState.errors);
 
@@ -110,10 +103,10 @@ export function Site({
           e.openingDates && openingDateRangeRef.current?.scrollIntoView();
         },
       )}
-      className="space-y-10 px-20"
+      className="px-20 space-y-10"
       id="new-site"
     >
-      <section className="space-y-6 border border-line-gray bg-white px-12 py-10">
+      <section className="px-12 py-10 space-y-6 bg-white border border-line-gray">
         <FormTextField name="name" label="場地名稱" disabled={formDisabled} />
         <FormTextField
           name="description"
@@ -130,7 +123,7 @@ export function Site({
                 <FormControl>
                   <SelectTrigger
                     disabled={formDisabled}
-                    className="h-7 rounded-none border-0 border-b border-secondary-dark pl-0"
+                    className="pl-0 border-0 border-b rounded-none h-7 border-secondary-dark"
                   >
                     <SelectValue placeholder="選擇廠商" />
                   </SelectTrigger>
@@ -222,7 +215,9 @@ export function Site({
             />
           ),
         }}
-        disabled={newDateRangeDisabled || formDisabled}
+        disabled={
+          form.getValues("openingDates").some((od) => !od.saved) || formDisabled
+        }
       >
         {form.watch("openingDates").length ? (
           <ul>
@@ -329,7 +324,10 @@ export function Site({
                 />
               ),
             }}
-            disabled={formDisabled}
+            disabled={
+              formDisabled ||
+              form.getValues("venueSettings").some((v) => !v.saved)
+            }
           >
             {form.watch("venueSettings").length ? (
               <ul>
@@ -376,7 +374,7 @@ export function Site({
                     <FormControl>
                       <UnderscoredInput
                         placeholder={`價錢`}
-                        className="h-7 w-28 p-0 pb-1 text-center text-secondary-dark"
+                        className="p-0 pb-1 text-center h-7 w-28 text-secondary-dark"
                         disabled={formDisabled}
                         {...field}
                         onChange={(e) => {

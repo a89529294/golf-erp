@@ -16,26 +16,6 @@ const descriptionSchema = {
   description: z.string().min(1, { message: "請填入場地簡介" }),
 };
 const storeIdSchema = { storeId: z.string().min(1, { message: "請綁定廠商" }) };
-
-const baseSchema = z
-  .object({})
-  .extend(nameSchema)
-  .extend(descriptionSchema)
-  .extend(storeIdSchema);
-
-const equipmentsSchema = {
-  equipments: z.array(
-    z.object({
-      id: z.string(),
-      label: z.string(),
-      selected: z.boolean(),
-    }),
-  ),
-};
-const newImagesSchema = { imageFiles: z.array(fileWithIdSchema) };
-const existingImagesSchema = {
-  imageFiles: z.array(z.union([existingImgSchema, fileWithIdSchema])),
-};
 const openingDatesSchema = {
   openingDates: z
     .array(
@@ -56,6 +36,27 @@ const openingDatesSchema = {
       );
     }),
 };
+const baseSchema = z
+  .object({})
+  .extend(nameSchema)
+  .extend(descriptionSchema)
+  .extend(storeIdSchema)
+  .extend(openingDatesSchema);
+
+const equipmentsSchema = {
+  equipments: z.array(
+    z.object({
+      id: z.string(),
+      label: z.string(),
+      selected: z.boolean(),
+    }),
+  ),
+};
+const newImagesSchema = { imageFiles: z.array(fileWithIdSchema) };
+const existingImagesSchema = {
+  imageFiles: z.array(z.union([existingImgSchema, fileWithIdSchema])),
+};
+
 type DateRange = z.infer<typeof openingDatesSchema.openingDates>[number];
 const openingHoursSchema = {
   openingHours: z.array(
@@ -148,7 +149,6 @@ const costPerBoxSchema = {
 const newIndoorSimulatorSchema = baseSchema
   .extend(equipmentsSchema)
   .extend(newImagesSchema)
-  .extend(openingDatesSchema)
   .extend(openingHoursSchema);
 type NewIndoorSimulator = z.infer<typeof newIndoorSimulatorSchema> & {
   category: "indoor-simulator";
@@ -157,28 +157,24 @@ type NewIndoorSimulator = z.infer<typeof newIndoorSimulatorSchema> & {
 const existingIndoorSimulatorSchema = baseSchema
   .extend(equipmentsSchema)
   .extend(existingImagesSchema)
-  .extend(openingDatesSchema)
   .extend(openingHoursSchema);
 type ExistingIndoorSimulator = z.infer<typeof existingIndoorSimulatorSchema>;
 
 const newGolfCourseSchema = baseSchema
   .extend(equipmentsSchema)
   .extend(newImagesSchema)
-  .extend(openingDatesSchema)
   .extend(weekDaysSchema);
 type NewGolfCourse = z.infer<typeof newGolfCourseSchema> & { category: "golf" };
 
 const existingGolfCourseSchema = baseSchema
   .extend(equipmentsSchema)
   .extend(existingImagesSchema)
-  .extend(openingDatesSchema)
   .extend(weekDaysSchema);
 type ExistingGolfCourse = z.infer<typeof existingGolfCourseSchema>;
 
 const newDrivingRangeSchema = baseSchema
   .extend(equipmentsSchema)
   .extend(newImagesSchema)
-  .extend(openingDatesSchema)
   .extend(venueSettingsSchema)
   .extend(costPerBoxSchema);
 type NewDrivingRange = z.infer<typeof newDrivingRangeSchema> & {
@@ -188,7 +184,6 @@ type NewDrivingRange = z.infer<typeof newDrivingRangeSchema> & {
 const existingDrivingRangeSchema = baseSchema
   .extend(equipmentsSchema)
   .extend(existingImagesSchema)
-  .extend(openingDatesSchema)
   .extend(venueSettingsSchema)
   .extend(costPerBoxSchema);
 type ExistingDrivingRange = z.infer<typeof existingDrivingRangeSchema>;

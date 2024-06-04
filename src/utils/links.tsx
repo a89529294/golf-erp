@@ -65,9 +65,9 @@ export const linksKV = {
       "site-management": {
         label: "場地管理",
         paths: {
-          index: `${DRIVING_RANGE_BASE_PATH}/site-management`,
+          index: `${DRIVING_RANGE_BASE_PATH}/site-management/:storeId?`,
           new: `${DRIVING_RANGE_BASE_PATH}/site-management/new`,
-          details: `${DRIVING_RANGE_BASE_PATH}/site-management/details/:id`,
+          details: `${DRIVING_RANGE_BASE_PATH}/site-management/:storeId/:siteId`,
         },
         lazy: {
           index: () => import("@/pages/driving-range/site-management"),
