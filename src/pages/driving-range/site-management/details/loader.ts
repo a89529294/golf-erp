@@ -74,8 +74,8 @@ export const genDrivingRangeDetailsQuery = (
       ),
       venueSettings: parsed.openTimes.map((v) => ({
         id: v.id,
-        start: v.startTime,
-        end: v.endTime,
+        start: v.startTime.slice(11, 16),
+        end: v.endTime.slice(11, 16),
         fee: v.pricePerHour,
         saved: true,
         numberOfBalls: v.openBallQuantity,

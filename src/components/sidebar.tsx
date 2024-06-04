@@ -170,6 +170,11 @@ function AccordionItemWrapper({
       <AccordionTrigger asChild>
         <NavLink to={path} className="relative block py-3 group pl-7">
           {({ isPending }) => {
+            let isPathPending = isPending;
+
+            if (link.type === "nested")
+              isPathPending =
+                pathname.startsWith(link.basePath) && state.state === "loading";
             return (
               <>
                 <div
@@ -186,7 +191,13 @@ function AccordionItemWrapper({
                   )}
                 </div>
 
-                {isLinkActive(link) &&
+                {isPathPending ? (
+                  <motion.div
+                    className="absolute inset-0 -z-10 bg-secondary-dark !opacity-50"
+                    layoutId="link-bg"
+                  />
+                ) : (
+                  isLinkActive(link) &&
                   (inSameRouteGroup ? (
                     <motion.div
                       className="absolute inset-0 -z-10 bg-secondary-dark"
@@ -200,12 +211,7 @@ function AccordionItemWrapper({
                       className="absolute inset-0 -z-10 bg-secondary-dark"
                       layoutId="link-bg"
                     />
-                  ))}
-                {isPending && (
-                  <motion.div
-                    className="absolute inset-0 -z-10 bg-secondary-dark !opacity-50"
-                    layoutId="link-bg"
-                  />
+                  ))
                 )}
               </>
             );
