@@ -33,7 +33,12 @@ const router = createBrowserRouter(
             <Route index element={<Index />} />
             {Object.values(linksKV["driving-range"].subLinks).map((subLink) => {
               return subLink.type === "multiple" ? (
-                Object.values(subLink.paths).map((path, idx) => {
+                Object.values(subLink.paths).map((pathConfig, idx) => {
+                  let path = "";
+                  if (typeof pathConfig === "object")
+                    path = pathConfig.symbolicPath;
+                  else path = pathConfig;
+
                   return (
                     <Route
                       element={

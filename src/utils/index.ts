@@ -50,3 +50,13 @@ export const fromImageIdsToSrc = async (ids: string[]) => {
 
   return images.map((blob) => URL.createObjectURL(blob));
 };
+
+export function filterObject<T extends object>(obj: T, predicate: (keyof T)[]) {
+  const result: { [K in keyof T]?: T[K] } = {};
+  (Object.keys(obj) as Array<keyof T>).forEach((name) => {
+    if (predicate.find((v) => name === v)) {
+      result[name] = obj[name];
+    }
+  });
+  return result;
+}

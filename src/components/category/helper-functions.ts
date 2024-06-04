@@ -41,6 +41,7 @@ export function onRemoveImage(
   form.setValue(
     "imageFiles",
     imageFiles.filter((f) => f.id !== id),
+    { shouldDirty: true },
   );
 }
 
@@ -65,7 +66,11 @@ export function onAddNewImages(
     id: crypto.randomUUID(),
   }));
 
-  form.setValue("imageFiles", [...form.getValues("imageFiles"), ...filesArray]);
+  form.setValue(
+    "imageFiles",
+    [...form.getValues("imageFiles"), ...filesArray],
+    { shouldDirty: true },
+  );
 }
 
 export function onAddNewOpeningDateRange(
@@ -132,7 +137,7 @@ export function onRemoveOpeningDateRange(
   form.setValue(
     "openingDates",
     form.getValues("openingDates").filter((od) => od.id !== id),
-    { shouldValidate: true },
+    { shouldValidate: true, shouldDirty: true },
   );
 }
 
@@ -152,7 +157,7 @@ export function onSaveOpeningDateRange(
     form
       .getValues("openingDates")
       .map((od) => (od.id === dateRange.id ? dateRange : od)),
-    { shouldValidate: true },
+    { shouldValidate: true, shouldDirty: true },
   );
 }
 
@@ -415,6 +420,7 @@ export function onRemoveVenueSettingsRow(
     form.getValues("venueSettings").filter((v) => v.id !== id),
     {
       shouldValidate: true,
+      shouldDirty: true,
     },
   );
 }
@@ -437,6 +443,7 @@ export function onSaveVenueSettingsRow(
       .map((v) => (v.id === venueSettingsRow.id ? venueSettingsRow : v)),
     {
       shouldValidate: true,
+      shouldDirty: true,
     },
   );
 }

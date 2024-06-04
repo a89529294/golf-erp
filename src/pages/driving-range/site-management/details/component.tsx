@@ -3,21 +3,26 @@ import { IconButton } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { MainLayout } from "@/layouts/main-layout";
 import { equipments } from "@/utils/category/equipment";
-import { existingDrivingRangeSchema } from "@/utils/category/schemas";
+import {
+  ExistingDrivingRange,
+  existingDrivingRangeSchema,
+} from "@/utils/category/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { useLoaderData, useNavigate, useParams } from "react-router-dom";
 import { z } from "zod";
 import { genDrivingRangeDetailsQuery, loader } from "./loader";
 import { useState } from "react";
 import { groundStoresQuery } from "../loader";
+import { ValueOf } from "@/utils/types";
+import { filterObject } from "@/utils";
 
 export function Component() {
-  const { id } = useParams();
+  const { storeId, siteId } = useParams();
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
   const { data } = useQuery({
-    ...genDrivingRangeDetailsQuery(id!),
+    ...genDrivingRangeDetailsQuery(storeId!, siteId!),
     initialData: initialData.details,
   });
   const { data: stores } = useQuery({
@@ -39,6 +44,19 @@ export function Component() {
     },
   });
   const [formDisabled, setFormDisabled] = useState(true);
+  const { mutate } = useMutation({
+    mutationKey: ["patch-driving-range"],
+    mutationFn: async () => {
+      const changedFields = filterObject(
+        form.getValues(),
+        Object.keys(
+          form.formState.dirtyFields,
+        ) as (keyof typeof form.formState.dirtyFields)[],
+      );
+
+      console.log(changedFields);
+    },
+  });
 
   return (
     <MainLayout
@@ -73,7 +91,9 @@ export function Component() {
         </h1>
         <Form {...form}>
           <Site
-            addNewSite={() => {}}
+            onSubmit={() => {
+              console.log(form.formState.dirtyFields);
+            }}
             stores={stores}
             type="driving-range"
             formDisabled={formDisabled}

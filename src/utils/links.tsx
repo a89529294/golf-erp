@@ -18,7 +18,7 @@ export type NestedLink = {
 };
 export type MultipleLink = {
   label: string;
-  paths: Record<string, string>;
+  paths: Record<string, string | { symbolicPath: string; path: string }>;
   lazy: Record<string, LazyRouteFunction<NonIndexRouteObject>>;
   type: "multiple";
   allowedPermissions: string[];
@@ -65,7 +65,10 @@ export const linksKV = {
       "site-management": {
         label: "場地管理",
         paths: {
-          index: `${DRIVING_RANGE_BASE_PATH}/site-management/:storeId?`,
+          index: {
+            symbolicPath: `${DRIVING_RANGE_BASE_PATH}/site-management/:storeId?`,
+            path: `${DRIVING_RANGE_BASE_PATH}/site-management/`,
+          },
           new: `${DRIVING_RANGE_BASE_PATH}/site-management/new`,
           details: `${DRIVING_RANGE_BASE_PATH}/site-management/:storeId/:siteId`,
         },
@@ -300,7 +303,11 @@ const links = Object.values(linksKV);
 
 export const isBelowLink = (prevPath: string, nextPath: string) => {
   const getPath = (link: NestedLink | MultipleLink) =>
-    link.type === "nested" ? link.path : link.paths.index;
+    link.type === "nested"
+      ? link.path
+      : typeof link.paths.index === "object"
+        ? link.paths.index.path
+        : link.paths.index;
 
   return (
     links.findIndex((l) => getPath(l).startsWith(prevPath)) -

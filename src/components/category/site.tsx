@@ -70,12 +70,12 @@ export function Site({
   type,
   formDisabled,
   stores,
-  addNewSite,
+  onSubmit,
 }: {
   type: keyof S;
   formDisabled: boolean;
   stores: StoreWithoutEmployees[];
-  addNewSite: (v: S[typeof type]) => void;
+  onSubmit: (v: S[typeof type]) => void;
 }): React.ReactElement {
   const openingDateRangeRef = useRef<HTMLLIElement>(null);
   const form = useFormContext<S[typeof type]>();
@@ -90,13 +90,11 @@ export function Site({
     if ("openingHours" in form.formState.errors) setNewTimeRangeDisabled(!!x);
   }, [x, form.formState.errors]);
 
-  console.log(form.formState.errors);
-
   return (
     <form
       onSubmit={form.handleSubmit(
         (v) => {
-          addNewSite(v);
+          onSubmit(v);
         },
         (e) => {
           console.log(e.openingDates);
@@ -119,7 +117,7 @@ export function Site({
           render={({ field }) => (
             <FormItem className="grid grid-cols-[auto_1fr] items-baseline gap-x-5">
               <FormLabel>綁定廠商</FormLabel>
-              <Select onValueChange={field.onChange}>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger
                     disabled={formDisabled}
