@@ -330,10 +330,15 @@ export const sameRouteGroup = (path: string, nextPath: string) => {
     const obj = linksKV[s];
     if (obj.type === "multiple") return [];
 
-    return Object.values(obj.subLinks).flatMap((subLink) => {
+    const x = obj.subLinks;
+
+    return Object.values(x).flatMap((subLink) => {
+      console.log(subLink.paths);
       return subLink.type === "flat"
         ? subLink.path
-        : Object.values(subLink.paths);
+        : Object.values(subLink.paths).map((v) => {
+            return typeof v === "object" && v && "path" in v ? v?.path : v;
+          });
     });
   };
 

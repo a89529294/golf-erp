@@ -13,7 +13,7 @@ import {
   NestedLink,
   // filterLinksByUserPermissions,
   findLinkFromPathname,
-  isBelowLink,
+  // isBelowLink,
   linksKV,
   sameRouteGroup,
 } from "@/utils/links";
@@ -146,10 +146,11 @@ function AccordionItemWrapper({
         : link.paths.index;
 
   const isLinkActive = (link: NestedLink | MultipleLink) => {
-    if (prevLink && isBelowLink(getPath(prevLink), pathname ?? "")) {
-      return pathname.startsWith(getPath(link)) && nestedLinksClosed;
-    }
-
+    // if (prevLink && isBelowLink(getPath(prevLink), pathname ?? "")) {
+    //   console.log(1);
+    //   return pathname.startsWith(getPath(link)) && nestedLinksClosed;
+    // }
+    // console.log(2);
     return pathname.startsWith(getPath(link));
   };
 
