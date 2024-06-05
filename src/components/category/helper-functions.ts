@@ -225,6 +225,7 @@ export function onRemoveOpeningTimeRange(
     form.getValues("openingHours").filter((v) => v.id !== id),
     {
       shouldValidate: true,
+      shouldDirty: true,
     },
   );
 }
@@ -247,6 +248,7 @@ export function onSaveOpeningTimeRange(
       .map((v) => (v.id === timeRange.id ? timeRange : v)),
     {
       shouldValidate: true,
+      shouldDirty: true,
     },
   );
 }

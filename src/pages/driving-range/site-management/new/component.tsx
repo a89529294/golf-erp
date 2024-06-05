@@ -82,7 +82,7 @@ export function Component() {
       navigate(
         linksKV["driving-range"]["subLinks"]["site-management"]["paths"][
           "index"
-        ] + `?storeId=${form.getValues("storeId")}`,
+        ].path + `/${form.getValues("storeId")}`,
       );
       toast.success("新增場地");
     },
@@ -99,13 +99,13 @@ export function Component() {
           >
             返回
           </IconButton>
-          <IconButton disabled={isPending} icon="save" form="new-site">
+          <IconButton disabled={isPending} icon="save" form="site-details">
             儲存
           </IconButton>
         </>
       }
     >
-      <div className="flex flex-col w-full gap-10 p-1 border border-line-gray bg-light-gray">
+      <div className="flex w-full flex-col gap-10 border border-line-gray bg-light-gray p-1">
         <h1 className="bg-mid-gray py-2.5 text-center text-black">
           建立場地資料
         </h1>

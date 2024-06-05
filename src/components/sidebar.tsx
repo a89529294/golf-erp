@@ -123,8 +123,6 @@ export function Sidebar() {
 
 function AccordionItemWrapper({
   link,
-  prevLink,
-  nestedLinksClosed,
   setNestedLinksClosed,
 }: {
   link: NestedLink | MultipleLink;
@@ -168,7 +166,7 @@ function AccordionItemWrapper({
   return (
     <AccordionItem value={path} className="overflow-hidden">
       <AccordionTrigger asChild>
-        <NavLink to={path} className="relative block py-3 group pl-7">
+        <NavLink to={path} className="group relative block py-3 pl-7">
           {({ isPending }) => {
             let isPathPending = isPending;
 
@@ -220,7 +218,7 @@ function AccordionItemWrapper({
       </AccordionTrigger>
       {link.type === "nested" && (
         <AccordionContent
-          className="flex flex-col pt-1 bg-white"
+          className="flex flex-col bg-white pt-1"
           onAnimationEnd={() => {
             if (!pathname.startsWith(link.path)) setNestedLinksClosed(true);
           }}

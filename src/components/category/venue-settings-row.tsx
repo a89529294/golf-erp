@@ -15,6 +15,7 @@ export function VenueSettingsRow({
   data,
   formDisabled,
   errorMessage,
+  myRef,
 }: {
   data: VenueSettingsRowContent;
   onRemove(): void;
@@ -22,6 +23,7 @@ export function VenueSettingsRow({
   onSave(arg: VenueSettingsRowContent): void;
   formDisabled?: boolean;
   errorMessage?: string;
+  myRef?: React.RefObject<HTMLLIElement>;
 }) {
   const [start, setStart] = useState(data.start);
   const [end, setEnd] = useState(data.end);
@@ -79,6 +81,7 @@ export function VenueSettingsRow({
 
   return (
     <li
+      ref={myRef}
       className={cn(
         "flex items-center gap-1.5 border-b-[1.5px] border-b-transparent p-2 pr-5 text-secondary-dark",
         !data.saved && "border-b-orange bg-hover-orange",

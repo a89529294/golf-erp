@@ -17,24 +17,24 @@ const descriptionSchema = {
 };
 const storeIdSchema = { storeId: z.string().min(1, { message: "請綁定廠商" }) };
 const openingDatesSchema = {
-  openingDates: z
-    .array(
-      z.object({
-        id: z.string(),
-        start: z.union([z.date(), z.undefined()]),
-        end: z.union([z.date(), z.undefined()]),
-        saved: z.boolean(),
-      }),
-    )
-    .superRefine((dates, ctx) => {
-      const errorIds = dates.map((d) => (d.saved ? "" : d.id)).filter((v) => v);
-      errorIds.forEach((id) =>
-        ctx.addIssue({
-          code: "custom",
-          message: id,
-        }),
-      );
+  openingDates: z.array(
+    z.object({
+      id: z.string(),
+      start: z.union([z.date(), z.undefined()]).refine((v) => v),
+      end: z.union([z.date(), z.undefined()]).refine((v) => v),
+      saved: z.boolean(),
     }),
+  ),
+  // .superRefine((dates, ctx) => {
+  //   const errorIds = dates.map((d) => (d.saved ? "" : d.id)).filter((v) => v);
+  //   console.log(errorIds);
+  //   errorIds.forEach((id) =>
+  //     ctx.addIssue({
+  //       code: "custom",
+  //       message: id,
+  //     }),
+  //   );
+  // }),
 };
 const baseSchema = z
   .object({})
@@ -117,27 +117,30 @@ const weekdays = [
 ] as const;
 type Weekday = (typeof weekdays)[number]["en"];
 const venueSettingsSchema = {
-  venueSettings: z
-    .array(
-      z.object({
-        id: z.string(),
-        start: z.string(),
-        end: z.string(),
-        fee: z.union([z.literal(""), z.number()]),
-        numberOfGroups: z.union([z.literal(""), z.number()]),
-        numberOfBalls: z.union([z.literal(""), z.number()]),
-        saved: z.boolean(),
-      }),
-    )
-    .superRefine((settings, ctx) => {
-      settings.forEach((s) => {
-        if (!s.saved)
-          ctx.addIssue({
-            code: "custom",
-            message: s.id,
-          });
-      });
+  venueSettings: z.array(
+    z.object({
+      id: z.string(),
+      start: z.string(),
+      end: z.string(),
+      fee: z.union([z.literal(""), z.number()]).refine((v) => v !== ""),
+      numberOfGroups: z
+        .union([z.literal(""), z.number()])
+        .refine((v) => v !== ""),
+      numberOfBalls: z
+        .union([z.literal(""), z.number()])
+        .refine((v) => v !== ""),
+      saved: z.boolean(),
     }),
+  ),
+  // .superRefine((settings, ctx) => {
+  //   settings.forEach((s) => {
+  //     if (!s.saved)
+  //       ctx.addIssue({
+  //         code: "custom",
+  //         message: s.id,
+  //       });
+  //   });
+  // }),
 };
 type VenueSettingsRowContent = z.infer<
   (typeof venueSettingsSchema)["venueSettings"]
@@ -189,22 +192,25 @@ const existingDrivingRangeSchema = baseSchema
 type ExistingDrivingRange = z.infer<typeof existingDrivingRangeSchema>;
 
 const genericSitesSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  coverImages: z.array(z.string()),
+  introduce: z.string(),
+  openDays: z
+    .array(
+      z.object({
+        id: z.string(),
+        startDay: z.string(),
+        endDay: z.string(),
+        sequence: z.number(),
+      }),
+    )
+    .optional(),
+});
+
+export const groundSitesSchema = z.object({
   data: z.array(
-    z.object({
-      id: z.string(),
-      name: z.string(),
-      coverImages: z.array(z.string()),
-      introduce: z.string(),
-      openDays: z
-        .array(
-          z.object({
-            id: z.string(),
-            startDay: z.string(),
-            endDay: z.string(),
-            sequence: z.number(),
-          }),
-        )
-        .optional(),
+    genericSitesSchema.extend({
       openTimes: z
         .array(
           z.object({
@@ -218,6 +224,38 @@ const genericSitesSchema = z.object({
           }),
         )
         .optional(),
+    }),
+  ),
+});
+
+export const simulatorSitesSchema = z.object({
+  data: z.array(
+    genericSitesSchema.extend({
+      openTimes: z
+        .array(
+          z.object({
+            id: z.string(),
+            startTime: z.string(),
+            endTime: z.string(),
+            pricePerHour: z.number(),
+            sequence: z.number(),
+          }),
+        )
+        .optional(),
+    }),
+  ),
+});
+export const golfSitesSchema = z.object({
+  data: z.array(
+    genericSitesSchema.extend({
+      openTimes: z.array(
+        z.object({
+          sequence: z.number(),
+          startTime: z.string(),
+          endTime: z.string(),
+          pricePerHour: z.string(),
+        }),
+      ),
     }),
   ),
 });

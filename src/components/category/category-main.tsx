@@ -14,12 +14,20 @@ import {
 import { MainLayout } from "@/layouts/main-layout";
 import { cn } from "@/lib/utils";
 import { StoreWithoutEmployees } from "@/pages/store-management/loader";
-import { getDifferenceInHoursAndMinutes, toMinguoDate } from "@/utils";
+import {
+  fromImageIdsToSrc,
+  getDifferenceInHoursAndMinutes,
+  toMinguoDate,
+} from "@/utils";
 import { equipments } from "@/utils/category/equipment";
-import { genericSitesSchema } from "@/utils/category/schemas";
+import {
+  golfSitesSchema,
+  groundSitesSchema,
+  simulatorSitesSchema,
+} from "@/utils/category/schemas";
 import { privateFetch } from "@/utils/utils";
 import { useQuery } from "@tanstack/react-query";
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Spinner } from "../ui/spinner";
 
@@ -46,7 +54,12 @@ export function CategoryMain({
       const response = await privateFetch(
         `/store/${storeId}/${type}?populate=*`,
       );
-      const sites = genericSitesSchema.parse(await response.json()).data;
+      const schemaMap = {
+        ground: groundSitesSchema,
+        simulator: simulatorSitesSchema,
+        golf: golfSitesSchema,
+      };
+      const sites = schemaMap[type].parse(await response.json()).data;
 
       return sites;
     },
@@ -57,7 +70,11 @@ export function CategoryMain({
   const [height, setHeight] = useState(0);
 
   const onStoreValueChange = (storeId: string) => {
-    navigate(`/driving-range/site-management/${storeId}`);
+    if (type === "ground")
+      navigate(`/driving-range/site-management/${storeId}`);
+    else if (type === "golf") navigate(`/golf/site-management/${storeId}`);
+    else if (type === "simulator")
+      navigate(`/indoor-simulator/site-management/${storeId}`);
   };
 
   useLayoutEffect(() => {
@@ -96,7 +113,7 @@ export function CategoryMain({
     >
       <div className="w-full flex-1 pb-2.5" ref={ref}>
         <ScrollArea
-          className="w-full p-5 overflow-auto border border-line-gray bg-light-gray"
+          className="w-full overflow-auto border border-line-gray bg-light-gray p-5"
           style={{ height: height }}
         >
           {height && (
@@ -149,6 +166,7 @@ export function CategoryMain({
                   <Section
                     key={section.id}
                     id={section.id}
+                    imgId={section.coverImages[0]}
                     name={section.name}
                     desc={section.introduce}
                     equipments={equipments.slice(0, 5)}
@@ -169,6 +187,7 @@ export function CategoryMain({
 function Section({
   id,
   name,
+  imgId,
   desc,
   equipments,
   openingDates,
@@ -177,6 +196,7 @@ function Section({
 }: {
   id: string;
   name: string;
+  imgId: string | undefined;
   desc: string;
   equipments: {
     id: string;
@@ -191,9 +211,23 @@ function Section({
   }[];
   siteDetailsHref: string;
 }) {
+  const [img, setImg] = useState("");
+
+  useEffect(() => {
+    if (!imgId) return;
+    (async () => {
+      const src = await fromImageIdsToSrc([imgId]);
+      setImg(src[0]);
+    })();
+  }, [imgId]);
+
   return (
     <section className="flex gap-2.5 border border-line-gray bg-white p-4">
-      <div className="mr-1.5 h-32 w-32 bg-[#c1c1c1]" />
+      {imgId ? (
+        <img src={img} className="mr-1.5 h-32 w-32 object-cover" />
+      ) : (
+        <div className="mr-1.5 h-32 w-32 bg-[#c1c1c1]" />
+      )}
 
       <div className="flex-1 basis-0 bg-light-gray px-4 pb-5 pt-2.5">
         <h2 className="text-lg font-semibold text-secondary-purple">{name}</h2>
@@ -233,7 +267,7 @@ function Section({
         )}
       />
 
-      <div className="flex flex-col self-start gap-4">
+      <div className="flex flex-col gap-4 self-start">
         <Link to={`${siteDetailsHref}/${id}`}>
           <img src={pencilIcon} />
         </Link>

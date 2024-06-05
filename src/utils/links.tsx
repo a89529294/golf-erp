@@ -67,7 +67,7 @@ export const linksKV = {
         paths: {
           index: {
             symbolicPath: `${DRIVING_RANGE_BASE_PATH}/site-management/:storeId?`,
-            path: `${DRIVING_RANGE_BASE_PATH}/site-management/`,
+            path: `${DRIVING_RANGE_BASE_PATH}/site-management`,
           },
           new: `${DRIVING_RANGE_BASE_PATH}/site-management/new`,
           details: `${DRIVING_RANGE_BASE_PATH}/site-management/:storeId/:siteId`,
@@ -121,9 +121,12 @@ export const linksKV = {
       "site-management": {
         label: "場地管理",
         paths: {
-          index: `${GOLF_BASE_PATH}/site-management`,
+          index: {
+            symbolicPath: `${GOLF_BASE_PATH}/site-management/:storeId?`,
+            path: `${GOLF_BASE_PATH}/site-management`,
+          },
           new: `${GOLF_BASE_PATH}/site-management/new`,
-          details: `${GOLF_BASE_PATH}/site-management/details/:id`,
+          details: `${GOLF_BASE_PATH}/site-management/:storeId/:siteId`,
         },
         lazy: {
           index: () => import("@/pages/golf/site-management"),
@@ -173,9 +176,12 @@ export const linksKV = {
       "site-management": {
         label: "場地管理",
         paths: {
-          index: `${INDOOR_SIMULATOR_BASE_PATH}/site-management`,
+          index: {
+            symbolicPath: `${INDOOR_SIMULATOR_BASE_PATH}/site-management/:storeId?`,
+            path: `${INDOOR_SIMULATOR_BASE_PATH}/site-management`,
+          },
           new: `${INDOOR_SIMULATOR_BASE_PATH}/site-management/new`,
-          details: `${INDOOR_SIMULATOR_BASE_PATH}/site-management/details/:id`,
+          details: `${INDOOR_SIMULATOR_BASE_PATH}/site-management/:storeId/:siteId`,
         },
         lazy: {
           index: () => import("@/pages/indoor-simulator/site-management"),

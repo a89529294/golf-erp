@@ -32,7 +32,7 @@ import {
   TimeRange,
   VenueSettingsRowContent,
 } from "@/utils/category/schemas";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef } from "react";
 import { UseFormReturn, useFormContext } from "react-hook-form";
 import {
   onAddNewImages,
@@ -78,17 +78,8 @@ export function Site({
   onSubmit: (v: S[typeof type]) => void;
 }): React.ReactElement {
   const openingDateRangeRef = useRef<HTMLLIElement>(null);
+  const venueSettingsRef = useRef<HTMLLIElement>(null);
   const form = useFormContext<S[typeof type]>();
-  const [newTimeRangeDisabled, setNewTimeRangeDisabled] = useState(false);
-
-  const x =
-    "openingHours" in form.formState.errors
-      ? form.formState.errors.openingHours
-      : "";
-
-  useEffect(() => {
-    if ("openingHours" in form.formState.errors) setNewTimeRangeDisabled(!!x);
-  }, [x, form.formState.errors]);
 
   return (
     <form
@@ -97,14 +88,15 @@ export function Site({
           onSubmit(v);
         },
         (e) => {
-          console.log(e.openingDates);
+          console.log(e);
           e.openingDates && openingDateRangeRef.current?.scrollIntoView();
+          if ("venueSettings" in e) venueSettingsRef.current?.scrollIntoView();
         },
       )}
-      className="px-20 space-y-10"
-      id="new-site"
+      className="space-y-10 px-20"
+      id="site-details"
     >
-      <section className="px-12 py-10 space-y-6 bg-white border border-line-gray">
+      <section className="space-y-6 border border-line-gray bg-white px-12 py-10">
         <FormTextField name="name" label="場地名稱" disabled={formDisabled} />
         <FormTextField
           name="description"
@@ -121,7 +113,7 @@ export function Site({
                 <FormControl>
                   <SelectTrigger
                     disabled={formDisabled}
-                    className="pl-0 border-0 border-b rounded-none h-7 border-secondary-dark"
+                    className="h-7 rounded-none border-0 border-b border-secondary-dark pl-0"
                   >
                     <SelectValue placeholder="選擇廠商" />
                   </SelectTrigger>
@@ -219,10 +211,7 @@ export function Site({
       >
         {form.watch("openingDates").length ? (
           <ul>
-            {form.getValues("openingDates").map((dateRange) => {
-              const hasError =
-                dateRange.id === form.formState.errors.openingDates?.message &&
-                form.formState.isSubmitted;
+            {form.getValues("openingDates").map((dateRange, i) => {
               return (
                 <DateRangeRow
                   myRef={openingDateRangeRef}
@@ -234,7 +223,9 @@ export function Site({
                   data={dateRange}
                   onEdit={() => onEditOpeningDateRange(dateRange.id, form)}
                   disabled={formDisabled}
-                  errorMessage={hasError ? "請先儲存" : ""}
+                  errorMessage={
+                    form.formState.errors.openingDates?.[i] ? "請先儲存" : ""
+                  }
                 />
               );
             })}
@@ -257,7 +248,10 @@ export function Site({
               />
             ),
           }}
-          disabled={newTimeRangeDisabled}
+          disabled={
+            formDisabled ||
+            form.getValues("venueSettings").some((v) => !v.saved)
+          }
         >
           <WeekDayTabs
             onEdit={(weekday, id) => onEditWeekdayTimeRange(weekday, id, form)}
@@ -284,7 +278,9 @@ export function Site({
               />
             ),
           }}
-          disabled={newTimeRangeDisabled}
+          disabled={
+            formDisabled || form.getValues("openingHours").some((v) => !v.saved)
+          }
         >
           {form.watch("openingHours").length ? (
             <ul>
@@ -298,6 +294,7 @@ export function Site({
                     }
                     onEdit={() => onEditOpeningTimeRange(hours.id, form)}
                     data={hours}
+                    disabled={formDisabled}
                   />
                 );
               })}
@@ -329,7 +326,7 @@ export function Site({
           >
             {form.watch("venueSettings").length ? (
               <ul>
-                {form.getValues("venueSettings").map((settings) => {
+                {form.getValues("venueSettings").map((settings, i) => {
                   return (
                     <VenueSettingsRow
                       key={settings.id}
@@ -343,15 +340,12 @@ export function Site({
                       data={settings}
                       formDisabled={formDisabled}
                       errorMessage={
-                        (
-                          form as
-                            | UseFormReturn<NewDrivingRange>
-                            | UseFormReturn<ExistingDrivingRange>
-                        ).formState.errors.venueSettings?.message ===
-                        settings.id
+                        (form as UseFormReturn<ExistingDrivingRange>).formState
+                          .errors.venueSettings?.[i]
                           ? "請先儲存"
                           : ""
                       }
+                      myRef={venueSettingsRef}
                     />
                   );
                 })}
@@ -372,7 +366,7 @@ export function Site({
                     <FormControl>
                       <UnderscoredInput
                         placeholder={`價錢`}
-                        className="p-0 pb-1 text-center h-7 w-28 text-secondary-dark"
+                        className="h-7 w-28 p-0 pb-1 text-center text-secondary-dark"
                         disabled={formDisabled}
                         {...field}
                         onChange={(e) => {

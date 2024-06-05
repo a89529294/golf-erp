@@ -79,7 +79,7 @@ export function Component() {
         </h1>
         <Form {...form}>
           <Site
-            addNewSite={() => {}}
+            onSubmit={() => {}}
             stores={stores}
             formDisabled={formDisabled}
             type={"golf"}

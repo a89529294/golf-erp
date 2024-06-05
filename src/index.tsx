@@ -70,7 +70,11 @@ const router = createBrowserRouter(
             })}
             {Object.values(linksKV["golf"].subLinks).map((subLink) => {
               return subLink.type === "multiple" ? (
-                Object.values(subLink.paths).map((path, idx) => {
+                Object.values(subLink.paths).map((pathConfig, idx) => {
+                  let path = "";
+                  if (typeof pathConfig === "object")
+                    path = pathConfig.symbolicPath;
+                  else path = pathConfig;
                   return (
                     <Route
                       element={
@@ -103,7 +107,11 @@ const router = createBrowserRouter(
             {Object.values(linksKV["indoor-simulator"].subLinks).map(
               (subLink) => {
                 return subLink.type === "multiple" ? (
-                  Object.values(subLink.paths).map((path, idx) => {
+                  Object.values(subLink.paths).map((pathConfig, idx) => {
+                    let path = "";
+                    if (typeof pathConfig === "object")
+                      path = pathConfig.symbolicPath;
+                    else path = pathConfig;
                     return (
                       <Route
                         element={

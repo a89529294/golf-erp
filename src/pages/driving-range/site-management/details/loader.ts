@@ -6,39 +6,52 @@ import { z } from "zod";
 import { groundStoresQuery } from "../loader";
 import { privateFetch } from "@/utils/utils";
 
-const detailedDrivingRangeSchema = z.object({
+const baseOpenDay = z.object({
+  startDay: z.coerce.date(),
+  endDay: z.coerce.date(),
+  sequence: z.number(),
+});
+
+const baseOpenTime = z.object({
+  startTime: z.string(),
+  endTime: z.string(),
+  pricePerHour: z.number(),
+  openQuantity: z.number(),
+  openBallQuantity: z.number(),
+  sequence: z.number(),
+});
+
+const baseDrivingRangeSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  introduce: z.string(),
+  ballPrice: z.number(),
+});
+
+export const drivingRangeGETSchema = z.object({
   data: z.array(
-    z.object({
-      id: z.string(),
-      name: z.string(),
-      coverImages: z.array(z.string()),
-      introduce: z.string(),
-      ballPrice: z.number(),
-      openDays: z.array(
-        z.object({
-          id: z.string(),
-          startDay: z.coerce.date(),
-          endDay: z.coerce.date(),
-          sequence: z.number(),
-        }),
-      ),
-      openTimes: z.array(
-        z.object({
-          id: z.string(),
-          startTime: z.string(),
-          endTime: z.string(),
-          pricePerHour: z.number(),
-          openQuantity: z.number(),
-          openBallQuantity: z.number(),
-          sequence: z.number(),
-        }),
-      ),
-      store: z.object({
-        id: z.string(),
-      }),
-    }),
+    baseDrivingRangeSchema
+      .extend({ openDays: z.array(baseOpenDay.extend({ id: z.string() })) })
+      .extend({ openTimes: z.array(baseOpenTime.extend({ id: z.string() })) })
+      .extend({ coverImages: z.array(z.string()) })
+      .extend({ store: z.object({ id: z.string() }) }),
   ),
 });
+
+export const drivingRangePATCHSchema = baseDrivingRangeSchema
+  .extend({
+    openDays: z.array(baseOpenDay.extend({ id: z.string().optional() })),
+  })
+  .extend({
+    openTimes: z.array(baseOpenTime.extend({ id: z.string().optional() })),
+  })
+  .extend({ storeId: z.string() });
+
+export type DrivingRangeGET = z.infer<
+  typeof drivingRangeGETSchema
+>["data"][number];
+
+export type DrivingRangePATCH = z.infer<typeof drivingRangePATCHSchema>;
 
 export const genDrivingRangeDetailsQuery = (
   storeId: string,
@@ -49,7 +62,7 @@ export const genDrivingRangeDetailsQuery = (
     const response = await privateFetch(`/store/${storeId}/ground?populate=*`);
     const data = await response.json();
 
-    const parsed = detailedDrivingRangeSchema
+    const parsed = drivingRangeGETSchema
       .parse(data)
       .data.find((v) => v.id === siteId);
 

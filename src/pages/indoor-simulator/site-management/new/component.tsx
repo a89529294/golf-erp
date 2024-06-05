@@ -4,13 +4,16 @@ import { Form } from "@/components/ui/form";
 import { MainLayout } from "@/layouts/main-layout";
 import { equipments } from "@/utils/category/equipment";
 import { newIndoorSimulatorSchema } from "@/utils/category/schemas";
+import { linksKV } from "@/utils/links";
+import { privateFetch } from "@/utils/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { useLoaderData, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { z } from "zod";
-import { loader } from "./loader";
-import { useQuery } from "@tanstack/react-query";
 import { indoorSimulatorStoresQuery } from "../loader";
+import { loader } from "./loader";
 
 export function Component() {
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
@@ -30,15 +33,72 @@ export function Component() {
       openingHours: [],
     },
   });
+  const { mutate, isPending } = useMutation({
+    mutationKey: ["add-new-indoor-simulator-site"],
+    mutationFn: async () => {
+      const response = await privateFetch(`/store/simulator`, {
+        method: "POST",
+        body: JSON.stringify({
+          name: form.getValues("name"),
+          introduce: form.getValues("description"),
+          storeId: form.getValues("storeId"),
+          openDays: form.getValues("openingDates").map((v, i) => ({
+            startDay: v.start,
+            endDay: v.end,
+            sequence: i + 1,
+          })),
+          openTimes: form.getValues("openingHours").map((v, i) => ({
+            startTime: `${new Date().toISOString().slice(0, 10)}T${v.start}`,
+            endTime: `${new Date().toISOString().slice(0, 10)}T${v.end}`,
+            pricePerHour: v.fee,
+            sequence: i + 1,
+          })),
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const siteId = (await response.json()).id;
+
+      const formData = new FormData();
+      form
+        .getValues("imageFiles")
+        .forEach((img) => formData.append("image", img.file));
+
+      await privateFetch(`/store/simulator/${siteId}/cover`, {
+        method: "POST",
+        body: formData,
+      });
+    },
+    onSuccess() {
+      toast.success("新增場地成功");
+      navigate(
+        linksKV["indoor-simulator"].subLinks["site-management"].paths.index
+          .path + `/${form.getValues("storeId")}`,
+      );
+    },
+    onError() {
+      toast.error("新增場地失敗");
+    },
+  });
 
   return (
     <MainLayout
       headerChildren={
         <>
-          <IconButton icon="back" onClick={() => navigate(-1)}>
+          <IconButton
+            disabled={isPending}
+            icon="back"
+            onClick={() => navigate(-1)}
+          >
             返回
           </IconButton>
-          <IconButton icon="save" form="new-site" onClick={() => {}}>
+          <IconButton
+            disabled={isPending}
+            icon="save"
+            form="site-details"
+            onClick={() => {}}
+          >
             儲存
           </IconButton>
         </>
@@ -51,9 +111,9 @@ export function Component() {
         <Form {...form}>
           <Site
             type="indoor-simulator"
-            formDisabled={false}
+            formDisabled={isPending}
             stores={stores}
-            addNewSite={() => {}}
+            onSubmit={() => mutate()}
           />
         </Form>
       </div>

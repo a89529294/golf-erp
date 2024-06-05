@@ -44,7 +44,7 @@ export function Component() {
           <IconButton icon="back" onClick={() => navigate(-1)}>
             返回
           </IconButton>
-          <IconButton icon="save" form="new-site" onClick={() => {}}>
+          <IconButton icon="save" form="site-details" onClick={() => {}}>
             儲存
           </IconButton>
         </>
@@ -59,7 +59,7 @@ export function Component() {
             type="golf"
             formDisabled={false}
             stores={stores}
-            addNewSite={() => {}}
+            onSubmit={() => {}}
           />
         </Form>
       </div>

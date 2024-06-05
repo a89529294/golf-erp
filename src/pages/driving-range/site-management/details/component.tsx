@@ -14,7 +14,11 @@ import { useLoaderData, useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { z } from "zod";
 import { groundStoresQuery } from "../loader";
-import { genDrivingRangeDetailsQuery, loader } from "./loader";
+import {
+  genDrivingRangeDetailsQuery,
+  loader,
+  type DrivingRangePATCH,
+} from "./loader";
 
 export function Component() {
   const queryClient = useQueryClient();
@@ -50,7 +54,7 @@ export function Component() {
     },
   });
   const [formDisabled, setFormDisabled] = useState(true);
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationKey: ["patch-driving-range"],
     mutationFn: async () => {
       const changedFields = filterObject(
@@ -63,54 +67,56 @@ export function Component() {
       console.log(changedFields);
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const x: Record<string, any> = {};
+      const x = {} as Partial<DrivingRangePATCH>;
       if ("name" in changedFields) x.name = changedFields.name;
       if ("description" in changedFields)
         x.introduce = changedFields.description;
       if ("storeId" in changedFields) x.storeId = changedFields.storeId;
       if ("costPerBox" in changedFields) x.ballPrice = changedFields.costPerBox;
       if ("openingDates" in changedFields) {
-        x.openDays = [] as { id: string; startDay: string; endDay: string }[];
-        changedFields.openingDates?.forEach((od) => {
+        changedFields.openingDates?.forEach((od, i) => {
           if (defaultOpeningDates.find((dod) => dod.id === od.id)) {
+            x.openDays ||= [];
             x.openDays.push({
               id: od.id,
-              startDay: od.start,
-              endDay: od.end,
+              startDay: od.start ?? new Date(),
+              endDay: od.end ?? new Date(),
+              sequence: i + 1,
             });
           } else {
-            x.openDays.push({ startDay: od.start, endDay: od.end });
+            x.openDays ||= [];
+            x.openDays.push({
+              startDay: od.start ?? new Date(),
+              endDay: od.end ?? new Date(),
+              sequence: i + 1,
+            });
           }
         });
       }
       if ("venueSettings" in changedFields) {
-        x.openTimes = [] as {
-          id: string;
-          startTime: string;
-          endTime: string;
-          pricePerHour: number;
-          openQuantity: number;
-          openBallQuantity: number;
-        }[];
-
-        changedFields.venueSettings?.forEach((vs) => {
-          if (defaultVenueSettings.find((dvs) => dvs.id === vs.id))
+        changedFields.venueSettings?.forEach((vs, i) => {
+          if (defaultVenueSettings.find((dvs) => dvs.id === vs.id)) {
+            x.openTimes ||= [];
             x.openTimes.push({
               id: vs.id,
               startTime: `${new Date().toISOString().slice(0, 10)}T${vs.start}`,
               endTime: `${new Date().toISOString().slice(0, 10)}T${vs.end}`,
-              pricePerHour: vs.fee,
-              openQuantity: vs.numberOfGroups,
-              openBallQuantity: vs.numberOfBalls,
+              pricePerHour: vs.fee || 0,
+              openQuantity: vs.numberOfGroups || 0,
+              openBallQuantity: vs.numberOfBalls || 0,
+              sequence: i + 1,
             });
-          else
+          } else {
+            x.openTimes ||= [];
             x.openTimes.push({
               startTime: `${new Date().toISOString().slice(0, 10)}T${vs.start}`,
               endTime: `${new Date().toISOString().slice(0, 10)}T${vs.end}`,
-              pricePerHour: vs.fee,
-              openQuantity: vs.numberOfGroups,
-              openBallQuantity: vs.numberOfBalls,
+              pricePerHour: vs.fee || 0,
+              openQuantity: vs.numberOfGroups || 0,
+              openBallQuantity: vs.numberOfBalls || 0,
+              sequence: i + 1,
             });
+          }
         });
       }
       if ("imageFiles" in changedFields) {
@@ -154,7 +160,6 @@ export function Component() {
   });
 
   useEffect(() => {
-    console.log("form defuault reset");
     form.reset(data);
     setDefaultImageFiles(data.imageFiles);
     setDefaultOpeningDates(data.openingDates);
@@ -181,14 +186,14 @@ export function Component() {
               編輯
             </IconButton>
           ) : (
-            <IconButton icon="save" form="new-site" onClick={() => {}}>
+            <IconButton icon="save" form="site-details" onClick={() => {}}>
               儲存
             </IconButton>
           )}
         </>
       }
     >
-      <div className="flex flex-col w-full gap-10 p-1 border border-line-gray bg-light-gray">
+      <div className="flex w-full flex-col gap-10 border border-line-gray bg-light-gray p-1">
         <h1 className="bg-mid-gray py-2.5 text-center text-black">
           編輯場地資料
         </h1>
@@ -199,7 +204,7 @@ export function Component() {
             }}
             stores={stores}
             type="driving-range"
-            formDisabled={formDisabled}
+            formDisabled={formDisabled || isPending}
           />
         </Form>
       </div>
