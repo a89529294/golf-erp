@@ -45,7 +45,7 @@ export function StoreFormSelectField({
               <FormControl>
                 <SelectTrigger
                   className={cn(
-                    "w-96 rounded-none border-0 border-b border-b-secondary-dark pb-1",
+                    "w-96 rounded-none border-0 border-b border-b-secondary-dark p-1",
                     field.value && "border-b-orange",
                   )}
                 >

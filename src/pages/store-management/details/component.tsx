@@ -3,10 +3,6 @@ import { IconButton } from "@/components/ui/button";
 import { Modal } from "@/components/modal";
 import { MainLayout } from "@/layouts/main-layout";
 import { loader } from "@/pages/store-management/details/loader";
-import {
-  countyQuery,
-  generateDistrictQuery,
-} from "@/pages/store-management/new/loader";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -27,6 +23,7 @@ import { toast } from "sonner";
 import { StoreForm } from "../components/store-form";
 import { formSchema } from "../schemas";
 import { genStoreQuery } from "./loader";
+import { countyQuery, generateDistrictQuery } from "@/api/county-district";
 
 export function Component() {
   const queryClient = useQueryClient();

@@ -35,13 +35,15 @@ export function Component() {
   >({
     mutationKey: ["add-new-member"],
     mutationFn: async (variables) => {
+      const { birthday, ...rest } = variables;
       const response = await privateFetch("/app-users/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          ...variables,
+          ...rest,
+          ...(birthday && { birthday }),
           appUserType: variables.memberType,
           account: variables.cardNumber,
         }),

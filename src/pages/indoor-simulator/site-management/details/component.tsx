@@ -189,7 +189,7 @@ export function Component() {
               mutate();
             }}
             stores={stores}
-            formDisabled={formDisabled}
+            formDisabled={formDisabled || isPending}
             type="indoor-simulator"
           />
         </Form>

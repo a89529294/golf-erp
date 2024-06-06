@@ -1,14 +1,9 @@
-"use client";
-
-import { format } from "date-fns";
-import { Calendar as CalendarIcon } from "lucide-react";
-import * as React from "react";
-
 import { Calendar } from "@/components/ui/calendar";
 import {
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import {
@@ -17,34 +12,37 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import React from "react";
 import { useFormContext } from "react-hook-form";
 
-export function BirthDayDatePicker({ disabled }: { disabled: boolean }) {
-  const form = useFormContext();
+export function AppointmentDatePicker({ disabled }: { disabled?: boolean }) {
   const [open, setOpen] = React.useState(false);
-
+  const form = useFormContext();
   return (
     <FormField
       control={form.control}
-      name="birthday"
+      name="date"
       render={({ field }) => (
-        <FormItem className="flex h-10 flex-1 flex-col">
+        <FormItem className="grid grid-cols-[1fr_415px] items-baseline">
+          <FormLabel>日期</FormLabel>
           <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
               <FormControl>
                 <button
                   className={cn(
-                    "flex h-full items-end  border-b border-secondary-dark pb-1 pl-1 text-left font-normal disabled:cursor-not-allowed disabled:opacity-50",
+                    "relative h-8 items-center border-b border-secondary-dark text-center disabled:cursor-not-allowed disabled:opacity-50",
                     !field.value && "text-word-gray",
                   )}
                   disabled={disabled}
                 >
                   {field.value ? (
-                    format(field.value, "yyyy-MM-dd")
+                    format(field.value, "yyyy/MM/dd")
                   ) : (
-                    <span>生日</span>
+                    <span>日期</span>
                   )}
-                  <CalendarIcon className="ml-auto h-4 w-4 text-secondary-dark " />
+                  <CalendarIcon className="absolute right-0 top-1/2 h-4 w-4 -translate-y-1/2 text-secondary-dark" />
                 </button>
               </FormControl>
             </PopoverTrigger>
@@ -53,15 +51,16 @@ export function BirthDayDatePicker({ disabled }: { disabled: boolean }) {
                 mode="single"
                 selected={field.value}
                 onSelect={field.onChange}
-                disabled={(date) =>
-                  date > new Date() || date < new Date("1900-01-01")
-                }
+                // disabled={(date) =>
+                //   date > new Date() || date < new Date("1900-01-01")
+                // }
                 initialFocus
                 onDaySelect={() => setOpen(false)}
               />
             </PopoverContent>
           </Popover>
-          <FormMessage />
+
+          <FormMessage className="col-start-2" />
         </FormItem>
       )}
     />

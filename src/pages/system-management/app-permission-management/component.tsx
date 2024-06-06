@@ -41,13 +41,13 @@ export function Component() {
 
   return (
     <MainLayout>
-      <div className=" w-full self-stretch" ref={ref}>
+      <div className="w-full self-stretch" ref={ref}>
         <ScrollArea
           style={{ height: `${containerHeight - 10}px` }}
           className="mb-2.5 border border-line-gray bg-light-gray px-5 py-12"
         >
           {containerHeight ? (
-            <div className="flex flex-col gap-5">
+            <div className="flex h-full flex-col gap-5">
               {data.erpFeaturesWithUsers.map((feature) => (
                 <Section
                   key={feature.featureId}

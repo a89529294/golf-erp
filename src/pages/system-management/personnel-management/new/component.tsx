@@ -209,22 +209,21 @@ function EmployeeFormField({
       control={form.control}
       name={name}
       render={({ field }) => (
-        <FormItem className="flex flex-col gap-1">
-          <div className="flex items-baseline gap-7">
-            <FormLabel required>{label}</FormLabel>
-            <FormControl>
-              <Input
-                className={cn(
-                  "h-7 w-60 rounded-none border-0 border-b border-b-secondary-dark focus-visible:border-b-[1.5px] focus-visible:border-b-orange",
-                  field.value && "border-b-orange",
-                )}
-                placeholder={`請輸入${label}`}
-                {...field}
-                disabled={isMutating}
-              />
-            </FormControl>
-          </div>
-          <FormMessage />
+        <FormItem className="grid grid-cols-[1fr_auto] items-baseline gap-x-7 gap-y-1">
+          <FormLabel required>{label}</FormLabel>
+          <FormControl>
+            <Input
+              className={cn(
+                "h-7 w-60 rounded-none border-0 border-b border-b-secondary-dark p-1 focus-visible:border-b-[1.5px] focus-visible:border-b-orange",
+                field.value && "border-b-orange",
+              )}
+              placeholder={`請輸入${label}`}
+              {...field}
+              disabled={isMutating}
+            />
+          </FormControl>
+
+          <FormMessage className="col-start-2" />
         </FormItem>
       )}
     />

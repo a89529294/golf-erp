@@ -1,5 +1,5 @@
+import { countyQuery } from "@/api/county-district";
 import { storeSchema } from "@/pages/store-management/loader";
-import { countyQuery } from "@/pages/store-management/new/loader";
 import { genEmployeesQuery } from "@/pages/system-management/personnel-management/loader";
 import { linksKV } from "@/utils/links";
 import { queryClient } from "@/utils/query-client";

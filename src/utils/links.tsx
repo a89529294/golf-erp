@@ -138,9 +138,17 @@ export const linksKV = {
       },
       "appointment-management": {
         label: "預約管理",
-        path: `${GOLF_BASE_PATH}/appointment-management`,
-        lazy: () => import("@/pages/golf/appointment-management"),
-        type: "flat" as const,
+        paths: {
+          index: `${GOLF_BASE_PATH}/appointment-management`,
+          new: `${GOLF_BASE_PATH}/appointment-management/new`,
+          details: `${GOLF_BASE_PATH}/appointment-management/:appointmentId`,
+        },
+        lazy: {
+          index: () => import("@/pages/golf/appointment-management"),
+          new: () => import("@/pages/golf/appointment-management/new"),
+          details: () => import("@/pages/golf/appointment-management/details"),
+        },
+        type: "multiple" as const,
         allowedPermissions: ["高爾夫球-基本操作"],
       },
       "repair-report": {

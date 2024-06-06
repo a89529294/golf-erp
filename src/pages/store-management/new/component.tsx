@@ -3,11 +3,7 @@ import { IconButton } from "@/components/ui/button";
 import { MainLayout } from "@/layouts/main-layout";
 
 import { Modal } from "@/components/modal";
-import {
-  countyQuery,
-  generateDistrictQuery,
-  loader,
-} from "@/pages/store-management/new/loader";
+import { loader } from "@/pages/store-management/new/loader";
 import { storeCategories } from "@/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
@@ -25,6 +21,7 @@ import { z } from "zod";
 import { genEmployeesQuery } from "@/pages/system-management/personnel-management/loader";
 import { StoreForm } from "../components/store-form";
 import { formSchema } from "../schemas";
+import { countyQuery, generateDistrictQuery } from "@/api/county-district";
 
 export function Component() {
   const submit = useSubmit();

@@ -81,7 +81,7 @@ export function StoreForm({
                     <FormControl>
                       <Input
                         className={cn(
-                          "h-7 w-48 rounded-none border-0 border-b border-b-secondary-dark focus-visible:border-b-[1.5px] focus-visible:border-b-orange",
+                          "h-7 w-48 rounded-none border-0 border-b border-b-secondary-dark p-1 focus-visible:border-b-[1.5px] focus-visible:border-b-orange",
                           field.value && "border-b-orange",
                         )}
                         placeholder={`請輸入起始營業時間`}
@@ -130,7 +130,7 @@ export function StoreForm({
                     <FormControl>
                       <Input
                         className={cn(
-                          "h-7 w-12 rounded-none border-0 border-b border-b-secondary-dark focus-visible:border-b-[1.5px] focus-visible:border-b-orange",
+                          "h-7 w-12 rounded-none border-0 border-b border-b-secondary-dark p-1 focus-visible:border-b-[1.5px] focus-visible:border-b-orange",
                           field.value && "border-b-orange",
                         )}
                         placeholder={`02`}
@@ -151,7 +151,7 @@ export function StoreForm({
                   <FormControl>
                     <Input
                       className={cn(
-                        "h-7 w-80 rounded-none border-0 border-b border-b-secondary-dark focus-visible:border-b-[1.5px] focus-visible:border-b-orange",
+                        "h-7 w-80 rounded-none border-0 border-b border-b-secondary-dark p-1 focus-visible:border-b-[1.5px] focus-visible:border-b-orange",
                         field.value && "border-b-orange",
                       )}
                       placeholder={`12345678`}

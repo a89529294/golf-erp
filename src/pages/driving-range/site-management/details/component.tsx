@@ -64,8 +64,6 @@ export function Component() {
         ) as (keyof typeof form.formState.dirtyFields)[],
       );
 
-      console.log(changedFields);
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const x = {} as Partial<DrivingRangePATCH>;
       if ("name" in changedFields) x.name = changedFields.name;
@@ -186,7 +184,15 @@ export function Component() {
               編輯
             </IconButton>
           ) : (
-            <IconButton icon="save" form="site-details" onClick={() => {}}>
+            <IconButton
+              disabled={
+                isPending ||
+                Object.keys(form.formState.dirtyFields).length === 0
+              }
+              icon="save"
+              form="site-details"
+              onClick={() => {}}
+            >
               儲存
             </IconButton>
           )}

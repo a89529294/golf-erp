@@ -43,37 +43,36 @@ export function StoreFormAddressSelectFields({
         control={form.control}
         name={names[0]}
         render={({ field }) => (
-          <FormItem className="flex flex-col gap-1">
-            <div className="flex items-baseline gap-5">
-              <FormLabel className="w-16">{label}</FormLabel>
-              <Select
-                disabled={disabled}
-                onValueChange={(v) => {
-                  field.onChange(v);
-                  form.resetField("district");
-                }}
-                defaultValue={field.value}
-              >
-                <FormControl>
-                  <SelectTrigger
-                    className={cn(
-                      "w-[186px] rounded-none border-0 border-b border-b-secondary-dark pb-1",
-                      field.value && "border-b-orange",
-                    )}
-                  >
-                    <SelectValue placeholder="選擇縣市" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {counties.map(({ countycode, countyname }) => (
-                    <SelectItem value={countycode} key={countycode}>
-                      {countyname}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <FormMessage />
+          <FormItem className="grid grid-cols-[auto_auto] items-baseline gap-y-1">
+            <FormLabel className="w-16">{label}</FormLabel>
+            <Select
+              disabled={disabled}
+              onValueChange={(v) => {
+                field.onChange(v);
+                form.resetField("district");
+              }}
+              defaultValue={field.value}
+            >
+              <FormControl>
+                <SelectTrigger
+                  className={cn(
+                    "w-[186px] rounded-none border-0 border-b border-b-secondary-dark p-1",
+                    field.value && "border-b-orange",
+                  )}
+                >
+                  <SelectValue placeholder="選擇縣市" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                {counties.map(({ countycode, countyname }) => (
+                  <SelectItem value={countycode} key={countycode}>
+                    {countyname}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <FormMessage className="col-start-2" />
           </FormItem>
         )}
       />
@@ -93,7 +92,7 @@ export function StoreFormAddressSelectFields({
                 <FormControl>
                   <SelectTrigger
                     className={cn(
-                      "w-[186px] rounded-none border-0 border-b border-b-secondary-dark pb-1",
+                      "w-[186px] rounded-none border-0 border-b border-b-secondary-dark p-1",
                       field.value && "border-b-orange",
                     )}
                   >
@@ -122,12 +121,13 @@ export function StoreFormAddressSelectFields({
         control={form.control}
         name={names[2]}
         render={({ field }) => (
-          <FormItem className="flex flex-col gap-1 justify-self-end">
+          <FormItem className="flex flex-col gap-1 ">
             <div className="flex items-baseline gap-5">
+              <div className="w-14" />
               <FormControl>
                 <Input
                   className={cn(
-                    "h-7 w-[186px] rounded-none border-0 border-b border-b-secondary-dark focus-visible:border-b-[1.5px] focus-visible:border-b-orange",
+                    "h-7 w-[186px] rounded-none border-0 border-b border-b-secondary-dark p-1 focus-visible:border-b-[1.5px] focus-visible:border-b-orange",
                     field.value && "border-b-orange",
                   )}
                   placeholder={`請輸入${label}`}
@@ -136,7 +136,7 @@ export function StoreFormAddressSelectFields({
                 />
               </FormControl>
             </div>
-            <FormMessage />
+            <FormMessage className="ml-[76px]" />
           </FormItem>
         )}
       />
