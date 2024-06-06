@@ -48,6 +48,12 @@ export function Component() {
           introduce: v.description,
           ballPrice: v.costPerBox,
           storeId: v.storeId,
+          equipment: JSON.stringify(
+            v.equipments.map((e) => ({
+              name: e.label,
+              isActive: e.selected,
+            })),
+          ),
           openDays: v.openingDates.map((od, idx) => ({
             sequence: idx + 1,
             startDay: od.start?.toISOString(),

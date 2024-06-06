@@ -81,7 +81,7 @@ export function Site({
   const openingHoursRef = useRef<HTMLLIElement>(null);
   const venueSettingsRef = useRef<HTMLLIElement>(null);
   const form = useFormContext<S[typeof type]>();
-  console.log(form.getValues("equipments"));
+
   return (
     <form
       onSubmit={form.handleSubmit(

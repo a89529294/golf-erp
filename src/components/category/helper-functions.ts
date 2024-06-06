@@ -354,6 +354,9 @@ export function onSelectEquipment(
     form
       .getValues("equipments")
       .map((v) => (v.id === id ? { ...v, selected: !v.selected } : v)),
+    {
+      shouldDirty: true,
+    },
   );
 }
 

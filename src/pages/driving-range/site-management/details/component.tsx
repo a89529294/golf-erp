@@ -46,7 +46,7 @@ export function Component() {
       name: data.name,
       description: data.description,
       storeId: data.storeId,
-      equipments: equipments,
+      equipments: data.equipments,
       imageFiles: data.imageFiles,
       openingDates: data.openingDates,
       venueSettings: data.venueSettings,
@@ -71,6 +71,13 @@ export function Component() {
         x.introduce = changedFields.description;
       if ("storeId" in changedFields) x.storeId = changedFields.storeId;
       if ("costPerBox" in changedFields) x.ballPrice = changedFields.costPerBox;
+      if ("equipments" in changedFields)
+        x.equipment = JSON.stringify(
+          changedFields.equipments?.map((e) => ({
+            name: e.label,
+            isActive: e.selected,
+          })),
+        );
       if ("openingDates" in changedFields) {
         changedFields.openingDates?.forEach((od, i) => {
           if (defaultOpeningDates.find((dod) => dod.id === od.id)) {

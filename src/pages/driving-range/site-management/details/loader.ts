@@ -27,6 +27,7 @@ const baseDrivingRangeSchema = z.object({
   name: z.string(),
   introduce: z.string(),
   ballPrice: z.number(),
+  equipment: z.string().nullable(),
 });
 
 export const drivingRangeGETSchema = z.object({
@@ -63,6 +64,8 @@ export const genDrivingRangeDetailsQuery = (
     const response = await privateFetch(`/store/${storeId}/ground?populate=*`);
     const data = await response.json();
 
+    console.log(drivingRangeGETSchema.safeParse(data));
+
     const parsed = drivingRangeGETSchema
       .parse(data)
       .data.find((v) => v.id === siteId);
@@ -79,7 +82,11 @@ export const genDrivingRangeDetailsQuery = (
         end: v.endDay,
       })),
       costPerBox: parsed.ballPrice,
-      equipments: equipments,
+      equipments: equipments.map((e) => ({
+        ...e,
+        selected: JSON.parse(parsed.equipment).find((de) => de.name === e.label)
+          .isActive,
+      })),
       imageFiles: (await fromImageIdsToSrc(parsed.coverImages)).map(
         (src, idx) => ({
           id: parsed.coverImages[idx],
