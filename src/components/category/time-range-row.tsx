@@ -13,12 +13,16 @@ export function TimeRangeRow({
   onRemove,
   onEdit,
   disabled,
+  myRef,
+  errorMessage,
 }: {
   data: TimeRange;
   onSave: (tr: TimeRange) => void;
   onRemove(): void;
   onEdit(): void;
   disabled?: boolean;
+  myRef: React.RefObject<HTMLLIElement>;
+  errorMessage?: string;
 }) {
   const [start, setStart] = useState(data.start);
   const [end, setEnd] = useState(data.end);
@@ -67,6 +71,7 @@ export function TimeRangeRow({
         !data.saved && "border-b-orange bg-hover-orange",
         disabled && "opacity-50",
       )}
+      ref={myRef}
     >
       <UnderscoredInput
         className={cn(
@@ -137,6 +142,7 @@ export function TimeRangeRow({
       <span>元</span>
 
       <div className="ml-auto flex gap-4">
+        <span className="text-red-500">{errorMessage}</span>
         {data.saved ? (
           <>
             <button

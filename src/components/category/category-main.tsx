@@ -26,10 +26,12 @@ import {
   simulatorSitesSchema,
 } from "@/utils/category/schemas";
 import { privateFetch } from "@/utils/utils";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { Spinner } from "../ui/spinner";
+import { Spinner } from "@/components/ui/spinner";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Modal } from "../modal";
 
 export function CategoryMain({
   newSiteHref,
@@ -117,12 +119,15 @@ export function CategoryMain({
           style={{ height: height }}
         >
           {height && (
-            <div className="relative h-full space-y-2.5">
+            <div className="relative flex h-full flex-col gap-2.5">
               {isPending && fetchStatus === "idle" && (
                 <p className="font-medium">請先選廠商</p>
               )}
               {isPending && fetchStatus === "fetching" && (
-                <div className="absolute inset-0 flex items-center justify-center">
+                <div
+                  className="absolute inset-0 flex h-full items-center justify-center"
+                  style={{ height: height - 42 }}
+                >
                   <Spinner />
                 </div>
               )}
@@ -173,6 +178,7 @@ export function CategoryMain({
                     openingDates={openingDates}
                     openingHours={openingHours}
                     siteDetailsHref={siteDetailsHref}
+                    siteDeleteHref={`/store/${type}/${section.id}`}
                   />
                 );
               })}
@@ -193,6 +199,7 @@ function Section({
   openingDates,
   openingHours,
   siteDetailsHref,
+  siteDeleteHref,
 }: {
   id: string;
   name: string;
@@ -210,7 +217,9 @@ function Section({
     fee: string;
   }[];
   siteDetailsHref: string;
+  siteDeleteHref: string;
 }) {
+  const queryClient = useQueryClient();
   const [img, setImg] = useState("");
 
   useEffect(() => {
@@ -224,7 +233,11 @@ function Section({
   return (
     <section className="flex gap-2.5 border border-line-gray bg-white p-4">
       {imgId ? (
-        <img src={img} className="mr-1.5 h-32 w-32 object-cover" />
+        !img ? (
+          <Skeleton className="mr-1.5 h-32 w-32 rounded-none bg-[#c1c1c1]" />
+        ) : (
+          <img src={img} className="mr-1.5 h-32 w-32 object-cover" />
+        )
       ) : (
         <div className="mr-1.5 h-32 w-32 bg-[#c1c1c1]" />
       )}
@@ -271,9 +284,20 @@ function Section({
         <Link to={`${siteDetailsHref}/${id}`}>
           <img src={pencilIcon} />
         </Link>
-        <button>
-          <img src={trashCanIcon} />
-        </button>
+        <Modal
+          dialogTriggerChildren={
+            <button>
+              <img src={trashCanIcon} />
+            </button>
+          }
+          title={`確認刪除${name}?`}
+          onSubmit={async () => {
+            await privateFetch(siteDeleteHref, {
+              method: "DELETE",
+            });
+            queryClient.invalidateQueries({ queryKey: ["sites-for-store"] });
+          }}
+        />
       </div>
     </section>
   );

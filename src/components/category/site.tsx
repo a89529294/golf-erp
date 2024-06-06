@@ -78,6 +78,7 @@ export function Site({
   onSubmit: (v: S[typeof type]) => void;
 }): React.ReactElement {
   const openingDateRangeRef = useRef<HTMLLIElement>(null);
+  const openingHoursRef = useRef<HTMLLIElement>(null);
   const venueSettingsRef = useRef<HTMLLIElement>(null);
   const form = useFormContext<S[typeof type]>();
 
@@ -91,6 +92,7 @@ export function Site({
           console.log(e);
           e.openingDates && openingDateRangeRef.current?.scrollIntoView();
           if ("venueSettings" in e) venueSettingsRef.current?.scrollIntoView();
+          if ("openingHours" in e) openingHoursRef.current?.scrollIntoView();
         },
       )}
       className="space-y-10 px-20"
@@ -249,8 +251,8 @@ export function Site({
             ),
           }}
           disabled={
-            formDisabled ||
-            form.getValues("venueSettings").some((v) => !v.saved)
+            formDisabled
+            // || form.getValues("weekday").some((v) => !v.saved)
           }
         >
           <WeekDayTabs
@@ -287,6 +289,7 @@ export function Site({
               {form.getValues("openingHours").map((hours) => {
                 return (
                   <TimeRangeRow
+                    myRef={openingHoursRef}
                     key={hours.id}
                     onRemove={() => onRemoveOpeningTimeRange(hours.id, form)}
                     onSave={(timeRange: TimeRange) =>
@@ -295,6 +298,12 @@ export function Site({
                     onEdit={() => onEditOpeningTimeRange(hours.id, form)}
                     data={hours}
                     disabled={formDisabled}
+                    errorMessage={
+                      (form as UseFormReturn<NewIndoorSimulator>).formState
+                        .errors.openingHours
+                        ? "請先儲存"
+                        : ""
+                    }
                   />
                 );
               })}
