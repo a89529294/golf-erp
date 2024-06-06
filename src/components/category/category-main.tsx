@@ -27,7 +27,13 @@ import {
 } from "@/utils/category/schemas";
 import { privateFetch } from "@/utils/utils";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Spinner } from "@/components/ui/spinner";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -71,13 +77,16 @@ export function CategoryMain({
   const ref = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState(0);
 
-  const onStoreValueChange = (storeId: string) => {
-    if (type === "ground")
-      navigate(`/driving-range/site-management/${storeId}`);
-    else if (type === "golf") navigate(`/golf/site-management/${storeId}`);
-    else if (type === "simulator")
-      navigate(`/indoor-simulator/site-management/${storeId}`);
-  };
+  const onStoreValueChange = useCallback(
+    (storeId: string) => {
+      if (type === "ground")
+        navigate(`/driving-range/site-management/${storeId}`);
+      else if (type === "golf") navigate(`/golf/site-management/${storeId}`);
+      else if (type === "simulator")
+        navigate(`/indoor-simulator/site-management/${storeId}`);
+    },
+    [navigate, type],
+  );
 
   useLayoutEffect(() => {
     const setHeightIfRef = () =>
@@ -89,6 +98,10 @@ export function CategoryMain({
     return () => window.removeEventListener("resize", setHeightIfRef);
   }, []);
 
+  useEffect(() => {
+    if (stores[0]) onStoreValueChange(stores[0].id);
+  }, [stores, onStoreValueChange]);
+
   return (
     <MainLayout
       headerChildren={
@@ -98,7 +111,7 @@ export function CategoryMain({
             新增場地
           </Link>
           <SearchInput value={globalFilter} setValue={setGlobalFilter} />
-          <Select onValueChange={onStoreValueChange} defaultValue={storeId}>
+          <Select value={storeId} onValueChange={onStoreValueChange}>
             <SelectTrigger className="h-11 w-[280px] rounded-none border-0 border-b border-secondary-dark">
               <SelectValue placeholder="選擇廠商" />
             </SelectTrigger>

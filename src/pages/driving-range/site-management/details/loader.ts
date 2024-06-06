@@ -5,6 +5,7 @@ import { LoaderFunctionArgs } from "react-router-dom";
 import { z } from "zod";
 import { groundStoresQuery } from "../loader";
 import { privateFetch } from "@/utils/utils";
+import { equipments } from "@/utils/category/equipment";
 
 const baseOpenDay = z.object({
   startDay: z.coerce.date(),
@@ -78,7 +79,7 @@ export const genDrivingRangeDetailsQuery = (
         end: v.endDay,
       })),
       costPerBox: parsed.ballPrice,
-      equipments: [],
+      equipments: equipments,
       imageFiles: (await fromImageIdsToSrc(parsed.coverImages)).map(
         (src, idx) => ({
           id: parsed.coverImages[idx],

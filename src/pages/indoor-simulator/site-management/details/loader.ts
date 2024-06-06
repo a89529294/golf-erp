@@ -5,6 +5,7 @@ import { privateFetch } from "@/utils/utils";
 import { LoaderFunctionArgs } from "react-router-dom";
 import { z } from "zod";
 import { indoorSimulatorStoresQuery } from "../loader";
+import { equipments } from "@/utils/category/equipment";
 
 const baseOpenDay = z.object({
   startDay: z.coerce.date(),
@@ -71,7 +72,7 @@ export const genSimulatorDetailsQuery = (storeId: string, siteId: string) => ({
         start: v.startDay,
         end: v.endDay,
       })),
-      equipments: [],
+      equipments: equipments,
       imageFiles: (await fromImageIdsToSrc(parsed.coverImages)).map(
         (src, idx) => ({
           id: parsed.coverImages[idx],

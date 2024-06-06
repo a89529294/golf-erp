@@ -81,7 +81,7 @@ export function Site({
   const openingHoursRef = useRef<HTMLLIElement>(null);
   const venueSettingsRef = useRef<HTMLLIElement>(null);
   const form = useFormContext<S[typeof type]>();
-
+  console.log(form.getValues("equipments"));
   return (
     <form
       onSubmit={form.handleSubmit(
@@ -155,7 +155,6 @@ export function Site({
           })}
         </div>
       </Section>
-
       <Section
         title="場地圖片"
         subTitle="(圖片上限10張)"
@@ -194,7 +193,6 @@ export function Site({
           <p className="py-2.5">尚未新增圖片</p>
         )}
       </Section>
-
       <Section
         title="場地開放日期"
         inputButton={{
@@ -236,7 +234,6 @@ export function Site({
           <p className="py-2.5">尚未新增開放日期</p>
         )}
       </Section>
-
       {type === "golf" && (
         <Section
           title="場地開放時間"
@@ -266,7 +263,6 @@ export function Site({
           />
         </Section>
       )}
-
       {type === "indoor-simulator" && (
         <Section
           title="場地開放時間"
@@ -313,7 +309,6 @@ export function Site({
           )}
         </Section>
       )}
-
       {(type === "driving-range" || type === "existing-driving-range") && (
         <>
           <Section
