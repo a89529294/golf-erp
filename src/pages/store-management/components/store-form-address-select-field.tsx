@@ -38,13 +38,13 @@ export function StoreFormAddressSelectFields({
   disabled: boolean;
 }) {
   return (
-    <div className="grid grid-cols-[270px_186px] gap-3">
+    <div className="grid grid-cols-[270fr_186fr] gap-3">
       <FormField
         control={form.control}
         name={names[0]}
         render={({ field }) => (
-          <FormItem className="grid grid-cols-[auto_auto] items-baseline gap-y-1">
-            <FormLabel className="w-16">{label}</FormLabel>
+          <FormItem className="grid grid-cols-[auto_1fr] items-baseline gap-y-1">
+            <FormLabel className="w-20">{label}</FormLabel>
             <Select
               disabled={disabled}
               onValueChange={(v) => {
@@ -63,7 +63,7 @@ export function StoreFormAddressSelectFields({
                   <SelectValue placeholder="選擇縣市" />
                 </SelectTrigger>
               </FormControl>
-              <SelectContent>
+              <SelectContent className="max-h-72">
                 {counties.map(({ countycode, countyname }) => (
                   <SelectItem value={countycode} key={countycode}>
                     {countyname}
@@ -103,7 +103,7 @@ export function StoreFormAddressSelectFields({
                     />
                   </SelectTrigger>
                 </FormControl>
-                <SelectContent>
+                <SelectContent className="max-h-72">
                   {districts?.map(({ townname }) => (
                     <SelectItem value={townname} key={townname}>
                       {townname}
@@ -122,8 +122,8 @@ export function StoreFormAddressSelectFields({
         name={names[2]}
         render={({ field }) => (
           <FormItem className="flex flex-col gap-1 ">
-            <div className="flex items-baseline gap-5">
-              <div className="w-14" />
+            <div className="flex items-baseline ">
+              <div className="w-20" />
               <FormControl>
                 <Input
                   className={cn(

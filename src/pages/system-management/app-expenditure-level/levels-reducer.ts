@@ -22,6 +22,13 @@ export type Level = {
 
 export type Action =
   | {
+      type: "update-can-appoint-days";
+      payload: {
+        levelId: string;
+        value: string;
+      };
+    }
+  | {
       type: "update-min-consumption";
       payload: {
         levelId: string;
@@ -102,10 +109,26 @@ export type Action =
 export const levelsReducer = (state: Level[], action: Action) => {
   const { type, payload } = action;
   switch (type) {
+    case "update-can-appoint-days": {
+      const numericValue = Number(payload.value);
+      if (Number.isNaN(numericValue) || numericValue < 0) return state;
+
+      return state.map((prevLevel) =>
+        prevLevel.id === action.payload.levelId
+          ? {
+              ...prevLevel,
+              canAppointDays: numericValue,
+            }
+          : prevLevel,
+      );
+    }
     case "update-max-consumption":
     case "update-min-consumption": {
       const numericValue = Number(payload.value);
+      console.log(numericValue);
       if (Number.isNaN(numericValue) || numericValue < 0) return state;
+
+      console.log(numericValue);
 
       const isMinConsumption = action.type === "update-min-consumption";
 

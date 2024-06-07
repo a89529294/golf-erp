@@ -54,7 +54,7 @@ export function StoreForm({
         })}
         className="flex flex-col items-center pt-12"
       >
-        <section className="flex w-fit flex-col gap-6 border border-line-gray px-12 pb-10">
+        <section className="flex flex-col gap-6 px-12 pb-10 border w-fit border-line-gray">
           <div className="-mx-12 mb-4 bg-light-gray py-1.5 text-center text-black">
             基本資料
           </div>
@@ -75,23 +75,22 @@ export function StoreForm({
               control={form.control}
               name="openingHoursStart"
               render={({ field }) => (
-                <FormItem className="flex flex-col gap-1">
-                  <div className="flex items-baseline gap-5">
-                    <FormLabel className="w-16">營業時間</FormLabel>
-                    <FormControl>
-                      <Input
-                        className={cn(
-                          "h-7 w-48 rounded-none border-0 border-b border-b-secondary-dark p-1 focus-visible:border-b-[1.5px] focus-visible:border-b-orange",
-                          field.value && "border-b-orange",
-                        )}
-                        placeholder={`請輸入起始營業時間`}
-                        type="time"
-                        {...field}
-                        disabled={isInputDisabled}
-                      />
-                    </FormControl>
-                  </div>
-                  <FormMessage />
+                <FormItem className="grid grid-cols-[auto_auto] items-baseline gap-y-1">
+                  <FormLabel className="w-20">營業時間</FormLabel>
+                  <FormControl>
+                    <Input
+                      className={cn(
+                        "h-7 w-48 rounded-none border-0 border-b border-b-secondary-dark p-1 focus-visible:border-b-[1.5px] focus-visible:border-b-orange",
+                        field.value && "border-b-orange",
+                      )}
+                      placeholder={`請輸入起始營業時間`}
+                      type="time"
+                      {...field}
+                      disabled={isInputDisabled}
+                    />
+                  </FormControl>
+
+                  <FormMessage className="col-start-2" />
                 </FormItem>
               )}
             />
@@ -124,22 +123,21 @@ export function StoreForm({
               control={form.control}
               name="phoneAreaCode"
               render={({ field }) => (
-                <FormItem className="flex flex-col gap-1">
-                  <div className="flex items-baseline gap-5">
-                    <FormLabel className="w-16">市話</FormLabel>
-                    <FormControl>
-                      <Input
-                        className={cn(
-                          "h-7 w-12 rounded-none border-0 border-b border-b-secondary-dark p-1 focus-visible:border-b-[1.5px] focus-visible:border-b-orange",
-                          field.value && "border-b-orange",
-                        )}
-                        placeholder={`02`}
-                        {...field}
-                        disabled={isInputDisabled}
-                      />
-                    </FormControl>
-                  </div>
-                  <FormMessage />
+                <FormItem className="grid grid-cols-[auto_auto] items-baseline gap-y-1">
+                  <FormLabel className="w-20">市話</FormLabel>
+                  <FormControl>
+                    <Input
+                      className={cn(
+                        "h-7 w-14 rounded-none border-0 border-b border-b-secondary-dark p-1 focus-visible:border-b-[1.5px] focus-visible:border-b-orange",
+                        field.value && "border-b-orange",
+                      )}
+                      placeholder={`02`}
+                      {...field}
+                      disabled={isInputDisabled}
+                    />
+                  </FormControl>
+
+                  <FormMessage className="col-start-2" />
                 </FormItem>
               )}
             />
@@ -147,7 +145,7 @@ export function StoreForm({
               control={form.control}
               name="phone"
               render={({ field }) => (
-                <FormItem className="ml-4 flex flex-col gap-1">
+                <FormItem className="flex flex-col gap-1 ml-4">
                   <FormControl>
                     <Input
                       className={cn(
@@ -201,7 +199,7 @@ export function StoreForm({
             disabled={isInputDisabled}
           />
         </section>
-        <section className="flex w-fit flex-col gap-6 border border-line-gray px-12 pb-10">
+        <section className="flex flex-col gap-6 px-12 pb-10 border w-fit border-line-gray">
           <div className="-mx-12 mb-4 bg-light-gray py-1.5 text-center text-black">
             系統管理
           </div>

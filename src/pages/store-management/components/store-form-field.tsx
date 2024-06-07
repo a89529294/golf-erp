@@ -29,12 +29,12 @@ export function StoreFormField({
       control={form.control}
       name={name}
       render={({ field }) => (
-        <FormItem className="grid grid-cols-[1fr_auto] items-baseline gap-y-1">
-          <FormLabel className="w-16">{label}</FormLabel>
+        <FormItem className="grid grid-cols-[auto_1fr] items-baseline gap-y-1">
+          <FormLabel className="w-20">{label}</FormLabel>
           <FormControl>
             <Input
               className={cn(
-                "h-7 w-96 rounded-none border-0 border-b border-b-secondary-dark p-1 focus-visible:border-b-[1.5px] focus-visible:border-b-orange",
+                "h-7  rounded-none border-0 border-b border-b-secondary-dark p-1 focus-visible:border-b-[1.5px] focus-visible:border-b-orange",
                 field.value && "border-b-orange",
               )}
               placeholder={`請輸入${label}`}

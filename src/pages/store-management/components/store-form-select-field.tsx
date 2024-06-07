@@ -35,8 +35,8 @@ export function StoreFormSelectField({
       name={name}
       render={({ field }) => (
         <FormItem className="flex flex-col gap-1">
-          <div className="flex items-baseline gap-5">
-            <FormLabel className="w-16">{label}</FormLabel>
+          <div className="flex items-baseline ">
+            <FormLabel className="w-20">{label}</FormLabel>
             <Select
               disabled={disabled}
               onValueChange={field.onChange}

@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { ComponentProps, RefObject } from "react";
 
 type NumberInputProps = ComponentProps<"input"> & {
-  myRef: RefObject<HTMLInputElement>;
+  myRef?: RefObject<HTMLInputElement>;
 };
 
 export function NumberInput({
@@ -20,7 +20,7 @@ export function NumberInput({
         className,
       )}
       ref={myRef}
-      value={new Intl.NumberFormat().format(value ? +value : 0)}
+      value={value}
       {...props}
     />
   );

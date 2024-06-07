@@ -7,7 +7,7 @@ export const formSchema = z
     category: z.enum(storeCategories),
     openingHoursStart: z.string().min(1, { message: "請輸入營業時間" }),
     openingHoursEnd: z.string().min(1, { message: "請輸入營業時間" }),
-    phoneAreaCode: z.string().trim().length(2, { message: "請填入區域碼" }),
+    phoneAreaCode: z.string().trim().length(2, { message: "區域碼" }),
     phone: z.string().trim().min(1, { message: "請填入電話" }),
     contact: z.string().trim().min(1, { message: "請填入聯絡人姓名" }),
     contactPhone: z.string().trim().min(1, { message: "請填入聯絡人電話" }),

@@ -32,10 +32,10 @@ export function Component() {
     ...storesQuery,
     initialData,
   });
-  const { mutate: deleteStore, isPending } = useMutation({
+  const { mutateAsync: deleteStore, isPending } = useMutation({
     mutationKey: ["delete-stores"],
     mutationFn: async () => {
-      await Promise.all(
+      return await Promise.all(
         Object.keys(rowSelection).map((id) =>
           privateFetch(`/store/${id}`, {
             method: "DELETE",
@@ -48,6 +48,7 @@ export function Component() {
         queryKey: ["stores"],
       });
       toast.success("刪除廠商成功");
+      setRowSelection({});
     },
     onError: () => toast.error("刪除廠商失敗"),
   });
@@ -100,9 +101,9 @@ export function Component() {
         </>
       }
     >
-      <div className="flex w-full flex-col border border-line-gray bg-light-gray p-1">
+      <div className="flex flex-col w-full p-1 border border-line-gray bg-light-gray">
         <nav>
-          <ul className="isolate flex items-center gap-3 py-2 pl-5">
+          <ul className="flex items-center gap-3 py-2 pl-5 isolate">
             {Object.entries(storeCategoryWithAllMap).map(([key, value]) => (
               <li key={key}>
                 <Link
@@ -113,7 +114,7 @@ export function Component() {
                 >
                   {category === key && (
                     <motion.div
-                      className="absolute inset-0 z-10 rounded-full bg-black"
+                      className="absolute inset-0 z-10 bg-black rounded-full"
                       layoutId="category-tab"
                       transition={{
                         duration: 0.3,
