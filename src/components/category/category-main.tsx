@@ -98,8 +98,9 @@ export function CategoryMain({
   }, []);
 
   useEffect(() => {
+    if (storeId) return;
     if (stores[0]) onStoreValueChange(stores[0].id);
-  }, [stores, onStoreValueChange]);
+  }, [stores, onStoreValueChange, storeId]);
 
   return (
     <MainLayout
@@ -181,6 +182,7 @@ export function CategoryMain({
 
                 return (
                   <Section
+                    type={type}
                     key={section.id}
                     id={section.id}
                     imgId={section.coverImages[0]}
@@ -211,6 +213,7 @@ export function CategoryMain({
 
 function Section({
   id,
+  type,
   name,
   imgId,
   desc,
@@ -221,6 +224,7 @@ function Section({
   siteDeleteHref,
 }: {
   id: string;
+  type: "golf" | "ground" | "simulator";
   name: string;
   imgId: string | undefined;
   desc: string;
@@ -296,9 +300,12 @@ function Section({
       />
 
       <div className="flex flex-col self-start gap-4">
-        <Link to={`${siteDetailsHref}/${id}`}>
-          <img src={pencilIcon} />
-        </Link>
+        {/* TODO remove the check once golf is working  */}
+        {type !== "golf" && (
+          <Link to={`${siteDetailsHref}/${id}`}>
+            <img src={pencilIcon} />
+          </Link>
+        )}
         <Modal
           dialogTriggerChildren={
             <button>

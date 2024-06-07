@@ -1,5 +1,5 @@
 import { Site } from "@/components/category/site";
-import { IconButton } from "@/components/ui/button";
+import { IconButton, IconWarningButton } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { MainLayout } from "@/layouts/main-layout";
 import { filterObject } from "@/utils";
@@ -18,6 +18,7 @@ import {
   loader,
   type DrivingRangePATCH,
 } from "./loader";
+import { Modal } from "@/components/modal";
 
 export function Component() {
   const queryClient = useQueryClient();
@@ -162,6 +163,19 @@ export function Component() {
       setFormDisabled(true);
     },
   });
+  const { mutateAsync: deleteSite } = useMutation({
+    mutationKey: ["delete-ground-site"],
+    mutationFn: async () => {
+      return privateFetch(`/store/ground/${siteId}`, { method: "DELETE" });
+    },
+    onSuccess: () => {
+      navigate(`/driving-range/site-management/${storeId}`);
+      toast.success("刪除成功");
+    },
+    onError() {
+      toast.error("刪除失敗");
+    },
+  });
 
   useEffect(() => {
     form.reset(data);
@@ -177,6 +191,13 @@ export function Component() {
           <IconButton icon="back" onClick={() => navigate(-1)}>
             返回
           </IconButton>
+          <Modal
+            dialogTriggerChildren={
+              <IconWarningButton icon="trashCan">刪除</IconWarningButton>
+            }
+            title={`確認刪除${form.getValues("name")}`}
+            onSubmit={deleteSite}
+          ></Modal>
 
           {formDisabled ? (
             <IconButton

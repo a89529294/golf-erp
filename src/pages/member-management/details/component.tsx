@@ -131,6 +131,7 @@ export function Component() {
         form={form}
         disabled={disabled || isPending}
         onSubmit={onSubmit}
+        coin={data.coin}
       />
     </MainLayout>
   );

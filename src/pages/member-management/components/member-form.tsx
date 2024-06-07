@@ -25,10 +25,12 @@ export function MemberForm({
   form,
   onSubmit,
   disabled,
+  coin,
 }: {
   form: UseFormReturn<z.infer<typeof memberFormSchema>>;
   onSubmit: (values: z.infer<typeof memberFormSchema>) => void;
   disabled: boolean;
+  coin: number;
 }) {
   const memberTypeRef = useRef<HTMLButtonElement>(null);
   const genderRef = useRef<HTMLButtonElement>(null);
@@ -136,9 +138,9 @@ export function MemberForm({
 
           <div className="flex justify-center py-3 bg-secondary-dark">
             <div className="flex gap-36">
-              <AmountCell label="累積消費金額" amount={200000} />
-              <AmountCell label="消費儲值金額" amount={200000} />
-              <AmountCell label="剩餘消費金額" amount={200000} />
+              <AmountCell label="累積消費金額" amount={coin} />
+              <AmountCell label="消費儲值金額" amount={0} />
+              <AmountCell label="剩餘消費金額" amount={0} />
             </div>
           </div>
         </form>

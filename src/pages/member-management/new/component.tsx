@@ -102,7 +102,12 @@ export function Component() {
         </>
       }
     >
-      <MemberForm form={form} disabled={isPending} onSubmit={onSubmit} />
+      <MemberForm
+        coin={0}
+        form={form}
+        disabled={isPending}
+        onSubmit={onSubmit}
+      />
     </MainLayout>
   );
 }
