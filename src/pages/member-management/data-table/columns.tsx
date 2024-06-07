@@ -20,7 +20,7 @@ export const columns = [
     size: 9.2,
   }),
   columnHelper.accessor("account", {
-    header: "會員卡號",
+    header: "帳號",
     cell: (props) => props.getValue(),
     size: 10.5,
   }),
