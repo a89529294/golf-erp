@@ -22,7 +22,7 @@ export const memberSchema = z.object({
   chName: z.string(),
   phone: z.string(),
   gender: genderSchema,
-  birthday: z.string(),
+  birthday: z.string().nullable(),
   coin: z.number(),
 });
 

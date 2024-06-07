@@ -28,9 +28,9 @@ export function Component() {
       site: "測試球場",
       date: new Date(),
       fee: "100",
-      county: "台北市",
-      district: "信義區",
-      address: "11223",
+      county: "",
+      district: "",
+      address: "",
       headcount: "5",
     },
   });
@@ -77,7 +77,7 @@ export function Component() {
         </>
       }
     >
-      <div className="mb-1 flex w-full flex-col border border-line-gray p-1">
+      <div className="flex flex-col w-full p-1 mb-1 border border-line-gray">
         <header className="mb-12 bg-light-gray py-2.5 text-center text-black">
           編輯邀約
         </header>
@@ -90,7 +90,7 @@ export function Component() {
             <header className="bg-light-gray py-2.5 text-center text-black">
               邀約資料
             </header>
-            <div className="flex-1 space-y-7 px-12 py-10">
+            <div className="flex-1 px-12 py-10 space-y-7">
               <TextFormField
                 name="title"
                 label="標題"
@@ -112,7 +112,7 @@ export function Component() {
               <div className="grid grid-cols-[1fr_415px] items-baseline">
                 <label>參與人員</label>
                 <div className="flex items-center gap-2">
-                  <div className="grid size-10 place-items-center rounded-full border border-line-gray bg-light-gray">
+                  <div className="grid border rounded-full size-10 place-items-center border-line-gray bg-light-gray">
                     <img className="" src={pfp} />
                   </div>
                   <UnderscoredInput

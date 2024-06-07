@@ -34,14 +34,14 @@ export function MemberForm({
   const genderRef = useRef<HTMLButtonElement>(null);
 
   return (
-    <div className="w-full border border-line-gray bg-light-gray p-5">
+    <div className="w-full p-5 border border-line-gray bg-light-gray">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit, (e) => console.log(e))}
           id="member-form"
-          className="space-y-4 border border-line-gray p-1"
+          className="p-1 space-y-4 border border-line-gray"
         >
-          <div className="grid grid-cols-[152fr_110fr_110fr_110fr_110fr_80fr_120fr_152fr] gap-x-10 pt-2.5">
+          <div className="grid grid-cols-[152fr_110fr_110fr_110fr_110fr_80fr_140fr_152fr] gap-x-10 pt-2.5">
             <Cell withBottomBorder withGapBorder />
             <Cell htmlFor="cardNumber" withBottomBorder withGapBorder>
               會員卡號
@@ -134,7 +134,7 @@ export function MemberForm({
             <Cell />
           </div>
 
-          <div className="flex justify-center bg-secondary-dark py-3">
+          <div className="flex justify-center py-3 bg-secondary-dark">
             <div className="flex gap-36">
               <AmountCell label="累積消費金額" amount={200000} />
               <AmountCell label="消費儲值金額" amount={200000} />
@@ -217,7 +217,7 @@ function FormSelect({
             <FormControl>
               <SelectTrigger
                 ref={myRef}
-                className="rounded-none border-0 border-b border-secondary-dark bg-transparent px-1 pb-1"
+                className="px-1 pb-1 bg-transparent border-0 border-b rounded-none border-secondary-dark"
                 disabled={disabled}
               >
                 <SelectValue />

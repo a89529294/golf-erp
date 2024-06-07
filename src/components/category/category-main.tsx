@@ -11,6 +11,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Spinner } from "@/components/ui/spinner";
 import { MainLayout } from "@/layouts/main-layout";
 import { cn } from "@/lib/utils";
 import { StoreWithoutEmployees } from "@/pages/store-management/loader";
@@ -19,7 +21,6 @@ import {
   getDifferenceInHoursAndMinutes,
   toMinguoDate,
 } from "@/utils";
-import { equipments } from "@/utils/category/equipment";
 import {
   golfSitesSchema,
   groundSitesSchema,
@@ -35,8 +36,6 @@ import {
   useState,
 } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { Spinner } from "@/components/ui/spinner";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Modal } from "../modal";
 
 export function CategoryMain({
@@ -128,7 +127,7 @@ export function CategoryMain({
     >
       <div className="w-full flex-1 pb-2.5" ref={ref}>
         <ScrollArea
-          className="w-full overflow-auto border border-line-gray bg-light-gray p-5"
+          className="w-full p-5 overflow-auto border border-line-gray bg-light-gray"
           style={{ height: height }}
         >
           {height && (
@@ -138,7 +137,7 @@ export function CategoryMain({
               )}
               {isPending && fetchStatus === "fetching" && (
                 <div
-                  className="absolute inset-0 flex h-full items-center justify-center"
+                  className="absolute inset-0 flex items-center justify-center h-full"
                   style={{ height: height - 42 }}
                 >
                   <Spinner />
@@ -187,7 +186,14 @@ export function CategoryMain({
                     imgId={section.coverImages[0]}
                     name={section.name}
                     desc={section.introduce}
-                    equipments={equipments.slice(0, 5)}
+                    equipments={(
+                      JSON.parse(section.equipment ?? "[]") as {
+                        name: string;
+                        isActive: boolean;
+                      }[]
+                    )
+                      .filter((e) => e.isActive)
+                      .map((e) => e.name)}
                     openingDates={openingDates}
                     openingHours={openingHours}
                     siteDetailsHref={siteDetailsHref}
@@ -218,11 +224,7 @@ function Section({
   name: string;
   imgId: string | undefined;
   desc: string;
-  equipments: {
-    id: string;
-    label: string;
-    selected: boolean;
-  }[];
+  equipments: string[];
   openingDates: Readonly<[string, string]>[];
   openingHours: {
     hours: string;
@@ -263,7 +265,7 @@ function Section({
       <MiddleSection
         header="場地設備"
         list={equipments}
-        liContentRenderer={(e) => <>{e.label}</>}
+        liContentRenderer={(e) => <>{e}</>}
         useOrderedList
       />
 
@@ -293,7 +295,7 @@ function Section({
         )}
       />
 
-      <div className="flex flex-col gap-4 self-start">
+      <div className="flex flex-col self-start gap-4">
         <Link to={`${siteDetailsHref}/${id}`}>
           <img src={pencilIcon} />
         </Link>

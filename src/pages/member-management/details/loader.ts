@@ -10,6 +10,14 @@ export const genMemberDetailsQuery = (id: string) => ({
 
     const inCompleteData = await response.json();
 
+    console.log(
+      memberSchema.safeParse({
+        ...inCompleteData,
+        isActive: true,
+        cardNumber: "123321",
+      }),
+    );
+
     const completeData = memberSchema.parse({
       ...inCompleteData,
       isActive: true,

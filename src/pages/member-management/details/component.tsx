@@ -8,11 +8,14 @@ import { useForm } from "react-hook-form";
 import { Link, useLoaderData, useParams } from "react-router-dom";
 import { z } from "zod";
 
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { MemberForm } from "../components/member-form";
 import { genMemberDetailsQuery, loader } from "./loader";
 import { memberFormSchema } from "../schemas";
+import { privateFetch } from "@/utils/utils";
+import { filterObject } from "@/utils";
+import { toast } from "sonner";
 
 export function Component() {
   const { id } = useParams();
@@ -31,7 +34,39 @@ export function Component() {
       chName: data.chName,
       phone: data.phone,
       gender: data.gender,
-      birthday: new Date(data.birthday),
+      birthday: data.birthday ? new Date(data.birthday) : "",
+    },
+  });
+  const queryClient = useQueryClient();
+  const { mutate, isPending } = useMutation({
+    mutationKey: ["patch-app-user"],
+    mutationFn: async () => {
+      const x = filterObject(
+        form.getValues(),
+        Object.keys(
+          form.formState.dirtyFields,
+        ) as (keyof typeof form.formState.dirtyFields)[],
+      );
+
+      return privateFetch(`/app-users/${id}`, {
+        method: "PATCH",
+        body: JSON.stringify({
+          ...x,
+          appUserType: x.memberType,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    },
+    onSuccess() {
+      toast.success("更新成功");
+      queryClient.invalidateQueries({
+        queryKey: ["members"],
+      });
+    },
+    onError() {
+      toast.error("更新失敗");
     },
   });
 
@@ -39,6 +74,8 @@ export function Component() {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log(values);
+
+    mutate();
   }
 
   return (
@@ -67,19 +104,34 @@ export function Component() {
             <IconButton
               icon="pencil"
               type="button"
-              onClick={() => setDisabled(false)}
+              onClick={(e) => {
+                e.preventDefault();
+                setDisabled(false);
+              }}
             >
               編輯
             </IconButton>
           ) : (
-            <IconButton icon="save" type="submit" form="member-form">
+            <IconButton
+              disabled={
+                Object.keys(form.formState.dirtyFields).length === 0 ||
+                isPending
+              }
+              icon="save"
+              type="submit"
+              form="member-form"
+            >
               儲存
             </IconButton>
           )}
         </>
       }
     >
-      <MemberForm form={form} disabled={disabled} onSubmit={onSubmit} />
+      <MemberForm
+        form={form}
+        disabled={disabled || isPending}
+        onSubmit={onSubmit}
+      />
     </MainLayout>
   );
 }

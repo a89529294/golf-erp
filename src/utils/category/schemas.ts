@@ -196,6 +196,7 @@ const genericSitesSchema = z.object({
   name: z.string(),
   coverImages: z.array(z.string()),
   introduce: z.string(),
+  equipment: z.string().nullable(),
   openDays: z
     .array(
       z.object({

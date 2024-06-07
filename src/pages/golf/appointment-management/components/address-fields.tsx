@@ -54,6 +54,7 @@ function SelectField({
   });
 
   const currentCounty = form.watch("county");
+  console.log(currentCounty);
   const { data: districts } = useQuery({
     ...generateDistrictQuery(currentCounty),
     enabled: !!currentCounty,
@@ -69,7 +70,7 @@ function SelectField({
             <FormControl>
               <SelectTrigger
                 disabled={disabled}
-                className="h-full rounded-none border-0 border-b border-secondary-dark p-1"
+                className="h-full p-1 border-0 border-b rounded-none border-secondary-dark"
               >
                 <SelectValue placeholder={placeholder} />
               </SelectTrigger>
