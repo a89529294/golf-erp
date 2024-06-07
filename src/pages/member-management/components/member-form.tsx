@@ -43,7 +43,7 @@ export function MemberForm({
         >
           <div className="grid grid-cols-[152fr_110fr_110fr_110fr_110fr_80fr_140fr_152fr] gap-x-10 pt-2.5">
             <Cell withBottomBorder withGapBorder />
-            <Cell htmlFor="cardNumber" withBottomBorder withGapBorder>
+            <Cell htmlFor="account" withBottomBorder withGapBorder>
               會員卡號
             </Cell>
             <Cell
@@ -93,7 +93,7 @@ export function MemberForm({
             <Cell />
             <Cell>
               <UnderScoredFormInput
-                name="cardNumber"
+                name="account"
                 placeholder="會員卡號"
                 disabled={disabled}
               />

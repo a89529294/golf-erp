@@ -29,7 +29,7 @@ export function Component() {
   const form = useForm<z.infer<typeof memberFormSchema>>({
     resolver: zodResolver(memberFormSchema),
     defaultValues: {
-      cardNumber: data.cardNumber,
+      account: data.account,
       memberType: data.appUserType,
       chName: data.chName,
       phone: data.phone,

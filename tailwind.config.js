@@ -86,11 +86,18 @@ module.exports = {
           from: { opacity: 0 },
           to: { opacity: ".5 !important" },
         },
+        blink: {
+          "0%": { opacity: 1 },
+          "49%": { opacity: 1 },
+          "50%": { opacity: 0 },
+          "100%": { opacity: 0 },
+        },
       },
       animation: {
         "accordion-down": "accordion-down .3s ease-out",
         "accordion-up": "accordion-up .3s ease-out",
         "fade-half-in": "fade-half-in 10ms ease-out 100ms",
+        blink: "blink 1000ms linear infinite",
       },
     },
   },

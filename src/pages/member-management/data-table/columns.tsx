@@ -19,7 +19,7 @@ export const columns = [
     },
     size: 9.2,
   }),
-  columnHelper.accessor("cardNumber", {
+  columnHelper.accessor("account", {
     header: "會員卡號",
     cell: (props) => props.getValue(),
     size: 10.5,
@@ -60,7 +60,7 @@ export const columns = [
         return (
           <div className="flex gap-1">
             $
-            <div className="text-line-green font-medium">
+            <div className="font-medium text-line-green">
               {props.getValue()}
             </div>
           </div>

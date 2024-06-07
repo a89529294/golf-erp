@@ -1,3 +1,6 @@
+import greenFileIcon from "@/assets/green-file-icon.svg";
+import pencilIcon from "@/assets/pencil.svg";
+import redXIcon from "@/assets/red-x-icon.svg";
 import { NumberInput } from "@/components/number-input";
 import {
   IconShortButton,
@@ -5,7 +8,15 @@ import {
 } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MainLayout } from "@/layouts/main-layout";
-import { expenditureLevelQuery, loader } from "./loader";
+import { cn } from "@/lib/utils";
+import {
+  Action,
+  Level,
+  levelsReducer,
+} from "@/pages/system-management/app-expenditure-level/levels-reducer";
+import { StoreCategory, storeCategoryMap } from "@/utils";
+import { isUUIDV4, privateFetch } from "@/utils/utils";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Dispatch,
   useEffect,
@@ -15,20 +26,9 @@ import {
   useRef,
   useState,
 } from "react";
-import pencilIcon from "@/assets/pencil.svg";
-import greenFileIcon from "@/assets/green-file-icon.svg";
-import redXIcon from "@/assets/red-x-icon.svg";
-import { cn } from "@/lib/utils";
-import {
-  Action,
-  Level,
-  levelsReducer,
-} from "@/pages/system-management/app-expenditure-level/levels-reducer";
 import { useActionData } from "react-router-dom";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { StoreCategory, storeCategoryMap } from "@/utils";
-import { isUUIDV4, privateFetch } from "@/utils/utils";
 import { toast } from "sonner";
+import { expenditureLevelQuery, loader } from "./loader";
 
 export function Component() {
   const initialData = useActionData() as Awaited<ReturnType<typeof loader>>;
@@ -141,7 +141,7 @@ function Section({
           body: JSON.stringify({
             minConsumption: level.minConsumption,
             maxConsumption: level.maxConsumption,
-            canAppointDays: 10,
+            canAppointDays: level.canAppointDays,
             category,
           }),
           headers: {

@@ -125,12 +125,12 @@ export const levelsReducer = (state: Level[], action: Action) => {
     case "update-max-consumption":
     case "update-min-consumption": {
       const numericValue = Number(payload.value);
-      console.log(numericValue);
+
       if (Number.isNaN(numericValue) || numericValue < 0) return state;
 
-      console.log(numericValue);
-
       const isMinConsumption = action.type === "update-min-consumption";
+
+      console.log(payload.value);
 
       return state.map((prevLevel) =>
         prevLevel.id === action.payload.levelId
@@ -163,6 +163,7 @@ export const levelsReducer = (state: Level[], action: Action) => {
               ...prevLevel,
               minConsumption: prevLevel.snapshot?.minConsumption ?? "",
               maxConsumption: prevLevel.snapshot?.maxConsumption ?? "",
+              canAppointDays: prevLevel.snapshot?.canAppointDays ?? "",
               disabled: true,
             }
           : prevLevel,
@@ -175,6 +176,7 @@ export const levelsReducer = (state: Level[], action: Action) => {
               ...prevLevel,
               minConsumption: prevLevel.snapshot?.minConsumption ?? "",
               maxConsumption: prevLevel.snapshot?.maxConsumption ?? "",
+              canAppointDays: prevLevel.snapshot?.canAppointDays ?? "",
               disabled: false,
               saveToDb: false,
             } as Level)
@@ -212,7 +214,7 @@ export const levelsReducer = (state: Level[], action: Action) => {
         );
       }
 
-      if (foundLevel.minConsumption >= foundLevel.maxConsumption)
+      if (+foundLevel.minConsumption >= +foundLevel.maxConsumption)
         return state.map((prevLevel) =>
           prevLevel.id === action.payload.levelId
             ? {
@@ -285,12 +287,12 @@ export const levelsReducer = (state: Level[], action: Action) => {
         id: payload.levelId,
         minConsumption: newMinConsumption,
         maxConsumption: "",
-        canAppointDays: "",
+        canAppointDays: 10,
         errorState: null,
         snapshot: {
           minConsumption: newMinConsumption,
           maxConsumption: "",
-          canAppointDays: "",
+          canAppointDays: 10,
         },
         disabled: false,
         saveToDb: false,

@@ -20,7 +20,7 @@ export function Component() {
   const form = useForm<z.infer<typeof memberFormSchema>>({
     resolver: zodResolver(memberFormSchema),
     defaultValues: {
-      cardNumber: "",
+      account: "",
       memberType: "guest",
       chName: "",
       phone: "",
@@ -45,7 +45,7 @@ export function Component() {
           ...rest,
           ...(birthday && { birthday }),
           appUserType: variables.memberType,
-          account: variables.cardNumber,
+          account: variables.account,
         }),
       });
 

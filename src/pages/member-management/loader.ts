@@ -17,7 +17,7 @@ export const genderSchema = z.union([
 export const memberSchema = z.object({
   id: z.string(),
   isActive: z.boolean(),
-  cardNumber: z.string(),
+  account: z.string(),
   appUserType: memberTypeSchema,
   chName: z.string(),
   phone: z.string(),
@@ -56,7 +56,6 @@ export const membersQuery = {
     const completeData = (inCompleteData.data as Member[]).map((member) => ({
       ...member,
       isActive: true,
-      cardNumber: "123321",
     }));
 
     return completeData;

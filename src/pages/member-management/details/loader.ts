@@ -14,14 +14,12 @@ export const genMemberDetailsQuery = (id: string) => ({
       memberSchema.safeParse({
         ...inCompleteData,
         isActive: true,
-        cardNumber: "123321",
       }),
     );
 
     const completeData = memberSchema.parse({
       ...inCompleteData,
       isActive: true,
-      cardNumber: "123321",
     });
 
     return completeData;

@@ -60,3 +60,23 @@ export function filterObject<T extends object>(obj: T, predicate: (keyof T)[]) {
   });
   return result;
 }
+
+/**
+ * Parse a localized number to a float.
+ * @param {string} stringNumber - the localized number
+ * @param {string} locale - [optional] the locale that the number is represented in. Omit this parameter to use the current locale.
+ */
+export function parseLocaleNumber(stringNumber: string) {
+  const thousandSeparator = Intl.NumberFormat()
+    .format(11111)
+    .replace(/\p{Number}/gu, "");
+  const decimalSeparator = Intl.NumberFormat()
+    .format(1.1)
+    .replace(/\p{Number}/gu, "");
+
+  return parseFloat(
+    stringNumber
+      .replace(new RegExp("\\" + thousandSeparator, "g"), "")
+      .replace(new RegExp("\\" + decimalSeparator), "."),
+  );
+}
