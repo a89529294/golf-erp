@@ -122,6 +122,14 @@ export function Component() {
           body: formData,
         });
       }
+      if (changedValues["equipments"]) {
+        x.equipment = JSON.stringify(
+          changedValues.equipments.map((e) => ({
+            name: e.label,
+            isActive: e.selected,
+          })),
+        );
+      }
 
       await privateFetch(`/store/simulator/${siteId}`, {
         method: "PATCH",
@@ -179,7 +187,7 @@ export function Component() {
         </>
       }
     >
-      <div className="flex w-full flex-col gap-10 border border-line-gray bg-light-gray p-1">
+      <div className="flex flex-col w-full gap-10 p-1 border border-line-gray bg-light-gray">
         <h1 className="bg-mid-gray py-2.5 text-center text-black">
           {formDisabled ? "檢視場地資料" : "編輯場地資料"}
         </h1>

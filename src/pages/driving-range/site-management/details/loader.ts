@@ -71,6 +71,21 @@ export const genDrivingRangeDetailsQuery = (
       .data.find((v) => v.id === siteId);
 
     if (!parsed) throw new Error("driving range not found");
+
+    const transformedEquipments = (() => {
+      const parsedEquipments = parsed.equipment;
+      if (parsedEquipments) {
+        const x = JSON.parse(parsedEquipments) as {
+          name: string;
+          isActive: boolean;
+        }[];
+        return equipments.map((e) => ({
+          ...e,
+          selected: x.find((de) => de.name === e.label)?.isActive ?? false,
+        }));
+      }
+      return equipments;
+    })();
     return {
       name: parsed.name,
       description: parsed.introduce,
@@ -82,11 +97,7 @@ export const genDrivingRangeDetailsQuery = (
         end: v.endDay,
       })),
       costPerBox: parsed.ballPrice,
-      equipments: equipments.map((e) => ({
-        ...e,
-        selected: JSON.parse(parsed.equipment).find((de) => de.name === e.label)
-          .isActive,
-      })),
+      equipments: transformedEquipments,
       imageFiles: (await fromImageIdsToSrc(parsed.coverImages)).map(
         (src, idx) => ({
           id: parsed.coverImages[idx],

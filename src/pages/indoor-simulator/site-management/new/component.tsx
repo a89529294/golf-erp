@@ -42,6 +42,11 @@ export function Component() {
           name: form.getValues("name"),
           introduce: form.getValues("description"),
           storeId: form.getValues("storeId"),
+          equipment: JSON.stringify(
+            form
+              .getValues("equipments")
+              .map((e) => ({ name: e.label, isActive: e.selected })),
+          ),
           openDays: form.getValues("openingDates").map((v, i) => ({
             startDay: v.start,
             endDay: v.end,
@@ -93,18 +98,13 @@ export function Component() {
           >
             返回
           </IconButton>
-          <IconButton
-            disabled={isPending}
-            icon="save"
-            form="site-details"
-            onClick={() => {}}
-          >
+          <IconButton disabled={isPending} icon="save" form="site-details">
             儲存
           </IconButton>
         </>
       }
     >
-      <div className="flex w-full flex-col gap-10 border border-line-gray bg-light-gray p-1">
+      <div className="flex flex-col w-full gap-10 p-1 border border-line-gray bg-light-gray">
         <h1 className="bg-mid-gray py-2.5 text-center text-black">
           建立場地資料
         </h1>

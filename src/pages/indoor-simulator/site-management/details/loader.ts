@@ -24,6 +24,7 @@ const baseSimulatorSchema = z.object({
   id: z.string(),
   name: z.string(),
   introduce: z.string(),
+  equipment: z.string().nullable(),
 });
 
 export const simulatorGETSchema = z.object({
@@ -62,17 +63,33 @@ export const genSimulatorDetailsQuery = (storeId: string, siteId: string) => ({
       .data.find((v) => v.id === siteId);
 
     if (!parsed) throw new Error("driving range not found");
+
+    const transformedEquipments = (() => {
+      const parsedEquipments = parsed.equipment;
+      if (parsedEquipments) {
+        const x = JSON.parse(parsedEquipments) as {
+          name: string;
+          isActive: boolean;
+        }[];
+        return equipments.map((e) => ({
+          ...e,
+          selected: x.find((de) => de.name === e.label)?.isActive ?? false,
+        }));
+      }
+      return equipments;
+    })();
+
     return {
       name: parsed.name,
       description: parsed.introduce,
       storeId: parsed.store.id,
+      equipments: transformedEquipments,
       openingDates: parsed.openDays.map((v) => ({
         id: v.id,
         saved: true,
         start: v.startDay,
         end: v.endDay,
       })),
-      equipments: equipments,
       imageFiles: (await fromImageIdsToSrc(parsed.coverImages)).map(
         (src, idx) => ({
           id: parsed.coverImages[idx],
