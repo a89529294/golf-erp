@@ -80,3 +80,7 @@ export function parseLocaleNumber(stringNumber: string) {
       .replace(new RegExp("\\" + decimalSeparator), "."),
   );
 }
+
+export function toLocaleNumber(num: number) {
+  return new Intl.NumberFormat().format(num);
+}

@@ -1,11 +1,13 @@
+import { parseLocaleNumber, toLocaleNumber } from "@/utils";
+
 function assertNever(arg: never) {
   throw new Error(arg);
 }
 
 type Snapshot = {
-  minConsumption: number | "";
-  maxConsumption: number | "";
-  canAppointDays: number | "";
+  minConsumption: string;
+  maxConsumption: string;
+  canAppointDays: string;
 };
 
 export type Level = {
@@ -18,6 +20,7 @@ export type Level = {
   snapshot: Snapshot | null;
   saveToDb: "new" | "old" | false;
   toBeDeleted: boolean;
+  isNew?: boolean;
 } & Snapshot;
 
 export type Action =
@@ -46,6 +49,7 @@ export type Action =
       type: "update-edit-status-reset";
       payload: {
         levelId: string;
+        isNew: boolean;
       };
     }
   | {
@@ -110,34 +114,32 @@ export const levelsReducer = (state: Level[], action: Action) => {
   const { type, payload } = action;
   switch (type) {
     case "update-can-appoint-days": {
-      const numericValue = Number(payload.value);
+      const numericValue = parseLocaleNumber(payload.value);
       if (Number.isNaN(numericValue) || numericValue < 0) return state;
 
       return state.map((prevLevel) =>
         prevLevel.id === action.payload.levelId
           ? {
               ...prevLevel,
-              canAppointDays: numericValue,
+              canAppointDays: toLocaleNumber(numericValue),
             }
           : prevLevel,
       );
     }
     case "update-max-consumption":
     case "update-min-consumption": {
-      const numericValue = Number(payload.value);
+      const numericValue = parseLocaleNumber(payload.value);
 
       if (Number.isNaN(numericValue) || numericValue < 0) return state;
 
       const isMinConsumption = action.type === "update-min-consumption";
-
-      console.log(payload.value);
 
       return state.map((prevLevel) =>
         prevLevel.id === action.payload.levelId
           ? {
               ...prevLevel,
               [isMinConsumption ? "minConsumption" : "maxConsumption"]:
-                numericValue,
+                toLocaleNumber(numericValue),
             }
           : prevLevel,
       );
@@ -157,6 +159,8 @@ export const levelsReducer = (state: Level[], action: Action) => {
       );
     }
     case "update-edit-status-reset": {
+      if (payload.isNew) return state.filter((l) => !l.isNew);
+
       return state.map((prevLevel) =>
         prevLevel.id === action.payload.levelId
           ? {
@@ -214,7 +218,10 @@ export const levelsReducer = (state: Level[], action: Action) => {
         );
       }
 
-      if (+foundLevel.minConsumption >= +foundLevel.maxConsumption)
+      if (
+        parseLocaleNumber(foundLevel.minConsumption) >=
+        parseLocaleNumber(foundLevel.maxConsumption)
+      )
         return state.map((prevLevel) =>
           prevLevel.id === action.payload.levelId
             ? {
@@ -228,7 +235,8 @@ export const levelsReducer = (state: Level[], action: Action) => {
         );
       else if (
         foundLevelIndex > 0 &&
-        +state[foundLevelIndex - 1].maxConsumption >= +foundLevel.minConsumption
+        parseLocaleNumber(state[foundLevelIndex - 1].maxConsumption) >=
+          parseLocaleNumber(foundLevel.minConsumption)
       ) {
         return state.map((prevLevel) =>
           prevLevel.id === action.payload.levelId
@@ -243,7 +251,8 @@ export const levelsReducer = (state: Level[], action: Action) => {
         );
       } else if (
         foundLevelIndex < state.length - 1 &&
-        +foundLevel.maxConsumption >= +state[foundLevelIndex + 1].minConsumption
+        parseLocaleNumber(foundLevel.maxConsumption) >=
+          parseLocaleNumber(state[foundLevelIndex + 1].minConsumption)
       ) {
         return state.map((prevLevel) =>
           prevLevel.id === action.payload.levelId
@@ -278,25 +287,28 @@ export const levelsReducer = (state: Level[], action: Action) => {
     }
     case "add-new-level": {
       const prevLevel = state.at(-1);
-      let newMinConsumption: number | "" = "";
+      let newMinConsumption = "";
 
       if (prevLevel && prevLevel.maxConsumption)
-        newMinConsumption = prevLevel.maxConsumption + 1;
+        newMinConsumption = toLocaleNumber(
+          parseLocaleNumber(prevLevel.maxConsumption) + 1,
+        );
 
       const newLevel: Level = {
         id: payload.levelId,
         minConsumption: newMinConsumption,
         maxConsumption: "",
-        canAppointDays: 10,
+        canAppointDays: "10",
         errorState: null,
         snapshot: {
           minConsumption: newMinConsumption,
           maxConsumption: "",
-          canAppointDays: 10,
+          canAppointDays: "10",
         },
         disabled: false,
         saveToDb: false,
         toBeDeleted: false,
+        isNew: true,
       };
       return [...state, newLevel];
     }
@@ -308,6 +320,7 @@ export const levelsReducer = (state: Level[], action: Action) => {
               disabled: true,
               saveToDb: false,
               id: action.payload.newLevelId,
+              isNew: false,
             } satisfies Level)
           : prevLevel,
       );

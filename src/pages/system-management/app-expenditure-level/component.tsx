@@ -14,7 +14,7 @@ import {
   Level,
   levelsReducer,
 } from "@/pages/system-management/app-expenditure-level/levels-reducer";
-import { StoreCategory, storeCategoryMap } from "@/utils";
+import { StoreCategory, parseLocaleNumber, storeCategoryMap } from "@/utils";
 import { isUUIDV4, privateFetch } from "@/utils/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -42,6 +42,7 @@ export function Component() {
     ground: [],
     simulator: [],
   };
+
   data.forEach((level) => {
     const newLevel: Level = {
       ...level,
@@ -70,7 +71,7 @@ export function Component() {
 
   return (
     <MainLayout>
-      <div className="self-stretch w-full " ref={ref}>
+      <div className="w-full self-stretch " ref={ref}>
         <ScrollArea
           style={{ height: `${containerHeight - 10}px` }}
           className="mb-2.5 border border-line-gray bg-light-gray p-5"
@@ -126,9 +127,9 @@ function Section({
         await privateFetch(`/consumer-grade/${id}`, {
           method: "PATCH",
           body: JSON.stringify({
-            minConsumption: level.minConsumption,
-            maxConsumption: level.maxConsumption,
-            canAppointDays: level.canAppointDays,
+            minConsumption: parseLocaleNumber(level.minConsumption),
+            maxConsumption: parseLocaleNumber(level.maxConsumption),
+            canAppointDays: parseLocaleNumber(level.canAppointDays),
             category,
           }),
           headers: {
@@ -139,9 +140,9 @@ function Section({
         const response = await privateFetch("/consumer-grade", {
           method: "POST",
           body: JSON.stringify({
-            minConsumption: level.minConsumption,
-            maxConsumption: level.maxConsumption,
-            canAppointDays: level.canAppointDays,
+            minConsumption: parseLocaleNumber(level.minConsumption),
+            maxConsumption: parseLocaleNumber(level.maxConsumption),
+            canAppointDays: parseLocaleNumber(level.canAppointDays),
             category,
           }),
           headers: {
@@ -240,7 +241,7 @@ function Section({
         <label className="block px-6 py-5">
           <input
             type="checkbox"
-            className="hidden peer"
+            className="peer hidden"
             checked={
               selectedLevels.length === levels.length && levels.length !== 0
             }
@@ -347,7 +348,7 @@ function Li({
       <label className="block px-6 py-6">
         <input
           type="checkbox"
-          className="hidden peer"
+          className="peer hidden"
           checked={selected}
           onChange={() => toggleSelected(level.id)}
         />
@@ -369,7 +370,7 @@ function Li({
         id={formId}
       >
         消費級距
-        <div className="flex items-center isolate">
+        <div className="isolate flex items-center">
           <div className="relative">
             <NumberInput
               autoFocus={autoFocusMinConsumption}
@@ -396,13 +397,13 @@ function Li({
               )}
             />
             {level.errorState?.field === "minConsumption" && (
-              <p className="absolute bottom-0 text-sm text-red-600 translate-y-full whitespace-nowrap">
+              <p className="absolute bottom-0 translate-y-full whitespace-nowrap text-sm text-red-600">
                 {level.errorState?.msg}
               </p>
             )}
           </div>
 
-          <div className="relative z-10 w-4 h-px black-circles-before-after bg-secondary-dark"></div>
+          <div className="black-circles-before-after relative z-10 h-px w-4 bg-secondary-dark"></div>
 
           <div className="relative">
             <NumberInput
@@ -430,7 +431,7 @@ function Li({
               myRef={maxConsumptionRef}
             />
             {level.errorState?.field === "maxConsumption" && (
-              <p className="absolute bottom-0 text-sm text-red-600 translate-y-full whitespace-nowrap">
+              <p className="absolute bottom-0 translate-y-full whitespace-nowrap text-sm text-red-600">
                 {level.errorState?.msg}
               </p>
             )}
@@ -478,7 +479,7 @@ function Li({
       )}
 
       {!level.disabled && (
-        <div className="flex gap-4 ml-auto">
+        <div className="ml-auto flex gap-4">
           <button
             type="submit"
             form={formId}
@@ -491,7 +492,7 @@ function Li({
             onClick={() =>
               dispatch({
                 type: "update-edit-status-reset",
-                payload: { levelId: level.id },
+                payload: { levelId: level.id, isNew: level.isNew ?? false },
               })
             }
             disabled={!!level.saveToDb}

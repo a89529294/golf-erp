@@ -7,9 +7,15 @@ const responseSchema = z.object({
   data: z.array(
     z.object({
       id: z.string(),
-      minConsumption: z.number(),
-      maxConsumption: z.number(),
-      canAppointDays: z.number(),
+      minConsumption: z
+        .number()
+        .transform((v) => new Intl.NumberFormat().format(v ? +v : 0)),
+      maxConsumption: z
+        .number()
+        .transform((v) => new Intl.NumberFormat().format(v ? +v : 0)),
+      canAppointDays: z
+        .number()
+        .transform((v) => new Intl.NumberFormat().format(v ? +v : 0)),
       category: z.enum(storeCategories),
     }),
   ),
