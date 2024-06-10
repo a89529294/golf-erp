@@ -8,14 +8,17 @@ import { useForm } from "react-hook-form";
 import { Link, useLoaderData, useParams } from "react-router-dom";
 import { z } from "zod";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
-import { MemberForm } from "../components/member-form";
-import { genMemberDetailsQuery, loader } from "./loader";
-import { memberFormSchema } from "../schemas";
-import { privateFetch } from "@/utils/utils";
+import { GenericDataTable } from "@/components/generic-data-table";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { filterObject } from "@/utils";
+import { privateFetch } from "@/utils/utils";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useLayoutEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import { MemberForm } from "../components/member-form";
+import { memberFormSchema } from "../schemas";
+import { columns } from "./columns";
+import { genMemberDetailsQuery, loader } from "./loader";
 
 export function Component() {
   const { id } = useParams();
@@ -69,6 +72,23 @@ export function Component() {
       toast.error("更新失敗");
     },
   });
+  const ref = useRef<HTMLDivElement>(null);
+  const [height, setHeight] = useState(0);
+
+  useLayoutEffect(() => {
+    const refCurrent = ref.current;
+    if (!refCurrent) return;
+
+    const heightListener = () => {
+      setHeight(refCurrent.clientHeight);
+    };
+
+    heightListener();
+
+    ref.current.addEventListener("resize", heightListener);
+
+    return () => refCurrent.removeEventListener("resize", heightListener);
+  }, []);
 
   function onSubmit(values: z.infer<typeof memberFormSchema>) {
     // Do something with the form values.
@@ -127,12 +147,25 @@ export function Component() {
         </>
       }
     >
-      <MemberForm
-        form={form}
-        disabled={disabled || isPending}
-        onSubmit={onSubmit}
-        coin={data.coin}
-      />
+      <div className="mb-2.5 flex w-full flex-col gap-5 border border-line-gray bg-light-gray p-5">
+        <MemberForm
+          form={form}
+          disabled={disabled || isPending}
+          onSubmit={onSubmit}
+          coin={data.coin}
+        />
+        <button className="self-center">儲值紀錄</button>
+        <div className="grow" ref={ref}>
+          {!!height && (
+            <ScrollArea style={{ height }}>
+              <GenericDataTable
+                columns={columns}
+                data={data.appChargeHistories}
+              />
+            </ScrollArea>
+          )}
+        </div>
+      </div>
     </MainLayout>
   );
 }

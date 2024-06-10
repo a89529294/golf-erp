@@ -6,23 +6,13 @@ import { memberSchema } from "../loader";
 export const genMemberDetailsQuery = (id: string) => ({
   queryKey: ["members", id],
   queryFn: async () => {
-    const response = await privateFetch(`/app-users/${id}`);
-
-    const inCompleteData = await response.json();
-
-    console.log(
-      memberSchema.safeParse({
-        ...inCompleteData,
-        isActive: true,
-      }),
+    const response = await privateFetch(
+      `/app-users/${id}?populate=appChargeHistories`,
     );
 
-    const completeData = memberSchema.parse({
-      ...inCompleteData,
-      isActive: true,
-    });
+    const data = await response.json();
 
-    return completeData;
+    return memberSchema.parse(data);
   },
 });
 

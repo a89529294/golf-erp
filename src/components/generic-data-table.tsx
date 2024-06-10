@@ -27,10 +27,10 @@ declare module "@tanstack/react-table" {
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  rowSelection: Record<string, boolean>;
-  setRowSelection: Dispatch<SetStateAction<Record<string, boolean>>>;
-  globalFilter: string;
-  setGlobalFilter: Dispatch<SetStateAction<string>>;
+  rowSelection?: Record<string, boolean>;
+  setRowSelection?: Dispatch<SetStateAction<Record<string, boolean>>>;
+  globalFilter?: string;
+  setGlobalFilter?: Dispatch<SetStateAction<string>>;
 }
 
 const fuzzyFilter: FilterFn<unknown> = (row, columnId, value) => {
@@ -39,7 +39,7 @@ const fuzzyFilter: FilterFn<unknown> = (row, columnId, value) => {
     .includes(value.toLowerCase());
 };
 
-export function DataTable<TData extends { id: string }, TValue>({
+export function GenericDataTable<TData extends { id: string }, TValue>({
   columns,
   data,
   rowSelection,
@@ -53,6 +53,7 @@ export function DataTable<TData extends { id: string }, TValue>({
     filterFns: {
       fuzzy: fuzzyFilter, //define as a filter function that can be used in column definitions
     },
+    enableRowSelection: !!rowSelection,
     onGlobalFilterChange: setGlobalFilter,
     globalFilterFn: "fuzzy",
     getCoreRowModel: getCoreRowModel(),
@@ -67,7 +68,7 @@ export function DataTable<TData extends { id: string }, TValue>({
 
   return (
     <div className="mb-2.5 w-full border-y border-t-0 border-line-gray">
-      <Table className="relative isolate table-fixed">
+      <Table className="relative isolate ">
         <TableHeader className="relative z-10">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id} className="border-b-line-gray">
@@ -75,15 +76,9 @@ export function DataTable<TData extends { id: string }, TValue>({
                 return (
                   <TableHead
                     key={header.id}
-                    // height of header 80 plus gap 10
                     className={cn(
-                      "sticky top-[95px] bg-light-gray hover:bg-light-gray",
+                      "sticky top-0 bg-light-gray hover:bg-light-gray",
                     )}
-                    style={{
-                      width: header.column.columnDef.size
-                        ? `${header.column.columnDef.size}%`
-                        : "auto",
-                    }}
                   >
                     {header.isPlaceholder
                       ? null
@@ -103,7 +98,9 @@ export function DataTable<TData extends { id: string }, TValue>({
             table.getRowModel().rows.map((row) => (
               <TableRow
                 key={row.id}
-                data-state={row.getIsSelected() && "selected"}
+                data-state={
+                  row.getCanSelect() && row.getIsSelected() && "selected"
+                }
                 className="group relative border-b-line-gray bg-white data-[state=selected]:border-b-orange"
               >
                 {row.getVisibleCells().map((cell) => (

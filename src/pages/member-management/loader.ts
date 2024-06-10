@@ -1,3 +1,4 @@
+import { fromDateToDateTimeString } from "@/utils";
 import { queryClient } from "@/utils/query-client";
 import { privateFetch } from "@/utils/utils";
 import { z } from "zod";
@@ -24,14 +25,18 @@ export const memberSchema = z.object({
   gender: genderSchema,
   birthday: z.string().nullable(),
   coin: z.number(),
+  appChargeHistories: z.array(
+    z.object({
+      id: z.string(),
+      createdAt: z.coerce.date().transform((v) => fromDateToDateTimeString(v)),
+      amount: z.number(),
+    }),
+  ),
 });
-
-// const membersSchema = z.object({
-//     data:z.array(memberSchema)
-// })
 
 export type Member = z.infer<typeof memberSchema>;
 export type MemberType = Member["appUserType"];
+export type MemberAppChargeHistory = Member["appChargeHistories"][number];
 export type Gender = Member["gender"];
 
 export const memberTypeEnChMap: Record<MemberType, string> = {

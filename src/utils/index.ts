@@ -84,3 +84,7 @@ export function parseLocaleNumber(stringNumber: string) {
 export function toLocaleNumber(num: number) {
   return new Intl.NumberFormat().format(num);
 }
+
+export function fromDateToDateTimeString(d: Date) {
+  return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()} ${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`;
+}
