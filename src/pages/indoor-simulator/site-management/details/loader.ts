@@ -1,5 +1,5 @@
 import { fromImageIdsToSrc } from "@/utils";
-import { ExistingIndoorSimulator } from "@/utils/category/schemas";
+import { ExistingIndoorSimulator, plansSchema } from "@/utils/category/schemas";
 import { queryClient } from "@/utils/query-client";
 import { privateFetch } from "@/utils/utils";
 import { LoaderFunctionArgs } from "react-router-dom";
@@ -16,7 +16,6 @@ const baseOpenDay = z.object({
 const baseOpenTime = z.object({
   startTime: z.string(),
   endTime: z.string(),
-  pricePerHour: z.number(),
   sequence: z.number(),
 });
 
@@ -25,6 +24,7 @@ const baseSimulatorSchema = z.object({
   name: z.string(),
   introduce: z.string(),
   equipment: z.string().nullable(),
+  plans: plansSchema.plans.optional(),
 });
 
 export const simulatorGETSchema = z.object({
@@ -37,7 +37,7 @@ export const simulatorGETSchema = z.object({
   ),
 });
 
-export const simualtorPATCHSchema = baseSimulatorSchema
+export const simulatorPATCHSchema = baseSimulatorSchema
   .extend({
     openDays: z.array(baseOpenDay.extend({ id: z.string().optional() })),
   })
@@ -48,7 +48,7 @@ export const simualtorPATCHSchema = baseSimulatorSchema
 
 export type SimulatorGET = z.infer<typeof simulatorGETSchema>["data"][number];
 
-export type SimulatorPATCH = z.infer<typeof simualtorPATCHSchema>;
+export type SimulatorPATCH = z.infer<typeof simulatorPATCHSchema>;
 
 export const genSimulatorDetailsQuery = (storeId: string, siteId: string) => ({
   queryKey: ["simulator-details", storeId, siteId],
@@ -100,9 +100,9 @@ export const genSimulatorDetailsQuery = (storeId: string, siteId: string) => ({
         id: v.id,
         start: v.startTime.slice(11, 16),
         end: v.endTime.slice(11, 16),
-        fee: v.pricePerHour,
         saved: true,
       })),
+      plans: parsed.plans,
     };
   },
 });

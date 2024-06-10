@@ -89,6 +89,15 @@ body,
   height: 100%;
 }
 
+input::-internal-datetime-container {
+  width: 100%;
+}
+
+/* Hide clock when using input type time */
+input::-webkit-calendar-picker-indicator {
+  display: none;
+}
+
 /* Hide arrows in Chrome, Safari, Edge, and Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {

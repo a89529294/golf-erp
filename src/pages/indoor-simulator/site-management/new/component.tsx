@@ -31,6 +31,7 @@ export function Component() {
       imageFiles: [],
       openingDates: [],
       openingHours: [],
+      plans: [],
     },
   });
   const { mutate, isPending } = useMutation({
@@ -55,7 +56,12 @@ export function Component() {
           openTimes: form.getValues("openingHours").map((v, i) => ({
             startTime: `${new Date().toISOString().slice(0, 10)}T${v.start}`,
             endTime: `${new Date().toISOString().slice(0, 10)}T${v.end}`,
-            pricePerHour: v.fee,
+            sequence: i + 1,
+          })),
+          plans: form.getValues("plans")?.map((v, i) => ({
+            title: v.title,
+            hours: v.hours,
+            price: v.price,
             sequence: i + 1,
           })),
         }),
@@ -104,7 +110,7 @@ export function Component() {
         </>
       }
     >
-      <div className="flex flex-col w-full gap-10 p-1 border border-line-gray bg-light-gray">
+      <div className="flex w-full flex-col gap-10 border border-line-gray bg-light-gray p-1">
         <h1 className="bg-mid-gray py-2.5 text-center text-black">
           建立場地資料
         </h1>
