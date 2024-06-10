@@ -128,7 +128,7 @@ export function CategoryMain({
     >
       <div className="w-full flex-1 pb-2.5" ref={ref}>
         <ScrollArea
-          className="w-full p-5 overflow-auto border border-line-gray bg-light-gray"
+          className="w-full overflow-auto border border-line-gray bg-light-gray p-5"
           style={{ height: height }}
         >
           {height && (
@@ -138,7 +138,7 @@ export function CategoryMain({
               )}
               {isPending && fetchStatus === "fetching" && (
                 <div
-                  className="absolute inset-0 flex items-center justify-center h-full"
+                  className="absolute inset-0 flex h-full items-center justify-center"
                   style={{ height: height - 42 }}
                 >
                   <Spinner />
@@ -250,7 +250,7 @@ function Section({
   }, [imgId]);
 
   return (
-    <section className="flex gap-2.5 border border-line-gray bg-white p-4">
+    <section className="grid grid-cols-[128px_1fr_120px_192px_305px_20px] gap-x-2.5 border border-line-gray bg-white p-4">
       {imgId ? (
         !img ? (
           <Skeleton className="mr-1.5 h-32 w-32 rounded-none bg-[#c1c1c1]" />
@@ -299,7 +299,7 @@ function Section({
         )}
       />
 
-      <div className="flex flex-col self-start gap-4">
+      <div className="flex flex-col gap-4 self-start">
         {/* TODO remove the check once golf is working  */}
         {type !== "golf" && (
           <Link to={`${siteDetailsHref}/${id}`}>
@@ -338,7 +338,7 @@ function MiddleSection<T>({
 }) {
   const As = useOrderedList ? "ol" : "ul";
   return (
-    <div className="w-min basis-0 whitespace-nowrap bg-light-gray px-4 pb-5 pt-2.5">
+    <div className="flex flex-col items-center whitespace-nowrap bg-light-gray pb-5 pt-2.5">
       <h2 className="text-lg font-semibold text-word-darker-gray">{header}</h2>
       <As
         className={cn(
