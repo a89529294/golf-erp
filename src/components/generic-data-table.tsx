@@ -67,8 +67,8 @@ export function GenericDataTable<TData extends { id: string }, TValue>({
   });
 
   return (
-    <div className="mb-2.5 w-full border-y border-t-0 border-line-gray">
-      <Table className="relative isolate ">
+    <div className=" w-full border-x border-line-gray px-1">
+      <Table className="relative isolate border-separate border-spacing-0">
         <TableHeader className="relative z-10">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id} className="border-b-line-gray">
@@ -77,7 +77,7 @@ export function GenericDataTable<TData extends { id: string }, TValue>({
                   <TableHead
                     key={header.id}
                     className={cn(
-                      "sticky top-0 bg-light-gray hover:bg-light-gray",
+                      "sticky top-0 border-y border-line-gray bg-light-gray hover:bg-light-gray",
                     )}
                   >
                     {header.isPlaceholder
@@ -101,10 +101,13 @@ export function GenericDataTable<TData extends { id: string }, TValue>({
                 data-state={
                   row.getCanSelect() && row.getIsSelected() && "selected"
                 }
-                className="group relative border-b-line-gray bg-white data-[state=selected]:border-b-orange"
+                className="group relative  bg-white data-[state=selected]:border-b-orange"
               >
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
+                  <TableCell
+                    key={cell.id}
+                    className="border-b border-b-line-gray"
+                  >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}

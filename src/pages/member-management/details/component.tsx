@@ -154,7 +154,9 @@ export function Component() {
           onSubmit={onSubmit}
           coin={data.coin}
         />
-        <button className="self-center">儲值紀錄</button>
+        <button className="self-center rounded-full bg-secondary-dark px-5 py-3 text-white">
+          儲值紀錄
+        </button>
         <div className="grow" ref={ref}>
           {!!height && (
             <ScrollArea style={{ height }}>
