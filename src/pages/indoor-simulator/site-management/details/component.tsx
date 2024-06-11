@@ -49,6 +49,7 @@ export function Component() {
       imageFiles: data.imageFiles,
       openingDates: data.openingDates,
       openingHours: data.openingHours,
+      plans: data.plans,
     },
   });
   const { mutate, isPending } = useMutation({
@@ -91,14 +92,12 @@ export function Component() {
               startTime: `${new Date().toISOString().slice(0, 10)}T${v.start}`,
               endTime: `${new Date().toISOString().slice(0, 10)}T${v.end}`,
               sequence: i + 1,
-              pricePerHour: v.fee || 0,
             });
           else
             x.openTimes?.push({
               startTime: `${new Date().toISOString().slice(0, 10)}T${v.start}`,
               endTime: `${new Date().toISOString().slice(0, 10)}T${v.end}`,
               sequence: i + 1,
-              pricePerHour: v.fee || 0,
             });
         });
       }
@@ -130,6 +129,9 @@ export function Component() {
             isActive: e.selected,
           })),
         );
+      }
+      if (changedValues["plans"]) {
+        x.plans = changedValues["plans"];
       }
 
       await privateFetch(`/store/simulator/${siteId}`, {
@@ -208,7 +210,7 @@ export function Component() {
         </>
       }
     >
-      <div className="flex flex-col w-full gap-10 p-1 border border-line-gray bg-light-gray">
+      <div className="flex w-full flex-col gap-10 border border-line-gray bg-light-gray p-1">
         <h1 className="bg-mid-gray py-2.5 text-center text-black">
           {formDisabled ? "檢視場地資料" : "編輯場地資料"}
         </h1>

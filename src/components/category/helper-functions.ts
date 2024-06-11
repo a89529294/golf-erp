@@ -7,6 +7,7 @@ import {
   NewDrivingRange,
   NewGolfCourse,
   NewIndoorSimulator,
+  Plan,
   TimeRange,
   VenueSettingsRowContent,
   Weekday,
@@ -180,32 +181,10 @@ export function onAddNewOpeningHoursRange(
         id: crypto.randomUUID(),
         start: "",
         end: "",
-        fee: "",
         saved: false,
       },
     ],
     { shouldValidate: true },
-  );
-}
-
-export function onEditOpeningTimeRange(
-  id: string,
-  form: UseFormReturn<
-    | NewGolfCourse
-    | NewIndoorSimulator
-    | NewDrivingRange
-    | ExistingGolfCourse
-    | ExistingDrivingRange
-    | ExistingIndoorSimulator
-  >,
-) {
-  form.setValue(
-    "openingHours",
-    form
-      .getValues("openingHours")
-      .map((v) =>
-        v.id === id ? { ...v, saved: false } : { ...v, saved: true },
-      ),
   );
 }
 
@@ -246,6 +225,75 @@ export function onSaveOpeningTimeRange(
     form
       .getValues("openingHours")
       .map((v) => (v.id === timeRange.id ? timeRange : v)),
+    {
+      shouldValidate: true,
+      shouldDirty: true,
+    },
+  );
+}
+
+export function onAddNewPlan(
+  form: UseFormReturn<
+    | NewGolfCourse
+    | NewIndoorSimulator
+    | NewDrivingRange
+    | ExistingGolfCourse
+    | ExistingDrivingRange
+    | ExistingIndoorSimulator
+  >,
+) {
+  if ("plans" in form.formState.errors) return;
+  form.setValue(
+    "plans",
+    [
+      ...(form.getValues("plans") ?? []),
+      {
+        id: crypto.randomUUID(),
+        title: "",
+        hours: "",
+        price: "",
+        saved: false,
+      },
+    ],
+    { shouldValidate: true },
+  );
+}
+
+export function onRemovePlan(
+  id: string,
+  form: UseFormReturn<
+    | NewGolfCourse
+    | NewIndoorSimulator
+    | NewDrivingRange
+    | ExistingGolfCourse
+    | ExistingDrivingRange
+    | ExistingIndoorSimulator
+  >,
+) {
+  form.setValue(
+    "plans",
+    form.getValues("plans")?.filter((v) => v.id !== id),
+    {
+      shouldValidate: true,
+      shouldDirty: true,
+    },
+  );
+}
+
+export function onSavePlan(
+  plan: Plan,
+  form: UseFormReturn<
+    | NewGolfCourse
+    | NewIndoorSimulator
+    | NewDrivingRange
+    | ExistingGolfCourse
+    | ExistingDrivingRange
+    | ExistingIndoorSimulator
+  >,
+) {
+  form.setValue(
+    "plans",
+    form.getValues("plans")?.map((v) => (v.id === plan.id ? plan : v)),
     {
       shouldValidate: true,
       shouldDirty: true,

@@ -1,9 +1,8 @@
 import greenFileIcon from "@/assets/green-file-icon.svg";
 import redXIcon from "@/assets/red-x-icon.svg";
 import trashCanIcon from "@/assets/trash-can-icon.svg";
-import { UnderscoredInput } from "@/components/underscored-input";
+import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { onChange } from "@/pages/indoor-simulator/site-management/new/helpers";
 import { TimeRange } from "@/utils/category/schemas";
 import { useRef, useState } from "react";
 
@@ -11,7 +10,6 @@ export function TimeRangeRow({
   data,
   onSave,
   onRemove,
-  onEdit,
   disabled,
   myRef,
   errorMessage,
@@ -19,48 +17,40 @@ export function TimeRangeRow({
   data: TimeRange;
   onSave: (tr: TimeRange) => void;
   onRemove(): void;
-  onEdit(): void;
   disabled?: boolean;
   myRef: React.RefObject<HTMLLIElement>;
   errorMessage?: string;
 }) {
   const [start, setStart] = useState(data.start);
   const [end, setEnd] = useState(data.end);
-  const [fee, setFee] = useState(data.fee);
   const startRef = useRef<HTMLInputElement>(null);
   const endRef = useRef<HTMLInputElement>(null);
-  const feeRef = useRef<HTMLInputElement>(null);
   const [errorFields, setErrorFields] = useState({
     start: false,
     end: false,
-    fee: false,
   });
 
   function onSaveTimeRange() {
-    const startError = start.length !== 5;
-    const endError = end.length !== 5;
-    const feeError = fee === "";
+    const startError = !start;
+    const endError = !end;
 
-    if (startError) setErrorFields((ef) => ({ ...ef, start: true }));
-    if (endError) setErrorFields((ef) => ({ ...ef, end: true }));
-    if (feeError) setErrorFields((ef) => ({ ...ef, fee: true }));
-
-    const hasErrors = startError || endError || feeError;
-    if (hasErrors) return;
+    if (startError) {
+      setErrorFields((ef) => ({ ...ef, start: true }));
+      startRef.current?.click();
+      return;
+    }
+    if (endError) {
+      setErrorFields((ef) => ({ ...ef, end: true }));
+      endRef.current?.click();
+      return;
+    }
+    // if (feeError) setErrorFields((ef) => ({ ...ef, fee: true }));
 
     onSave({
       id: data.id,
       start,
       end,
-      fee,
       saved: true,
-    });
-  }
-
-  function clearFieldError(field: "start" | "end" | "fee") {
-    setErrorFields({
-      ...errorFields,
-      [field]: false,
     });
   }
 
@@ -73,73 +63,34 @@ export function TimeRangeRow({
       )}
       ref={myRef}
     >
-      <UnderscoredInput
+      <Input
+        type="time"
         className={cn(
-          "h-7 w-24 text-center",
-          errorFields["start"] && "border-b-destructive",
+          "h-7 w-24 rounded-none border-0 border-b border-secondary-dark bg-transparent font-mono",
+          errorFields.start && "border-red-500",
         )}
-        value={start}
+        onClick={(e) => e.currentTarget.showPicker()}
         onChange={(e) => {
-          onChange(e, start, setStart, "start", start, end, endRef, feeRef);
-          setEnd("");
+          setStart(e.currentTarget.value);
+          if (e.currentTarget.value)
+            setErrorFields((ef) => ({ ...ef, start: false }));
         }}
-        placeholder="00:00"
-        inputMode="numeric"
+        value={start}
         ref={startRef}
-        onFocus={() => {
-          clearFieldError("start");
-          onEdit();
-        }}
-        disabled={disabled}
+        max={end}
       />
 
       <span className="px-2.5 text-secondary-dark">～</span>
-      <UnderscoredInput
-        className={cn(
-          "h-7 w-24 text-center",
-          errorFields["end"] && "border-b-destructive",
-        )}
-        value={end}
-        onChange={(e) => {
-          onChange(e, end, setEnd, "end", start, end, endRef, feeRef);
-        }}
-        placeholder="23:00"
-        inputMode="numeric"
-        ref={endRef}
-        onKeyDown={(e) => {
-          if (e.key === "Backspace" && end.length === 0) {
-            startRef.current?.focus();
-            e.preventDefault();
-          }
-        }}
-        onFocus={() => {
-          clearFieldError("end");
-          onEdit();
-        }}
-        disabled={disabled}
-      />
 
-      <UnderscoredInput
-        ref={feeRef}
-        className={cn(
-          "ml-6 h-7 w-24 text-center",
-          errorFields["fee"] && "border-b-destructive",
-        )}
-        value={fee}
-        onChange={(e) => {
-          if (e.target.value === "") return setFee("");
-          const numericValue = +e.target.value;
-          if (!Number.isNaN(numericValue) && numericValue >= 0)
-            setFee(numericValue);
-        }}
-        placeholder="價錢"
-        onFocus={() => {
-          clearFieldError("fee");
-          onEdit();
-        }}
-        disabled={disabled}
+      <Input
+        type="time"
+        className="h-7 w-24 rounded-none border-0 border-b border-b-secondary-dark bg-transparent font-mono *:w-full"
+        onClick={(e) => e.currentTarget.showPicker()}
+        onChange={(e) => setEnd(e.currentTarget.value)}
+        value={end}
+        ref={endRef}
+        min={start}
       />
-      <span>元</span>
 
       <div className="ml-auto flex gap-4">
         <span className="text-red-500">{errorMessage}</span>

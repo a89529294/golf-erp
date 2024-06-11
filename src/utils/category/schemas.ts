@@ -64,12 +64,31 @@ const openingHoursSchema = {
       id: z.string(),
       start: z.string().regex(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/),
       end: z.string().regex(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/),
-      fee: z.union([z.number(), z.literal("")]),
       saved: z.boolean(),
     }),
   ),
 };
 type TimeRange = z.infer<(typeof openingHoursSchema)["openingHours"]>[number];
+
+const plansSchema = {
+  plans: z
+    .array(
+      z.object({
+        id: z.string(),
+        title: z.string().min(1, "請填寫名稱"),
+        hours: z
+          .union([z.number(), z.literal("")])
+          .refine((v) => v !== "", { message: "請填寫時數" }),
+        price: z
+          .union([z.number(), z.literal("")])
+          .refine((v) => v !== "", { message: "請填寫價錢" }),
+        saved: z.boolean().refine((v) => v, { message: "請先儲存" }),
+      }),
+    )
+    .optional(),
+};
+type Plan = Exclude<z.infer<(typeof plansSchema)["plans"]>, undefined>[number];
+
 const weekdaySchema = z.array(
   z.object({
     id: z.string(),
@@ -152,7 +171,8 @@ const costPerBoxSchema = {
 const newIndoorSimulatorSchema = baseSchema
   .extend(equipmentsSchema)
   .extend(newImagesSchema)
-  .extend(openingHoursSchema);
+  .extend(openingHoursSchema)
+  .extend(plansSchema);
 type NewIndoorSimulator = z.infer<typeof newIndoorSimulatorSchema> & {
   category: "indoor-simulator";
 };
@@ -160,7 +180,8 @@ type NewIndoorSimulator = z.infer<typeof newIndoorSimulatorSchema> & {
 const existingIndoorSimulatorSchema = baseSchema
   .extend(equipmentsSchema)
   .extend(existingImagesSchema)
-  .extend(openingHoursSchema);
+  .extend(openingHoursSchema)
+  .extend(plansSchema);
 type ExistingIndoorSimulator = z.infer<typeof existingIndoorSimulatorSchema>;
 
 const newGolfCourseSchema = baseSchema
@@ -243,6 +264,7 @@ export const simulatorSitesSchema = z.object({
           }),
         )
         .optional(),
+      plans: plansSchema.plans.optional(),
     }),
   ),
 });
@@ -278,6 +300,7 @@ export {
   type NewGolfCourse,
   type NewDrivingRange,
   type ExistingDrivingRange,
+  type Plan,
   newIndoorSimulatorSchema,
   existingIndoorSimulatorSchema,
   newGolfCourseSchema,
@@ -285,4 +308,5 @@ export {
   newDrivingRangeSchema,
   existingDrivingRangeSchema,
   genericSitesSchema,
+  plansSchema,
 };
