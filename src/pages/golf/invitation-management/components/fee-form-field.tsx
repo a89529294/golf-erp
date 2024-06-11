@@ -13,7 +13,7 @@ export function FeeFormField({ disabled }: { disabled?: boolean }) {
   return (
     <FormField
       control={form.control}
-      name={"fee"}
+      name={"price"}
       render={({ field }) => (
         <FormItem className="relative grid grid-cols-[1fr_415px] items-baseline">
           <FormLabel>費用</FormLabel>

@@ -31,6 +31,7 @@ interface DataTableProps<TData extends { id: string }, TValue> {
   getRowId?: (row: TData) => string;
   globalFilter: string;
   setGlobalFilter: Dispatch<SetStateAction<string>>;
+  enableMultiRowSelection?: boolean;
 }
 
 const fuzzyFilter: FilterFn<unknown> = (row, columnId, value) => {
@@ -47,6 +48,7 @@ export function ModalDataTable<TData extends { id: string }, TValue>({
   getRowId,
   globalFilter,
   setGlobalFilter,
+  enableMultiRowSelection,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data: data,
@@ -54,6 +56,7 @@ export function ModalDataTable<TData extends { id: string }, TValue>({
     filterFns: {
       fuzzy: fuzzyFilter, //define as a filter function that can be used in column definitions
     },
+    enableMultiRowSelection: !!enableMultiRowSelection,
     onGlobalFilterChange: setGlobalFilter,
     globalFilterFn: "fuzzy",
     getCoreRowModel: getCoreRowModel(),

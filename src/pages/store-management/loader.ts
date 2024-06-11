@@ -17,7 +17,7 @@ export const storeSchema = z.object({
   county: z.string(),
   district: z.string(),
   address: z.string(),
-  employees: z.array(employeeSchema),
+  employees: z.array(employeeSchema).optional(),
 });
 
 export const storesSchema = z.object({

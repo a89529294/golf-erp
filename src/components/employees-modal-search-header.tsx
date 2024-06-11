@@ -18,8 +18,8 @@ export function EmployeesModalSearchHeader({
   globalFilter,
   setGlobalFilter,
 }: {
-  selectedStoreId: string | undefined;
-  setSelectedStoreId: Dispatch<SetStateAction<string | undefined>>;
+  selectedStoreId?: string | undefined;
+  setSelectedStoreId?: Dispatch<SetStateAction<string | undefined>>;
   globalFilter: string;
   setGlobalFilter: Dispatch<SetStateAction<string>>;
 }) {
@@ -34,32 +34,34 @@ export function EmployeesModalSearchHeader({
       <h1 className="bg-light-gray py-2 text-center">選擇人員</h1>
       <div className="mt-auto flex items-center gap-2 px-14 pb-4">
         <img src={MagnifyingGlass} />
-        <Select
-          key={selectKey}
-          onValueChange={(s) => {
-            if (s === "reset") {
-              setSelectKey(selectKey + 1);
-              setSelectedStoreId(undefined);
-            } else setSelectedStoreId(s);
-          }}
-          value={selectedStoreId}
-        >
-          <SelectTrigger className="w-48 rounded-none border-0 border-b border-b-secondary-dark px-px ">
-            <SelectValue placeholder="選擇店家" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectItem value="reset" className="text-muted-foreground">
-                清空
-              </SelectItem>
-              {flattenedStores.map((store) => (
-                <SelectItem value={store.id} key={store.id}>
-                  {store.name}
+        {selectedStoreId && setSelectedStoreId && (
+          <Select
+            key={selectKey}
+            onValueChange={(s) => {
+              if (s === "reset") {
+                setSelectKey(selectKey + 1);
+                setSelectedStoreId(undefined);
+              } else setSelectedStoreId(s);
+            }}
+            value={selectedStoreId}
+          >
+            <SelectTrigger className="w-48 rounded-none border-0 border-b border-b-secondary-dark px-px ">
+              <SelectValue placeholder="選擇店家" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem value="reset" className="text-muted-foreground">
+                  清空
                 </SelectItem>
-              ))}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
+                {flattenedStores.map((store) => (
+                  <SelectItem value={store.id} key={store.id}>
+                    {store.name}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        )}
         <Input
           className="flex-1 rounded-none border-0 border-b border-b-secondary-dark"
           placeholder="搜尋內容"

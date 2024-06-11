@@ -1,37 +1,52 @@
 import back from "@/assets/back.svg";
 import { IconButton } from "@/components/ui/button";
 import { button } from "@/components/ui/button-cn";
-import { Form } from "@/components/ui/form";
 import { MainLayout } from "@/layouts/main-layout";
 import { linksKV } from "@/utils/links";
 import { zodResolver } from "@hookform/resolvers/zod";
+import React from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useLoaderData, useParams } from "react-router-dom";
 import { z } from "zod";
 import { formSchema } from "..";
-import { AddressFields } from "../components/address-fields";
-import { AppointmentDatePicker } from "../components/appointment-date-picker";
-import { FeeFormField } from "../components/fee-form-field";
-import { HeadcountFormField } from "../components/headcount-form-field";
-import { TextFormField } from "../components/text-form-field";
-import { UnderscoredInput } from "@/components/underscored-input";
-import pfp from "@/assets/pfp-outline.svg";
-import React from "react";
+import { InvitationForm } from "../components/invitation-form";
+import { useQuery } from "@tanstack/react-query";
+import { storesWithoutEmployeesQuery } from "../new/loader";
+import { genInvitationDetailsQuery, loader } from "./loader";
+import { membersQuery } from "@/pages/member-management/loader";
 
 export function Component() {
+  const { invitationId } = useParams();
   const [formDisabled, setFormDisabled] = React.useState(true);
+  const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
+  const { data: stores } = useQuery({
+    ...storesWithoutEmployeesQuery,
+    initialData: initialData.stores,
+  });
+  const { data: invitation } = useQuery({
+    ...genInvitationDetailsQuery(invitationId!),
+    initialData: initialData.invitation,
+  });
+  const { data: appUsers } = useQuery({
+    ...membersQuery,
+    initialData: initialData.appUsers,
+  });
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: "測試1",
-      time: "06:11",
-      site: "測試球場",
-      date: new Date(),
-      price: "100",
-      county: "",
-      district: "",
-      address: "",
-      headcount: "5",
+      title: invitation.title,
+      introduce: invitation.introduce,
+      time: invitation.time,
+      storeId: invitation.store.id,
+      date: new Date(invitation.date),
+      price: invitation.price.toString(),
+      county: invitation.store.county,
+      district: invitation.store.district,
+      address: invitation.store.address,
+      headcount: invitation.inviteCount.toString(),
+      host: invitation.host ?? "",
+      members: invitation.members,
     },
   });
 
@@ -77,54 +92,13 @@ export function Component() {
         </>
       }
     >
-      <div className="mb-1 flex w-full flex-col border border-line-gray p-1">
-        <header className="mb-12 bg-light-gray py-2.5 text-center text-black">
-          編輯邀約
-        </header>
-        <Form {...form}>
-          <form
-            id="appointment-form"
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="flex w-[600px] flex-1 flex-col self-center border border-line-gray"
-          >
-            <header className="bg-light-gray py-2.5 text-center text-black">
-              邀約資料
-            </header>
-            <div className="flex-1 space-y-7 px-12 py-10">
-              <TextFormField
-                name="title"
-                label="標題"
-                disabled={formDisabled}
-              />
-              <AppointmentDatePicker disabled={formDisabled} />
-              <TextFormField name="time" label="時段" disabled={formDisabled} />
-              <TextFormField name="site" label="球場" disabled={formDisabled} />
-              <FeeFormField disabled={formDisabled} />
-              <AddressFields disabled={formDisabled} />
-              <HeadcountFormField disabled={formDisabled} />
-            </div>
-          </form>
-          <div className="w-[600px] self-center border border-t-0 border-line-gray ">
-            <header className=" bg-light-gray py-2.5 text-center text-black">
-              參與人員
-            </header>
-            <div className="px-12 py-10">
-              <div className="grid grid-cols-[1fr_415px] items-baseline">
-                <label>參與人員</label>
-                <div className="flex items-center gap-2">
-                  <div className="grid size-10 place-items-center rounded-full border border-line-gray bg-light-gray">
-                    <img className="" src={pfp} />
-                  </div>
-                  <UnderscoredInput
-                    disabled={formDisabled}
-                    className="flex-1"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </Form>
-      </div>
+      <InvitationForm
+        form={form}
+        onSubmit={onSubmit}
+        disabled={formDisabled}
+        stores={stores.data}
+        appUsers={appUsers}
+      />
     </MainLayout>
   );
 }

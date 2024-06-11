@@ -34,7 +34,16 @@ export const memberSchema = z.object({
   ),
 });
 
+export const simpleMemberSchema = memberSchema.omit({
+  appChargeHistories: true,
+});
+
+export const simpleMembersSchema = z.object({
+  data: z.array(simpleMemberSchema),
+});
+
 export type Member = z.infer<typeof memberSchema>;
+export type SimpleMember = z.infer<typeof simpleMemberSchema>;
 export type MemberType = Member["appUserType"];
 export type MemberAppChargeHistory = Member["appChargeHistories"][number];
 export type Gender = Member["gender"];
@@ -56,14 +65,9 @@ export const membersQuery = {
   queryFn: async () => {
     const response = await privateFetch("/app-users?pageSize=999");
 
-    const inCompleteData = await response.json();
+    const data = await response.json();
 
-    const completeData = (inCompleteData.data as Member[]).map((member) => ({
-      ...member,
-      isActive: true,
-    }));
-
-    return completeData;
+    return simpleMembersSchema.parse(data).data;
   },
 };
 

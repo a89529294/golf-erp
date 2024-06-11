@@ -2,6 +2,7 @@ import {
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import {
@@ -11,54 +12,105 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useFormContext } from "react-hook-form";
+import { StoreWithoutEmployees } from "@/pages/store-management/loader";
+import { FieldPath, useFormContext } from "react-hook-form";
 import { TextFormField } from "./text-form-field";
-import { useQuery } from "@tanstack/react-query";
-import { countyQuery, generateDistrictQuery } from "@/api/county-district";
+import { formSchema } from "..";
+import { z } from "zod";
+import { UnderscoredInput } from "@/components/underscored-input";
 
-export function AddressFields({ disabled }: { disabled?: boolean }) {
+export function AddressFields({
+  disabled,
+  stores,
+}: {
+  disabled?: boolean;
+  stores: StoreWithoutEmployees[];
+}) {
   return (
-    <fieldset className="flex items-baseline gap-5">
-      <label className="flex-1">球場地址</label>
-      <div className="grid w-[415px] auto-rows-[32px] grid-cols-[176fr_227fr] gap-3">
-        <SelectField name="county" placeholder="請選城市" disabled={disabled} />
-        <SelectField
-          name="district"
-          placeholder="請選鄉鎮"
-          disabled={disabled}
-        />
-        <TextFormField
-          name="address"
-          placeholder="請填剩餘地址"
-          className="col-span-2 "
-          textLeft
-          disabled={disabled}
-        />
-      </div>
-    </fieldset>
+    <>
+      <StoreSelectField stores={stores} disabled={disabled} />
+      <fieldset className="flex items-baseline gap-5">
+        <label className="flex-1">球場地址</label>
+        <div className="grid w-[415px] auto-rows-[32px] grid-cols-[176fr_227fr] gap-3">
+          <DisabledTextFormField name="county" />
+          <DisabledTextFormField name="district" />
+          <TextFormField
+            name="address"
+            className="col-span-2 "
+            placeholder=""
+            textLeft
+            disabled={true}
+            // value={form.watch("address")}
+          />
+        </div>
+      </fieldset>
+    </>
   );
 }
 
-function SelectField({
-  name,
-  placeholder,
+function StoreSelectField({
+  stores,
   disabled,
 }: {
-  name: "county" | "district";
-  placeholder: string;
+  stores: StoreWithoutEmployees[];
   disabled?: boolean;
 }) {
   const form = useFormContext();
-  const { data: counties } = useQuery({
-    ...countyQuery,
-  });
 
-  const currentCounty = form.watch("county");
-  console.log(currentCounty);
-  const { data: districts } = useQuery({
-    ...generateDistrictQuery(currentCounty),
-    enabled: !!currentCounty,
-  });
+  return (
+    <FormField
+      control={form.control}
+      name="storeId"
+      render={({ field }) => (
+        <FormItem className="grid grid-cols-[1fr_415px] items-baseline">
+          <FormLabel>球場</FormLabel>
+          <Select
+            onValueChange={(storeId) => {
+              field.onChange(storeId);
+              form.setValue(
+                "county",
+                stores.find((s) => s.id === storeId)!.county,
+              );
+              form.setValue(
+                "district",
+                stores.find((s) => s.id === storeId)!.district,
+              );
+              form.setValue(
+                "address",
+                stores.find((s) => s.id === storeId)!.address,
+              );
+            }}
+            defaultValue={field.value}
+          >
+            <FormControl>
+              <SelectTrigger
+                disabled={disabled}
+                className="h-full rounded-none border-0 border-b border-secondary-dark p-1 [&>span]:w-full"
+              >
+                <SelectValue />
+              </SelectTrigger>
+            </FormControl>
+            <SelectContent className="max-h-52">
+              {stores.map((s) => (
+                <SelectItem key={s.id} value={s.id}>
+                  {s.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <FormMessage className="col-start-2" />
+        </FormItem>
+      )}
+    />
+  );
+}
+
+function DisabledTextFormField({
+  name,
+}: {
+  name: FieldPath<z.infer<typeof formSchema>>;
+}) {
+  const form = useFormContext();
 
   return (
     <FormField
@@ -66,28 +118,16 @@ function SelectField({
       name={name}
       render={({ field }) => (
         <FormItem>
-          <Select onValueChange={field.onChange} defaultValue={field.value}>
-            <FormControl>
-              <SelectTrigger
-                disabled={disabled}
-                className="h-full p-1 border-0 border-b rounded-none border-secondary-dark"
-              >
-                <SelectValue placeholder={placeholder} />
-              </SelectTrigger>
-            </FormControl>
-            <SelectContent>
-              {name === "county"
-                ? counties?.map((c) => (
-                    <SelectItem key={c.countycode} value={c.countycode}>
-                      {c.countyname}
-                    </SelectItem>
-                  ))
-                : districts?.map((d) => (
-                    <SelectItem value={d.townname}>{d.townname}</SelectItem>
-                  ))}
-            </SelectContent>
-          </Select>
-          <FormMessage />
+          <FormControl>
+            <UnderscoredInput
+              {...field}
+              className="h-8 p-1 text-left"
+              disabled
+              value={form.watch(name)}
+            />
+          </FormControl>
+
+          <FormMessage className="col-start-2" />
         </FormItem>
       )}
     />

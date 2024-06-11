@@ -41,7 +41,7 @@ export const columns = [
   columnHelper.accessor("time", {
     header: "時段",
   }),
-  columnHelper.accessor("store", {
+  columnHelper.accessor("store.name", {
     header: "球場",
   }),
   columnHelper.accessor("price", {
@@ -60,7 +60,7 @@ export const columns = [
           className="block h-5 w-5"
           to={linksKV["golf"].subLinks[
             "invitation-management"
-          ].paths.details.replace(":appointmentId", row.original.id)}
+          ].paths.details.replace(":invitationId", row.original.id)}
         >
           <img src={pencilIcon} className="hidden group-hover:block" />
         </Link>

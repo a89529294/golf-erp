@@ -80,7 +80,7 @@ export function Component() {
       district: store.district,
       address: store.address,
       employees: employees.filter((e) =>
-        store.employees.map((se) => se.id).includes(e.id),
+        store.employees?.map((se) => se.id).includes(e.id),
       ),
     },
   });

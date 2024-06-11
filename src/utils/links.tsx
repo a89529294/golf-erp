@@ -141,7 +141,7 @@ export const linksKV = {
         paths: {
           index: `${GOLF_BASE_PATH}/invitation-management`,
           new: `${GOLF_BASE_PATH}/invitation-management/new`,
-          details: `${GOLF_BASE_PATH}/invitation-management/:appointmentId`,
+          details: `${GOLF_BASE_PATH}/invitation-management/:invitationId`,
         },
         lazy: {
           index: () => import("@/pages/golf/invitation-management"),

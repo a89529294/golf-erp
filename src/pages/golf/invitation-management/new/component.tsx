@@ -1,42 +1,82 @@
 import back from "@/assets/back.svg";
 import { IconButton } from "@/components/ui/button";
 import { button } from "@/components/ui/button-cn";
-import { Form } from "@/components/ui/form";
 import { MainLayout } from "@/layouts/main-layout";
 import { linksKV } from "@/utils/links";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useLoaderData, useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { formSchema } from "..";
-import { AddressFields } from "../components/address-fields";
-import { AppointmentDatePicker } from "../components/appointment-date-picker";
-import { FeeFormField } from "../components/fee-form-field";
-import { HeadcountFormField } from "../components/headcount-form-field";
-import { TextFormField } from "../components/text-form-field";
-import { UnderscoredInput } from "@/components/underscored-input";
-import pfp from "@/assets/pfp-outline.svg";
-import { TimeFormField } from "../components/time-form-field";
+import { InvitationForm } from "../components/invitation-form";
+import { loader, storesWithoutEmployeesQuery } from "./loader";
+import { membersQuery } from "@/pages/member-management/loader";
+import { privateFetch } from "@/utils/utils";
+import { toast } from "sonner";
 
 export function Component() {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
+  const { data: stores } = useQuery({
+    ...storesWithoutEmployeesQuery,
+    initialData: initialData.stores,
+  });
+  const { data: appUsers } = useQuery({
+    ...membersQuery,
+    initialData: initialData.appUsers,
+  });
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
+      introduce: "",
       time: "",
-      site: "",
+      storeId: "",
       price: "",
       county: "",
       district: "",
       address: "",
       headcount: "",
+      host: "",
+      members: [],
+    },
+  });
+  const { mutate: addNewInvitation, isPending } = useMutation({
+    mutationKey: ["add-new-invitation"],
+    mutationFn: async () => {
+      const values = form.getValues();
+      console.log(values);
+
+      await privateFetch(`/store/${values.storeId}/golf/invite`, {
+        method: "POST",
+        body: JSON.stringify({
+          title: values.title,
+          introduce: values.introduce,
+          inviteDateTime: `${values.date.getFullYear()}-${(values.date.getMonth() + 1).toString().padStart(2, "0")}-${values.date.getDate().toString().padStart(2, "0")}T${values.time}Z`,
+          price: values.price,
+          inviteCount: values.headcount,
+          hostId:
+            typeof values.host === "string" ? values.host : values.host.id,
+          memberIds: values.members.map((m) => m.id),
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    },
+    onSuccess() {
+      toast.success("成功新增");
+      queryClient.invalidateQueries({ queryKey: ["invitations"] });
+      navigate("/golf/invitation-management");
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit() {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    console.log(values);
+    addNewInvitation();
   }
 
   return (
@@ -56,47 +96,13 @@ export function Component() {
         </>
       }
     >
-      <div className="mb-1 flex w-full flex-col border border-line-gray p-1">
-        <header className="mb-12 bg-light-gray py-2.5 text-center text-black">
-          編輯邀約
-        </header>
-        <Form {...form}>
-          <form
-            id="appointment-form"
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="flex w-[600px] flex-1 flex-col self-center border border-line-gray"
-          >
-            <header className="bg-light-gray py-2.5 text-center text-black">
-              邀約資料
-            </header>
-            <div className="flex-1 space-y-7 px-12 py-10">
-              <TextFormField name="title" label="標題" />
-              <AppointmentDatePicker />
-              <TimeFormField />
-              <TextFormField name="site" label="球場" />
-              <FeeFormField />
-              <AddressFields />
-              <HeadcountFormField />
-            </div>
-          </form>
-          <div className="w-[600px] self-center border border-t-0 border-line-gray ">
-            <header className=" bg-light-gray py-2.5 text-center text-black">
-              參與人員
-            </header>
-            <div className="px-12 py-10">
-              <div className="grid grid-cols-[1fr_415px] items-baseline">
-                <label>參與人員</label>
-                <div className="flex items-center gap-2">
-                  <div className="grid size-10 place-items-center rounded-full border border-line-gray bg-light-gray">
-                    <img className="" src={pfp} />
-                  </div>
-                  <UnderscoredInput className="flex-1" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </Form>
-      </div>
+      <InvitationForm
+        form={form}
+        onSubmit={onSubmit}
+        stores={stores.data}
+        disabled={isPending}
+        appUsers={appUsers}
+      />
     </MainLayout>
   );
 }

@@ -131,7 +131,7 @@ export function Component() {
     >
       <DataTable
         columns={columns}
-        data={data}
+        data={data.data}
         rowSelection={rowSelection}
         setRowSelection={setRowSelection}
         globalFilter={globalFilter}

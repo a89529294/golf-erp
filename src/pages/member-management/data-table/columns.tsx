@@ -1,10 +1,10 @@
+import fileIcon from "@/assets/black-file-icon.svg";
 import { Tablet } from "@/components/tablet";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
-import { Member, genderEnChMap, memberTypeEnChMap } from "../loader";
-import fileIcon from "@/assets/black-file-icon.svg";
 import { Link } from "react-router-dom";
+import { SimpleMember, genderEnChMap, memberTypeEnChMap } from "../loader";
 
-const columnHelper = createColumnHelper<Member>();
+const columnHelper = createColumnHelper<SimpleMember>();
 
 export const columns = [
   columnHelper.accessor((row) => (row.isActive ? "恢復" : "停權"), {
@@ -83,7 +83,7 @@ export const columns = [
     },
     size: 4,
   }),
-] as ColumnDef<Member, unknown>[];
+] as ColumnDef<SimpleMember>[];
 
 // export const columns: ColumnDef<Store>[] = [
 //   {
