@@ -3,18 +3,9 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { linksKV } from "@/utils/links";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { Link } from "react-router-dom";
+import { Invitation } from "../loader";
 
-type Appointment = {
-  id: string;
-  title: string;
-  date: string;
-  time: string;
-  site: string;
-  fee: number;
-  headcont: number;
-};
-
-const columnHelper = createColumnHelper<Appointment>();
+const columnHelper = createColumnHelper<Invitation>();
 
 export const columns = [
   columnHelper.display({
@@ -50,13 +41,13 @@ export const columns = [
   columnHelper.accessor("time", {
     header: "時段",
   }),
-  columnHelper.accessor("site", {
+  columnHelper.accessor("store", {
     header: "球場",
   }),
-  columnHelper.accessor("fee", {
+  columnHelper.accessor("price", {
     header: "費用",
   }),
-  columnHelper.accessor("headcont", {
+  columnHelper.accessor("inviteCount", {
     header: "邀約人數",
   }),
 
@@ -68,7 +59,7 @@ export const columns = [
         <Link
           className="block h-5 w-5"
           to={linksKV["golf"].subLinks[
-            "appointment-management"
+            "invitation-management"
           ].paths.details.replace(":appointmentId", row.original.id)}
         >
           <img src={pencilIcon} className="hidden group-hover:block" />
@@ -76,4 +67,4 @@ export const columns = [
       );
     },
   }),
-] as ColumnDef<Appointment, unknown>[];
+] as ColumnDef<Invitation, unknown>[];

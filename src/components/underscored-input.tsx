@@ -13,7 +13,7 @@ export const UnderscoredInput = forwardRef<
   ComponentPropsWithoutRef<typeof Input> & {
     disabledClassNames?: string;
   }
->(({ className, onBlur, onFocus, ...rest }, ref) => {
+>(({ className, onBlur, onFocus, onClick, type, ...rest }, ref) => {
   const [thickBorder, setThickBorder] = useState(false);
 
   return (
@@ -32,6 +32,11 @@ export const UnderscoredInput = forwardRef<
         setThickBorder(false);
         onFocus && onFocus(e);
       }}
+      onClick={(e) => {
+        onClick && onClick(e);
+        if (type === "time") e.currentTarget.showPicker();
+      }}
+      type={type}
       {...rest}
     />
   );

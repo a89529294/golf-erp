@@ -16,19 +16,22 @@ import { HeadcountFormField } from "../components/headcount-form-field";
 import { TextFormField } from "../components/text-form-field";
 import { UnderscoredInput } from "@/components/underscored-input";
 import pfp from "@/assets/pfp-outline.svg";
+import React from "react";
 
 export function Component() {
+  const [formDisabled, setFormDisabled] = React.useState(true);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: "",
-      time: "",
-      site: "",
-      fee: "",
+      title: "測試1",
+      time: "06:11",
+      site: "測試球場",
+      date: new Date(),
+      price: "100",
       county: "",
       district: "",
       address: "",
-      headcount: "",
+      headcount: "5",
     },
   });
 
@@ -42,16 +45,35 @@ export function Component() {
     <MainLayout
       headerChildren={
         <>
-          <Link
-            to={linksKV.golf.subLinks["appointment-management"].paths.index}
-            className={button()}
-          >
-            <img src={back} />
-            返回
-          </Link>
-          <IconButton icon="save" form="appointment-form" type="submit">
-            儲存
-          </IconButton>
+          {formDisabled ? (
+            <Link
+              to={linksKV.golf.subLinks["invitation-management"].paths.index}
+              className={button()}
+            >
+              <img src={back} />
+              返回
+            </Link>
+          ) : (
+            <IconButton icon="back" onClick={() => setFormDisabled(true)}>
+              返回
+            </IconButton>
+          )}
+          {formDisabled ? (
+            <IconButton
+              icon="pencil"
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                setFormDisabled(false);
+              }}
+            >
+              編輯
+            </IconButton>
+          ) : (
+            <IconButton icon="save" form="appointment-form" type="submit">
+              儲存
+            </IconButton>
+          )}
         </>
       }
     >
@@ -69,13 +91,17 @@ export function Component() {
               邀約資料
             </header>
             <div className="flex-1 space-y-7 px-12 py-10">
-              <TextFormField name="title" label="標題" />
-              <AppointmentDatePicker />
-              <TextFormField name="time" label="時段" />
-              <TextFormField name="site" label="球場" />
-              <FeeFormField />
-              <AddressFields />
-              <HeadcountFormField />
+              <TextFormField
+                name="title"
+                label="標題"
+                disabled={formDisabled}
+              />
+              <AppointmentDatePicker disabled={formDisabled} />
+              <TextFormField name="time" label="時段" disabled={formDisabled} />
+              <TextFormField name="site" label="球場" disabled={formDisabled} />
+              <FeeFormField disabled={formDisabled} />
+              <AddressFields disabled={formDisabled} />
+              <HeadcountFormField disabled={formDisabled} />
             </div>
           </form>
           <div className="w-[600px] self-center border border-t-0 border-line-gray ">
@@ -89,7 +115,10 @@ export function Component() {
                   <div className="grid size-10 place-items-center rounded-full border border-line-gray bg-light-gray">
                     <img className="" src={pfp} />
                   </div>
-                  <UnderscoredInput className="flex-1" />
+                  <UnderscoredInput
+                    disabled={formDisabled}
+                    className="flex-1"
+                  />
                 </div>
               </div>
             </div>

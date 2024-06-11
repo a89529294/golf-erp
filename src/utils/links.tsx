@@ -136,17 +136,17 @@ export const linksKV = {
         type: "multiple" as const,
         allowedPermissions: ["高爾夫球-基本操作"],
       },
-      "appointment-management": {
-        label: "預約管理",
+      "invitation-management": {
+        label: "邀約管理",
         paths: {
-          index: `${GOLF_BASE_PATH}/appointment-management`,
-          new: `${GOLF_BASE_PATH}/appointment-management/new`,
-          details: `${GOLF_BASE_PATH}/appointment-management/:appointmentId`,
+          index: `${GOLF_BASE_PATH}/invitation-management`,
+          new: `${GOLF_BASE_PATH}/invitation-management/new`,
+          details: `${GOLF_BASE_PATH}/invitation-management/:appointmentId`,
         },
         lazy: {
-          index: () => import("@/pages/golf/appointment-management"),
-          new: () => import("@/pages/golf/appointment-management/new"),
-          details: () => import("@/pages/golf/appointment-management/details"),
+          index: () => import("@/pages/golf/invitation-management"),
+          new: () => import("@/pages/golf/invitation-management/new"),
+          details: () => import("@/pages/golf/invitation-management/details"),
         },
         type: "multiple" as const,
         allowedPermissions: ["高爾夫球-基本操作"],

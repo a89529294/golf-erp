@@ -89,6 +89,11 @@ body,
   height: 100%;
 }
 
+/* hide time icon */
+input[type="time"]::-webkit-calendar-picker-indicator {
+  display: none;
+}
+
 /* Hide arrows in Chrome, Safari, Edge, and Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
