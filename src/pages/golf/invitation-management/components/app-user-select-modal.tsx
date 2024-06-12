@@ -14,10 +14,11 @@ import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { ColumnDef } from "@tanstack/react-table";
 import { ReactElement, useState } from "react";
 import { UseFormReturn, useFormContext } from "react-hook-form";
-import { formSchema } from "..";
 import { z } from "zod";
+import { formSchema } from "..";
 
 export function AppUserSelectModal({
+  type,
   columns,
   dialogTriggerChildren,
   appUsers,
@@ -25,6 +26,7 @@ export function AppUserSelectModal({
   isPending,
   enableMultiRowSelection,
 }: {
+  type: "host" | "members";
   columns: ColumnDef<SimpleMember>[];
   dialogTriggerChildren: ReactElement;
   appUsers: SimpleMember[];
@@ -32,17 +34,13 @@ export function AppUserSelectModal({
   isPending: boolean;
   enableMultiRowSelection: boolean;
 }) {
+  const isMembers = type === "members";
   const form = useFormContext() as UseFormReturn<z.infer<typeof formSchema>>;
-
+  const rowSelection = form
+    .getValues(isMembers ? "members" : "host")
+    .reduce((acc, curr) => ({ ...acc, [curr.id]: true }), {});
   const [open, setOpen] = useState(false);
-  const [rowSelection, setRowSelection] = useState(
-    form.watch("members").reduce((acc, curr) => {
-      return {
-        ...acc,
-        [curr.id]: true,
-      };
-    }, {}),
-  );
+
   const [globalFilter, setGlobalFilter] = useState("");
 
   return (
@@ -50,14 +48,6 @@ export function AppUserSelectModal({
       open={open}
       onOpenChange={(open) => {
         setOpen(open);
-        setRowSelection(
-          form.watch("members").reduce((acc, curr) => {
-            return {
-              ...acc,
-              [curr.id]: true,
-            };
-          }, {}),
-        );
       }}
     >
       <DialogTrigger asChild>{dialogTriggerChildren}</DialogTrigger>
@@ -85,7 +75,24 @@ export function AppUserSelectModal({
                 columns={columns}
                 data={appUsers}
                 rowSelection={rowSelection}
-                setRowSelection={setRowSelection}
+                setRowSelection={(setRowSelection) => {
+                  const rs =
+                    typeof setRowSelection === "function"
+                      ? setRowSelection(
+                          form
+                            .getValues("members")
+                            .reduce(
+                              (acc, curr) => ({ ...acc, [curr.id]: true }),
+                              {},
+                            ),
+                        )
+                      : setRowSelection;
+                  console.log(rs);
+                  form.setValue(
+                    "members",
+                    appUsers.filter((au) => Object.keys(rs).includes(au.id)),
+                  );
+                }}
                 getRowId={(row) => row.id}
                 globalFilter={globalFilter}
                 setGlobalFilter={setGlobalFilter}

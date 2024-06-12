@@ -39,7 +39,7 @@ export function Component() {
       district: "",
       address: "",
       headcount: "",
-      host: "",
+      host: [],
       members: [],
     },
   });
@@ -57,8 +57,7 @@ export function Component() {
           inviteDateTime: `${values.date.getFullYear()}-${(values.date.getMonth() + 1).toString().padStart(2, "0")}-${values.date.getDate().toString().padStart(2, "0")}T${values.time}Z`,
           price: values.price,
           inviteCount: values.headcount,
-          hostId:
-            typeof values.host === "string" ? values.host : values.host.id,
+          hostId: values.host[0].id,
           memberIds: values.members.map((m) => m.id),
         }),
         headers: {

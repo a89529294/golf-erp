@@ -6,16 +6,22 @@ import { linksKV } from "@/utils/links";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { Link, useLoaderData, useParams } from "react-router-dom";
+import { Link, useLoaderData, useNavigate, useParams } from "react-router-dom";
 import { z } from "zod";
 import { formSchema } from "..";
 import { InvitationForm } from "../components/invitation-form";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { storesWithoutEmployeesQuery } from "../new/loader";
 import { genInvitationDetailsQuery, loader } from "./loader";
 import { membersQuery } from "@/pages/member-management/loader";
+import { filterObject, fromDateAndTimeToDateTimeString } from "@/utils";
+import { InvitationPATCH } from "../loader";
+import { privateFetch } from "@/utils/utils";
+import { toast } from "sonner";
 
 export function Component() {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { invitationId } = useParams();
   const [formDisabled, setFormDisabled] = React.useState(true);
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
@@ -31,7 +37,26 @@ export function Component() {
     ...membersQuery,
     initialData: initialData.appUsers,
   });
-
+  const { mutate, isPending } = useMutation({
+    mutationKey: ["patch-invitation"],
+    mutationFn: async (v: InvitationPATCH) => {
+      return await privateFetch(`/store/golf/invite/${invitationId}`, {
+        method: "PATCH",
+        body: JSON.stringify(v),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    },
+    onSuccess() {
+      toast.success("更新邀約成功"),
+        queryClient.invalidateQueries({ queryKey: ["invitations"] });
+      navigate("/golf/invitation-management");
+    },
+    onError() {
+      toast.error("更新邀約失敗");
+    },
+  });
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -45,7 +70,7 @@ export function Component() {
       district: invitation.store.district,
       address: invitation.store.address,
       headcount: invitation.inviteCount.toString(),
-      host: invitation.host ?? "",
+      host: invitation.host,
       members: invitation.members,
     },
   });
@@ -53,7 +78,28 @@ export function Component() {
   function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    console.log(values);
+    const x: InvitationPATCH = {};
+
+    const changedValues = filterObject(
+      values,
+      Object.keys(
+        form.formState.dirtyFields,
+      ) as (keyof typeof form.formState.dirtyFields)[],
+    );
+
+    if (changedValues.title) x.title = values.title;
+    if (changedValues.date || changedValues.time)
+      x.inviteDateTime = fromDateAndTimeToDateTimeString(
+        values.date,
+        values.time,
+      );
+    if (changedValues.price) x.price = +values.price;
+    if (changedValues.headcount) x.inviteCount = +values.headcount;
+    if (changedValues.introduce) x.introduce = values.introduce;
+    if (changedValues.host) x.hostId = values.host[0].id;
+    if (changedValues.members) x.memberIds = values.members.map((m) => m.id);
+
+    mutate(x);
   }
 
   return (
@@ -85,7 +131,12 @@ export function Component() {
               編輯
             </IconButton>
           ) : (
-            <IconButton icon="save" form="appointment-form" type="submit">
+            <IconButton
+              disabled={isPending}
+              icon="save"
+              form="appointment-form"
+              type="submit"
+            >
               儲存
             </IconButton>
           )}
@@ -95,7 +146,7 @@ export function Component() {
       <InvitationForm
         form={form}
         onSubmit={onSubmit}
-        disabled={formDisabled}
+        disabled={formDisabled || isPending}
         stores={stores.data}
         appUsers={appUsers}
       />

@@ -86,5 +86,9 @@ export function toLocaleNumber(num: number) {
 }
 
 export function fromDateToDateTimeString(d: Date) {
-  return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()} ${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`;
+  return `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, "0")}-${d.getDate().toString().padStart(2, "0")} ${d.getHours().toString().padStart(2, "0")}:${d.getMinutes().toString().padStart(2, "0")}:${d.getSeconds().toString().padStart(2, "0")}`;
+}
+
+export function fromDateAndTimeToDateTimeString(d: Date, time: string) {
+  return `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, "0")}-${d.getDate().toString().padStart(2, "0")}T${time.split(":")[0].padStart(2, "0")}:${time.split(":")[1].padStart(2, "0")}`;
 }

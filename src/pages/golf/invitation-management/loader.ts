@@ -20,8 +20,8 @@ export const invitationDetailsSchema = z
     id: d.id,
     title: d.title,
     introduce: d.introduce,
-    date: `${d.inviteDateTime.getFullYear()}/${d.inviteDateTime.getMonth() + 1}/${d.inviteDateTime.getDate()}`,
-    time: `${d.inviteDateTime.getHours()}:${d.inviteDateTime.getMinutes()}`,
+    date: `${d.inviteDateTime.getFullYear().toString().padStart(2, "0")}/${(d.inviteDateTime.getMonth() + 1).toString().padStart(2, "0")}/${d.inviteDateTime.getDate().toString().padStart(2, "0")}`,
+    time: `${d.inviteDateTime.getHours().toString().padStart(2, "0")}:${d.inviteDateTime.getMinutes().toString().padStart(2, "0")}`,
     price: d.price,
     inviteCount: d.inviteCount,
     store: {
@@ -31,8 +31,8 @@ export const invitationDetailsSchema = z
       district: d.store.district,
       address: d.store.address,
     },
-    members: d.members?.map((m) => ({ id: m.id, name: m.chName })),
-    host: d.host,
+    members: d.members ? d.members : [],
+    host: d.host ? [d.host] : [],
   }));
 
 const invitationsSchema = z.object({
@@ -40,6 +40,16 @@ const invitationsSchema = z.object({
 });
 
 export type Invitation = z.infer<typeof invitationsSchema>["data"][number];
+
+export type InvitationPATCH = Partial<{
+  title: string;
+  inviteDateTime: string;
+  price: number;
+  inviteCount: number;
+  introduce: string;
+  hostId: string;
+  memberIds: string[];
+}>;
 
 export const invitationsQuery = {
   queryKey: ["invitations"],
