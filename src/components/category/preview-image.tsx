@@ -2,6 +2,7 @@ import React from "react";
 import redXIcon from "@/assets/red-x-icon.svg";
 import { cn } from "@/lib/utils";
 import { FileWithId, ExistingImg } from "@/utils/category/schemas";
+import { fromImageIdsToSrc } from "@/utils";
 
 export function PreviewImage({
   file,
@@ -12,17 +13,18 @@ export function PreviewImage({
   onRemoveImage: (id: string) => void;
   disabled?: boolean;
 }) {
-  const [imgSrc, setImgSrc] = React.useState(() =>
-    "src" in file ? file.src : "",
-  );
+  const [imgSrc, setImgSrc] = React.useState("");
 
   React.useEffect(() => {
-    if ("src" in file) return;
-    const reader = new FileReader();
-    reader.readAsDataURL(file.file);
-    reader.onload = (e) => {
-      setImgSrc((e.target?.result ?? "") as string);
-    };
+    if ("src" in file) {
+      fromImageIdsToSrc([file.src]).then((v) => setImgSrc(v[0]));
+    } else {
+      const reader = new FileReader();
+      reader.readAsDataURL(file.file);
+      reader.onload = (e) => {
+        setImgSrc((e.target?.result ?? "") as string);
+      };
+    }
   }, [file]);
 
   return (

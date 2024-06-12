@@ -9,6 +9,7 @@ export function Section({
   inputButton,
   children,
   disabled,
+  myRef,
 }: {
   title: string;
   subTitle?: string;
@@ -18,11 +19,17 @@ export function Section({
   };
   children: React.ReactNode;
   disabled?: boolean;
+  myRef?: React.MutableRefObject<HTMLElement | null>;
 }) {
-  const sectionRef = useRef<HTMLElement>(null);
+  const sectionRef = useRef<HTMLElement | null>(null);
 
   return (
-    <section ref={sectionRef}>
+    <section
+      ref={(o) => {
+        sectionRef.current = o;
+        if (myRef) myRef.current = o;
+      }}
+    >
       <header className="flex items-center py-2.5 pl-5 ">
         <span className="font-semibold">{title}</span>
         {subTitle && (

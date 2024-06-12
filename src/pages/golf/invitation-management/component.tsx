@@ -7,8 +7,10 @@ import React from "react";
 import { Link, useLoaderData } from "react-router-dom";
 import { columns } from "./data-table/columns";
 import { DataTable } from "./data-table/data-table";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { invitationsQuery, loader } from "./loader";
+import { privateFetch } from "@/utils/utils";
+import { toast } from "sonner";
 
 // const data = [
 //   {
@@ -104,12 +106,38 @@ import { invitationsQuery, loader } from "./loader";
 // ];
 
 export function Component() {
+  const queryClient = useQueryClient();
   const [rowSelection, setRowSelection] = React.useState({});
   const [globalFilter, setGlobalFilter] = React.useState("");
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
   const { data } = useQuery({
     ...invitationsQuery,
     initialData,
+  });
+  const { mutate: deleteInvitations, isPending } = useMutation({
+    mutationKey: ["delete-invitations"],
+    mutationFn: async (ids: string[]) => {
+      const promises: Promise<Response>[] = [];
+
+      ids.forEach((id) =>
+        promises.push(
+          privateFetch(`/store/golf/invite/${id}`, {
+            method: "DELETE",
+          }),
+        ),
+      );
+
+      await Promise.all(promises);
+    },
+    onSuccess() {
+      queryClient.invalidateQueries({
+        queryKey: ["invitations"],
+      });
+      toast.success("刪除邀約成功");
+    },
+    onError() {
+      toast.error("刪除邀約失敗");
+    },
   });
 
   return (
@@ -124,7 +152,13 @@ export function Component() {
             新增預約
           </Link>
           {Object.keys(rowSelection).length > 0 && (
-            <IconWarningButton icon="trashCan">刪除</IconWarningButton>
+            <IconWarningButton
+              icon="trashCan"
+              onClick={() => deleteInvitations(Object.keys(rowSelection))}
+              disabled={isPending}
+            >
+              刪除
+            </IconWarningButton>
           )}
         </>
       }

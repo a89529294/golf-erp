@@ -1,3 +1,4 @@
+import { MemberType } from "@/pages/member-management/loader";
 import { z } from "zod";
 
 const fileWithIdSchema = z.object({
@@ -22,19 +23,9 @@ const openingDatesSchema = {
       id: z.string(),
       start: z.union([z.date(), z.undefined()]).refine((v) => v),
       end: z.union([z.date(), z.undefined()]).refine((v) => v),
-      saved: z.boolean(),
+      saved: z.boolean().refine((v) => v),
     }),
   ),
-  // .superRefine((dates, ctx) => {
-  //   const errorIds = dates.map((d) => (d.saved ? "" : d.id)).filter((v) => v);
-  //   console.log(errorIds);
-  //   errorIds.forEach((id) =>
-  //     ctx.addIssue({
-  //       code: "custom",
-  //       message: id,
-  //     }),
-  //   );
-  // }),
 };
 const baseSchema = z
   .object({})
@@ -101,8 +92,8 @@ const weekdaySchema = z.array(
         id: z.string(),
         memberLevel: z.union([
           z.literal("guest"),
-          z.literal("member"),
-          z.literal("group-member"),
+          z.literal("group-user"),
+          z.literal("common-user"),
         ]),
         partyOf1Fee: z.union([z.number(), z.literal("")]),
         partyOf2Fee: z.union([z.number(), z.literal("")]),
@@ -110,7 +101,7 @@ const weekdaySchema = z.array(
         partyOf4Fee: z.union([z.number(), z.literal("")]),
       }),
     ),
-    saved: z.boolean(),
+    saved: z.boolean().refine((v) => v),
   }),
 );
 type WeekdayContent = z.infer<typeof weekdaySchema>[number];
@@ -151,15 +142,6 @@ const venueSettingsSchema = {
       saved: z.boolean(),
     }),
   ),
-  // .superRefine((settings, ctx) => {
-  //   settings.forEach((s) => {
-  //     if (!s.saved)
-  //       ctx.addIssue({
-  //         code: "custom",
-  //         message: s.id,
-  //       });
-  //   });
-  // }),
 };
 type VenueSettingsRowContent = z.infer<
   (typeof venueSettingsSchema)["venueSettings"]
@@ -273,17 +255,48 @@ export const golfSitesSchema = z.object({
     genericSitesSchema.extend({
       openTimes: z.array(
         z.object({
+          id: z.string(),
+          title: z.string(),
+          day: z.union([
+            z.literal(0),
+            z.literal(1),
+            z.literal(2),
+            z.literal(3),
+            z.literal(4),
+            z.literal(5),
+            z.literal(6),
+          ]),
+          openQuantity: z.number(),
           sequence: z.number(),
           startTime: z.string(),
           endTime: z.string(),
-          pricePerHour: z.string(),
+          pricePerHour: z.string().transform((v) => {
+            const data = JSON.parse(v) as {
+              membershipType: MemberType;
+              "1": number;
+              "2": number;
+              "3": number;
+              "4": number;
+            }[];
+
+            return data;
+          }),
         }),
       ),
+      store: z.object({
+        id: z.string(),
+      }),
     }),
   ),
 });
 
+type Equipment = {
+  name: string;
+  isActive: boolean;
+};
+
 export {
+  type Equipment,
   weekdays,
   type Weekday,
   type WeekdayContent,

@@ -19,6 +19,7 @@ import { StoreWithoutEmployees } from "@/pages/store-management/loader";
 import {
   fromImageIdsToSrc,
   getDifferenceInHoursAndMinutes,
+  numberToWeekDay,
   toMinguoDate,
 } from "@/utils";
 import {
@@ -66,7 +67,11 @@ export function CategoryMain({
         simulator: simulatorSitesSchema,
         golf: golfSitesSchema,
       };
-      const sites = schemaMap[type].parse(await response.json()).data;
+
+      const x = await response.json();
+      console.log(schemaMap[type].safeParse(x));
+
+      const sites = schemaMap[type].parse(x).data;
 
       return sites;
     },
@@ -159,26 +164,45 @@ export function CategoryMain({
                     ] as const,
                 );
 
-                const openingHours = (
-                  section.openTimes
+                const openingHours = [] as {
+                  hours: string;
+                  duration: string;
+                  fee: string;
+                }[];
+                const openingWeekDays = [] as { day: string; hours: string }[];
+
+                if (type !== "golf") {
+                  (section.openTimes
                     ? section.openTimes.toSorted(
                         (a, b) => a.sequence - b.sequence,
                       )
                     : []
-                ).map((v) => {
-                  const startHour = +v.startTime.slice(11, 16).split(":")[0];
-                  const startMin = +v.startTime.slice(11, 16).split(":")[1];
-                  const endHour = +v.endTime.slice(11, 16).split(":")[0];
-                  const endMin = +v.endTime.slice(11, 16).split(":")[1];
-                  return {
-                    hours: `${v.startTime.slice(11, 16)}～${v.endTime.slice(11, 16)}`,
-                    duration: getDifferenceInHoursAndMinutes(
-                      startHour * 60 + startMin,
-                      endHour * 60 + endMin,
-                    ),
-                    fee: `${v.pricePerHour}元`,
-                  };
-                });
+                  ).forEach((v) => {
+                    const startHour = +v.startTime.slice(11, 16).split(":")[0];
+                    const startMin = +v.startTime.slice(11, 16).split(":")[1];
+                    const endHour = +v.endTime.slice(11, 16).split(":")[0];
+                    const endMin = +v.endTime.slice(11, 16).split(":")[1];
+
+                    openingHours.push({
+                      hours: `${v.startTime.slice(11, 16)}～${v.endTime.slice(11, 16)}`,
+                      duration: getDifferenceInHoursAndMinutes(
+                        startHour * 60 + startMin,
+                        endHour * 60 + endMin,
+                      ),
+                      fee: `${v.pricePerHour}元`,
+                    });
+                  });
+                } else {
+                  section.openTimes
+                    ?.sort((a, b) => a.sequence - b.sequence)
+                    .forEach((s) => {
+                      if ("day" in s)
+                        openingWeekDays.push({
+                          day: numberToWeekDay[s.day],
+                          hours: `${s.startTime.slice(11, 16)}～${s.endTime.slice(11, 16)}`,
+                        });
+                    });
+                }
 
                 return (
                   <Section
@@ -198,6 +222,7 @@ export function CategoryMain({
                       .map((e) => e.name)}
                     openingDates={openingDates}
                     openingHours={openingHours}
+                    openingWeekDays={openingWeekDays}
                     siteDetailsHref={siteDetailsHref}
                     siteDeleteHref={`/store/${type}/${section.id}`}
                   />
@@ -220,6 +245,7 @@ function Section({
   equipments,
   openingDates,
   openingHours,
+  openingWeekDays,
   siteDetailsHref,
   siteDeleteHref,
 }: {
@@ -235,6 +261,7 @@ function Section({
     duration: string;
     fee: string;
   }[];
+  openingWeekDays: { day: string; hours: string }[];
   siteDetailsHref: string;
   siteDeleteHref: string;
 }) {
@@ -250,7 +277,7 @@ function Section({
   }, [imgId]);
 
   return (
-    <section className="grid grid-cols-[128px_1fr_120px_192px_305px_20px] gap-x-2.5 border border-line-gray bg-white p-4">
+    <section className="grid grid-cols-[128px_1fr_150px_192px_305px_20px] gap-x-2.5 border border-line-gray bg-white p-4">
       {imgId ? (
         !img ? (
           <Skeleton className="mr-1.5 h-32 w-32 rounded-none bg-[#c1c1c1]" />
@@ -285,27 +312,39 @@ function Section({
         )}
       />
 
-      <MiddleSection
-        header="場地開放時間"
-        list={openingHours}
-        liContentRenderer={(h) => (
-          <>
-            {h.hours}
-            <span className="px-2.5 text-line-gray">|</span>
-            {h.duration}
-            <div className="w-1" />
-            {h.fee}
-          </>
-        )}
-      />
+      {type === "golf" ? (
+        <MiddleSection
+          header="場地開放時間"
+          list={openingWeekDays}
+          liContentRenderer={(h) => (
+            <>
+              {h.day}
+              <span className="px-2.5 text-line-gray">|</span>
+              {h.hours}
+            </>
+          )}
+        />
+      ) : (
+        <MiddleSection
+          header="場地開放時間"
+          list={openingHours}
+          liContentRenderer={(h) => (
+            <>
+              {h.hours}
+              <span className="px-2.5 text-line-gray">|</span>
+              {h.duration}
+              <div className="w-1" />
+              {h.fee}
+            </>
+          )}
+        />
+      )}
 
       <div className="flex flex-col gap-4 self-start">
-        {/* TODO remove the check once golf is working  */}
-        {type !== "golf" && (
-          <Link to={`${siteDetailsHref}/${id}`}>
-            <img src={pencilIcon} />
-          </Link>
-        )}
+        <Link to={`${siteDetailsHref}/${id}`}>
+          <img src={pencilIcon} />
+        </Link>
+
         <Modal
           dialogTriggerChildren={
             <button>

@@ -13,7 +13,7 @@ export const WeekDayTabsList = React.forwardRef<
   <TabsList
     ref={ref}
     className={cn(
-      "flex h-auto justify-start gap-3  bg-light-gray px-5 py-2.5",
+      "flex h-auto justify-start gap-3 bg-light-gray px-5 py-2.5",
       className,
     )}
     {...props}
@@ -27,8 +27,9 @@ export const WeekDayTabsTrigger = React.forwardRef<
   <TabsTrigger
     ref={ref}
     className={cn(
-      "group relative rounded-full bg-white px-5 py-3 text-base font-normal text-secondary-dark  transition-colors duration-1000 data-[state=active]:text-white",
+      "group relative rounded-full bg-white px-5 py-3 text-base font-normal text-secondary-dark transition-colors duration-1000 data-[state=active]:text-white",
       className,
+      isActive ? "z-10" : "z-0",
     )}
     {...props}
   >
@@ -47,17 +48,22 @@ export const WeekDayTabs = ({
   onRemove,
   onSave,
   disabled,
+  activeValue,
+  setActiveValue,
+  myRef,
 }: {
   onEdit: (weekday: Weekday, id: string) => void;
   onRemove: (weekday: Weekday, id: string) => void;
   onSave: (weekday: Weekday, content: WeekdayContent) => void;
   disabled?: boolean;
+  activeValue: Weekday;
+  setActiveValue: (s: string) => void;
+  myRef?: React.RefObject<HTMLDivElement>;
 }) => {
   const form = useFormContext();
-  const [activeValue, setActiveValue] = React.useState("monday");
 
   return (
-    <Tabs value={activeValue} onValueChange={setActiveValue}>
+    <Tabs ref={myRef} value={activeValue} onValueChange={setActiveValue}>
       <WeekDayTabsList>
         <WeekDayTabsTrigger
           disabled={disabled}

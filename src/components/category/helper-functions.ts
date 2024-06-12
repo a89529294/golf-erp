@@ -364,6 +364,9 @@ export function onRemoveWeekdayTimeRange(
   form.setValue(
     day,
     form.getValues(day).filter((d) => d.id !== id),
+    {
+      shouldDirty: true,
+    },
   );
 }
 export function onSaveWeekdayTimeRange(
@@ -383,6 +386,7 @@ export function onSaveWeekdayTimeRange(
     form
       .getValues(day)
       .map((d) => (d.id === content.id ? { ...content, saved: true } : d)),
+    { shouldDirty: true },
   );
 }
 

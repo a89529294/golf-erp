@@ -6,19 +6,22 @@ import { equipments } from "@/utils/category/equipment";
 import { NewGolfCourse, newGolfCourseSchema } from "@/utils/category/schemas";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { useLoaderData, useNavigate } from "react-router-dom";
 import { loader } from "./loader";
 import { golfStoresQuery } from "../loader";
+import { privateFetch } from "@/utils/utils";
+import { toast } from "sonner";
 
 export function Component() {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
   const { data: stores } = useQuery({
     ...golfStoresQuery,
     initialData,
   });
-  const navigate = useNavigate();
   const form = useForm<NewGolfCourse>({
     resolver: zodResolver(newGolfCourseSchema),
     defaultValues: {
@@ -34,6 +37,88 @@ export function Component() {
       friday: [],
       saturday: [],
       sunday: [],
+    },
+  });
+  const { mutate, isPending } = useMutation({
+    mutationKey: ["add-new-golf-site"],
+    mutationFn: async (v: NewGolfCourse) => {
+      const body = JSON.stringify({
+        name: v.name,
+        introduce: v.description,
+        equipment: JSON.stringify(
+          v.equipments.map((e) => ({
+            name: e.label,
+            isActive: e.selected,
+          })),
+        ),
+        storeId: v.storeId,
+        openDays: v.openingDates.map((od, idx) => ({
+          sequence: idx + 1,
+          startDay: od.start?.toISOString(),
+          endDay: od.end?.toISOString(),
+        })),
+        openTimes: [
+          v.sunday,
+          v.monday,
+          v.tuesday,
+          v.wednesday,
+          v.thursday,
+          v.friday,
+          v.saturday,
+        ].flatMap((day, idx) => {
+          return day.map((d, index) => {
+            return {
+              day: idx,
+              title: d.title,
+              startTime: `2023-01-01T${d.start}`,
+              endTime: `2023-01-01T${d.end}`,
+              openQuantity: d.numberOfGroups,
+              sequence: index + 1,
+              pricePerHour: JSON.stringify(
+                d.subRows.map((v) => {
+                  return {
+                    membershipType: v.memberLevel,
+                    1: v.partyOf1Fee,
+                    2: v.partyOf2Fee,
+                    3: v.partyOf3Fee,
+                    4: v.partyOf4Fee,
+                  };
+                }),
+              ),
+            };
+          });
+        }),
+      });
+
+      const response = await privateFetch("/store/golf", {
+        method: "POST",
+        body,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const { id } = (await response.json()) as { id: string };
+
+      if (v.imageFiles.length) {
+        const formData = new FormData();
+        v.imageFiles.forEach((img) => formData.append("image", img.file));
+
+        await privateFetch(`/store/golf/${id}/cover`, {
+          method: "POST",
+          body: formData,
+        });
+      }
+    },
+    onSuccess() {
+      queryClient.invalidateQueries({
+        queryKey: ["sites-for-store"],
+      });
+      toast.success("新增高爾夫場地");
+      navigate(`/golf/site-management/${form.getValues("storeId")}`);
+    },
+    onError() {
+      toast.error("無法新增高爾夫場地");
     },
   });
 
@@ -57,9 +142,9 @@ export function Component() {
         <Form {...form}>
           <Site
             type="golf"
-            formDisabled={false}
+            formDisabled={isPending}
             stores={stores}
-            onSubmit={() => {}}
+            onSubmit={(v) => mutate(v as NewGolfCourse)}
           />
         </Form>
       </div>

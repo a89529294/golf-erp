@@ -33,6 +33,7 @@ import {
   Plan,
   TimeRange,
   VenueSettingsRowContent,
+  Weekday,
 } from "@/utils/category/schemas";
 import React, { useRef } from "react";
 import { UseFormReturn, useFormContext } from "react-hook-form";
@@ -85,6 +86,8 @@ export function Site({
   const openingHoursRef = useRef<HTMLLIElement>(null);
   const plansRef = useRef<HTMLLIElement>(null);
   const venueSettingsRef = useRef<HTMLLIElement>(null);
+  const openingTimesRef = useRef<HTMLElement | null>(null);
+  const [activeValue, setActiveValue] = React.useState<Weekday>("monday");
   const form = useFormContext<S[typeof type]>();
 
   return (
@@ -92,14 +95,23 @@ export function Site({
       onSubmit={form.handleSubmit(
         (v) => {
           console.log(v);
+          console.log(form.formState.dirtyFields);
+
+          // if (form.getValues("openingDates").some((v) => v.saved === false)) {
+          //   openingDateRangeRef.current?.scrollIntoView();
+          // }
+
           onSubmit(v);
         },
         (e) => {
+          console.log(form.getValues("openingDates"));
           console.log(e);
           e.openingDates && openingDateRangeRef.current?.scrollIntoView();
           if ("venueSettings" in e) venueSettingsRef.current?.scrollIntoView();
           if ("openingHours" in e) openingHoursRef.current?.scrollIntoView();
           if ("plans" in e) plansRef.current?.scrollIntoView();
+          if ("monday" in e || "tuesday" in e)
+            openingTimesRef.current?.scrollIntoView();
         },
       )}
       className="space-y-10 px-20"
@@ -250,7 +262,7 @@ export function Site({
               <input
                 type="button"
                 className="hidden"
-                onClick={() => onAddNewWeekdayTimeRange("monday", form)}
+                onClick={() => onAddNewWeekdayTimeRange(activeValue, form)}
               />
             ),
           }}
@@ -258,6 +270,7 @@ export function Site({
             formDisabled
             // || form.getValues("weekday").some((v) => !v.saved)
           }
+          myRef={openingTimesRef}
         >
           <WeekDayTabs
             onEdit={(weekday, id) => onEditWeekdayTimeRange(weekday, id, form)}
@@ -267,6 +280,8 @@ export function Site({
             onSave={(weekday, content) =>
               onSaveWeekdayTimeRange(weekday, content, form)
             }
+            activeValue={activeValue}
+            setActiveValue={(s) => setActiveValue(s as Weekday)}
           />
         </Section>
       )}

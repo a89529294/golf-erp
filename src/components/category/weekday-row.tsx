@@ -199,8 +199,8 @@ export function WeekdayRow({
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="guest">來賓</SelectItem>
-                      <SelectItem value="group-member">團體會員</SelectItem>
-                      <SelectItem value="member">會員</SelectItem>
+                      <SelectItem value="group-user">團體會員</SelectItem>
+                      <SelectItem value="common-user">會員</SelectItem>
                     </SelectContent>
                   </Select>
                 </label>
