@@ -6,16 +6,19 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { UnderscoredInput } from "@/components/underscored-input";
+import { cn } from "@/lib/utils";
 import { useFormContext } from "react-hook-form";
 
 export function FormTextField({
   name,
   label,
   disabled,
+  className,
 }: {
   name: "name" | "description";
   label: string;
   disabled?: boolean;
+  className?: string;
 }) {
   const form = useFormContext();
   return (
@@ -23,7 +26,12 @@ export function FormTextField({
       control={form.control}
       name={name}
       render={({ field }) => (
-        <FormItem className="grid grid-cols-[auto_1fr] items-baseline gap-x-5">
+        <FormItem
+          className={cn(
+            "grid grid-cols-[auto_1fr] items-baseline gap-x-5",
+            className,
+          )}
+        >
           <FormLabel className="">{label}</FormLabel>
           <FormControl>
             <UnderscoredInput

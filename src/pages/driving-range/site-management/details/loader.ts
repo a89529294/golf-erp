@@ -28,6 +28,7 @@ const baseDrivingRangeSchema = z.object({
   introduce: z.string(),
   ballPrice: z.number(),
   equipment: z.string().nullable(),
+  isActive: z.boolean(),
 });
 
 export const drivingRangeGETSchema = z.object({
@@ -88,6 +89,7 @@ export const genDrivingRangeDetailsQuery = (
     })();
     return {
       name: parsed.name,
+      isActive: parsed.isActive,
       description: parsed.introduce,
       storeId: parsed.store.id,
       openingDates: parsed.openDays.map((v) => ({

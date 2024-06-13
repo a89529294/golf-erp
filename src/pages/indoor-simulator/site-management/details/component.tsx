@@ -40,6 +40,7 @@ export function Component() {
     resolver: zodResolver(existingIndoorSimulatorSchema),
     defaultValues: {
       name: data.name,
+      isActive: data.isActive,
       description: data.description,
       equipments: equipments,
       storeId: data.storeId,
@@ -119,7 +120,7 @@ export function Component() {
       if (changedValues["plans"]) {
         x.plans = changedValues["plans"];
       }
-
+      if (changedValues["isActive"]) x.isActive = changedValues["isActive"];
       await privateFetch(`/store/simulator/${siteId}`, {
         method: "PATCH",
         body: JSON.stringify(x),

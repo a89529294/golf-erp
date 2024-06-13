@@ -44,6 +44,7 @@ export function Component() {
     resolver: zodResolver(existingDrivingRangeSchema),
     defaultValues: {
       name: data.name,
+      isActive: data.isActive,
       description: data.description,
       storeId: data.storeId,
       equipments: data.equipments,
@@ -124,6 +125,7 @@ export function Component() {
           }
         });
       }
+      if (changedFields.isActive) x.isActive = changedFields.isActive;
       if ("imageFiles" in changedFields) {
         const deletedImages = defaultImageFiles.filter(
           (dif) => !changedFields.imageFiles?.find((cif) => cif.id === dif.id),

@@ -29,6 +29,7 @@ export function Component() {
     resolver: zodResolver(newDrivingRangeSchema),
     defaultValues: {
       name: "",
+      isActive: false,
       description: "",
       storeId: "",
       equipments: equipments,
@@ -45,6 +46,7 @@ export function Component() {
         method: "POST",
         body: JSON.stringify({
           name: v.name,
+          isActive: v.isActive,
           introduce: v.description,
           ballPrice: v.costPerBox,
           storeId: v.storeId,

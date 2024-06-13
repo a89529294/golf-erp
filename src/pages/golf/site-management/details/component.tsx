@@ -37,6 +37,7 @@ export function Component() {
     resolver: zodResolver(existingGolfCourseSchema),
     defaultValues: {
       name: data.name,
+      isActive: data.isActive,
       description: data.introduce,
       equipments: data.equipments,
       imageFiles: data.coverImages,
@@ -57,6 +58,7 @@ export function Component() {
       const promises: Promise<Response>[] = [];
       const x: Partial<{
         name: string;
+        isActive: boolean;
         introduce: string;
         storeId: string;
         equipments: string;
@@ -130,6 +132,7 @@ export function Component() {
           })),
         );
       }
+      if (changedValues.isActive) x.isActive = changedValues.isActive;
 
       if (changedValues.imageFiles) {
         // new images

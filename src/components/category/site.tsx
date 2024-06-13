@@ -60,6 +60,7 @@ import {
   onSelectEquipment,
 } from "./helper-functions";
 import { VenueSettingsRow } from "./venue-settings-row";
+import { Checkbox } from "@/components/ui/checkbox";
 
 type S = {
   golf: NewGolfCourse;
@@ -126,7 +127,32 @@ export function Site({
       id="site-details"
     >
       <section className="space-y-6 border border-line-gray bg-white px-12 py-10">
-        <FormTextField name="name" label="場地名稱" disabled={formDisabled} />
+        <div className="flex items-baseline gap-5">
+          <FormTextField
+            className="flex-1"
+            name="name"
+            label="場地名稱"
+            disabled={formDisabled}
+          />
+          <FormField
+            control={form.control}
+            name="isActive"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-start space-x-3 space-y-0 ">
+                <div className="space-y-1 leading-none">
+                  <FormLabel>使用中</FormLabel>
+                </div>
+                <FormControl>
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                    disabled={formDisabled}
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+        </div>
         <FormTextField
           name="description"
           label="場地簡介"

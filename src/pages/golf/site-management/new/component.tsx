@@ -26,6 +26,7 @@ export function Component() {
     resolver: zodResolver(newGolfCourseSchema),
     defaultValues: {
       name: "",
+      isActive: false,
       description: "",
       equipments: equipments,
       imageFiles: [],
@@ -44,6 +45,7 @@ export function Component() {
     mutationFn: async (v: NewGolfCourse) => {
       const body = JSON.stringify({
         name: v.name,
+        isActive: v.isActive,
         introduce: v.description,
         equipment: JSON.stringify(
           v.equipments.map((e) => ({

@@ -28,7 +28,7 @@ const openingDatesSchema = {
   ),
 };
 const baseSchema = z
-  .object({})
+  .object({ isActive: z.boolean() })
   .extend(nameSchema)
   .extend(descriptionSchema)
   .extend(storeIdSchema)
@@ -199,6 +199,7 @@ type ExistingDrivingRange = z.infer<typeof existingDrivingRangeSchema>;
 const genericSitesSchema = z.object({
   id: z.string(),
   name: z.string(),
+  isActive: z.boolean(),
   coverImages: z.array(z.string()),
   introduce: z.string(),
   equipment: z.string().nullable(),

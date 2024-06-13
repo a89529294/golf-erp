@@ -26,6 +26,7 @@ export function Component() {
     resolver: zodResolver(newIndoorSimulatorSchema),
     defaultValues: {
       name: "",
+      isActive: false,
       description: "",
       equipments: equipments,
       imageFiles: [],
@@ -43,6 +44,7 @@ export function Component() {
         method: "POST",
         body: JSON.stringify({
           name: form.getValues("name"),
+          isActive: form.getValues("isActive"),
           introduce: form.getValues("description"),
           storeId: form.getValues("storeId"),
           equipment: JSON.stringify(

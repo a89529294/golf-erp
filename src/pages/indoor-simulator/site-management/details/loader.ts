@@ -26,6 +26,7 @@ const baseSimulatorSchema = z.object({
   introduce: z.string(),
   equipment: z.string().nullable(),
   plans: plansSchema.plans.optional(),
+  isActive: z.boolean(),
 });
 
 export const simulatorGETSchema = z.object({
@@ -84,6 +85,7 @@ export const genSimulatorDetailsQuery = (storeId: string, siteId: string) => ({
 
     return {
       name: parsed.name,
+      isActive: parsed.isActive,
       description: parsed.introduce,
       storeId: parsed.store.id,
       equipments: transformedEquipments,
