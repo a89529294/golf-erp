@@ -170,6 +170,7 @@ export function Component() {
     },
     onSuccess: () => {
       navigate(`/driving-range/site-management/${storeId}`);
+      queryClient.invalidateQueries({ queryKey: ["sites-for-store"] });
       toast.success("刪除成功");
     },
     onError() {
@@ -226,7 +227,7 @@ export function Component() {
         </>
       }
     >
-      <div className="flex flex-col w-full gap-10 p-1 border border-line-gray bg-light-gray">
+      <div className="flex w-full flex-col gap-10 border border-line-gray bg-light-gray p-1">
         <h1 className="bg-mid-gray py-2.5 text-center text-black">
           編輯場地資料
         </h1>
@@ -238,6 +239,7 @@ export function Component() {
             stores={stores}
             type="driving-range"
             formDisabled={formDisabled || isPending}
+            isPending={isPending}
           />
         </Form>
       </div>

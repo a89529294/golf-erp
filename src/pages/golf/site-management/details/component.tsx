@@ -1,21 +1,25 @@
 import { Site } from "@/components/category/site";
-import { IconButton } from "@/components/ui/button";
+import { Modal } from "@/components/modal";
+import { IconButton, IconWarningButton } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { MainLayout } from "@/layouts/main-layout";
+import { filterObject, fromDateToDateTimeString } from "@/utils";
 import {
   ExistingGolfCourse,
   existingGolfCourseSchema,
 } from "@/utils/category/schemas";
+import { privateFetch } from "@/utils/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useLoaderData, useNavigate, useParams } from "react-router-dom";
-import { genGolfSiteDetailsQuery, loader } from "./loader";
+import { toast } from "sonner";
 import { golfStoresQuery } from "../loader";
-import { filterObject, fromDateToDateTimeString } from "@/utils";
+import { genGolfSiteDetailsQuery, loader } from "./loader";
 
 export function Component() {
+  const queryClient = useQueryClient();
   const [formDisabled, setFormDisabled] = useState(true);
   const navigate = useNavigate();
   const { storeId, siteId } = useParams();
@@ -50,6 +54,7 @@ export function Component() {
   const { mutate, isPending } = useMutation({
     mutationKey: ["patch-golf-site"],
     mutationFn: async () => {
+      const promises: Promise<Response>[] = [];
       const x: Partial<{
         name: string;
         introduce: string;
@@ -126,9 +131,67 @@ export function Component() {
         );
       }
 
-      // new images here
+      if (changedValues.imageFiles) {
+        // new images
+        const formData = new FormData();
 
-      // deleted image here
+        changedValues.imageFiles.forEach((img) => {
+          if ("file" in img) formData.append("image", img.file);
+        });
+
+        promises.push(
+          privateFetch(`/store/golf/${siteId}/cover`, {
+            method: "POST",
+            body: formData,
+          }),
+        );
+
+        // removed images
+        data.coverImages.forEach((img) => {
+          if (!changedValues.imageFiles?.find((ci) => ci.id === img.id))
+            promises.push(
+              privateFetch(`/store/golf/${siteId}/cover/${img.id}`, {
+                method: "DELETE",
+              }),
+            );
+        });
+      }
+
+      promises.push(
+        privateFetch(`/store/golf/${siteId}`, {
+          method: "PATCH",
+          body: JSON.stringify(x),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }),
+      );
+
+      await Promise.all(promises);
+    },
+    onSuccess() {
+      setFormDisabled(true);
+      toast.success("編輯成功");
+      queryClient.invalidateQueries({
+        queryKey: ["golf-site-details"],
+      });
+    },
+    onError() {
+      toast.error("編輯失敗");
+    },
+  });
+  const { mutateAsync: deleteSite } = useMutation({
+    mutationKey: ["delete-golf-site"],
+    mutationFn: async () => {
+      return privateFetch(`/store/golf/${siteId}`, { method: "DELETE" });
+    },
+    onSuccess: () => {
+      navigate(`/golf/site-management/${storeId}`);
+      queryClient.invalidateQueries({ queryKey: ["sites-for-store"] });
+      toast.success("刪除成功");
+    },
+    onError() {
+      toast.error("刪除失敗");
     },
   });
 
@@ -139,6 +202,15 @@ export function Component() {
           <IconButton icon="back" onClick={() => navigate(-1)}>
             返回
           </IconButton>
+
+          <Modal
+            dialogTriggerChildren={
+              <IconWarningButton icon="trashCan">刪除</IconWarningButton>
+            }
+            title={`確認刪除${form.getValues("name")}`}
+            onSubmit={deleteSite}
+          />
+
           {formDisabled ? (
             <IconButton
               icon="pencil"
@@ -153,6 +225,10 @@ export function Component() {
               type="submit"
               form="site-details"
               onClick={() => {}}
+              disabled={
+                Object.keys(form.formState.dirtyFields).length === 0 ||
+                isPending
+              }
             >
               儲存
             </IconButton>
@@ -166,10 +242,13 @@ export function Component() {
         </h1>
         <Form {...form}>
           <Site
-            onSubmit={() => {}}
+            onSubmit={() => {
+              mutate();
+            }}
             stores={stores}
-            formDisabled={formDisabled}
+            formDisabled={formDisabled || isPending}
             type={"golf"}
+            isPending={isPending}
           />
         </Form>
       </div>

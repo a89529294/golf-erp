@@ -347,7 +347,6 @@ export const sameRouteGroup = (path: string, nextPath: string) => {
     const x = obj.subLinks;
 
     return Object.values(x).flatMap((subLink) => {
-      console.log(subLink.paths);
       return subLink.type === "flat"
         ? subLink.path
         : Object.values(subLink.paths).map((v) => {

@@ -145,6 +145,7 @@ export function Component() {
             formDisabled={isPending}
             stores={stores}
             onSubmit={(v) => mutate(v as NewGolfCourse)}
+            isPending={isPending}
           />
         </Form>
       </div>

@@ -121,6 +121,7 @@ export function Component() {
             formDisabled={isPending}
             stores={stores}
             onSubmit={(v) => mutate(v as NewDrivingRange)}
+            isPending={isPending}
           />
         </Form>
       </div>

@@ -34,9 +34,6 @@ export function Component() {
   const [defaultOpeningDates, setDefaultOpeningDates] = useState(
     data.openingDates,
   );
-  const [defaultOpeningHours, setDefaultOpeningHours] = useState(
-    data.openingHours,
-  );
   const [defaultImageFiles, setDefaultImageFiles] = useState(data.imageFiles);
   const navigate = useNavigate();
   const form = useForm<z.infer<typeof existingIndoorSimulatorSchema>>({
@@ -84,22 +81,11 @@ export function Component() {
         });
       }
       if (changedValues["openingHours"]) {
-        x.openTimes = [];
-        changedValues.openingHours.forEach((v, i) => {
-          if (defaultOpeningHours.find((doh) => doh.id === v.id))
-            x.openTimes?.push({
-              id: v.id,
-              startTime: `${new Date().toISOString().slice(0, 10)}T${v.start}`,
-              endTime: `${new Date().toISOString().slice(0, 10)}T${v.end}`,
-              sequence: i + 1,
-            });
-          else
-            x.openTimes?.push({
-              startTime: `${new Date().toISOString().slice(0, 10)}T${v.start}`,
-              endTime: `${new Date().toISOString().slice(0, 10)}T${v.end}`,
-              sequence: i + 1,
-            });
-        });
+        x.openTime = {
+          startTime: `${new Date().toISOString().slice(0, 10)}T${changedValues["openingHours"].start}`,
+          endTime: `${new Date().toISOString().slice(0, 10)}T${changedValues["openingHours"].end}`,
+          sequence: 1,
+        };
       }
       if (changedValues["imageFiles"]) {
         const imagesToBeDeletedPromises: Promise<Response>[] = [];
@@ -171,7 +157,6 @@ export function Component() {
   useEffect(() => {
     form.reset(data);
     setDefaultOpeningDates(data.openingDates);
-    setDefaultOpeningHours(data.openingHours);
     setDefaultImageFiles(data.imageFiles);
   }, [data, form]);
 
@@ -222,6 +207,7 @@ export function Component() {
             stores={stores}
             formDisabled={formDisabled || isPending}
             type="indoor-simulator"
+            isPending={isPending}
           />
         </Form>
       </div>

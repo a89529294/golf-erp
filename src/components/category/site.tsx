@@ -31,7 +31,6 @@ import {
   NewGolfCourse,
   NewIndoorSimulator,
   Plan,
-  TimeRange,
   VenueSettingsRowContent,
   Weekday,
 } from "@/utils/category/schemas";
@@ -76,12 +75,15 @@ export function Site({
   formDisabled,
   stores,
   onSubmit,
+  isPending,
 }: {
   type: keyof S;
   formDisabled: boolean;
   stores: StoreWithoutEmployees[];
   onSubmit: (v: S[typeof type]) => void;
+  isPending: boolean;
 }): React.ReactElement {
+  const isNewSite = window.location.pathname.includes("/new");
   const openingDateRangeRef = useRef<HTMLLIElement>(null);
   const openingHoursRef = useRef<HTMLLIElement>(null);
   const plansRef = useRef<HTMLLIElement>(null);
@@ -90,16 +92,14 @@ export function Site({
   const [activeValue, setActiveValue] = React.useState<Weekday>("monday");
   const form = useFormContext<S[typeof type]>();
 
+  const openingHours = form.watch("openingHours");
+
   return (
     <form
       onSubmit={form.handleSubmit(
         (v) => {
           console.log(v);
           console.log(form.formState.dirtyFields);
-
-          // if (form.getValues("openingDates").some((v) => v.saved === false)) {
-          //   openingDateRangeRef.current?.scrollIntoView();
-          // }
 
           onSubmit(v);
         },
@@ -110,7 +110,15 @@ export function Site({
           if ("venueSettings" in e) venueSettingsRef.current?.scrollIntoView();
           if ("openingHours" in e) openingHoursRef.current?.scrollIntoView();
           if ("plans" in e) plansRef.current?.scrollIntoView();
-          if ("monday" in e || "tuesday" in e)
+          if (
+            "monday" in e ||
+            "tuesday" in e ||
+            "wednesday" in e ||
+            "thursday" in e ||
+            "friday" in e ||
+            "saturday" in e ||
+            "sunday" in e
+          )
             openingTimesRef.current?.scrollIntoView();
         },
       )}
@@ -133,13 +141,13 @@ export function Site({
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger
-                    disabled={formDisabled}
+                    disabled={!isNewSite || isPending}
                     className="h-7 rounded-none border-0 border-b border-secondary-dark pl-0"
                   >
                     <SelectValue placeholder="選擇廠商" />
                   </SelectTrigger>
                 </FormControl>
-                <SelectContent>
+                <SelectContent className="max-h-52">
                   {stores.map((store) => (
                     <SelectItem key={store.id} value={store.id}>
                       {store.name}
@@ -299,34 +307,22 @@ export function Site({
                 />
               ),
             }}
-            disabled={
-              formDisabled ||
-              form.getValues("openingHours").some((v) => !v.saved)
-            }
+            disabled={formDisabled || !!openingHours}
           >
-            {form.watch("openingHours").length ? (
-              <ul>
-                {form.getValues("openingHours").map((hours, i) => {
-                  return (
-                    <TimeRangeRow
-                      myRef={openingHoursRef}
-                      key={hours.id}
-                      onRemove={() => onRemoveOpeningTimeRange(hours.id, form)}
-                      onSave={(timeRange: TimeRange) =>
-                        onSaveOpeningTimeRange(timeRange, form)
-                      }
-                      data={hours}
-                      disabled={formDisabled}
-                      errorMessage={
-                        (form as UseFormReturn<NewIndoorSimulator>).formState
-                          .errors.openingHours?.[i]
-                          ? "請先儲存"
-                          : ""
-                      }
-                    />
-                  );
-                })}
-              </ul>
+            {openingHours ? (
+              <TimeRangeRow
+                myRef={openingHoursRef}
+                onRemove={() => onRemoveOpeningTimeRange(form)}
+                onSave={() => onSaveOpeningTimeRange(form)}
+                data={openingHours}
+                disabled={formDisabled}
+                errorMessage={
+                  (form as UseFormReturn<NewIndoorSimulator>).formState.errors
+                    .openingHours
+                    ? "請先儲存"
+                    : ""
+                }
+              />
             ) : (
               <p className="py-2.5">尚未新增開放時間</p>
             )}

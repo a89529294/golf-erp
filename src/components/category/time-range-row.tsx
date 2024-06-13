@@ -47,7 +47,6 @@ export function TimeRangeRow({
     // if (feeError) setErrorFields((ef) => ({ ...ef, fee: true }));
 
     onSave({
-      id: data.id,
       start,
       end,
       saved: true,

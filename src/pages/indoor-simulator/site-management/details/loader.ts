@@ -1,11 +1,10 @@
-import { fromImageIdsToSrc } from "@/utils";
+import { equipments } from "@/utils/category/equipment";
 import { ExistingIndoorSimulator, plansSchema } from "@/utils/category/schemas";
 import { queryClient } from "@/utils/query-client";
 import { privateFetch } from "@/utils/utils";
 import { LoaderFunctionArgs } from "react-router-dom";
 import { z } from "zod";
 import { indoorSimulatorStoresQuery } from "../loader";
-import { equipments } from "@/utils/category/equipment";
 
 const baseOpenDay = z.object({
   startDay: z.coerce.date(),
@@ -13,11 +12,13 @@ const baseOpenDay = z.object({
   sequence: z.number(),
 });
 
-const baseOpenTime = z.object({
-  startTime: z.string(),
-  endTime: z.string(),
-  sequence: z.number(),
-});
+const baseOpenTime = z
+  .object({
+    startTime: z.string(),
+    endTime: z.string(),
+    sequence: z.number(),
+  })
+  .optional();
 
 const baseSimulatorSchema = z.object({
   id: z.string(),
@@ -31,7 +32,7 @@ export const simulatorGETSchema = z.object({
   data: z.array(
     baseSimulatorSchema
       .extend({ openDays: z.array(baseOpenDay.extend({ id: z.string() })) })
-      .extend({ openTimes: z.array(baseOpenTime.extend({ id: z.string() })) })
+      .extend({ openTime: baseOpenTime })
       .extend({ coverImages: z.array(z.string()) })
       .extend({ store: z.object({ id: z.string() }) }),
   ),
@@ -42,7 +43,7 @@ export const simulatorPATCHSchema = baseSimulatorSchema
     openDays: z.array(baseOpenDay.extend({ id: z.string().optional() })),
   })
   .extend({
-    openTimes: z.array(baseOpenTime.extend({ id: z.string().optional() })),
+    openTime: baseOpenTime,
   })
   .extend({ storeId: z.string() });
 
@@ -57,6 +58,8 @@ export const genSimulatorDetailsQuery = (storeId: string, siteId: string) => ({
       `/store/${storeId}/simulator?populate=*`,
     );
     const data = await response.json();
+
+    console.log(simulatorGETSchema.safeParse(data));
 
     const parsed = simulatorGETSchema
       .parse(data)
@@ -90,18 +93,16 @@ export const genSimulatorDetailsQuery = (storeId: string, siteId: string) => ({
         start: v.startDay,
         end: v.endDay,
       })),
-      imageFiles: (await fromImageIdsToSrc(parsed.coverImages)).map(
-        (src, idx) => ({
-          id: parsed.coverImages[idx],
-          src,
-        }),
-      ),
-      openingHours: parsed.openTimes.map((v) => ({
-        id: v.id,
-        start: v.startTime.slice(11, 16),
-        end: v.endTime.slice(11, 16),
-        saved: true,
-      })),
+      imageFiles: parsed.coverImages.map((id) => ({ id: id, src: id })),
+      ...(parsed.openTime
+        ? {
+            openingHours: {
+              start: parsed.openTime.startTime.slice(11, 16),
+              end: parsed.openTime.endTime.slice(11, 16),
+              saved: true,
+            },
+          }
+        : {}),
       plans: parsed.plans,
     };
   },

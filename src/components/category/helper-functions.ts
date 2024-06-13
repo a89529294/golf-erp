@@ -8,7 +8,6 @@ import {
   NewGolfCourse,
   NewIndoorSimulator,
   Plan,
-  TimeRange,
   VenueSettingsRowContent,
   Weekday,
   WeekdayContent,
@@ -175,21 +174,16 @@ export function onAddNewOpeningHoursRange(
   if ("openingHours" in form.formState.errors) return;
   form.setValue(
     "openingHours",
-    [
-      ...form.getValues("openingHours"),
-      {
-        id: crypto.randomUUID(),
-        start: "",
-        end: "",
-        saved: false,
-      },
-    ],
+    {
+      start: "",
+      end: "",
+      saved: false,
+    },
     { shouldValidate: true },
   );
 }
 
 export function onRemoveOpeningTimeRange(
-  id: string,
   form: UseFormReturn<
     | NewGolfCourse
     | NewIndoorSimulator
@@ -199,18 +193,13 @@ export function onRemoveOpeningTimeRange(
     | ExistingIndoorSimulator
   >,
 ) {
-  form.setValue(
-    "openingHours",
-    form.getValues("openingHours").filter((v) => v.id !== id),
-    {
-      shouldValidate: true,
-      shouldDirty: true,
-    },
-  );
+  form.setValue("openingHours", undefined, {
+    shouldValidate: true,
+    shouldDirty: true,
+  });
 }
 
 export function onSaveOpeningTimeRange(
-  timeRange: TimeRange,
   form: UseFormReturn<
     | NewGolfCourse
     | NewIndoorSimulator
@@ -220,16 +209,10 @@ export function onSaveOpeningTimeRange(
     | ExistingIndoorSimulator
   >,
 ) {
-  form.setValue(
-    "openingHours",
-    form
-      .getValues("openingHours")
-      .map((v) => (v.id === timeRange.id ? timeRange : v)),
-    {
-      shouldValidate: true,
-      shouldDirty: true,
-    },
-  );
+  form.setValue("openingHours", form.getValues("openingHours"), {
+    shouldValidate: true,
+    shouldDirty: true,
+  });
 }
 
 export function onAddNewPlan(

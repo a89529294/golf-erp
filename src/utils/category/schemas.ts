@@ -50,16 +50,18 @@ const existingImagesSchema = {
 
 type DateRange = z.infer<typeof openingDatesSchema.openingDates>[number];
 const openingHoursSchema = {
-  openingHours: z.array(
-    z.object({
-      id: z.string(),
+  openingHours: z
+    .object({
       start: z.string().regex(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/),
       end: z.string().regex(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/),
       saved: z.boolean(),
-    }),
-  ),
+    })
+    .optional(),
 };
-type TimeRange = z.infer<(typeof openingHoursSchema)["openingHours"]>[number];
+type TimeRange = Exclude<
+  z.infer<(typeof openingHoursSchema)["openingHours"]>,
+  undefined
+>;
 
 const plansSchema = {
   plans: z

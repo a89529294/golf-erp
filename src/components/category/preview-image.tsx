@@ -3,6 +3,7 @@ import redXIcon from "@/assets/red-x-icon.svg";
 import { cn } from "@/lib/utils";
 import { FileWithId, ExistingImg } from "@/utils/category/schemas";
 import { fromImageIdsToSrc } from "@/utils";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export function PreviewImage({
   file,
@@ -39,7 +40,11 @@ export function PreviewImage({
       >
         <img src={redXIcon} />
       </button>
-      <img src={imgSrc} className="h-full w-full object-contain" />
+      {imgSrc === "" ? (
+        <Skeleton className="h-full w-full rounded-none bg-[#c1c1c1]" />
+      ) : (
+        <img src={imgSrc} className="h-full w-full object-contain" />
+      )}
     </div>
   );
 }
