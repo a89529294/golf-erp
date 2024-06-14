@@ -256,39 +256,43 @@ export const simulatorSitesSchema = z.object({
 export const golfSitesSchema = z.object({
   data: z.array(
     genericSitesSchema.extend({
-      openTimes: z.array(
-        z.object({
-          id: z.string(),
-          title: z.string(),
-          day: z.union([
-            z.literal(0),
-            z.literal(1),
-            z.literal(2),
-            z.literal(3),
-            z.literal(4),
-            z.literal(5),
-            z.literal(6),
-          ]),
-          openQuantity: z.number(),
-          sequence: z.number(),
-          startTime: z.string(),
-          endTime: z.string(),
-          pricePerHour: z.string().transform((v) => {
-            const data = JSON.parse(v) as {
-              membershipType: MemberType;
-              "1": number;
-              "2": number;
-              "3": number;
-              "4": number;
-            }[];
+      openTimes: z
+        .array(
+          z.object({
+            id: z.string(),
+            title: z.string(),
+            day: z.union([
+              z.literal(0),
+              z.literal(1),
+              z.literal(2),
+              z.literal(3),
+              z.literal(4),
+              z.literal(5),
+              z.literal(6),
+            ]),
+            openQuantity: z.number(),
+            sequence: z.number(),
+            startTime: z.string(),
+            endTime: z.string(),
+            pricePerHour: z.string().transform((v) => {
+              const data = JSON.parse(v) as {
+                membershipType: MemberType;
+                "1": number;
+                "2": number;
+                "3": number;
+                "4": number;
+              }[];
 
-            return data;
+              return data;
+            }),
           }),
-        }),
-      ),
-      store: z.object({
-        id: z.string(),
-      }),
+        )
+        .optional(),
+      store: z
+        .object({
+          id: z.string(),
+        })
+        .optional(),
     }),
   ),
 });

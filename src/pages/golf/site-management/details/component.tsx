@@ -42,7 +42,7 @@ export function Component() {
       equipments: data.equipments,
       imageFiles: data.coverImages,
       openingDates: data.openDays,
-      storeId: data.store.id,
+      storeId: data.store?.id ?? "",
       monday: data.openTimes.filter((v) => v.day === 1),
       tuesday: data.openTimes.filter((v) => v.day === 2),
       wednesday: data.openTimes.filter((v) => v.day === 3),

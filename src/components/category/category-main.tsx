@@ -12,23 +12,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Spinner } from "@/components/ui/spinner";
 import { MainLayout } from "@/layouts/main-layout";
 import { cn } from "@/lib/utils";
-import { StoreWithoutEmployees } from "@/pages/store-management/loader";
+import { StoreWithSites } from "@/pages/store-management/loader";
 import {
   fromImageIdsToSrc,
   getDifferenceInHoursAndMinutes,
   numberToWeekDay,
   toMinguoDate,
 } from "@/utils";
-import {
-  golfSitesSchema,
-  groundSitesSchema,
-  simulatorSitesSchema,
-} from "@/utils/category/schemas";
 import { privateFetch } from "@/utils/utils";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   useCallback,
   useEffect,
@@ -48,38 +42,50 @@ export function CategoryMain({
   type: "golf" | "ground" | "simulator";
   newSiteHref: string;
   siteDetailsHref: string;
-  stores: StoreWithoutEmployees[];
+  stores: StoreWithSites[];
 }) {
   const navigate = useNavigate();
   const { storeId } = useParams();
-  const {
-    data: sites,
-    isPending,
-    fetchStatus,
-  } = useQuery({
-    queryKey: ["sites-for-store", storeId],
-    queryFn: async () => {
-      const response = await privateFetch(
-        `/store/${storeId}/${type}?populate=*`,
-      );
-      const schemaMap = {
-        ground: groundSitesSchema,
-        simulator: simulatorSitesSchema,
-        golf: golfSitesSchema,
-      };
+  // const {
+  //   data: sites,
+  //   isPending,
+  //   fetchStatus,
+  // } = useQuery({
+  //   queryKey: ["sites-for-store", storeId],
+  //   queryFn: async () => {
+  //     const response = await privateFetch(
+  //       `/store/${storeId}/${type}?populate=*`,
+  //     );
+  //     const schemaMap = {
+  //       ground: groundSitesSchema,
+  //       simulator: simulatorSitesSchema,
+  //       golf: golfSitesSchema,
+  //     };
 
-      const x = await response.json();
-      console.log(schemaMap[type].safeParse(x));
+  //     const x = await response.json();
+  //     console.log(schemaMap[type].safeParse(x));
 
-      const sites = schemaMap[type].parse(x).data;
+  //     const sites = schemaMap[type].parse(x).data;
 
-      return sites;
-    },
-    enabled: !!storeId,
-  });
+  //     return sites;
+  //   },
+  //   enabled: !!storeId,
+  // });
   const [globalFilter, setGlobalFilter] = useState("");
   const ref = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState(0);
+  const simulatorSites = stores.find(
+    (store) => store.id === storeId,
+  )?.simulators;
+  const golfSites = stores.find((store) => store.id === storeId)?.golfs;
+  const groundSites = stores.find((store) => store.id === storeId)?.grounds;
+
+  const sites =
+    type === "simulator"
+      ? simulatorSites
+      : type === "golf"
+        ? golfSites
+        : groundSites ?? [];
 
   const onStoreValueChange = useCallback(
     (storeId: string) => {
@@ -138,17 +144,18 @@ export function CategoryMain({
         >
           {height && (
             <div className="relative flex h-full flex-col gap-2.5">
-              {isPending && fetchStatus === "idle" && (
+              {/* {isPending && fetchStatus === "idle" && (
                 <p className="font-medium">請先選廠商</p>
               )}
               {isPending && fetchStatus === "fetching" && (
                 <div
-                  className="absolute inset-0 flex h-full items-center justify-center"
+                  className="absolute inset-0 flex items-center justify-center h-full"
                   style={{ height: height - 42 }}
                 >
                   <Spinner />
                 </div>
-              )}
+              )} */}
+              {!sites || (sites.length === 0 && <h2>查無資料</h2>)}
               {sites?.map((section) => {
                 const openingDates = (
                   section.openDays
@@ -203,6 +210,8 @@ export function CategoryMain({
                         });
                     });
                 }
+
+                console.log(section);
 
                 return (
                   <Section

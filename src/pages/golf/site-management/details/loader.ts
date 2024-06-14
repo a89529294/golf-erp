@@ -35,7 +35,7 @@ export const genGolfSiteDetailsQuery = (storeId: string, siteId: string) => ({
           selected: e.isActive,
         }),
       ),
-      openTimes: site.openTimes.map((ot) => ({
+      openTimes: (site.openTimes ?? []).map((ot) => ({
         id: ot.id,
         day: ot.day,
         title: ot.title,

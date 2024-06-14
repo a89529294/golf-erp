@@ -1,5 +1,10 @@
 import { employeeSchema } from "@/pages/system-management/personnel-management/loader";
 import { storeCategories } from "@/utils";
+import {
+  golfSitesSchema,
+  groundSitesSchema,
+  simulatorSitesSchema,
+} from "@/utils/category/schemas";
 import { queryClient } from "@/utils/query-client";
 import { privateFetch } from "@/utils/utils";
 import { z } from "zod";
@@ -27,6 +32,20 @@ export const storesSchema = z.object({
 export const storesWithoutEmployeesSchema = z.object({
   data: z.array(storeSchema.omit({ employees: true })),
 });
+
+export const storesWithSitesSchema = z.object({
+  data: z.array(
+    storeSchema.omit({ employees: true }).extend({
+      simulators: simulatorSitesSchema.pick({ data: true }).shape.data,
+      golfs: golfSitesSchema.pick({ data: true }).shape.data,
+      grounds: groundSitesSchema.pick({ data: true }).shape.data,
+    }),
+  ),
+});
+
+export type StoreWithSites = z.infer<
+  typeof storesWithSitesSchema
+>["data"][number];
 
 export type Store = z.infer<typeof storesSchema>["data"][number];
 export type StoreWithoutEmployees = z.infer<

@@ -1,6 +1,6 @@
 import { CategoryMain } from "@/components/category/category-main";
 import {
-  groundStoresQuery,
+  groundStoresWithSitesQuery,
   loader,
 } from "@/pages/driving-range/site-management/loader";
 import { linksKV } from "@/utils/links";
@@ -11,7 +11,7 @@ export function Component() {
   const { storeId } = useParams();
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
   const { data: stores } = useQuery({
-    ...groundStoresQuery,
+    ...groundStoresWithSitesQuery,
     initialData,
   });
 
