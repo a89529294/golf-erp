@@ -75,7 +75,7 @@ const plansSchema = {
         price: z
           .union([z.number(), z.literal("")])
           .refine((v) => v !== "", { message: "請填寫價錢" }),
-        saved: z.boolean().refine((v) => v, { message: "請先儲存" }),
+        saved: z.boolean().optional(),
       }),
     )
     .optional(),
