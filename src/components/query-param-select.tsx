@@ -25,17 +25,14 @@ export function QueryParamSelect<T extends Record<string, string>>({
   placeholder: string;
   queryKey: string;
 }) {
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const value = searchParams.get(queryKey);
 
   const onValueChange = useCallback(
     (v: string, replace: boolean) => {
-      navigate(`/indoor-simulator/appointment-management?storeId=${v}`, {
-        replace,
-      });
+      setSearchParams({ [queryKey]: v }, { replace });
     },
-    [navigate],
+    [setSearchParams, queryKey],
   );
 
   useEffect(() => {
