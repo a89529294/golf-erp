@@ -46,31 +46,6 @@ export function CategoryMain({
 }) {
   const navigate = useNavigate();
   const { storeId } = useParams();
-  // const {
-  //   data: sites,
-  //   isPending,
-  //   fetchStatus,
-  // } = useQuery({
-  //   queryKey: ["sites-for-store", storeId],
-  //   queryFn: async () => {
-  //     const response = await privateFetch(
-  //       `/store/${storeId}/${type}?populate=*`,
-  //     );
-  //     const schemaMap = {
-  //       ground: groundSitesSchema,
-  //       simulator: simulatorSitesSchema,
-  //       golf: golfSitesSchema,
-  //     };
-
-  //     const x = await response.json();
-  //     console.log(schemaMap[type].safeParse(x));
-
-  //     const sites = schemaMap[type].parse(x).data;
-
-  //     return sites;
-  //   },
-  //   enabled: !!storeId,
-  // });
   const [globalFilter, setGlobalFilter] = useState("");
   const ref = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState(0);
@@ -88,12 +63,13 @@ export function CategoryMain({
         : groundSites ?? [];
 
   const onStoreValueChange = useCallback(
-    (storeId: string) => {
+    (storeId: string, replace: boolean) => {
       if (type === "ground")
-        navigate(`/driving-range/site-management/${storeId}`);
-      else if (type === "golf") navigate(`/golf/site-management/${storeId}`);
+        navigate(`/driving-range/site-management/${storeId}`, { replace });
+      else if (type === "golf")
+        navigate(`/golf/site-management/${storeId}`, { replace });
       else if (type === "simulator")
-        navigate(`/indoor-simulator/site-management/${storeId}`);
+        navigate(`/indoor-simulator/site-management/${storeId},{replace}`);
     },
     [navigate, type],
   );
@@ -110,7 +86,7 @@ export function CategoryMain({
 
   useEffect(() => {
     if (storeId) return;
-    if (stores[0]) onStoreValueChange(stores[0].id);
+    if (stores[0]) onStoreValueChange(stores[0].id, true);
   }, [stores, onStoreValueChange, storeId]);
 
   return (
@@ -122,7 +98,10 @@ export function CategoryMain({
             新增場地
           </Link>
           <SearchInput value={globalFilter} setValue={setGlobalFilter} />
-          <Select value={storeId} onValueChange={onStoreValueChange}>
+          <Select
+            value={storeId}
+            onValueChange={(v) => onStoreValueChange(v, false)}
+          >
             <SelectTrigger className="h-11 w-[280px] rounded-none border-0 border-b border-secondary-dark">
               <SelectValue placeholder="選擇廠商" />
             </SelectTrigger>

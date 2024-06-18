@@ -13,8 +13,6 @@ export const indoorSimulatorStoresWithSitesQuery = {
     );
     const data = await response.json();
 
-    console.log(storesWithSitesSchema.safeParse(data));
-
     return storesWithSitesSchema.parse(data).data;
   },
 };

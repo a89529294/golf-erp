@@ -1,22 +1,15 @@
+import { FormSelect } from "@/components/form-select";
 import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { UseFormReturn } from "react-hook-form";
-import { formSchema } from "../schemas";
-import { z } from "zod";
-import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
+import { UseFormReturn } from "react-hook-form";
+import { z } from "zod";
+import { formSchema } from "../schemas";
 
 export function StoreFormAddressSelectFields({
   form,
@@ -39,84 +32,27 @@ export function StoreFormAddressSelectFields({
 }) {
   return (
     <div className="grid grid-cols-[270fr_186fr] gap-3">
-      <FormField
-        control={form.control}
-        name={names[0]}
-        render={({ field }) => (
-          <FormItem className="grid grid-cols-[auto_1fr] items-baseline gap-y-1">
-            <FormLabel className="w-20">{label}</FormLabel>
-            <Select
-              disabled={disabled}
-              onValueChange={(v) => {
-                field.onChange(v);
-                form.resetField("district");
-              }}
-              defaultValue={field.value}
-            >
-              <FormControl>
-                <SelectTrigger
-                  className={cn(
-                    "w-[186px] rounded-none border-0 border-b border-b-secondary-dark p-1",
-                    field.value && "border-b-orange",
-                  )}
-                >
-                  <SelectValue placeholder="選擇縣市" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent className="max-h-72">
-                {counties.map(({ countycode, countyname }) => (
-                  <SelectItem value={countycode} key={countycode}>
-                    {countyname}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <FormMessage className="col-start-2" />
-          </FormItem>
-        )}
+      <FormSelect
+        name="county"
+        formItemClass="grid grid-cols-[auto_1fr] items-baseline gap-y-1"
+        disabled={disabled}
+        label="地址"
+        placeholder="選擇縣市"
+        options={counties}
+        optionKey="countycode"
+        optionValue="countyname"
+        onValueChange={() => form.resetField("district")}
+      />
+      <FormSelect
+        name="district"
+        formItemClass="flex flex-col gap-1"
+        disabled={disabled}
+        placeholder={form.watch("county") ? "選擇鄉鎮" : "先選擇縣市"}
+        options={districts}
+        optionKey="townname"
+        optionValue="townname"
       />
 
-      <FormField
-        control={form.control}
-        name={names[1]}
-        render={({ field }) => (
-          <FormItem className="flex flex-col gap-1">
-            <div className="flex items-baseline gap-5">
-              <Select
-                disabled={disabled}
-                onValueChange={field.onChange}
-                value={form.watch("district")}
-                defaultValue={field.value}
-              >
-                <FormControl>
-                  <SelectTrigger
-                    className={cn(
-                      "w-[186px] rounded-none border-0 border-b border-b-secondary-dark p-1",
-                      field.value && "border-b-orange",
-                    )}
-                  >
-                    <SelectValue
-                      placeholder={
-                        form.watch("county") ? "選擇鄉鎮" : "先選擇縣市"
-                      }
-                    />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent className="max-h-72">
-                  {districts?.map(({ townname }) => (
-                    <SelectItem value={townname} key={townname}>
-                      {townname}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <FormMessage />
-          </FormItem>
-        )}
-      />
       <FormField
         control={form.control}
         name={names[2]}
