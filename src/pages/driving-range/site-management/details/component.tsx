@@ -132,7 +132,11 @@ export function Component() {
         );
         const promises: Promise<Response>[] = [];
         deletedImages.forEach((di) =>
-          promises.push(privateFetch(`/store/ground/${siteId}/cover/${di.id}`)),
+          promises.push(
+            privateFetch(`/store/ground/${siteId}/cover/${di.id}`, {
+              method: "DELETE",
+            }),
+          ),
         );
         const newImages = changedFields.imageFiles!.filter(
           (cif): cif is { id: string; file: File } => "file" in cif,

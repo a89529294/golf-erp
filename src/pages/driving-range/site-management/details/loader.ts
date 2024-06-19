@@ -1,11 +1,10 @@
-import { fromImageIdsToSrc } from "@/utils";
+import { equipments } from "@/utils/category/equipment";
 import { ExistingDrivingRange } from "@/utils/category/schemas";
 import { queryClient } from "@/utils/query-client";
+import { privateFetch } from "@/utils/utils";
 import { LoaderFunctionArgs } from "react-router-dom";
 import { z } from "zod";
 import { groundStoresQuery } from "../loader";
-import { privateFetch } from "@/utils/utils";
-import { equipments } from "@/utils/category/equipment";
 
 const baseOpenDay = z.object({
   startDay: z.coerce.date(),
@@ -100,12 +99,10 @@ export const genDrivingRangeDetailsQuery = (
       })),
       costPerBox: parsed.ballPrice,
       equipments: transformedEquipments,
-      imageFiles: (await fromImageIdsToSrc(parsed.coverImages)).map(
-        (src, idx) => ({
-          id: parsed.coverImages[idx],
-          src,
-        }),
-      ),
+      imageFiles: parsed.coverImages.map((src) => ({
+        id: src,
+        src,
+      })),
       venueSettings: parsed.openTimes.map((v) => ({
         id: v.id,
         start: v.startTime.slice(11, 16),

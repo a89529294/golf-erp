@@ -115,7 +115,7 @@ export function WeekdayRow({
       className={cn(
         "flex gap-4 border-b border-b-line-gray p-4 text-secondary-dark ",
         !data.saved && "bg-hover-orange",
-        disabled && "opacity-50",
+        disabled && "pointer-events-none opacity-50",
       )}
     >
       <div className="flex-1 space-y-4">
@@ -260,6 +260,7 @@ export function WeekdayRow({
               onEdit();
             }}
             type="button"
+            disabled={data.saved}
           >
             新增細項
           </IconShortButton>

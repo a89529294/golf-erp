@@ -105,7 +105,7 @@ export function Site({
           onSubmit(v);
         },
         (e) => {
-          console.log(form.getValues("openingDates"));
+          console.log(form.getValues("imageFiles"));
           console.log(e);
           e.openingDates && openingDateRangeRef.current?.scrollIntoView();
           if ("venueSettings" in e) venueSettingsRef.current?.scrollIntoView();
@@ -316,6 +316,7 @@ export function Site({
             }
             activeValue={activeValue}
             setActiveValue={(s) => setActiveValue(s as Weekday)}
+            disabled={formDisabled || isPending}
           />
         </Section>
       )}

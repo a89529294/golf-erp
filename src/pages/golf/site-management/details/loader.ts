@@ -25,7 +25,7 @@ export const genGolfSiteDetailsQuery = (storeId: string, siteId: string) => ({
         saved: true,
       })),
       coverImages: site.coverImages.map((img) => ({
-        id: crypto.randomUUID(),
+        id: img,
         src: img,
       })),
       equipments: (JSON.parse(site.equipment ?? "[]") as Equipment[]).map(

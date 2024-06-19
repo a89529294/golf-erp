@@ -5,14 +5,14 @@ import { MainLayout } from "@/layouts/main-layout";
 import { equipments } from "@/utils/category/equipment";
 import { NewGolfCourse, newGolfCourseSchema } from "@/utils/category/schemas";
 
+import { privateFetch } from "@/utils/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { useLoaderData, useNavigate } from "react-router-dom";
-import { loader } from "./loader";
-import { golfStoresQuery } from "../loader";
-import { privateFetch } from "@/utils/utils";
 import { toast } from "sonner";
+import { golfStoresQuery } from "../loader";
+import { loader } from "./loader";
 
 export function Component() {
   const navigate = useNavigate();
@@ -92,6 +92,8 @@ export function Component() {
         }),
       });
 
+      console.log(body);
+
       const response = await privateFetch("/store/golf", {
         method: "POST",
         body,
@@ -104,7 +106,7 @@ export function Component() {
 
       if (v.imageFiles.length) {
         const formData = new FormData();
-        v.imageFiles.forEach((img) => formData.append("image", img.file));
+        v.imageFiles.forEach((file) => formData.append("image", file.file));
 
         await privateFetch(`/store/golf/${id}/cover`, {
           method: "POST",
@@ -131,7 +133,7 @@ export function Component() {
           <IconButton icon="back" onClick={() => navigate(-1)}>
             返回
           </IconButton>
-          <IconButton icon="save" form="site-details" onClick={() => {}}>
+          <IconButton icon="save" form="site-details" disabled={isPending}>
             儲存
           </IconButton>
         </>

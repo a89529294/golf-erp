@@ -36,7 +36,10 @@ export function PreviewImage({
           "absolute right-0 top-0 hidden h-5 w-5 -translate-y-1/2 translate-x-1/2 rounded-full border border-line-red ",
           !disabled && "group-hover:block",
         )}
-        onClick={() => !disabled && onRemoveImage(file.id)}
+        onClick={() => {
+          console.log(file.id);
+          !disabled && onRemoveImage(file.id);
+        }}
       >
         <img src={redXIcon} />
       </button>

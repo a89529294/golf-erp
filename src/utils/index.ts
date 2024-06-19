@@ -1,4 +1,5 @@
 import { privateFetch } from "./utils";
+import imageCompression from "browser-image-compression";
 
 export const base_url =
   "https://shinjhu-golf-reservation-system-be.caprover.credot-web.com";
@@ -91,6 +92,30 @@ export function fromDateToDateTimeString(d: Date) {
 
 export function fromDateAndTimeToDateTimeString(d: Date, time: string) {
   return `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, "0")}-${d.getDate().toString().padStart(2, "0")}T${time.split(":")[0].padStart(2, "0")}:${time.split(":")[1].padStart(2, "0")}`;
+}
+
+export async function compressImage(file: File) {
+  console.log("originalFile instanceof Blob", file instanceof Blob); // true
+  console.log(`originalFile size ${file.size / 1024 / 1024} MB`);
+
+  const options = {
+    maxSizeMB: 1,
+    maxWidthOrHeight: 1920,
+    useWebWorker: true,
+  };
+  try {
+    const compressedFile = await imageCompression(file, options);
+    console.log(
+      "compressedFile instanceof File",
+      compressedFile instanceof File,
+    ); // true
+    console.log(`compressedFile size ${compressedFile.size / 1024 / 1024} MB`); // smaller than maxSizeMB
+
+    return new File([compressedFile], file.name);
+  } catch (error) {
+    console.log(error);
+    return file;
+  }
 }
 
 export const numberToWeekDay = {

@@ -1,3 +1,4 @@
+import { compressImage } from "@/utils";
 import {
   DateRange,
   ExistingDrivingRange,
@@ -45,7 +46,7 @@ export function onRemoveImage(
   );
 }
 
-export function onAddNewImages(
+export async function onAddNewImages(
   e: React.ChangeEvent<HTMLInputElement>,
   form: UseFormReturn<
     | NewGolfCourse
@@ -61,7 +62,13 @@ export function onAddNewImages(
 
   let filesArray: FileWithId[] = [];
 
-  filesArray = Array.from(files).map((file) => ({
+  const promises = [] as Promise<File>[];
+
+  Array.from(files).forEach((file) => promises.push(compressImage(file)));
+
+  const compressedFiles = await Promise.all(promises);
+
+  filesArray = compressedFiles.map((file) => ({
     file: file,
     id: crypto.randomUUID(),
   }));
