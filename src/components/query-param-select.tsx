@@ -8,7 +8,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useCallback, useEffect } from "react";
 
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 export function QueryParamSelect<T extends Record<string, string>>({
   disabled,
@@ -17,6 +17,7 @@ export function QueryParamSelect<T extends Record<string, string>>({
   optionValue,
   placeholder,
   queryKey,
+  className,
 }: {
   disabled?: boolean;
   options: T[];
@@ -24,6 +25,7 @@ export function QueryParamSelect<T extends Record<string, string>>({
   optionValue: keyof T;
   placeholder: string;
   queryKey: string;
+  className?: string;
 }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const value = searchParams.get(queryKey);
@@ -52,6 +54,7 @@ export function QueryParamSelect<T extends Record<string, string>>({
         className={cn(
           "w-[186px] rounded-none border-0 border-b border-b-secondary-dark p-1",
           value && "border-b-orange",
+          className,
         )}
       >
         <SelectValue placeholder={placeholder} />

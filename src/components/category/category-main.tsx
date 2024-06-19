@@ -69,7 +69,7 @@ export function CategoryMain({
       else if (type === "golf")
         navigate(`/golf/site-management/${storeId}`, { replace });
       else if (type === "simulator")
-        navigate(`/indoor-simulator/site-management/${storeId},{replace}`);
+        navigate(`/indoor-simulator/site-management/${storeId}`, { replace });
     },
     [navigate, type],
   );
@@ -189,8 +189,6 @@ export function CategoryMain({
                         });
                     });
                 }
-
-                console.log(section);
 
                 return (
                   <Section

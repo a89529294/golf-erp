@@ -8,6 +8,7 @@ import minusIcon from "@/assets/minus-icon.svg";
 import circleIcon from "@/assets/circle.svg";
 import trashCanIcon from "@/assets/trash-can-icon.svg";
 import pencilIcon from "@/assets/pencil.svg";
+import xIcon from "@/assets/x.svg";
 import { ComponentProps, ReactNode, forwardRef } from "react";
 import { twMerge } from "tailwind-merge";
 
@@ -24,6 +25,7 @@ const iconMap = {
   trashCan: trashCanIcon,
   minus: minusIcon,
   pencil: pencilIcon,
+  x: xIcon,
 };
 
 type IconButtonType = ComponentProps<"button"> & {
@@ -124,7 +126,7 @@ export const TextButton = forwardRef<
       onClick={onClick}
       {...props}
     >
-      {loading && <img src={circleIcon} className=" h-5 w-5 animate-spin" />}
+      {loading && <img src={circleIcon} className="h-5 w-5 animate-spin" />}
       {children}
     </button>
   );
