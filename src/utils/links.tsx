@@ -54,6 +54,7 @@ export const linksKV = {
     basePath: DRIVING_RANGE_BASE_PATH,
     path: `${DRIVING_RANGE_BASE_PATH}/member-management`,
     allowedPermissions: ["練習場-基本操作", "練習場-報表"],
+    allowedStoreCategory: "ground" as const,
     subLinks: {
       "member-management": {
         label: "會員管理",
@@ -110,6 +111,7 @@ export const linksKV = {
     basePath: GOLF_BASE_PATH,
     path: `${GOLF_BASE_PATH}/member-management`,
     allowedPermissions: ["高爾夫球-基本操作", "高爾夫球-報表"],
+    allowedStoreCategory: "golf" as const,
     subLinks: {
       "member-management": {
         label: "會員管理",
@@ -173,6 +175,7 @@ export const linksKV = {
     basePath: INDOOR_SIMULATOR_BASE_PATH,
     path: `${INDOOR_SIMULATOR_BASE_PATH}/member-management`,
     allowedPermissions: ["模擬器-基本操作", "模擬器-報表"],
+    allowedStoreCategory: "simulator" as const,
     subLinks: {
       "member-management": {
         label: "會員管理",

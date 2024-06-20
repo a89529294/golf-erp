@@ -17,11 +17,13 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { groundStoresQuery } from "../loader";
 import { loader } from "./loader";
+import { useAuth } from "@/hooks/use-auth";
 
 export function Component() {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
-  const { data: stores } = useQuery({
+  let { data: stores } = useQuery({
     ...groundStoresQuery,
     initialData,
   });
@@ -95,6 +97,11 @@ export function Component() {
       toast.success("新增場地");
     },
   });
+
+  if (!user!.permissions.includes("練習場-基本操作"))
+    stores = stores.filter((store) =>
+      user!.allowedStores.ground.includes(store.id),
+    );
 
   return (
     <MainLayout

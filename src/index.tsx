@@ -44,6 +44,7 @@ const router = createBrowserRouter(
                       element={
                         <PermissionGuard
                           routePermissions={subLink.allowedPermissions}
+                          storeCategory="ground"
                         />
                       }
                       key={path}
@@ -60,6 +61,7 @@ const router = createBrowserRouter(
                   element={
                     <PermissionGuard
                       routePermissions={subLink.allowedPermissions}
+                      storeCategory="ground"
                     />
                   }
                   key={subLink.path}
@@ -80,6 +82,7 @@ const router = createBrowserRouter(
                       element={
                         <PermissionGuard
                           routePermissions={subLink.allowedPermissions}
+                          storeCategory="golf"
                         />
                       }
                       key={path}
@@ -96,6 +99,7 @@ const router = createBrowserRouter(
                   element={
                     <PermissionGuard
                       routePermissions={subLink.allowedPermissions}
+                      storeCategory="golf"
                     />
                   }
                   key={subLink.path}
@@ -117,6 +121,7 @@ const router = createBrowserRouter(
                         element={
                           <PermissionGuard
                             routePermissions={subLink.allowedPermissions}
+                            storeCategory="simulator"
                           />
                         }
                         key={path}
@@ -133,6 +138,7 @@ const router = createBrowserRouter(
                     element={
                       <PermissionGuard
                         routePermissions={subLink.allowedPermissions}
+                        storeCategory="simulator"
                       />
                     }
                     key={subLink.path}

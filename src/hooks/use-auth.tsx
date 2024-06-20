@@ -14,6 +14,11 @@ type AuthContextValue = {
   user: {
     account: string;
     permissions: string[];
+    allowedStores: {
+      ground: string[];
+      golf: string[];
+      simulator: string[];
+    };
     expiresAt: number;
   } | null;
   login: (data: { account: string; password: string }) => Promise<unknown>;
@@ -41,22 +46,45 @@ export const AuthProvider = ({
   const navigate = useNavigate();
 
   const login = async (data: LoginData) => {
-    const response = await privateFetch("/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    const response = await privateFetch(
+      "/auth/login?populate=employee&populate=employee.stores",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
       },
-      body: JSON.stringify(data),
-    });
+    );
 
     const permissionsResponse = await privateFetch("/erp-features/me");
     const permissions = await permissionsResponse.json();
     const user = await response.json();
 
+    const allowedStores = user.employee?.stores.reduce(
+      (
+        acc: { ground: string[]; golf: string[]; simulator: string[] },
+        store: { id: string; category: "ground" | "golf" | "simulator" },
+      ) => {
+        acc[store.category].push(store.id);
+        return acc;
+      },
+      {
+        ground: [],
+        golf: [],
+        simulator: [],
+      },
+    ) ?? {
+      ground: [],
+      golf: [],
+      simulator: [],
+    };
+
     setUser({
       account: user.account,
       permissions: permissions.map((p: { name: string }) => p.name),
-      expiresAt: Date.now() + 1000 * 60 * 60,
+      allowedStores,
+      expiresAt: new Date(user.expires).getTime() + 1000 * 60 * 60,
     });
     navigate("/", { replace: true });
   };

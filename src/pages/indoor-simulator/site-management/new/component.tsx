@@ -14,10 +14,12 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { indoorSimulatorStoresQuery } from "../loader";
 import { loader } from "./loader";
+import { useAuth } from "@/hooks/use-auth";
 
 export function Component() {
+  const { user } = useAuth();
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
-  const { data: stores } = useQuery({
+  let { data: stores } = useQuery({
     ...indoorSimulatorStoresQuery,
     initialData,
   });
@@ -98,6 +100,11 @@ export function Component() {
       toast.error("新增場地失敗");
     },
   });
+
+  if (!user!.permissions.includes("模擬器-基本操作"))
+    stores = stores.filter((store) =>
+      user!.allowedStores.simulator.includes(store.id),
+    );
 
   return (
     <MainLayout

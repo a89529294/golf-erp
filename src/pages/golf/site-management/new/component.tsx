@@ -13,12 +13,14 @@ import { useLoaderData, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { golfStoresQuery } from "../loader";
 import { loader } from "./loader";
+import { useAuth } from "@/hooks/use-auth";
 
 export function Component() {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
-  const { data: stores } = useQuery({
+  let { data: stores } = useQuery({
     ...golfStoresQuery,
     initialData,
   });
@@ -125,6 +127,11 @@ export function Component() {
       toast.error("無法新增高爾夫場地");
     },
   });
+
+  if (!user!.permissions.includes("高爾夫-基本操作"))
+    stores = stores.filter((store) =>
+      user!.allowedStores.golf.includes(store.id),
+    );
 
   return (
     <MainLayout
