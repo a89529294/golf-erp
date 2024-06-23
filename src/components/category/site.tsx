@@ -44,6 +44,7 @@ import {
   onAddNewVenueSettingsRow,
   onAddNewWeekdayTimeRange,
   onEditOpeningDateRange,
+  onEditOpeningTimeRange,
   onEditVenueSettingsRow,
   onEditWeekdayTimeRange,
   onRemoveImage,
@@ -94,6 +95,7 @@ export function Site({
   const form = useFormContext<S[typeof type]>();
 
   const openingHours = form.watch("openingHours");
+  console.log(openingHours);
 
   return (
     <form
@@ -105,7 +107,7 @@ export function Site({
           onSubmit(v);
         },
         (e) => {
-          console.log(form.getValues("imageFiles"));
+          console.log(form.getValues("openingHours"));
           console.log(e);
           e.openingDates && openingDateRangeRef.current?.scrollIntoView();
           if ("venueSettings" in e) venueSettingsRef.current?.scrollIntoView();
@@ -336,11 +338,12 @@ export function Site({
             }}
             disabled={formDisabled || !!openingHours}
           >
-            {openingHours ? (
+            {openingHours[0] ? (
               <TimeRangeRow
                 myRef={openingHoursRef}
                 onRemove={() => onRemoveOpeningTimeRange(form)}
-                onSave={() => onSaveOpeningTimeRange(form)}
+                onSave={(tr) => onSaveOpeningTimeRange(form, tr)}
+                onEdit={() => onEditOpeningTimeRange(form)}
                 data={openingHours}
                 disabled={formDisabled}
                 errorMessage={

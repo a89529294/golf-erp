@@ -12,13 +12,11 @@ const baseOpenDay = z.object({
   sequence: z.number(),
 });
 
-const baseOpenTime = z
-  .object({
-    startTime: z.string(),
-    endTime: z.string(),
-    sequence: z.number(),
-  })
-  .optional();
+const baseOpenTime = z.object({
+  startTime: z.string(),
+  endTime: z.string(),
+  sequence: z.number(),
+});
 
 const baseSimulatorSchema = z.object({
   id: z.string(),
@@ -33,7 +31,7 @@ export const simulatorGETSchema = z.object({
   data: z.array(
     baseSimulatorSchema
       .extend({ openDays: z.array(baseOpenDay.extend({ id: z.string() })) })
-      .extend({ openTime: baseOpenTime })
+      .extend({ openTimes: z.array(baseOpenTime) })
       .extend({ coverImages: z.array(z.string()) })
       .extend({ store: z.object({ id: z.string() }) }),
   ),
@@ -44,7 +42,7 @@ export const simulatorPATCHSchema = baseSimulatorSchema
     openDays: z.array(baseOpenDay.extend({ id: z.string().optional() })),
   })
   .extend({
-    openTime: baseOpenTime,
+    openTimes: baseOpenTime,
   })
   .extend({ storeId: z.string() });
 
@@ -96,15 +94,19 @@ export const genSimulatorDetailsQuery = (storeId: string, siteId: string) => ({
         end: v.endDay,
       })),
       imageFiles: parsed.coverImages.map((id) => ({ id: id, src: id })),
-      ...(parsed.openTime
+      ...(parsed.openTimes && parsed.openTimes[0]
         ? {
-            openingHours: {
-              start: parsed.openTime.startTime.slice(11, 16),
-              end: parsed.openTime.endTime.slice(11, 16),
-              saved: true,
-            },
+            openingHours: [
+              {
+                start: parsed.openTimes[0].startTime,
+                end: parsed.openTimes[0].endTime,
+                saved: true,
+              },
+            ],
           }
-        : {}),
+        : {
+            openingHours: [],
+          }),
       plans: parsed.plans,
     };
   },

@@ -59,6 +59,8 @@ export function Component() {
         Object.keys(dirtyFields) as (keyof typeof dirtyFields)[],
       );
 
+      console.log(changedValues);
+
       const x = {} as Partial<SimulatorPATCH>;
       if (changedValues["name"]) x.name = changedValues["name"];
       if (changedValues["description"]) x.introduce = changedValues.description;
@@ -82,11 +84,12 @@ export function Component() {
         });
       }
       if (changedValues["openingHours"]) {
-        x.openTime = {
-          startTime: `${new Date().toISOString().slice(0, 10)}T${changedValues["openingHours"].start}`,
-          endTime: `${new Date().toISOString().slice(0, 10)}T${changedValues["openingHours"].end}`,
-          sequence: 1,
-        };
+        if (changedValues["openingHours"][0])
+          x.openTimes = {
+            startTime: changedValues["openingHours"][0].start,
+            endTime: changedValues["openingHours"][0].end,
+            sequence: 1,
+          };
       }
       if (changedValues["imageFiles"]) {
         const imagesToBeDeletedPromises: Promise<Response>[] = [];

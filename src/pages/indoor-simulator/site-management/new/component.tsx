@@ -33,14 +33,14 @@ export function Component() {
       equipments: equipments,
       imageFiles: [],
       openingDates: [],
-      openingHours: undefined,
+      openingHours: [],
       plans: [],
     },
   });
   const { mutate, isPending } = useMutation({
     mutationKey: ["add-new-indoor-simulator-site"],
     mutationFn: async () => {
-      console.log(form.formState.dirtyFields.openingHours);
+      console.log(form.getValues("openingHours"));
 
       const response = await privateFetch(`/store/simulator`, {
         method: "POST",
@@ -61,9 +61,13 @@ export function Component() {
           })),
           ...(form.formState.dirtyFields.openingHours
             ? {
-                startTime: `${new Date().toISOString().slice(0, 10)}T${form.getValues("openingHours")?.start}`,
-                endTime: `${new Date().toISOString().slice(0, 10)}T${form.getValues("openingHours")?.end}`,
-                sequence: 1,
+                openTimes: [
+                  {
+                    startTime: form.getValues("openingHours")[0]?.start,
+                    endTime: form.getValues("openingHours")[0]?.end,
+                    sequence: 1,
+                  },
+                ],
               }
             : {}),
           plans: form.getValues("plans")?.map((v, i) => ({

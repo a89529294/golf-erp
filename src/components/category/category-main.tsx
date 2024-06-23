@@ -157,35 +157,37 @@ export function CategoryMain({
                 }[];
                 const openingWeekDays = [] as { day: string; hours: string }[];
 
-                if (type !== "golf") {
+                if (type === "ground") {
                   (section.openTimes
                     ? section.openTimes.toSorted(
                         (a, b) => a.sequence - b.sequence,
                       )
                     : []
                   ).forEach((v) => {
-                    const startHour = +v.startTime.slice(11, 16).split(":")[0];
-                    const startMin = +v.startTime.slice(11, 16).split(":")[1];
-                    const endHour = +v.endTime.slice(11, 16).split(":")[0];
-                    const endMin = +v.endTime.slice(11, 16).split(":")[1];
+                    const startHour = +v.startTime.split(":")[0];
+                    const startMin = +v.startTime.split(":")[1];
+                    const endHour = +v.endTime.split(":")[0];
+                    const endMin = +v.endTime.split(":")[1];
 
                     openingHours.push({
-                      hours: `${v.startTime.slice(11, 16)}～${v.endTime.slice(11, 16)}`,
+                      hours: `${v.startTime.slice(0, 5)}～${v.endTime.slice(0, 5)}`,
                       duration: getDifferenceInHoursAndMinutes(
                         startHour * 60 + startMin,
                         endHour * 60 + endMin,
                       ),
-                      fee: `${v.pricePerHour}元`,
+                      fee: "pricePerHour" in v ? `${v.pricePerHour}元` : "0元",
                     });
                   });
-                } else {
+                } else if (type === "golf") {
                   section.openTimes
                     ?.sort((a, b) => a.sequence - b.sequence)
                     .forEach((s) => {
                       if ("day" in s)
                         openingWeekDays.push({
-                          day: numberToWeekDay[s.day],
-                          hours: `${s.startTime.slice(11, 16)}～${s.endTime.slice(11, 16)}`,
+                          day: numberToWeekDay[
+                            s.day as keyof typeof numberToWeekDay
+                          ],
+                          hours: `${s.startTime.slice(0, 5)}～${s.endTime.slice(0, 5)}`,
                         });
                     });
                 }

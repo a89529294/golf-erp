@@ -6,7 +6,7 @@ import { queryClient } from "@/utils/query-client";
 import { privateFetch } from "@/utils/utils";
 
 export const groundStoresWithSitesQuery = {
-  queryKey: ["ground-stores-with-sites"],
+  queryKey: ["sites-for-stores", "ground"],
   queryFn: async () => {
     const response = await privateFetch(
       "/store?pageSize=99&filter[category]=ground&populate=simulators&populate=grounds&populate=golfs&populate=grounds.openTimes&populate=grounds.equipment&populate=grounds.openDays",

@@ -6,12 +6,14 @@ import { queryClient } from "@/utils/query-client";
 import { privateFetch } from "@/utils/utils";
 
 export const indoorSimulatorStoresWithSitesQuery = {
-  queryKey: ["indoor-simulator-stores-with-sites"],
+  queryKey: ["sites-for-stores", "simulator"],
   queryFn: async () => {
     const response = await privateFetch(
       "/store?pageSize=99&filter[category]=simulator&populate=simulators&populate=grounds&populate=golfs&populate=simulators.openTimes&populate=simulators.equipment&populate=simulators.openDays",
     );
     const data = await response.json();
+
+    console.log(storesWithSitesSchema.safeParse(data));
 
     return storesWithSitesSchema.parse(data).data;
   },
