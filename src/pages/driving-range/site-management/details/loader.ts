@@ -1,10 +1,9 @@
 import { equipments } from "@/utils/category/equipment";
-import { ExistingDrivingRange } from "@/utils/category/schemas";
+import { ExistingDrivingRange, storeSchema } from "@/utils/category/schemas";
 import { queryClient } from "@/utils/query-client";
 import { privateFetch } from "@/utils/utils";
 import { LoaderFunctionArgs } from "react-router-dom";
 import { z } from "zod";
-import { groundStoresQuery } from "../loader";
 
 const baseOpenDay = z.object({
   startDay: z.coerce.date(),
@@ -36,7 +35,7 @@ export const drivingRangeGETSchema = z.object({
       .extend({ openDays: z.array(baseOpenDay.extend({ id: z.string() })) })
       .extend({ openTimes: z.array(baseOpenTime.extend({ id: z.string() })) })
       .extend({ coverImages: z.array(z.string()) })
-      .extend({ store: z.object({ id: z.string() }) }),
+      .extend({ store: storeSchema }),
   ),
 });
 
@@ -63,8 +62,6 @@ export const genDrivingRangeDetailsQuery = (
   queryFn: async (): Promise<ExistingDrivingRange> => {
     const response = await privateFetch(`/store/${storeId}/ground?populate=*`);
     const data = await response.json();
-
-    console.log(drivingRangeGETSchema.safeParse(data));
 
     const parsed = drivingRangeGETSchema
       .parse(data)
@@ -112,6 +109,7 @@ export const genDrivingRangeDetailsQuery = (
         numberOfBalls: v.openBallQuantity,
         numberOfGroups: v.openQuantity,
       })),
+      store: parsed.store,
     };
   },
 });
@@ -121,6 +119,5 @@ export async function loader({ params }: LoaderFunctionArgs) {
     details: await queryClient.ensureQueryData(
       genDrivingRangeDetailsQuery(params.storeId!, params.siteId!),
     ),
-    stores: await queryClient.ensureQueryData(groundStoresQuery),
   };
 }

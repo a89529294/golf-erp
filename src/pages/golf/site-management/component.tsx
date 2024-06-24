@@ -1,7 +1,7 @@
 import { CategoryMain } from "@/components/category/category-main";
 import { useAuth } from "@/hooks/use-auth";
 import {
-  golfStoresWithSitesQuery,
+  genGolfStoresWithSitesQuery,
   loader,
 } from "@/pages/golf/site-management/loader";
 import { linksKV } from "@/utils/links";
@@ -12,16 +12,12 @@ export function Component() {
   const { user } = useAuth();
   const { storeId } = useParams();
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
-  let { data: stores } = useQuery({
-    ...golfStoresWithSitesQuery,
+  const { data: stores } = useQuery({
+    ...genGolfStoresWithSitesQuery(
+      user!.isAdmin ? "all" : user!.allowedStores.golf,
+    ),
     initialData,
   });
-
-  // if user has access to this page but does not have permisson, it means he is an employee of at least one golf store
-  if (!user!.permissions.includes("高爾夫球-基本操作"))
-    stores = stores.filter((store) =>
-      user!.allowedStores.golf.includes(store.id),
-    );
 
   return (
     <CategoryMain

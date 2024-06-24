@@ -1,10 +1,11 @@
+import { indoorSimulatorStoresQuery } from "@/pages/indoor-simulator/site-management/loader";
+import { getAllowedStores } from "@/utils";
 import { equipments } from "@/utils/category/equipment";
 import { ExistingIndoorSimulator, plansSchema } from "@/utils/category/schemas";
 import { queryClient } from "@/utils/query-client";
 import { privateFetch } from "@/utils/utils";
 import { LoaderFunctionArgs } from "react-router-dom";
 import { z } from "zod";
-import { indoorSimulatorStoresQuery } from "../loader";
 
 const baseOpenDay = z.object({
   startDay: z.coerce.date(),
@@ -117,6 +118,8 @@ export async function loader({ params }: LoaderFunctionArgs) {
     details: await queryClient.ensureQueryData(
       genSimulatorDetailsQuery(params.storeId!, params.siteId!),
     ),
-    stores: await queryClient.ensureQueryData(indoorSimulatorStoresQuery),
+    stores: await queryClient.ensureQueryData(
+      indoorSimulatorStoresQuery(await getAllowedStores("ground")),
+    ),
   };
 }

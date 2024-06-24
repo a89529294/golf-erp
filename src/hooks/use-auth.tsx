@@ -9,6 +9,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useLocalStorage } from "./use-local-storage";
 import { privateFetch } from "@/utils/utils";
+import { SimpleStore } from "@/utils/types";
 
 type AuthContextValue = {
   user: {
@@ -16,9 +17,9 @@ type AuthContextValue = {
     isAdmin: boolean;
     permissions: string[];
     allowedStores: {
-      ground: string[];
-      golf: string[];
-      simulator: string[];
+      ground: SimpleStore[];
+      golf: SimpleStore[];
+      simulator: SimpleStore[];
     };
     expiresAt: number;
   } | null;
@@ -71,10 +72,18 @@ export const AuthProvider = ({
 
     const allowedStores = user.employee?.stores.reduce(
       (
-        acc: { ground: string[]; golf: string[]; simulator: string[] },
-        store: { id: string; category: "ground" | "golf" | "simulator" },
+        acc: {
+          ground: SimpleStore[];
+          golf: SimpleStore[];
+          simulator: SimpleStore[];
+        },
+        store: {
+          id: string;
+          category: "ground" | "golf" | "simulator";
+          name: string;
+        },
       ) => {
-        acc[store.category].push(store.id);
+        acc[store.category].push({ id: store.id, name: store.name });
         return acc;
       },
       {

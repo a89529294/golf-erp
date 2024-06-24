@@ -1,36 +1,68 @@
 import {
-  storesWithSitesSchema,
+  simulatorStoresWithSitesSchema,
   storesWithoutEmployeesSchema,
 } from "@/pages/store-management/loader";
+import { getAllowedStores } from "@/utils";
+import { simulatorSitesSchema } from "@/utils/category/schemas";
 import { queryClient } from "@/utils/query-client";
+import { SimpleStore } from "@/utils/types";
 import { privateFetch } from "@/utils/utils";
+import { z } from "zod";
 
-export const indoorSimulatorStoresWithSitesQuery = {
+export const sitesSchema = z.object({
+  data: simulatorSitesSchema.pick({ data: true }).shape.data,
+});
+
+export const genIndoorSimulatorStoresWithSitesQuery = (
+  allowedStores: { id: string; name: string }[] | "all",
+) => ({
   queryKey: ["sites-for-stores", "simulator"],
   queryFn: async () => {
-    const response = await privateFetch(
-      "/store?pageSize=99&filter[category]=simulator&populate=simulators&populate=grounds&populate=golfs&populate=simulators.openTimes&populate=simulators.equipment&populate=simulators.openDays",
-    );
-    const data = await response.json();
+    if (allowedStores === "all") {
+      const response = await privateFetch(
+        "/store?pageSize=99&filter[category]=simulator&populate=simulators&populate=grounds&populate=golfs&populate=simulators.openTimes&populate=simulators.equipment&populate=simulators.openDays",
+      );
+      const data = await response.json();
 
-    console.log(storesWithSitesSchema.safeParse(data));
+      return simulatorStoresWithSitesSchema.parse(data).data;
+    } else {
+      const response = await privateFetch(
+        `/store/${allowedStores[0].id}/simulator?pageSize=99&populate=*`,
+      );
 
-    return storesWithSitesSchema.parse(data).data;
+      const data = sitesSchema.parse(await response.json());
+
+      return [
+        {
+          ...(data.data[0]?.store ?? {
+            id: allowedStores[0].id,
+            name: allowedStores[0].name,
+          }),
+          sites: data.data,
+        },
+      ];
+    }
   },
-};
+});
 
-export const indoorSimulatorStoresQuery = {
+export const indoorSimulatorStoresQuery = (
+  allowedStores: SimpleStore[] | "all",
+) => ({
   queryKey: ["indoor-simulator-stores"],
   queryFn: async () => {
-    const response = await privateFetch(
-      "/store?pageSize=99&filter[category]=simulator",
-    );
-    const data = await response.json();
+    if (allowedStores === "all") {
+      const response = await privateFetch(
+        "/store?pageSize=99&filter[category]=simulator",
+      );
+      const data = await response.json();
 
-    return storesWithoutEmployeesSchema.parse(data).data;
+      return storesWithoutEmployeesSchema.parse(data).data;
+    } else return allowedStores;
   },
-};
+});
 
 export async function loader() {
-  return queryClient.ensureQueryData(indoorSimulatorStoresWithSitesQuery);
+  return await queryClient.ensureQueryData(
+    genIndoorSimulatorStoresWithSitesQuery(await getAllowedStores("simulator")),
+  );
 }

@@ -3,6 +3,7 @@ import { LoaderFunctionArgs } from "react-router-dom";
 import { golfStoresQuery } from "../loader";
 import { privateFetch } from "@/utils/utils";
 import { Equipment, golfSitesSchema } from "@/utils/category/schemas";
+import { getAllowedStores } from "@/utils";
 
 export const genGolfSiteDetailsQuery = (storeId: string, siteId: string) => ({
   queryKey: ["golf-site-details", storeId, siteId],
@@ -52,15 +53,18 @@ export const genGolfSiteDetailsQuery = (storeId: string, siteId: string) => ({
           partyOf4Fee: o["4"],
         })),
       })),
+      store: site.store!,
     };
   },
 });
 
 export async function loader({ params }: LoaderFunctionArgs) {
+  const r = await getAllowedStores("golf");
+
   return {
     details: await queryClient.ensureQueryData(
       genGolfSiteDetailsQuery(params.storeId!, params.siteId!),
     ),
-    stores: await queryClient.ensureQueryData(golfStoresQuery),
+    stores: await queryClient.ensureQueryData(golfStoresQuery(r)),
   };
 }

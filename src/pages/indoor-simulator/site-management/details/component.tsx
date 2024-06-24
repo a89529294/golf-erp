@@ -17,8 +17,10 @@ import { filterObject } from "@/utils";
 import { privateFetch } from "@/utils/utils";
 import { toast } from "sonner";
 import { Modal } from "@/components/modal";
+import { useAuth } from "@/hooks/use-auth";
 
 export function Component() {
+  const { user } = useAuth();
   const queryClient = useQueryClient();
   const { storeId, siteId } = useParams();
   const [formDisabled, setFormDisabled] = useState(true);
@@ -28,7 +30,9 @@ export function Component() {
     initialData: initialData.details,
   });
   const { data: stores } = useQuery({
-    ...indoorSimulatorStoresQuery,
+    ...indoorSimulatorStoresQuery(
+      user!.isAdmin ? "all" : user!.allowedStores.ground,
+    ),
     initialData: initialData.stores,
   });
   const [defaultOpeningDates, setDefaultOpeningDates] = useState(

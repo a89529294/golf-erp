@@ -1,5 +1,23 @@
 import { MemberType } from "@/pages/member-management/loader";
 import { z } from "zod";
+import { employeeSchema } from "@/pages/system-management/personnel-management/loader";
+import { storeCategories } from "@/utils";
+
+export const storeSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  businessHours: z.string().nullable(),
+  telphone: z.string().nullable(),
+  contact: z.string().nullable(),
+  contactPhone: z.string(),
+  latitude: z.string().nullable(),
+  longitude: z.string().nullable(),
+  category: z.enum(storeCategories),
+  county: z.string(),
+  district: z.string(),
+  address: z.string(),
+  employees: z.array(employeeSchema).optional(),
+});
 
 const fileWithIdSchema = z.object({
   file: z.instanceof(File),
@@ -177,6 +195,9 @@ type NewGolfCourse = z.infer<typeof newGolfCourseSchema> & { category: "golf" };
 const existingGolfCourseSchema = baseSchema
   .extend(equipmentsSchema)
   .extend(existingImagesSchema)
+  .extend({
+    store: storeSchema,
+  })
   .extend(weekDaysSchema);
 type ExistingGolfCourse = z.infer<typeof existingGolfCourseSchema>;
 
@@ -190,6 +211,9 @@ type NewDrivingRange = z.infer<typeof newDrivingRangeSchema> & {
 };
 
 const existingDrivingRangeSchema = baseSchema
+  .extend({
+    store: storeSchema,
+  })
   .extend(equipmentsSchema)
   .extend(existingImagesSchema)
   .extend(venueSettingsSchema)
@@ -203,6 +227,7 @@ const genericSitesSchema = z.object({
   coverImages: z.array(z.string()),
   introduce: z.string(),
   equipment: z.string().nullable(),
+  store: storeSchema,
   openDays: z
     .array(
       z.object({
@@ -286,11 +311,6 @@ export const golfSitesSchema = z.object({
             }),
           }),
         )
-        .optional(),
-      store: z
-        .object({
-          id: z.string(),
-        })
         .optional(),
     }),
   ),

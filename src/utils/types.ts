@@ -7,3 +7,5 @@ export type JSONValue =
   | { [key: string]: JSONValue };
 
 export type ValueOf<T> = T[keyof T];
+
+export type SimpleStore = { id: string; name: string };

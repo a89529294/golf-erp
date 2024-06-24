@@ -7,12 +7,16 @@ import { appointmentsQuery, loader } from "./loader";
 import { DataTable } from "@/pages/indoor-simulator/appointment-management/data-table/table";
 import { columns } from "@/pages/indoor-simulator/appointment-management/data-table/columns";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useAuth } from "@/hooks/use-auth";
 
 export function Component() {
+  const { user } = useAuth();
   const [searchParams] = useSearchParams();
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
   const { data: stores } = useQuery({
-    ...indoorSimulatorStoresQuery,
+    ...indoorSimulatorStoresQuery(
+      user!.isAdmin ? "all" : user!.allowedStores.simulator,
+    ),
     initialData: initialData.stores,
   });
   const { data: storesWithSiteAppointments } = useQuery({

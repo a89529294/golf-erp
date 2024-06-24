@@ -1,5 +1,5 @@
 import { indoorSimulatorStoresQuery } from "@/pages/indoor-simulator/site-management/loader";
-import { fromDateToDateTimeString } from "@/utils";
+import { fromDateToDateTimeString, getAllowedStores } from "@/utils";
 import { queryClient } from "@/utils/query-client";
 import { privateFetch } from "@/utils/utils";
 import { z } from "zod";
@@ -113,7 +113,9 @@ export const appointmentsQuery = {
 
 export async function loader() {
   const promises = [
-    queryClient.ensureQueryData(indoorSimulatorStoresQuery),
+    queryClient.ensureQueryData(
+      indoorSimulatorStoresQuery(await getAllowedStores("simulator")),
+    ),
     queryClient.ensureQueryData(appointmentsQuery),
   ] as const;
 

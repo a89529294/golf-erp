@@ -1,5 +1,5 @@
 import { simpleMemberSchema } from "@/pages/member-management/loader";
-import { storeSchema } from "@/pages/store-management/loader";
+import { storeSchema } from "@/utils/category/schemas";
 import { queryClient } from "@/utils/query-client";
 import { privateFetch } from "@/utils/utils";
 import { z } from "zod";

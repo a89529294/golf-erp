@@ -15,7 +15,6 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useLoaderData, useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
-import { golfStoresQuery } from "../loader";
 import { genGolfSiteDetailsQuery, loader } from "./loader";
 
 export function Component() {
@@ -28,10 +27,6 @@ export function Component() {
     ...genGolfSiteDetailsQuery(storeId!, siteId!),
     initialData: initialData.details,
   });
-  const { data: stores } = useQuery({
-    ...golfStoresQuery,
-    initialData: initialData.stores,
-  });
 
   const form = useForm<ExistingGolfCourse>({
     resolver: zodResolver(existingGolfCourseSchema),
@@ -42,7 +37,7 @@ export function Component() {
       equipments: data.equipments,
       imageFiles: data.coverImages,
       openingDates: data.openDays,
-      storeId: data.store?.id ?? "",
+      storeId: data.store.id,
       monday: data.openTimes.filter((v) => v.day === 1),
       tuesday: data.openTimes.filter((v) => v.day === 2),
       wednesday: data.openTimes.filter((v) => v.day === 3),
@@ -248,7 +243,7 @@ export function Component() {
             onSubmit={() => {
               mutate();
             }}
-            stores={stores}
+            stores={[data.store]}
             formDisabled={formDisabled || isPending}
             type={"golf"}
             isPending={isPending}

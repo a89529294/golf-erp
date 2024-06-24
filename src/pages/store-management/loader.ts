@@ -1,29 +1,12 @@
-import { employeeSchema } from "@/pages/system-management/personnel-management/loader";
-import { storeCategories } from "@/utils";
 import {
   golfSitesSchema,
   groundSitesSchema,
   simulatorSitesSchema,
+  storeSchema,
 } from "@/utils/category/schemas";
 import { queryClient } from "@/utils/query-client";
 import { privateFetch } from "@/utils/utils";
 import { z } from "zod";
-
-export const storeSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  businessHours: z.string().nullable(),
-  telphone: z.string().nullable(),
-  contact: z.string().nullable(),
-  contactPhone: z.string(),
-  latitude: z.string().nullable(),
-  longitude: z.string().nullable(),
-  category: z.enum(storeCategories),
-  county: z.string(),
-  district: z.string(),
-  address: z.string(),
-  employees: z.array(employeeSchema).optional(),
-});
 
 export const storesSchema = z.object({
   data: z.array(storeSchema),
@@ -33,18 +16,60 @@ export const storesWithoutEmployeesSchema = z.object({
   data: z.array(storeSchema.omit({ employees: true })),
 });
 
-export const storesWithSitesSchema = z.object({
+export const golfStoresWithSitesSchema = z.object({
   data: z.array(
-    storeSchema.omit({ employees: true }).extend({
-      simulators: simulatorSitesSchema.pick({ data: true }).shape.data,
-      golfs: golfSitesSchema.pick({ data: true }).shape.data,
-      grounds: groundSitesSchema.pick({ data: true }).shape.data,
-    }),
+    storeSchema
+      .omit({ employees: true })
+      .extend({
+        golfs: golfSitesSchema.pick({ data: true }).shape.data,
+      })
+      .transform((v) => {
+        const { golfs, ...rest } = v;
+        return { ...rest, sites: golfs };
+      }),
+  ),
+});
+export const groundStoresWithSitesSchema = z.object({
+  data: z.array(
+    storeSchema
+      .omit({ employees: true })
+      .extend({
+        grounds: groundSitesSchema.pick({ data: true }).shape.data,
+      })
+      .transform((v) => {
+        const { grounds, ...rest } = v;
+        return {
+          ...rest,
+          sites: grounds,
+        };
+      }),
+  ),
+});
+export const simulatorStoresWithSitesSchema = z.object({
+  data: z.array(
+    storeSchema
+      .omit({ employees: true })
+      .extend({
+        simulators: simulatorSitesSchema.pick({ data: true }).shape.data,
+      })
+      .transform((v) => {
+        const { simulators, ...rest } = v;
+        return {
+          ...rest,
+          sites: simulators,
+        };
+      }),
   ),
 });
 
-export type StoreWithSites = z.infer<
-  typeof storesWithSitesSchema
+export type GolfStoreWithSites = z.infer<
+  typeof golfStoresWithSitesSchema
+>["data"][number];
+export type GroundStoreWithSites = z.infer<
+  typeof groundStoresWithSitesSchema
+>["data"][number];
+export type SimulatorStoreWithSites = z.infer<
+  typeof simulatorStoresWithSitesSchema
 >["data"][number];
 
 export type Store = z.infer<typeof storesSchema>["data"][number];

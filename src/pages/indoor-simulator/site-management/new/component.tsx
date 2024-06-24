@@ -15,12 +15,15 @@ import { z } from "zod";
 import { indoorSimulatorStoresQuery } from "../loader";
 import { loader } from "./loader";
 import { useAuth } from "@/hooks/use-auth";
+import { SimpleStore } from "@/utils/types";
 
 export function Component() {
   const { user } = useAuth();
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
-  let { data: stores } = useQuery({
-    ...indoorSimulatorStoresQuery,
+  const { data: stores } = useQuery({
+    ...indoorSimulatorStoresQuery(
+      user!.isAdmin ? "all" : user!.allowedStores.ground,
+    ),
     initialData,
   });
   const navigate = useNavigate();
@@ -105,11 +108,6 @@ export function Component() {
     },
   });
 
-  if (!user!.permissions.includes("模擬器-基本操作"))
-    stores = stores.filter((store) =>
-      user!.allowedStores.simulator.includes(store.id),
-    );
-
   return (
     <MainLayout
       headerChildren={
@@ -135,7 +133,7 @@ export function Component() {
           <Site
             type="indoor-simulator"
             formDisabled={isPending}
-            stores={stores}
+            stores={stores as SimpleStore[]}
             onSubmit={() => mutate()}
             isPending={isPending}
           />

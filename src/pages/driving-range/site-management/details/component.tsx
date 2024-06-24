@@ -1,4 +1,5 @@
 import { Site } from "@/components/category/site";
+import { Modal } from "@/components/modal";
 import { IconButton, IconWarningButton } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { MainLayout } from "@/layouts/main-layout";
@@ -12,13 +13,11 @@ import { useForm } from "react-hook-form";
 import { useLoaderData, useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { z } from "zod";
-import { groundStoresQuery } from "../loader";
 import {
   genDrivingRangeDetailsQuery,
   loader,
   type DrivingRangePATCH,
 } from "./loader";
-import { Modal } from "@/components/modal";
 
 export function Component() {
   const queryClient = useQueryClient();
@@ -28,10 +27,7 @@ export function Component() {
     ...genDrivingRangeDetailsQuery(storeId!, siteId!),
     initialData: initialData.details,
   });
-  const { data: stores } = useQuery({
-    ...groundStoresQuery,
-    initialData: initialData.stores,
-  });
+
   const navigate = useNavigate();
   const [defaultOpeningDates, setDefaultOpeningDates] = useState(
     data.openingDates,
@@ -242,7 +238,7 @@ export function Component() {
             onSubmit={() => {
               mutate();
             }}
-            stores={stores}
+            stores={[data.store]}
             type="driving-range"
             formDisabled={formDisabled || isPending}
             isPending={isPending}

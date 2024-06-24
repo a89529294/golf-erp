@@ -127,3 +127,31 @@ export const numberToWeekDay = {
   5: "星期五",
   6: "星期六",
 };
+
+export const getAllowedStores = async (
+  type: "ground" | "golf" | "simulator",
+) => {
+  const permissionsResponse = await privateFetch("/auth/permissions");
+  const permissions = await permissionsResponse.json();
+
+  let allowedStores: { id: string; name: string }[] | "all";
+  if (permissions.includes("system:admin")) allowedStores = "all";
+  else {
+    const authResponse = await privateFetch("/auth/me?populate=*");
+    const user = (await authResponse.json()) as {
+      employee: {
+        stores: {
+          id: string;
+          category: "ground" | "golf" | "simulator";
+          name: string;
+        }[];
+      };
+    };
+
+    allowedStores = user.employee.stores
+      .filter((s) => s.category === type)
+      .map((s) => ({ id: s.id, name: s.name }));
+  }
+
+  return allowedStores;
+};

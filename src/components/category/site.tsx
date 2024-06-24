@@ -4,6 +4,7 @@ import { PlanRow } from "@/components/category/plan-row";
 import { PreviewImage } from "@/components/category/preview-image";
 import { Section } from "@/components/category/section";
 import { TimeRangeRow } from "@/components/category/time-range-row";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   FormControl,
   FormField,
@@ -21,7 +22,6 @@ import {
 import { UnderscoredInput } from "@/components/underscored-input";
 import { WeekDayTabs } from "@/components/weekday-tabs";
 import { cn } from "@/lib/utils";
-import { StoreWithoutEmployees } from "@/pages/store-management/loader";
 import {
   DateRange,
   ExistingDrivingRange,
@@ -34,6 +34,7 @@ import {
   VenueSettingsRowContent,
   Weekday,
 } from "@/utils/category/schemas";
+import { SimpleStore } from "@/utils/types";
 import React, { useRef } from "react";
 import { UseFormReturn, useFormContext } from "react-hook-form";
 import {
@@ -61,7 +62,6 @@ import {
   onSelectEquipment,
 } from "./helper-functions";
 import { VenueSettingsRow } from "./venue-settings-row";
-import { Checkbox } from "@/components/ui/checkbox";
 
 type S = {
   golf: NewGolfCourse;
@@ -81,7 +81,7 @@ export function Site({
 }: {
   type: keyof S;
   formDisabled: boolean;
-  stores: StoreWithoutEmployees[];
+  stores: SimpleStore[];
   onSubmit: (v: S[typeof type]) => void;
   isPending: boolean;
 }): React.ReactElement {

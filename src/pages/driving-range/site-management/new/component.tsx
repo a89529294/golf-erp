@@ -18,13 +18,14 @@ import { z } from "zod";
 import { groundStoresQuery } from "../loader";
 import { loader } from "./loader";
 import { useAuth } from "@/hooks/use-auth";
+import { SimpleStore } from "@/utils/types";
 
 export function Component() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
-  let { data: stores } = useQuery({
-    ...groundStoresQuery,
+  const { data: stores } = useQuery({
+    ...groundStoresQuery(user!.isAdmin ? "all" : user!.allowedStores.ground),
     initialData,
   });
   const form = useForm<z.infer<typeof newDrivingRangeSchema>>({
@@ -98,11 +99,6 @@ export function Component() {
     },
   });
 
-  if (!user!.permissions.includes("練習場-基本操作"))
-    stores = stores.filter((store) =>
-      user!.allowedStores.ground.includes(store.id),
-    );
-
   return (
     <MainLayout
       headerChildren={
@@ -128,7 +124,7 @@ export function Component() {
           <Site
             type="driving-range"
             formDisabled={isPending}
-            stores={stores}
+            stores={stores as SimpleStore[]}
             onSubmit={(v) => mutate(v as NewDrivingRange)}
             isPending={isPending}
           />

@@ -20,8 +20,8 @@ export function Component() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
-  let { data: stores } = useQuery({
-    ...golfStoresQuery,
+  const { data: stores } = useQuery({
+    ...golfStoresQuery(user!.isAdmin ? "all" : user!.allowedStores.golf),
     initialData,
   });
   const form = useForm<NewGolfCourse>({
@@ -127,11 +127,6 @@ export function Component() {
       toast.error("無法新增高爾夫場地");
     },
   });
-
-  if (!user!.permissions.includes("高爾夫-基本操作"))
-    stores = stores.filter((store) =>
-      user!.allowedStores.golf.includes(store.id),
-    );
 
   return (
     <MainLayout

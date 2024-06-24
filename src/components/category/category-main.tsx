@@ -14,7 +14,11 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { MainLayout } from "@/layouts/main-layout";
 import { cn } from "@/lib/utils";
-import { StoreWithSites } from "@/pages/store-management/loader";
+import {
+  GolfStoreWithSites,
+  GroundStoreWithSites,
+  SimulatorStoreWithSites,
+} from "@/pages/store-management/loader";
 import {
   fromImageIdsToSrc,
   getDifferenceInHoursAndMinutes,
@@ -32,7 +36,41 @@ import {
 } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Modal } from "../modal";
+import React from "react";
 
+export function CategoryMain({
+  newSiteHref,
+  siteDetailsHref,
+  stores,
+  type,
+}: {
+  newSiteHref: string;
+  siteDetailsHref: string;
+  type: "ground";
+  stores: GroundStoreWithSites[];
+}): React.JSX.Element;
+export function CategoryMain({
+  newSiteHref,
+  siteDetailsHref,
+  stores,
+  type,
+}: {
+  newSiteHref: string;
+  siteDetailsHref: string;
+  type: "simulator";
+  stores: SimulatorStoreWithSites[];
+}): React.JSX.Element;
+export function CategoryMain({
+  newSiteHref,
+  siteDetailsHref,
+  stores,
+  type,
+}: {
+  newSiteHref: string;
+  siteDetailsHref: string;
+  type: "golf";
+  stores: GolfStoreWithSites[];
+}): React.JSX.Element;
 export function CategoryMain({
   newSiteHref,
   siteDetailsHref,
@@ -42,25 +80,17 @@ export function CategoryMain({
   type: "golf" | "ground" | "simulator";
   newSiteHref: string;
   siteDetailsHref: string;
-  stores: StoreWithSites[];
-}) {
+  stores:
+    | GolfStoreWithSites[]
+    | GroundStoreWithSites[]
+    | SimulatorStoreWithSites[];
+}): React.JSX.Element {
   const navigate = useNavigate();
   const { storeId } = useParams();
   const [globalFilter, setGlobalFilter] = useState("");
   const ref = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState(0);
-  const simulatorSites = stores.find(
-    (store) => store.id === storeId,
-  )?.simulators;
-  const golfSites = stores.find((store) => store.id === storeId)?.golfs;
-  const groundSites = stores.find((store) => store.id === storeId)?.grounds;
-
-  const sites =
-    type === "simulator"
-      ? simulatorSites
-      : type === "golf"
-        ? golfSites
-        : groundSites ?? [];
+  const sites = stores.find((store) => store.id === storeId)?.sites;
 
   const onStoreValueChange = useCallback(
     (storeId: string, replace: boolean) => {
