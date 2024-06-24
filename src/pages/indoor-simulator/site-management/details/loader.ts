@@ -107,7 +107,7 @@ export const genSimulatorDetailsQuery = (storeId: string, siteId: string) => ({
         : {
             openingHours: [],
           }),
-      plans: parsed.plans,
+      plans: parsed.plans?.map((p) => ({ ...p, saved: true })) ?? [],
     };
   },
 });

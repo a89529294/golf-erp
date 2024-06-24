@@ -29,22 +29,6 @@ const GOLF_BASE_PATH = "/golf";
 const DRIVING_RANGE_BASE_PATH = "/driving-range";
 const SYSTEM_MANAGEMENT_BASE_PATH = "/system-management";
 
-export const permissionsList = {
-  "indoor-simulator": {
-    "basic-operations": "模擬器-基本操作",
-    report: "模擬器-報表",
-  },
-  golf: {
-    "basic-operations": "高爾夫球-基本操作",
-    report: "高爾夫球-報表",
-  },
-  "driving-range": {
-    "basic-operations": "練習場-基本操作",
-    report: "練習場-報表",
-  },
-  "system-management": "管理系統",
-};
-
 // if you add/remove new nested links you must also modify
 // src/index.tsx and sidebar.tsx
 export const linksKV = {

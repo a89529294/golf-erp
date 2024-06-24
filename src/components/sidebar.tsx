@@ -31,27 +31,29 @@ export function Sidebar() {
 
   const isLinkAllowed = (link: NestedLink | FlatLink | MultipleLink) => {
     if (link.allowedPermissions.length === 0) return true;
+    if (user?.isAdmin) return true;
 
-    if (user?.permissions.length === 0) {
-      if (
-        "allowedStoreCategory" in link &&
-        link.allowedStoreCategory === "ground" &&
-        user.allowedStores.ground.length !== 0
-      )
-        return true;
-      if (
-        "allowedStoreCategory" in link &&
-        link.allowedStoreCategory === "golf" &&
-        user.allowedStores.golf.length !== 0
-      )
-        return true;
-      if (
-        "allowedStoreCategory" in link &&
-        link.allowedStoreCategory === "simulator" &&
-        user.allowedStores.simulator.length !== 0
-      )
-        return true;
-    }
+    if (
+      "allowedStoreCategory" in link &&
+      link.allowedStoreCategory === "ground" &&
+      user?.permissions.some((up) => link.allowedPermissions.includes(up)) &&
+      user.allowedStores.ground.length !== 0
+    )
+      return true;
+    if (
+      "allowedStoreCategory" in link &&
+      link.allowedStoreCategory === "golf" &&
+      user?.permissions.some((up) => link.allowedPermissions.includes(up)) &&
+      user?.allowedStores.golf.length !== 0
+    )
+      return true;
+    if (
+      "allowedStoreCategory" in link &&
+      link.allowedStoreCategory === "simulator" &&
+      user?.permissions.some((up) => link.allowedPermissions.includes(up)) &&
+      user?.allowedStores.simulator.length !== 0
+    )
+      return true;
 
     return !!user?.permissions.some((up) =>
       link.allowedPermissions.includes(up),

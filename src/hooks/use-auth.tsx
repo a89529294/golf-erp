@@ -13,6 +13,7 @@ import { privateFetch } from "@/utils/utils";
 type AuthContextValue = {
   user: {
     account: string;
+    isAdmin: boolean;
     permissions: string[];
     allowedStores: {
       ground: string[];
@@ -57,8 +58,15 @@ export const AuthProvider = ({
       },
     );
 
-    const permissionsResponse = await privateFetch("/erp-features/me");
-    const permissions = await permissionsResponse.json();
+    const authPromises = [
+      await privateFetch("/auth/permissions"),
+      await privateFetch("/erp-features/me"),
+    ];
+
+    const auth = await Promise.all(authPromises);
+
+    const isAdmin = (await auth[0].json()).includes("system:admin");
+    const permissions = await auth[1].json();
     const user = await response.json();
 
     const allowedStores = user.employee?.stores.reduce(
@@ -82,6 +90,7 @@ export const AuthProvider = ({
 
     setUser({
       account: user.account,
+      isAdmin,
       permissions: permissions.map((p: { name: string }) => p.name),
       allowedStores,
       expiresAt: new Date(user.expires).getTime() + 1000 * 60 * 60,
