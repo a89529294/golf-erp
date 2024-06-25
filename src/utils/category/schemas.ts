@@ -242,7 +242,7 @@ const genericSitesSchema = z.object({
 
 export const groundSitesSchema = z.object({
   data: z.array(
-    genericSitesSchema.extend({
+    genericSitesSchema.partial({ store: true }).extend({
       openTimes: z
         .array(
           z.object({
@@ -262,7 +262,7 @@ export const groundSitesSchema = z.object({
 
 export const simulatorSitesSchema = z.object({
   data: z.array(
-    genericSitesSchema.extend({
+    genericSitesSchema.partial({ store: true }).extend({
       openTimes: z
         .array(
           z.object({
@@ -279,7 +279,7 @@ export const simulatorSitesSchema = z.object({
 });
 export const golfSitesSchema = z.object({
   data: z.array(
-    genericSitesSchema.extend({
+    genericSitesSchema.partial({ store: true }).extend({
       openTimes: z
         .array(
           z.object({

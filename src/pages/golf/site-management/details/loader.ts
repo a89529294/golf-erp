@@ -19,13 +19,13 @@ export const genGolfSiteDetailsQuery = (storeId: string, siteId: string) => ({
 
     return {
       ...site,
-      openDays: site.openDays?.map((od) => ({
+      openingDates: site.openDays?.map((od) => ({
         id: od.id,
         start: new Date(od.startDay),
         end: new Date(od.endDay),
         saved: true,
       })),
-      coverImages: site.coverImages.map((img) => ({
+      imageFiles: site.coverImages.map((img) => ({
         id: img,
         src: img,
       })),

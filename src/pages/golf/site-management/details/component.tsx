@@ -11,7 +11,7 @@ import {
 import { privateFetch } from "@/utils/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useLoaderData, useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -27,7 +27,6 @@ export function Component() {
     ...genGolfSiteDetailsQuery(storeId!, siteId!),
     initialData: initialData.details,
   });
-
   const form = useForm<ExistingGolfCourse>({
     resolver: zodResolver(existingGolfCourseSchema),
     defaultValues: {
@@ -35,8 +34,8 @@ export function Component() {
       isActive: data.isActive,
       description: data.introduce,
       equipments: data.equipments,
-      imageFiles: data.coverImages,
-      openingDates: data.openDays,
+      imageFiles: data.imageFiles,
+      openingDates: data.openingDates,
       storeId: data.store.id,
       monday: data.openTimes.filter((v) => v.day === 1),
       tuesday: data.openTimes.filter((v) => v.day === 2),
@@ -56,7 +55,7 @@ export function Component() {
         isActive: boolean;
         introduce: string;
         storeId: string;
-        equipments: string;
+        equipment: string;
         openDays: { startDay: string; endDay: string; sequence: number }[];
         openTimes: {
           startTime: string;
@@ -78,7 +77,7 @@ export function Component() {
       if (changedValues.description) x.introduce = changedValues.description;
       if (changedValues.storeId) x.storeId = changedValues.storeId;
       if (changedValues.equipments)
-        x.equipments = JSON.stringify(
+        x.equipment = JSON.stringify(
           changedValues.equipments.map((e) => ({
             name: e.label,
             isActive: e.selected,
@@ -145,7 +144,7 @@ export function Component() {
         );
 
         // removed images
-        data.coverImages.forEach((img) => {
+        data.imageFiles.forEach((img) => {
           if (!changedValues.imageFiles?.find((ci) => ci.id === img.id))
             promises.push(
               privateFetch(`/store/golf/${siteId}/cover/${img.id}`, {
@@ -181,7 +180,7 @@ export function Component() {
   const { mutateAsync: deleteSite } = useMutation({
     mutationKey: ["delete-golf-site"],
     mutationFn: async () => {
-      return privateFetch(`/store/golf/${siteId}`, { method: "DELETE" });
+      await privateFetch(`/store/golf/${siteId}`, { method: "DELETE" });
     },
     onSuccess: () => {
       navigate(`/golf/site-management/${storeId}`);
@@ -193,17 +192,43 @@ export function Component() {
     },
   });
 
+  useEffect(() => {
+    form.reset({
+      name: data.name,
+      isActive: data.isActive,
+      description: data.introduce,
+      equipments: data.equipments,
+      imageFiles: data.imageFiles,
+      openingDates: data.openingDates,
+      storeId: data.store.id,
+      monday: data.openTimes.filter((v) => v.day === 1),
+      tuesday: data.openTimes.filter((v) => v.day === 2),
+      wednesday: data.openTimes.filter((v) => v.day === 3),
+      thursday: data.openTimes.filter((v) => v.day === 4),
+      friday: data.openTimes.filter((v) => v.day === 5),
+      saturday: data.openTimes.filter((v) => v.day === 6),
+      sunday: data.openTimes.filter((v) => v.day === 0),
+      store: data.store,
+    });
+  }, [data, form]);
+
   return (
     <MainLayout
       headerChildren={
         <>
-          <IconButton icon="back" onClick={() => navigate(-1)}>
+          <IconButton
+            icon="back"
+            onClick={() => navigate(-1)}
+            disabled={isPending}
+          >
             返回
           </IconButton>
 
           <Modal
             dialogTriggerChildren={
-              <IconWarningButton icon="trashCan">刪除</IconWarningButton>
+              <IconWarningButton disabled={isPending} icon="trashCan">
+                刪除
+              </IconWarningButton>
             }
             title={`確認刪除${form.getValues("name")}`}
             onSubmit={deleteSite}

@@ -35,7 +35,7 @@ export function Component() {
   const { mutateAsync: deleteStore, isPending } = useMutation({
     mutationKey: ["delete-stores"],
     mutationFn: async () => {
-      return await Promise.all(
+      await Promise.all(
         Object.keys(rowSelection).map((id) =>
           privateFetch(`/store/${id}`, {
             method: "DELETE",
@@ -101,9 +101,9 @@ export function Component() {
         </>
       }
     >
-      <div className="flex flex-col w-full p-1 border border-line-gray bg-light-gray">
+      <div className="flex w-full flex-col border border-line-gray bg-light-gray p-1">
         <nav>
-          <ul className="flex items-center gap-3 py-2 pl-5 isolate">
+          <ul className="isolate flex items-center gap-3 py-2 pl-5">
             {Object.entries(storeCategoryWithAllMap).map(([key, value]) => (
               <li key={key}>
                 <Link
@@ -114,7 +114,7 @@ export function Component() {
                 >
                   {category === key && (
                     <motion.div
-                      className="absolute inset-0 z-10 bg-black rounded-full"
+                      className="absolute inset-0 z-10 rounded-full bg-black"
                       layoutId="category-tab"
                       transition={{
                         duration: 0.3,

@@ -26,7 +26,7 @@ import {
   toMinguoDate,
 } from "@/utils";
 import { privateFetch } from "@/utils/utils";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   useCallback,
   useEffect,
@@ -37,6 +37,7 @@ import {
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Modal } from "../modal";
 import React from "react";
+import { toast } from "sonner";
 
 export function CategoryMain({
   newSiteHref,
@@ -194,13 +195,14 @@ export function CategoryMain({
                       )
                     : []
                   ).forEach((v) => {
-                    const startHour = +v.startTime.split(":")[0];
-                    const startMin = +v.startTime.split(":")[1];
-                    const endHour = +v.endTime.split(":")[0];
-                    const endMin = +v.endTime.split(":")[1];
-
+                    const startTime = v.startTime.slice(11, 16);
+                    const startHour = +startTime.split(":")[0];
+                    const startMin = +startTime.split(":")[1];
+                    const endTime = v.endTime.slice(11, 16);
+                    const endHour = +endTime.split(":")[0];
+                    const endMin = +endTime.split(":")[1];
                     openingHours.push({
-                      hours: `${v.startTime.slice(0, 5)}～${v.endTime.slice(0, 5)}`,
+                      hours: `${startTime}～${endTime}`,
                       duration: getDifferenceInHoursAndMinutes(
                         startHour * 60 + startMin,
                         endHour * 60 + endMin,
@@ -217,7 +219,7 @@ export function CategoryMain({
                           day: numberToWeekDay[
                             s.day as keyof typeof numberToWeekDay
                           ],
-                          hours: `${s.startTime.slice(0, 5)}～${s.endTime.slice(0, 5)}`,
+                          hours: `${s.startTime.slice(11, 16)}～${s.endTime.slice(11, 16)}`,
                         });
                     });
                 }
@@ -285,6 +287,21 @@ function Section({
 }) {
   const queryClient = useQueryClient();
   const [img, setImg] = useState("");
+  const { mutateAsync } = useMutation({
+    mutationKey: ["delete-site"],
+    mutationFn: async () => {
+      await privateFetch(siteDeleteHref, {
+        method: "DELETE",
+      });
+    },
+    onSuccess() {
+      queryClient.invalidateQueries({ queryKey: ["sites-for-store"] });
+      toast.success("刪除成功");
+    },
+    onError() {
+      toast.error("刪除失敗, 請先確認該場地是否有預約");
+    },
+  });
 
   useEffect(() => {
     if (!imgId) return;
@@ -370,12 +387,7 @@ function Section({
             </button>
           }
           title={`確認刪除${name}?`}
-          onSubmit={async () => {
-            await privateFetch(siteDeleteHref, {
-              method: "DELETE",
-            });
-            queryClient.invalidateQueries({ queryKey: ["sites-for-store"] });
-          }}
+          onSubmit={mutateAsync}
         />
       </div>
     </section>

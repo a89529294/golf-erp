@@ -14,10 +14,10 @@ const sitesSchema = z.object({
 });
 
 export const genGroundStoresWithSitesQuery = (
-  allowedStores: { id: string; name: string }[] | "all",
+  allowedStores: SimpleStore[] | "all",
 ) => {
   return {
-    queryKey: ["sites-for-stores", "ground"],
+    queryKey: ["sites-for-store", "ground"],
     queryFn: async () => {
       if (allowedStores === "all") {
         const response = await privateFetch(
@@ -25,6 +25,8 @@ export const genGroundStoresWithSitesQuery = (
         );
 
         const x = await response.json();
+
+        console.log(groundStoresWithSitesSchema.safeParse(x));
 
         const data = groundStoresWithSitesSchema.parse(x).data;
 
@@ -38,10 +40,8 @@ export const genGroundStoresWithSitesQuery = (
 
         return [
           {
-            ...(data.data[0]?.store ?? {
-              id: allowedStores[0].id,
-              name: allowedStores[0].name,
-            }),
+            id: allowedStores[0].id,
+            name: allowedStores[0].name,
             sites: data.data,
           },
         ];

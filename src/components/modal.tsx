@@ -19,7 +19,7 @@ export function Modal({
 }: {
   dialogTriggerChildren: ReactElement;
   children?: ReactNode;
-  onSubmit: () => void;
+  onSubmit: () => void | Promise<void>;
   title: string;
 }) {
   const [open, setOpen] = useState(false);

@@ -151,7 +151,7 @@ export function Component() {
   const { mutateAsync: deleteSite } = useMutation({
     mutationKey: ["delete-simulator-site"],
     mutationFn: async () => {
-      return privateFetch(`/store/simulator/${siteId}`, { method: "DELETE" });
+      await privateFetch(`/store/simulator/${siteId}`, { method: "DELETE" });
     },
     onSuccess: () => {
       navigate(`/indoor-simulator/site-management/${storeId}`);
@@ -172,12 +172,18 @@ export function Component() {
     <MainLayout
       headerChildren={
         <>
-          <IconButton icon="back" onClick={() => navigate(-1)}>
+          <IconButton
+            icon="back"
+            onClick={() => navigate(-1)}
+            disabled={isPending}
+          >
             返回
           </IconButton>
           <Modal
             dialogTriggerChildren={
-              <IconWarningButton icon="trashCan">刪除</IconWarningButton>
+              <IconWarningButton icon="trashCan" disabled={isPending}>
+                刪除
+              </IconWarningButton>
             }
             title={`確認刪除${form.getValues("name")}`}
             onSubmit={deleteSite}

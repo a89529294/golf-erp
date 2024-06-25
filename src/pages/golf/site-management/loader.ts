@@ -16,7 +16,7 @@ export const sitesSchema = z.object({
 export const genGolfStoresWithSitesQuery = (
   allowedStores: { id: string; name: string }[] | "all",
 ) => ({
-  queryKey: ["sites-for-stores", "golf"],
+  queryKey: ["sites-for-store", "golf"],
   queryFn: async () => {
     if (allowedStores === "all") {
       const response = await privateFetch(

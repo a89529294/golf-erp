@@ -168,7 +168,7 @@ export function Component() {
   const { mutateAsync: deleteSite } = useMutation({
     mutationKey: ["delete-ground-site"],
     mutationFn: async () => {
-      return privateFetch(`/store/ground/${siteId}`, { method: "DELETE" });
+      await privateFetch(`/store/ground/${siteId}`, { method: "DELETE" });
     },
     onSuccess: () => {
       navigate(`/driving-range/site-management/${storeId}`);

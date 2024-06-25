@@ -107,7 +107,6 @@ export function Site({
           onSubmit(v);
         },
         (e) => {
-          console.log(form.getValues("openingHours"));
           console.log(e);
           e.openingDates && openingDateRangeRef.current?.scrollIntoView();
           if ("venueSettings" in e) venueSettingsRef.current?.scrollIntoView();
