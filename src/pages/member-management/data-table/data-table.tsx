@@ -34,6 +34,17 @@ interface DataTableProps<TData, TValue> {
 }
 
 const fuzzyFilter: FilterFn<unknown> = (row, columnId, value) => {
+  if (!row.getValue(columnId)) return false;
+
+  if (
+    (row.getValue(columnId) as string)
+      .toLowerCase()
+      .includes(value.toLowerCase()) &&
+    value === "admin"
+  ) {
+    console.log(row, columnId);
+  }
+
   return (row.getValue(columnId) as string)
     .toLowerCase()
     .includes(value.toLowerCase());

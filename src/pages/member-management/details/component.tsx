@@ -1,5 +1,5 @@
 import backIcon from "@/assets/back.svg";
-import { IconButton } from "@/components/ui/button";
+import { IconButton, IconWarningButton } from "@/components/ui/button";
 import { button } from "@/components/ui/button-cn";
 import { MainLayout } from "@/layouts/main-layout";
 import { linksKV } from "@/utils/links";
@@ -51,7 +51,7 @@ export function Component() {
         ) as (keyof typeof form.formState.dirtyFields)[],
       );
 
-      return privateFetch(`/app-users/${id}`, {
+      const response = await privateFetch(`/app-users/${id}`, {
         method: "PATCH",
         body: JSON.stringify({
           ...x,
@@ -61,12 +61,25 @@ export function Component() {
           "Content-Type": "application/json",
         },
       });
+
+      return await response.json();
     },
-    onSuccess() {
+    onSuccess(result) {
+      console.log(result);
       toast.success("更新成功");
       queryClient.invalidateQueries({
         queryKey: ["members"],
       });
+
+      if (result.account) form.reset({ account: result.account });
+      if (result.appUserType) form.reset({ memberType: result.appUserType });
+      if (result.chName) form.reset({ chName: result.chName });
+      if (result.phone) form.reset({ phone: result.phone });
+      if (result.gender) form.reset({ gender: result.gender });
+      if (result.birthday)
+        form.reset({
+          birthday: result.birthday ? new Date(result.birthday) : "",
+        });
     },
     onError() {
       toast.error("更新失敗");
@@ -91,8 +104,6 @@ export function Component() {
   }, []);
 
   function onSubmit(values: z.infer<typeof memberFormSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
     console.log(values);
 
     mutate();
@@ -111,14 +122,13 @@ export function Component() {
               返回
             </Link>
           ) : (
-            <button
+            <IconWarningButton
               type="button"
-              className={button()}
               onClick={() => setDisabled(true)}
+              icon="redX"
             >
-              <img src={backIcon} />
-              返回
-            </button>
+              取消編輯
+            </IconWarningButton>
           )}
           {disabled === true ? (
             <IconButton

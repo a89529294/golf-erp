@@ -216,23 +216,60 @@ export function Component() {
     <MainLayout
       headerChildren={
         <>
-          <IconButton
-            icon="back"
-            onClick={() => navigate(-1)}
-            disabled={isPending}
-          >
-            返回
-          </IconButton>
+          {formDisabled ? (
+            <IconButton icon="back" onClick={() => navigate(-1)}>
+              返回
+            </IconButton>
+          ) : Object.keys(form.formState.dirtyFields).length !== 0 ? (
+            <Modal
+              dialogTriggerChildren={
+                <IconWarningButton disabled={isPending} icon="redX">
+                  取消編輯
+                </IconWarningButton>
+              }
+              onSubmit={() => {
+                setFormDisabled(true);
+                form.reset({
+                  name: data.name,
+                  isActive: data.isActive,
+                  description: data.introduce,
+                  equipments: data.equipments,
+                  imageFiles: data.imageFiles,
+                  openingDates: data.openingDates,
+                  storeId: data.store.id,
+                  monday: data.openTimes.filter((v) => v.day === 1),
+                  tuesday: data.openTimes.filter((v) => v.day === 2),
+                  wednesday: data.openTimes.filter((v) => v.day === 3),
+                  thursday: data.openTimes.filter((v) => v.day === 4),
+                  friday: data.openTimes.filter((v) => v.day === 5),
+                  saturday: data.openTimes.filter((v) => v.day === 6),
+                  sunday: data.openTimes.filter((v) => v.day === 0),
+                  store: data.store,
+                });
+              }}
+            >
+              資料尚未儲存，是否返回？
+            </Modal>
+          ) : (
+            <IconWarningButton
+              icon="redX"
+              onClick={() => setFormDisabled(true)}
+            >
+              取消編輯
+            </IconWarningButton>
+          )}
 
-          <Modal
-            dialogTriggerChildren={
-              <IconWarningButton disabled={isPending} icon="trashCan">
-                刪除
-              </IconWarningButton>
-            }
-            title={`確認刪除${form.getValues("name")}`}
-            onSubmit={deleteSite}
-          />
+          {formDisabled && (
+            <Modal
+              dialogTriggerChildren={
+                <IconWarningButton disabled={isPending} icon="trashCan">
+                  刪除
+                </IconWarningButton>
+              }
+              title={`確認刪除${form.getValues("name")}`}
+              onSubmit={deleteSite}
+            />
+          )}
 
           {formDisabled ? (
             <IconButton

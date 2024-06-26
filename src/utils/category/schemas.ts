@@ -112,8 +112,8 @@ const weekdaySchema = z.array(
         id: z.string(),
         memberLevel: z.union([
           z.literal("guest"),
-          z.literal("group-user"),
-          z.literal("common-user"),
+          z.literal("group_user"),
+          z.literal("common_user"),
         ]),
         partyOf1Fee: z.union([z.number(), z.literal("")]),
         partyOf2Fee: z.union([z.number(), z.literal("")]),

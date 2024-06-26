@@ -187,20 +187,52 @@ export function Component() {
     setDefaultVenueSettings(data.venueSettings);
   }, [data, form]);
 
+  console.log(form.formState.dirtyFields);
+
   return (
     <MainLayout
       headerChildren={
         <>
-          <IconButton icon="back" onClick={() => navigate(-1)}>
-            返回
-          </IconButton>
-          <Modal
-            dialogTriggerChildren={
-              <IconWarningButton icon="trashCan">刪除</IconWarningButton>
-            }
-            title={`確認刪除${form.getValues("name")}`}
-            onSubmit={deleteSite}
-          ></Modal>
+          {formDisabled ? (
+            <IconButton icon="back" onClick={() => navigate(-1)}>
+              返回
+            </IconButton>
+          ) : Object.keys(form.formState.dirtyFields).length !== 0 ? (
+            <Modal
+              dialogTriggerChildren={
+                <IconWarningButton disabled={isPending} icon="redX">
+                  取消編輯
+                </IconWarningButton>
+              }
+              onSubmit={() => {
+                setFormDisabled(true);
+                form.reset(data);
+                setDefaultImageFiles(data.imageFiles);
+                setDefaultOpeningDates(data.openingDates);
+                setDefaultVenueSettings(data.venueSettings);
+              }}
+            >
+              資料尚未儲存，是否返回？
+            </Modal>
+          ) : (
+            <IconWarningButton
+              icon="redX"
+              onClick={() => setFormDisabled(true)}
+            >
+              取消編輯
+            </IconWarningButton>
+          )}
+
+          {formDisabled && (
+            <Modal
+              dialogTriggerChildren={
+                <IconWarningButton icon="trashCan">刪除</IconWarningButton>
+              }
+              onSubmit={deleteSite}
+            >
+              確認刪除{form.getValues("name")}?
+            </Modal>
+          )}
 
           {formDisabled ? (
             <IconButton

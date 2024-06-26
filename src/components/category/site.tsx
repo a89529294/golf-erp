@@ -20,7 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { UnderscoredInput } from "@/components/underscored-input";
-import { WeekDayTabs } from "@/components/weekday-tabs";
+import { WeekdayTabs } from "@/components/weekday-tabs";
 import { cn } from "@/lib/utils";
 import {
   DateRange,
@@ -93,17 +93,12 @@ export function Site({
   const openingTimesRef = useRef<HTMLElement | null>(null);
   const [activeValue, setActiveValue] = React.useState<Weekday>("monday");
   const form = useFormContext<S[typeof type]>();
-
   const openingHours = form.watch("openingHours");
-  console.log(openingHours);
 
   return (
     <form
       onSubmit={form.handleSubmit(
         (v) => {
-          console.log(v);
-          console.log(form.formState.dirtyFields);
-
           onSubmit(v);
         },
         (e) => {
@@ -307,7 +302,7 @@ export function Site({
           }
           myRef={openingTimesRef}
         >
-          <WeekDayTabs
+          <WeekdayTabs
             onEdit={(weekday, id) => onEditWeekdayTimeRange(weekday, id, form)}
             onRemove={(weekday, id) =>
               onRemoveWeekdayTimeRange(weekday, id, form)
@@ -335,7 +330,7 @@ export function Site({
                 />
               ),
             }}
-            disabled={formDisabled || !!openingHours}
+            disabled={formDisabled || openingHours.length > 0}
           >
             {openingHours[0] ? (
               <TimeRangeRow

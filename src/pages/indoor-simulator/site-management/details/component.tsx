@@ -106,15 +106,20 @@ export function Component() {
             );
         });
         const formData = new FormData();
+        const imgIds = [] as string[];
         changedValues.imageFiles.forEach((v) => {
           if ("file" in v) {
             formData.append("image", v.file);
-          }
+          } else imgIds.push(v.id);
         });
-        privateFetch(`/store/simulator/${siteId}/cover`, {
+        const resp = await privateFetch(`/store/simulator/${siteId}/cover`, {
           method: "POST",
           body: formData,
         });
+        const imgData = (await resp.json()) as {
+          coverImages: string[];
+        };
+        imgIds.push(...imgData.coverImages);
       }
       if (changedValues["equipments"]) {
         x.equipment = JSON.stringify(
@@ -172,22 +177,45 @@ export function Component() {
     <MainLayout
       headerChildren={
         <>
-          <IconButton
-            icon="back"
-            onClick={() => navigate(-1)}
-            disabled={isPending}
-          >
-            返回
-          </IconButton>
-          <Modal
-            dialogTriggerChildren={
-              <IconWarningButton icon="trashCan" disabled={isPending}>
-                刪除
-              </IconWarningButton>
-            }
-            title={`確認刪除${form.getValues("name")}`}
-            onSubmit={deleteSite}
-          ></Modal>
+          {formDisabled ? (
+            <IconButton icon="back" onClick={() => navigate(-1)}>
+              返回
+            </IconButton>
+          ) : Object.keys(form.formState.dirtyFields).length !== 0 ? (
+            <Modal
+              dialogTriggerChildren={
+                <IconWarningButton disabled={isPending} icon="redX">
+                  取消編輯
+                </IconWarningButton>
+              }
+              onSubmit={() => {
+                setFormDisabled(true);
+                form.reset(data);
+                setDefaultOpeningDates(data.openingDates);
+                setDefaultImageFiles(data.imageFiles);
+              }}
+            >
+              資料尚未儲存，是否返回？
+            </Modal>
+          ) : (
+            <IconWarningButton
+              icon="redX"
+              onClick={() => setFormDisabled(true)}
+            >
+              取消編輯
+            </IconWarningButton>
+          )}
+          {formDisabled && (
+            <Modal
+              dialogTriggerChildren={
+                <IconWarningButton icon="trashCan" disabled={isPending}>
+                  刪除
+                </IconWarningButton>
+              }
+              title={`確認刪除${form.getValues("name")}`}
+              onSubmit={deleteSite}
+            ></Modal>
+          )}
           {formDisabled ? (
             <IconButton
               icon="pencil"

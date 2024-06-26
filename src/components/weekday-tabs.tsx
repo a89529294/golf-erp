@@ -43,7 +43,7 @@ export const WeekDayTabsTrigger = React.forwardRef<
   </TabsTrigger>
 ));
 
-export const WeekDayTabs = ({
+export const WeekdayTabs = ({
   onEdit,
   onRemove,
   onSave,

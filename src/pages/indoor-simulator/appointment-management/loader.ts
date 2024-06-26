@@ -10,6 +10,17 @@ const appointmentsSchema = z.object({
       id: z.string(), // appointmentId
       startTime: z.coerce.date().transform((v) => fromDateToDateTimeString(v)),
       endTime: z.coerce.date().transform((v) => fromDateToDateTimeString(v)),
+      status: z
+        .union([
+          z.literal("pending"),
+          z.literal("complete"),
+          z.literal("cancel"),
+        ])
+        .transform((v) => {
+          if (v === "pending") return "進行中";
+          if (v === "complete") return "完成";
+          return "取消";
+        }),
       storeSimulator: z.object({
         id: z.string(), // site id,
         name: z.string(),
@@ -31,16 +42,10 @@ type StoreWithSiteAppointments = {
   sites: {
     id: string;
     name: string;
-    appointments: {
-      id: string;
-      startTime: string;
-      endTime: string;
-      user: {
-        id: string;
-        name: string;
-        phoneno: string;
-      };
-    }[];
+    appointments: Omit<
+      z.infer<typeof appointmentsSchema>["data"][number],
+      "storeSimulator"
+    >[];
   }[];
 };
 
@@ -72,11 +77,12 @@ export const appointmentsQuery = {
         id: appointment.id,
         startTime: appointment.startTime,
         endTime: appointment.endTime,
-        user: {
+        appUser: {
           id: appointment.appUser.id,
-          name: appointment.appUser.chName,
-          phoneno: appointment.appUser.phone,
+          chName: appointment.appUser.chName,
+          phone: appointment.appUser.phone,
         },
+        status: appointment.status,
       };
 
       if (foundStore) {

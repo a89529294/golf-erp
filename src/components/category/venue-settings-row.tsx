@@ -5,7 +5,7 @@ import { UnderscoredInput } from "../underscored-input";
 import { onChange } from "@/pages/indoor-simulator/site-management/new/helpers";
 import greenFileIcon from "@/assets/green-file-icon.svg";
 import redXIcon from "@/assets/red-x-icon.svg";
-import blackTrashCanIcon from "@/assets/black-trash-can-icon.svg";
+import redTrashCanIcon from "@/assets/trash-can-icon.svg";
 import pencilIcon from "@/assets/pencil.svg";
 
 export function VenueSettingsRow({
@@ -193,7 +193,7 @@ export function VenueSettingsRow({
               <img src={pencilIcon} />
             </button>
             <button type="button" onClick={onRemove} className="">
-              <img src={blackTrashCanIcon} />
+              <img src={redTrashCanIcon} />
             </button>
           </>
         ) : (

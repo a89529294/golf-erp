@@ -72,7 +72,9 @@ export function Component() {
                   },
                 ],
               }
-            : {}),
+            : {
+                openTimes: [],
+              }),
           plans: form.getValues("plans")?.map((v, i) => ({
             title: v.title,
             hours: v.hours,

@@ -5,8 +5,8 @@ import { z } from "zod";
 
 export const memberTypeSchema = z.union([
   z.literal("guest"),
-  z.literal("group-user"),
-  z.literal("common-user"),
+  z.literal("group_user"),
+  z.literal("common_user"),
 ]);
 
 export const genderSchema = z.union([
@@ -50,8 +50,8 @@ export type Gender = Member["gender"];
 
 export const memberTypeEnChMap: Record<MemberType, string> = {
   guest: "來賓",
-  "common-user": "一般會員",
-  "group-user": "團體會員",
+  common_user: "一般會員",
+  group_user: "團體會員",
 };
 
 export const genderEnChMap: Record<Gender, string> = {

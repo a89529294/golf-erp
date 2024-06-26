@@ -67,7 +67,7 @@ export function GenericDataTable<TData extends { id: string }, TValue>({
   });
 
   return (
-    <div className=" w-full border-x border-line-gray px-1">
+    <div className="w-full border-x border-b border-line-gray px-1">
       <Table className="relative isolate border-separate border-spacing-0">
         <TableHeader className="relative z-10">
           {table.getHeaderGroups().map((headerGroup) => (
@@ -95,18 +95,21 @@ export function GenericDataTable<TData extends { id: string }, TValue>({
 
         <TableBody className="relative ">
           {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
+            table.getRowModel().rows.map((row, index) => (
               <TableRow
                 key={row.id}
                 data-state={
                   row.getCanSelect() && row.getIsSelected() && "selected"
                 }
-                className="group relative  bg-white data-[state=selected]:border-b-orange"
+                className="group relative bg-white data-[state=selected]:border-b-orange"
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell
                     key={cell.id}
-                    className="border-b border-b-line-gray"
+                    className={cn(
+                      "border-b border-b-line-gray",
+                      table.getRowCount() === index + 1 && "border-b-0",
+                    )}
                   >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>

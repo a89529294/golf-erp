@@ -1,4 +1,3 @@
-import { linksKV } from "@/utils/links";
 import { queryClient } from "@/utils/query-client";
 import { privateFetch } from "@/utils/utils";
 import { ActionFunction, redirect } from "react-router-dom";
@@ -23,11 +22,10 @@ export const action: ActionFunction = async ({ request, params }) => {
       "Content-Type": "application/json",
     },
   });
+  const url = new URL(request.url);
 
   if (!response.ok) {
     toast.error("更新員工失敗");
-    const url = new URL(request.url);
-
     return redirect(`${url.pathname}/?error=true`);
   }
 
@@ -35,8 +33,5 @@ export const action: ActionFunction = async ({ request, params }) => {
   queryClient.invalidateQueries({ queryKey: ["employees"] });
   queryClient.invalidateQueries({ queryKey: ["employee", employeeId] });
 
-  return redirect(
-    linksKV["system-management"].subLinks["personnel-system-management"].paths
-      .index,
-  );
+  return redirect(`${url.pathname}/?error=false`);
 };

@@ -295,7 +295,11 @@ export const linksKV = {
       new: () => import("@/pages/member-management/new"),
       details: () => import("@/pages/member-management/details"),
     },
-    allowedPermissions: [],
+    allowedPermissions: [
+      "模擬器-基本操作",
+      "高爾夫球-基本操作",
+      "練習場-基本操作",
+    ],
   },
 };
 // } satisfies Record<string, FlatLink | NestedLink>;

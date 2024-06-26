@@ -1,4 +1,4 @@
-import { IconButton } from "@/components/ui/button";
+import { IconButton, IconWarningButton } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -26,7 +26,7 @@ import {
 } from "@/pages/system-management/personnel-management/details/loader";
 import { StoreCategory, storeCategories, storeCategoryMap } from "@/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { UseFormReturn, useForm, useWatch } from "react-hook-form";
 import {
@@ -38,6 +38,8 @@ import {
   useSubmit,
 } from "react-router-dom";
 import { z } from "zod";
+import { privateFetch } from "@/utils/utils";
+import { toast } from "sonner";
 
 const toValueLabelArray = (obj: { name: string; id: string }[]) => {
   const options: Record<string, string> = {};
@@ -55,6 +57,7 @@ const formSchema = z.object({
 
 // TODO fix flickering when selecting clear store option
 export function Component() {
+  const queryClient = useQueryClient();
   const [disabled, setDisabled] = useState(true);
   const submit = useSubmit();
   const { pathname } = useLocation();
@@ -86,6 +89,24 @@ export function Component() {
     );
   });
   const [isMutating, setIsMutating] = useState(false);
+  const { mutateAsync: deleteEmployee } = useMutation({
+    mutationKey: ["delete-employee"],
+    mutationFn: async () => {
+      await privateFetch(`/employees/${employee.id}`, {
+        method: "DELETE",
+      });
+    },
+    onSuccess: () => {
+      toast.success("成功刪除員工");
+      queryClient.invalidateQueries({
+        queryKey: ["employees"],
+      });
+      navigate("/system-management/personnel-management");
+    },
+    onError: () => {
+      toast.error("無法刪除員工");
+    },
+  });
 
   const categorySelected = useWatch({
     control: form.control,
@@ -112,30 +133,27 @@ export function Component() {
     });
   }
 
-  // useEffect(() => {
-  //   if (isMount) return;
-  //   if (categorySelected === "golf")
-  //     setStoreOptions(toValueLabelArray(stores.golf));
-  //   if (categorySelected === "ground")
-  //     setStoreOptions(toValueLabelArray(stores.ground));
-  //   if (categorySelected === "simulator")
-  //     setStoreOptions(toValueLabelArray(stores.simulator));
-  //   form.setValue("storeId", "", { shouldDirty: true });
-  // }, [categorySelected, stores, form, isMount]);
-
   useEffect(() => {
     if (searchParams.get("error")) {
       setIsMutating(false);
       setSearchParams("");
+    } else {
+      setIsMutating(false);
+      setSearchParams("");
+      form.reset({
+        idNumber: form.getValues("idNumber"),
+        name: form.getValues("name"),
+        phoneno: form.getValues("phoneno"),
+        category: form.getValues("category") ?? storeCategories[0],
+        storeId: form.getValues("storeId"),
+      });
     }
-  }, [searchParams, setSearchParams]);
+  }, [searchParams, setSearchParams, form]);
 
   const dirtyFields = form.formState.dirtyFields;
   const isBasicInfoDirty =
     dirtyFields.idNumber || dirtyFields.name || dirtyFields.phoneno;
   const isCategoryStoreDirty = dirtyFields.storeId;
-
-  console.log(dirtyFields);
 
   return (
     <MainLayout
@@ -144,41 +162,64 @@ export function Component() {
           {isBasicInfoDirty || isCategoryStoreDirty ? (
             <Modal
               dialogTriggerChildren={
-                <IconButton disabled={isMutating} icon="back">
-                  返回
-                </IconButton>
+                <IconWarningButton icon="redX" disabled={isMutating}>
+                  取消編輯
+                </IconWarningButton>
               }
-              onSubmit={() => navigate(-1)}
-              title="資料尚未儲存，是否返回？"
-            />
+              onSubmit={() => {
+                setDisabled(true);
+                form.reset();
+                setStoreOptions(
+                  toValueLabelArray(
+                    stores[
+                      employee.stores?.[0]?.category ?? storeCategories[0]
+                    ],
+                  ),
+                );
+              }}
+            >
+              資料尚未儲存，是否返回？
+            </Modal>
           ) : disabled ? (
             <IconButton
               disabled={isMutating}
               icon="back"
-              onClick={() => navigate(-1)}
+              onClick={() =>
+                navigate("/system-management/personnel-management")
+              }
             >
               返回
             </IconButton>
           ) : (
-            <IconButton icon="back" onClick={() => setDisabled(true)}>
-              返回
-            </IconButton>
+            <IconWarningButton icon="redX" onClick={() => setDisabled(true)}>
+              取消編輯
+            </IconWarningButton>
           )}
           {disabled ? (
-            <IconButton
-              type="button"
-              icon="pencil"
-              onClick={(e) => {
-                // necessary to prevent the save button from firing
-                e.nativeEvent.stopImmediatePropagation();
-                setTimeout(() => {
-                  setDisabled(false);
-                }, 0);
-              }}
-              // key="edit-btn"
-            >
-              編輯
-            </IconButton>
+            <>
+              <IconButton
+                type="button"
+                icon="pencil"
+                onClick={(e) => {
+                  // necessary to prevent the save button from firing
+                  e.nativeEvent.stopImmediatePropagation();
+                  setTimeout(() => {
+                    setDisabled(false);
+                  }, 0);
+                }}
+                // key="edit-btn"
+              >
+                編輯
+              </IconButton>
+              <Modal
+                dialogTriggerChildren={
+                  <IconWarningButton icon="redX">刪除</IconWarningButton>
+                }
+                onSubmit={deleteEmployee}
+              >
+                確認刪除{employee.chName}?
+              </Modal>
+            </>
           ) : (
             <IconButton
               disabled={
@@ -186,7 +227,6 @@ export function Component() {
               }
               icon="save"
               form="new-employee-form"
-              // key="save-btn"
             >
               儲存
             </IconButton>
@@ -324,47 +364,49 @@ function EmployeeFormSelectField({
     <FormField
       control={form.control}
       name={name}
-      render={({ field }) => (
-        <FormItem className="flex flex-col gap-1">
-          <div className="flex items-baseline gap-7">
-            <FormLabel>{label}</FormLabel>
-            <Select
-              disabled={disabled}
-              onValueChange={(v) => {
-                if (v === "reset") {
-                  // setSelectKey(selectKey + 1);
-                  field.onChange("");
-                  onChange && onChange("");
-                } else {
-                  field.onChange(v);
-                  onChange && onChange(v);
-                }
-              }}
-              defaultValue={field.value}
-              // key={selectKey}
-            >
-              <FormControl>
-                <SelectTrigger
-                  className={cn(
-                    "h-7 w-60 rounded-none border-0 border-b border-b-secondary-dark focus:border-b-[1.5px] focus:border-b-orange",
-                    field.value && "border-b-orange",
-                  )}
-                >
-                  <SelectValue placeholder={`選擇${label}`} />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                {Object.entries(options).map(([value, label]) => (
-                  <SelectItem value={value} key={value}>
-                    {label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <FormMessage />
-        </FormItem>
-      )}
+      render={({ field }) => {
+        return (
+          <FormItem className="flex flex-col gap-1">
+            <div className="flex items-baseline gap-7">
+              <FormLabel>{label}</FormLabel>
+              <Select
+                disabled={disabled}
+                onValueChange={(v) => {
+                  if (v === "reset") {
+                    // setSelectKey(selectKey + 1);
+                    field.onChange("");
+                    onChange && onChange("");
+                  } else {
+                    field.onChange(v);
+                    onChange && onChange(v);
+                  }
+                }}
+                value={field.value}
+                // key={selectKey}
+              >
+                <FormControl>
+                  <SelectTrigger
+                    className={cn(
+                      "h-7 w-60 rounded-none border-0 border-b border-b-secondary-dark focus:border-b-[1.5px] focus:border-b-orange",
+                      field.value && "border-b-orange",
+                    )}
+                  >
+                    <SelectValue placeholder={`選擇${label}`} />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {Object.entries(options).map(([value, label]) => (
+                    <SelectItem value={value} key={value}>
+                      {label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <FormMessage />
+          </FormItem>
+        );
+      }}
     />
   );
 }
