@@ -54,7 +54,7 @@ export function StoreForm({
         })}
         className="flex flex-col items-center pt-12"
       >
-        <section className="flex flex-col gap-6 px-12 pb-10 border w-fit border-line-gray">
+        <section className="flex w-fit flex-col gap-6 border border-line-gray px-12 pb-10">
           <div className="-mx-12 mb-4 bg-light-gray py-1.5 text-center text-black">
             基本資料
           </div>
@@ -87,6 +87,7 @@ export function StoreForm({
                       type="time"
                       {...field}
                       disabled={isInputDisabled}
+                      onClick={(e) => e.currentTarget.showPicker()}
                     />
                   </FormControl>
 
@@ -109,6 +110,7 @@ export function StoreForm({
                       type="time"
                       {...field}
                       disabled={isInputDisabled}
+                      onClick={(e) => e.currentTarget.showPicker()}
                     />
                   </FormControl>
 
@@ -145,7 +147,7 @@ export function StoreForm({
               control={form.control}
               name="phone"
               render={({ field }) => (
-                <FormItem className="flex flex-col gap-1 ml-4">
+                <FormItem className="ml-4 flex flex-col gap-1">
                   <FormControl>
                     <Input
                       className={cn(
@@ -199,7 +201,7 @@ export function StoreForm({
             disabled={isInputDisabled}
           />
         </section>
-        <section className="flex flex-col gap-6 px-12 pb-10 border w-fit border-line-gray">
+        <section className="flex w-fit flex-col gap-6 border border-line-gray px-12 pb-10">
           <div className="-mx-12 mb-4 bg-light-gray py-1.5 text-center text-black">
             系統管理
           </div>

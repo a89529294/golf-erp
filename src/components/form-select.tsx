@@ -37,6 +37,7 @@ export function FormSelect<T extends Record<string, string>>({
   onValueChange?: () => void;
 }) {
   const form = useFormContext();
+
   return (
     <FormField
       control={form.control}
@@ -47,10 +48,12 @@ export function FormSelect<T extends Record<string, string>>({
           <Select
             disabled={disabled}
             onValueChange={(v) => {
+              if (v === "") return;
               field.onChange(v);
+              console.log(v);
               onValueChange && onValueChange();
             }}
-            defaultValue={field.value}
+            value={field.value}
           >
             <FormControl>
               <SelectTrigger

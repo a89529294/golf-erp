@@ -115,6 +115,7 @@ export const levelsReducer = (state: Level[], action: Action) => {
   switch (type) {
     case "update-can-appoint-days": {
       const numericValue = parseLocaleNumber(payload.value);
+      console.log(numericValue);
       if (Number.isNaN(numericValue) || numericValue < 0) return state;
 
       return state.map((prevLevel) =>

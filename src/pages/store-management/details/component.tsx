@@ -1,4 +1,4 @@
-import { IconButton } from "@/components/ui/button";
+import { IconButton, IconWarningButton } from "@/components/ui/button";
 
 import { Modal } from "@/components/modal";
 import { MainLayout } from "@/layouts/main-layout";
@@ -97,7 +97,7 @@ export function Component() {
       return await privateFetch(`/store/${id}`, { method: "DELETE" });
     },
     onSuccess: () => {
-      navigate(-1);
+      navigate("/store-management");
       toast.success("刪除成功");
       queryClient.invalidateQueries({ queryKey: ["stores"] });
     },
@@ -166,44 +166,75 @@ export function Component() {
     if (searchParams.get("error")) {
       setIsMutating(false);
       setSearchParams("");
+    } else {
+      setIsMutating(false);
+      setDisabled(true);
+      setSearchParams("");
+      form.reset({
+        name: form.getValues("name"),
+        category: form.getValues("category"),
+        openingHoursStart: form.getValues("openingHoursStart"),
+        openingHoursEnd: form.getValues("openingHoursEnd"),
+        phoneAreaCode: form.getValues("phoneAreaCode"),
+        phone: form.getValues("phone"),
+        contact: form.getValues("contact"),
+        contactPhone: form.getValues("contactPhone"),
+        latitude: form.getValues("latitude"),
+        longitude: form.getValues("longitude"),
+        county: oldCountyCode,
+        district: form.getValues("district"),
+        address: form.getValues("address"),
+        employees: form.getValues("employees"),
+      });
     }
-  }, [searchParams, setSearchParams]);
+  }, [searchParams, setSearchParams, form, oldCountyCode]);
 
   return (
     <MainLayout
       headerChildren={
         <>
           {disabled ? (
-            <IconButton
-              disabled={isMutating}
-              icon="back"
-              onClick={() => navigate(-1)}
-              type="button"
-            >
+            <IconButton icon="back" onClick={() => navigate(-1)}>
               返回
             </IconButton>
-          ) : form.formState.isDirty ? (
+          ) : Object.keys(form.formState.dirtyFields).length !== 0 ? (
             <Modal
               dialogTriggerChildren={
-                <IconButton disabled={isMutating} icon="back" type="button">
-                  返回
-                </IconButton>
+                <IconWarningButton disabled={isMutating} icon="redX">
+                  取消編輯
+                </IconWarningButton>
               }
               onSubmit={() => {
                 setDisabled(true);
                 form.reset();
               }}
-              title="資料尚未儲存，是否返回檢視？"
-            />
-          ) : (
-            <IconButton
-              disabled={isMutating}
-              icon="back"
-              onClick={() => setDisabled(true)}
-              type="button"
             >
-              返回
-            </IconButton>
+              資料尚未儲存，是否返回？
+            </Modal>
+          ) : (
+            <IconWarningButton icon="redX" onClick={() => setDisabled(true)}>
+              取消編輯
+            </IconWarningButton>
+          )}
+
+          {disabled && (
+            <Modal
+              dialogTriggerChildren={
+                <IconWarningButton
+                  disabled={isMutating}
+                  icon="trashCan"
+                  type="button"
+                >
+                  刪除
+                </IconWarningButton>
+              }
+              onSubmit={async () => {
+                setIsMutating(true);
+                await deleteStore(storeId!);
+                setIsMutating(false);
+              }}
+              title={`是否刪除${store.name}`}
+            />
           )}
 
           {disabled ? (
@@ -228,20 +259,6 @@ export function Component() {
               儲存
             </IconButton>
           )}
-
-          <Modal
-            dialogTriggerChildren={
-              <IconButton disabled={isMutating} icon="trashCan" type="button">
-                刪除
-              </IconButton>
-            }
-            onSubmit={async () => {
-              setIsMutating(true);
-              await deleteStore(storeId!);
-              setIsMutating(false);
-            }}
-            title={`是否刪除${store.name}`}
-          />
         </>
       }
     >

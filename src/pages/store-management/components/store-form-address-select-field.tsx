@@ -41,7 +41,9 @@ export function StoreFormAddressSelectFields({
         options={counties}
         optionKey="countycode"
         optionValue="countyname"
-        onValueChange={() => form.resetField("district")}
+        onValueChange={() => {
+          form.resetField("district");
+        }}
       />
       <FormSelect
         name="district"

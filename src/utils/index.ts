@@ -68,6 +68,8 @@ export function filterObject<T extends object>(obj: T, predicate: (keyof T)[]) {
  * @param {string} locale - [optional] the locale that the number is represented in. Omit this parameter to use the current locale.
  */
 export function parseLocaleNumber(stringNumber: string) {
+  if (stringNumber === "") return 0;
+
   const thousandSeparator = Intl.NumberFormat()
     .format(11111)
     .replace(/\p{Number}/gu, "");

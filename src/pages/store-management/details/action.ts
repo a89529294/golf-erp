@@ -1,4 +1,3 @@
-import { linksKV } from "@/utils/links";
 import { queryClient } from "@/utils/query-client";
 import { privateFetch } from "@/utils/utils";
 import { ActionFunction, redirect } from "react-router-dom";
@@ -19,12 +18,11 @@ export const action: ActionFunction = async ({ request }) => {
   const url = new URL(request.url);
   if (!response.ok) {
     toast.error("更新廠商失敗");
-
     return redirect(`${url.pathname}/?error=true`);
   }
 
   toast.success("更新廠商成功");
   queryClient.invalidateQueries({ queryKey: ["stores"] });
 
-  return redirect(linksKV["store-management"].paths.index);
+  return redirect(`${url.pathname}/?error=false`);
 };
