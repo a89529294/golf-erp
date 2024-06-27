@@ -1,5 +1,3 @@
-"use client";
-
 import { Modal } from "@/components/modal";
 import { IconShortButton } from "@/components/ui/button";
 import { Appointment } from "@/pages/indoor-simulator/appointment-management/loader";
@@ -63,16 +61,12 @@ export const columns: ColumnDef<Appointment>[] = [
           }
           onSubmit={async () => {
             try {
-              await privateFetch(`/appointment/simulator/${appointment.id}`, {
-                method: "PATCH",
-                body: JSON.stringify({
-                  status: "cancel",
-                }),
-                headers: {
-                  "Content-Type": "application/json",
+              await privateFetch(
+                `/appointment/simulator/cancel/${appointment.id}`,
+                {
+                  method: "POST",
                 },
-              });
-
+              );
               toast.success("成功取消預約");
             } catch (e) {
               console.log(e);

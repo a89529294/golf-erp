@@ -16,6 +16,7 @@ import greenPlusIcon from "@/assets/green-plus-icon.svg";
 import redMinusIcon from "@/assets/red-minus-icon.svg";
 import { AddEmployeeAsStoreManagerModal } from "@/components/select-employees-modal/add-employee-as-store-manager";
 import { Employee } from "@/pages/system-management/personnel-management/loader";
+import { SetStateAction } from "react";
 import { StoreFormAddressSelectFields } from "./store-form-address-select-field";
 import { StoreFormField } from "./store-form-field";
 import { StoreFormSelectField } from "./store-form-select-field";
@@ -54,7 +55,7 @@ export function StoreForm({
         })}
         className="flex flex-col items-center pt-12"
       >
-        <section className="flex w-fit flex-col gap-6 border border-line-gray px-12 pb-10">
+        <section className="flex w-[613px] flex-col gap-6 border border-line-gray px-12 pb-10">
           <div className="-mx-12 mb-4 bg-light-gray py-1.5 text-center text-black">
             基本資料
           </div>
@@ -76,7 +77,7 @@ export function StoreForm({
               name="openingHoursStart"
               render={({ field }) => (
                 <FormItem className="grid grid-cols-[auto_auto] items-baseline gap-y-1">
-                  <FormLabel className="w-20">營業時間</FormLabel>
+                  <FormLabel className="w-28">營業時間</FormLabel>
                   <FormControl>
                     <Input
                       className={cn(
@@ -126,7 +127,7 @@ export function StoreForm({
               name="phoneAreaCode"
               render={({ field }) => (
                 <FormItem className="grid grid-cols-[auto_auto] items-baseline gap-y-1">
-                  <FormLabel className="w-20">市話</FormLabel>
+                  <FormLabel className="w-28">市話</FormLabel>
                   <FormControl>
                     <Input
                       className={cn(
@@ -200,15 +201,34 @@ export function StoreForm({
             districts={districts}
             disabled={isInputDisabled}
           />
+
+          <StoreFormField
+            disabled={isInputDisabled}
+            form={form}
+            name={"merchantId"}
+            label="MerchantId"
+          />
+          <StoreFormField
+            disabled={isInputDisabled}
+            form={form}
+            name={"hashKey"}
+            label="HashKey"
+          />
+          <StoreFormField
+            disabled={isInputDisabled}
+            form={form}
+            name={"hashIV"}
+            label="HashId"
+          />
         </section>
-        <section className="flex w-fit flex-col gap-6 border border-line-gray px-12 pb-10">
+        <section className="flex w-[613px] flex-col gap-6 border border-line-gray px-12 pb-10">
           <div className="-mx-12 mb-4 bg-light-gray py-1.5 text-center text-black">
             系統管理
           </div>
 
           {form.watch("employees").map((employee, idx) => (
-            <div className="flex w-[468px] gap-5" key={employee.id}>
-              <div className="w-20">{idx === 0 && "系統管理者"}</div>
+            <div className="grid grid-cols-[auto_1fr]" key={employee.id}>
+              <div className="w-28">{idx === 0 && "系統管理者"}</div>
 
               <div
                 className={cn(
@@ -236,8 +256,8 @@ export function StoreForm({
             </div>
           ))}
 
-          <div className="flex w-[468px] gap-5">
-            <div className="w-20 ">
+          <div className="grid grid-cols-[auto_1fr]">
+            <div className="w-28 ">
               {form.watch("employees").length === 0 && "系統管理者"}
             </div>
 
@@ -245,7 +265,7 @@ export function StoreForm({
               dialogTriggerChildren={
                 <button
                   className={cn(
-                    "flex flex-1 items-center border-b border-line-gray pb-1 pl-1",
+                    "flex items-center border-b border-line-gray pb-1 pl-1",
                     isInputDisabled && "cursor-not-allowed opacity-50",
                   )}
                   disabled={isInputDisabled}
@@ -262,6 +282,28 @@ export function StoreForm({
                 });
               }}
               selectedEmployees={form.getValues("employees")}
+              setRowSelection={(
+                rowSelection: SetStateAction<Record<string, boolean>>,
+              ) => {
+                form.setValue(
+                  "employees",
+                  employees.filter((e) =>
+                    Object.keys(
+                      typeof rowSelection === "function"
+                        ? rowSelection(
+                            form.getValues("employees").reduce(
+                              (acc, curr) => {
+                                acc[curr.id] = true;
+                                return acc;
+                              },
+                              {} as Record<string, boolean>,
+                            ),
+                          )
+                        : rowSelection,
+                    ).includes(e.id),
+                  ),
+                );
+              }}
             />
           </div>
         </section>

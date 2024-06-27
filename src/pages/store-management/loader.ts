@@ -84,12 +84,16 @@ export const storesQuery = {
       "/store?pageSize=99&populate=employees",
     );
 
-    const data = storesSchema.parse(await response.json()).data;
+    const data = await response.json();
+
+    console.log(storeSchema.safeParse(data));
+
+    const parsed = storesSchema.parse(data).data;
 
     const x = {
-      golf: data.filter((s) => s.category === "golf"),
-      ground: data.filter((s) => s.category === "ground"),
-      simulator: data.filter((s) => s.category === "simulator"),
+      golf: parsed.filter((s) => s.category === "golf"),
+      ground: parsed.filter((s) => s.category === "ground"),
+      simulator: parsed.filter((s) => s.category === "simulator"),
     };
 
     return x;

@@ -82,6 +82,9 @@ export function Component() {
       employees: employees.filter((e) =>
         store.employees?.map((se) => se.id).includes(e.id),
       ),
+      merchantId: store.merchantId ?? "",
+      hashKey: store.hashKey ?? "",
+      hashIV: store.hashIV ?? "",
     },
   });
 

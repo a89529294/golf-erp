@@ -18,6 +18,7 @@ import { cn } from "@/lib/utils";
 export function FormSelect<T extends Record<string, string>>({
   name,
   label,
+  labeClassName,
   formItemClass,
   disabled,
   placeholder,
@@ -28,6 +29,7 @@ export function FormSelect<T extends Record<string, string>>({
 }: {
   name: string;
   label?: string;
+  labeClassName?: string;
   formItemClass: string;
   disabled: boolean;
   placeholder: string;
@@ -44,7 +46,9 @@ export function FormSelect<T extends Record<string, string>>({
       name={name}
       render={({ field }) => (
         <FormItem className={formItemClass}>
-          {label && <FormLabel className="w-20">{label}</FormLabel>}
+          {label && (
+            <FormLabel className={cn("w-20", labeClassName)}>{label}</FormLabel>
+          )}
           <Select
             disabled={disabled}
             onValueChange={(v) => {

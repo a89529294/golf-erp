@@ -37,6 +37,7 @@ export function StoreFormAddressSelectFields({
         formItemClass="grid grid-cols-[auto_1fr] items-baseline gap-y-1"
         disabled={disabled}
         label="地址"
+        labeClassName="w-28"
         placeholder="選擇縣市"
         options={counties}
         optionKey="countycode"
@@ -61,7 +62,7 @@ export function StoreFormAddressSelectFields({
         render={({ field }) => (
           <FormItem className="flex flex-col gap-1 ">
             <div className="flex items-baseline ">
-              <div className="w-20" />
+              <div className="w-28" />
               <FormControl>
                 <Input
                   className={cn(

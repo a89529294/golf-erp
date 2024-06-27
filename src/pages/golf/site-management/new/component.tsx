@@ -132,7 +132,11 @@ export function Component() {
     <MainLayout
       headerChildren={
         <>
-          <IconButton icon="back" onClick={() => navigate(-1)}>
+          <IconButton
+            icon="back"
+            onClick={() => navigate(-1)}
+            disabled={isPending}
+          >
             返回
           </IconButton>
           <IconButton icon="save" form="site-details" disabled={isPending}>

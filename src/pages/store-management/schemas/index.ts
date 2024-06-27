@@ -17,6 +17,18 @@ export const formSchema = z
     district: z.string().min(1, { message: "請選擇地區" }),
     address: z.string().trim().min(1, { message: "請填入地址" }),
     employees: z.array(employeeSchema),
+    merchantId: z
+      .string()
+      .nullable()
+      .transform((v) => v ?? ""),
+    hashKey: z
+      .string()
+      .nullable()
+      .transform((v) => v ?? ""),
+    hashIV: z
+      .string()
+      .nullable()
+      .transform((v) => v ?? ""),
   })
   .refine(
     (schema) => {

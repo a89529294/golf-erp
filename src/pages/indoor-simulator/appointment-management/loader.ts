@@ -21,6 +21,13 @@ const appointmentsSchema = z.object({
           if (v === "complete") return "完成";
           return "取消";
         }),
+      order: z
+        .union([z.literal("success"), z.literal("pending")])
+        .transform((v) => {
+          if (v === "success") return "完成";
+          return "進行中";
+        })
+        .optional(),
       storeSimulator: z.object({
         id: z.string(), // site id,
         name: z.string(),

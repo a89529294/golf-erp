@@ -56,6 +56,9 @@ export function Component() {
       district: "",
       address: "",
       employees: [],
+      merchantId: "",
+      hashKey: "",
+      hashIV: "",
     },
   });
   const currentCounty = form.watch("county");
@@ -81,6 +84,9 @@ export function Component() {
       district: values.district,
       address: values.address,
       employeeIds: values.employees.map((e) => e.id),
+      ...(values.merchantId ? { merchantId: values.merchantId } : {}),
+      ...(values.hashKey ? { hashKey: values.hashKey } : {}),
+      ...(values.hashIV ? { hashIV: values.hashIV } : {}),
     };
 
     setIsMutating(true);

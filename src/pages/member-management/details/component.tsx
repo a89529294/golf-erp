@@ -65,11 +65,11 @@ export function Component() {
       return await response.json();
     },
     onSuccess(result) {
-      console.log(result);
       toast.success("更新成功");
       queryClient.invalidateQueries({
         queryKey: ["members"],
       });
+      setDisabled(true);
 
       if (result.account) form.reset({ account: result.account });
       if (result.appUserType) form.reset({ memberType: result.appUserType });
@@ -126,6 +126,7 @@ export function Component() {
               type="button"
               onClick={() => setDisabled(true)}
               icon="redX"
+              disabled={isPending}
             >
               取消編輯
             </IconWarningButton>

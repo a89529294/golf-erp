@@ -61,7 +61,6 @@ export function Component() {
         ) as (keyof typeof form.formState.dirtyFields)[],
       );
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const x = {} as Partial<DrivingRangePATCH>;
       if ("name" in changedFields) x.name = changedFields.name;
       if ("description" in changedFields)

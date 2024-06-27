@@ -16,5 +16,5 @@ export function ErrorBoundary() {
 
   console.log(error);
 
-  return <div>讀取資料發生錯誤</div>;
+  return <div className="ml-2.5 ">讀取資料發生錯誤</div>;
 }

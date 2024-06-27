@@ -37,10 +37,16 @@ export function Modal({
             setLoading(true);
             setDisabled(true);
             e.preventDefault();
-            await onSubmit();
-            setLoading(false);
-            setDisabled(false);
-            setOpen(false);
+            try {
+              await onSubmit();
+            } catch (e) {
+              console.log(e);
+            } finally {
+              setLoading(false);
+              setDisabled(false);
+              setOpen(false);
+            }
+
             e.stopPropagation();
           }}
           className={cn(`flex h-[190px] w-[400px] flex-col items-center pb-5`)}

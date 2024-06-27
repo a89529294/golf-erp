@@ -2,6 +2,7 @@ import { fromDateToDateTimeString } from "@/utils";
 import { queryClient } from "@/utils/query-client";
 import { privateFetch } from "@/utils/utils";
 import { z } from "zod";
+import qs from "query-string";
 
 export const memberTypeSchema = z.union([
   z.literal("guest"),
@@ -63,7 +64,12 @@ export const genderEnChMap: Record<Gender, string> = {
 export const membersQuery = {
   queryKey: ["members"],
   queryFn: async () => {
-    const response = await privateFetch("/app-users?pageSize=999");
+    const queryString = qs.stringify({
+      pageSize: 999,
+      sort: "updatedAt",
+      order: "DESC",
+    });
+    const response = await privateFetch(`/app-users?${queryString}`);
 
     const data = await response.json();
 

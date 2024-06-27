@@ -30,7 +30,7 @@ export function StoreFormField({
       name={name}
       render={({ field }) => (
         <FormItem className="grid grid-cols-[auto_1fr] items-baseline gap-y-1">
-          <FormLabel className="w-20">{label}</FormLabel>
+          <FormLabel className="w-28">{label}</FormLabel>
           <FormControl>
             <Input
               className={cn(

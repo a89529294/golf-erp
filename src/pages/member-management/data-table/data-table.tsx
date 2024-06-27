@@ -88,7 +88,7 @@ export function DataTable<TData extends { id: string }, TValue>({
                     key={header.id}
                     // height of header 80 plus gap 10
                     className={cn(
-                      "sticky top-[95px] bg-light-gray hover:bg-light-gray",
+                      "sticky top-[90px] bg-light-gray hover:bg-light-gray",
                     )}
                     style={{
                       width: header.column.columnDef.size

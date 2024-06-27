@@ -10,7 +10,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Employee } from "@/pages/system-management/personnel-management/loader";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
-import { ReactElement, useState } from "react";
+import { Dispatch, ReactElement, SetStateAction, useState } from "react";
 import { columns as employeeColumns } from "./columns";
 import { EmployeesModalSearchHeader } from "@/components/employees-modal-search-header";
 
@@ -19,25 +19,33 @@ export function AddEmployeeAsStoreManagerModal({
   employees,
   onConfirm,
   selectedEmployees,
+  setRowSelection,
 }: {
   dialogTriggerChildren: ReactElement;
   employees: Employee[];
   onConfirm: (selectedEmployees: Employee[]) => void;
-  selectedEmployees?: Employee[];
+  selectedEmployees: Employee[];
+  setRowSelection: Dispatch<SetStateAction<Record<string, boolean>>>;
 }) {
   const [open, setOpen] = useState(false);
-  const [rowSelection, setRowSelection] = useState<Record<string, boolean>>(
-    selectedEmployees
-      ? (() => {
-          const obj: Record<string, true> = {};
+  const rowSelection = (() => {
+    const obj: Record<string, true> = {};
 
-          selectedEmployees.forEach((e) => (obj[e.id] = true));
+    selectedEmployees.forEach((e) => (obj[e.id] = true));
 
-          return obj;
-        })()
-      : {},
-  );
-  console.log(rowSelection);
+    return obj;
+  })();
+  // const [rowSelection, setRowSelection] = useState<Record<string, boolean>>(
+  //   selectedEmployees
+  //     ? (() => {
+  //         const obj: Record<string, true> = {};
+
+  //         selectedEmployees.forEach((e) => (obj[e.id] = true));
+
+  //         return obj;
+  //       })()
+  //     : {},
+  // );
 
   const [selectedStoreId, setSelectedStoreId] = useState<string | undefined>(
     undefined,
@@ -82,6 +90,7 @@ export function AddEmployeeAsStoreManagerModal({
               setRowSelection={setRowSelection}
               globalFilter={globalFilter}
               setGlobalFilter={setGlobalFilter}
+              enableMultiRowSelection
             />
           </DialogHeader>
           <DialogFooter className="justify-center ">

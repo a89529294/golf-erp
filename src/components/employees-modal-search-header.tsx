@@ -29,6 +29,8 @@ export function EmployeesModalSearchHeader({
     ? Object.values(stores).flatMap((stores) => stores)
     : [];
 
+  console.log("?");
+
   return (
     <div className="sticky top-0 z-10 -mx-14 -mb-px flex h-[110px] flex-col border-b border-b-line-gray bg-white  [clip-path:polygon(0_0,100%_0,100%_calc(100%-1px),calc(100%-56px)_calc(100%-1px),calc(100%-56px)_100%,56px_100%,56px_calc(100%-1px),0_calc(100%-1px))]">
       <h1 className="bg-light-gray py-2 text-center">選擇人員</h1>

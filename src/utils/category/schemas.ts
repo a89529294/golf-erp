@@ -17,6 +17,9 @@ export const storeSchema = z.object({
   district: z.string(),
   address: z.string(),
   employees: z.array(employeeSchema).optional(),
+  merchantId: z.string().nullable(),
+  hashKey: z.string().nullable(),
+  hashIV: z.string().nullable(),
 });
 
 const fileWithIdSchema = z.object({

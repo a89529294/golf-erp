@@ -1,4 +1,5 @@
 import { Sidebar } from "@/components/sidebar";
+import { UserDisplayLogout } from "@/components/user-display-logout";
 import { cn } from "@/lib/utils";
 import { Outlet, useNavigation } from "react-router-dom";
 
@@ -22,6 +23,7 @@ export default function DashboardLayout() {
           state === "loading" && "opacity-25",
         )}
       >
+        <UserDisplayLogout />
         <Outlet />
       </main>
     </div>

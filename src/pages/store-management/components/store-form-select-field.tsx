@@ -36,11 +36,11 @@ export function StoreFormSelectField({
       render={({ field }) => (
         <FormItem className="flex flex-col gap-1">
           <div className="flex items-baseline ">
-            <FormLabel className="w-20">{label}</FormLabel>
+            <FormLabel className="w-28">{label}</FormLabel>
             <Select
               disabled={disabled}
               onValueChange={field.onChange}
-              defaultValue={field.value}
+              defaultValue={field.value ?? ""}
             >
               <FormControl>
                 <SelectTrigger
