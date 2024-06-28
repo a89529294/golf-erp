@@ -118,7 +118,7 @@ export function ModalDataTable<TData extends { id: string }, TValue>({
           ) : (
             <TableRow>
               <TableCell colSpan={columns.length} className="h-24 text-center">
-                查無資料
+                請先選擇主辦人
               </TableCell>
             </TableRow>
           )}

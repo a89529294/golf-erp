@@ -147,7 +147,7 @@ export function Component() {
         form={form}
         onSubmit={onSubmit}
         disabled={formDisabled || isPending}
-        stores={stores.data}
+        stores={stores}
         appUsers={appUsers}
       />
     </MainLayout>

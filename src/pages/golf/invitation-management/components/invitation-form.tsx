@@ -16,6 +16,7 @@ import { TextFormField } from "../components/text-form-field";
 import { TimeFormField } from "../components/time-form-field";
 import { AppUserSelectModal } from "./app-user-select-modal";
 import { inviteHostcolumns } from "./invite-host-columns";
+import { useEffect } from "react";
 
 export function InvitationForm({
   form,
@@ -38,6 +39,19 @@ export function InvitationForm({
     hostValue.length === 1
       ? appUsers.filter((appUser) => appUser.id !== hostValue[0].id)
       : [];
+
+  const numericHeadcount = +form.watch("headcount");
+  useEffect(() => {
+    if (numericHeadcount === 0) {
+      form.setValue("host", []);
+      form.setValue("members", []);
+    } else {
+      form.setValue(
+        "members",
+        form.getValues("members").slice(0, numericHeadcount - 1),
+      );
+    }
+  }, [numericHeadcount, form]);
 
   return (
     <div className="mb-1 flex w-full flex-col border border-line-gray p-1">

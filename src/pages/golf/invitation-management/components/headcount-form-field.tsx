@@ -26,6 +26,7 @@ export function HeadcountFormField({ disabled }: { disabled?: boolean }) {
               type="number"
               placeholder="人數"
               disabled={disabled}
+              min={1}
             />
           </FormControl>
 

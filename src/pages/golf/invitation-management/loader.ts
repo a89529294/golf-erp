@@ -2,6 +2,7 @@ import { simpleMemberSchema } from "@/pages/member-management/loader";
 import { storeSchema } from "@/utils/category/schemas";
 import { queryClient } from "@/utils/query-client";
 import { privateFetch } from "@/utils/utils";
+import qs from "query-string";
 import { z } from "zod";
 
 export const invitationDetailsSchema = z
@@ -54,9 +55,13 @@ export type InvitationPATCH = Partial<{
 export const invitationsQuery = {
   queryKey: ["invitations"],
   queryFn: async () => {
-    const response = await privateFetch(
-      "/store/golf/invite?populate=store&pageSize=99",
-    );
+    const queryString = qs.stringify({
+      populate: "store",
+      pageSize: 99,
+      order: "DESC",
+      sort: "updatedAt",
+    });
+    const response = await privateFetch(`/store/golf/invite?${queryString}`);
     const data = await response.json();
 
     return invitationsSchema.parse(data);

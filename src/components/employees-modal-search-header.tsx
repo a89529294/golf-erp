@@ -17,14 +17,19 @@ export function EmployeesModalSearchHeader({
   setSelectedStoreId,
   globalFilter,
   setGlobalFilter,
+  disableStoreQuery,
 }: {
   selectedStoreId?: string | undefined;
   setSelectedStoreId?: Dispatch<SetStateAction<string | undefined>>;
   globalFilter: string;
   setGlobalFilter: Dispatch<SetStateAction<string>>;
+  disableStoreQuery?: boolean;
 }) {
   const [selectKey, setSelectKey] = useState(0);
-  const { data: stores } = useQuery(storesQuery);
+  const { data: stores } = useQuery({
+    ...storesQuery,
+    enabled: !disableStoreQuery,
+  });
   const flattenedStores = stores
     ? Object.values(stores).flatMap((stores) => stores)
     : [];

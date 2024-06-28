@@ -36,9 +36,11 @@ export function AppUserSelectModal({
 }) {
   const isMembers = type === "members";
   const form = useFormContext() as UseFormReturn<z.infer<typeof formSchema>>;
-  const rowSelection = form
-    .getValues(isMembers ? "members" : "host")
-    .reduce((acc, curr) => ({ ...acc, [curr.id]: true }), {});
+  const [rowSelection, setRowSelection] = useState(
+    form
+      .getValues(isMembers ? "members" : "host")
+      .reduce((acc, curr) => ({ ...acc, [curr.id]: true }), {}),
+  );
   const [open, setOpen] = useState(false);
 
   const [globalFilter, setGlobalFilter] = useState("");
@@ -48,6 +50,26 @@ export function AppUserSelectModal({
       open={open}
       onOpenChange={(open) => {
         setOpen(open);
+
+        if (open) {
+          if (!isMembers) {
+            if (form.getValues("host")[0])
+              setRowSelection({
+                [form.getValues("host")[0].id]: true,
+              });
+            else setRowSelection({});
+          } else {
+            setRowSelection(
+              form.getValues("members").reduce(
+                (acc, curr) => {
+                  acc[curr.id] = true;
+                  return acc;
+                },
+                {} as Record<string, boolean>,
+              ),
+            );
+          }
+        }
       }}
     >
       <DialogTrigger asChild>{dialogTriggerChildren}</DialogTrigger>
@@ -57,16 +79,19 @@ export function AppUserSelectModal({
             id="xx"
             onSubmit={(e) => {
               e.preventDefault();
-              console.log(
-                Object.keys(rowSelection).map(
-                  (userId) => appUsers.find((au) => au.id === userId)!,
-                ),
-              );
-              onSubmit(
-                Object.keys(rowSelection).map(
-                  (userId) => appUsers.find((au) => au.id === userId)!,
-                ),
-              );
+              if (!isMembers) {
+                onSubmit(
+                  Object.keys(rowSelection).map(
+                    (userId) => appUsers.find((au) => au.id === userId)!,
+                  ),
+                );
+              } else {
+                onSubmit(
+                  Object.keys(rowSelection)
+                    .slice(0, +form.getValues("headcount") - 1)
+                    .map((userId) => appUsers.find((au) => au.id === userId)!),
+                );
+              }
               setOpen(false);
             }}
             className={cn(`flex h-[610px] w-[790px] flex-col pb-5`)}
@@ -75,48 +100,13 @@ export function AppUserSelectModal({
               <EmployeesModalSearchHeader
                 globalFilter={globalFilter}
                 setGlobalFilter={setGlobalFilter}
+                disableStoreQuery
               />
               <ModalDataTable
                 columns={columns}
                 data={appUsers}
                 rowSelection={rowSelection}
-                setRowSelection={(setRowSelection) => {
-                  if (typeof setRowSelection === "function") {
-                    if (isMembers) {
-                      const rs = setRowSelection(
-                        form
-                          .getValues("members")
-                          .reduce(
-                            (acc, curr) => ({ ...acc, [curr.id]: true }),
-                            {},
-                          ),
-                      );
-
-                      form.setValue(
-                        "members",
-                        appUsers.filter((au) =>
-                          Object.keys(rs).includes(au.id),
-                        ),
-                      );
-                    } else {
-                      const rs = setRowSelection(
-                        form
-                          .getValues("host")
-                          .reduce(
-                            (acc, curr) => ({ ...acc, [curr.id]: true }),
-                            {},
-                          ),
-                      );
-
-                      form.setValue(
-                        "host",
-                        appUsers.filter((au) =>
-                          Object.keys(rs).includes(au.id),
-                        ),
-                      );
-                    }
-                  }
-                }}
+                setRowSelection={setRowSelection}
                 getRowId={(row) => row.id}
                 globalFilter={globalFilter}
                 setGlobalFilter={setGlobalFilter}
