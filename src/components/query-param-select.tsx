@@ -38,7 +38,7 @@ export function QueryParamSelect<T extends Record<string, string>>({
   );
 
   useEffect(() => {
-    if (value) return;
+    if (value || !options[0]) return;
     onValueChange(options[0].id, true);
   }, [value, onValueChange, options]);
 

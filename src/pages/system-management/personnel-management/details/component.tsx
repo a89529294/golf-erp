@@ -197,6 +197,14 @@ export function Component() {
           )}
           {disabled ? (
             <>
+              <Modal
+                dialogTriggerChildren={
+                  <IconWarningButton icon="redX">刪除</IconWarningButton>
+                }
+                onSubmit={deleteEmployee}
+              >
+                確認刪除{employee.chName}?
+              </Modal>
               <IconButton
                 type="button"
                 icon="pencil"
@@ -211,14 +219,6 @@ export function Component() {
               >
                 編輯
               </IconButton>
-              <Modal
-                dialogTriggerChildren={
-                  <IconWarningButton icon="redX">刪除</IconWarningButton>
-                }
-                onSubmit={deleteEmployee}
-              >
-                確認刪除{employee.chName}?
-              </Modal>
             </>
           ) : (
             <IconButton

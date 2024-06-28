@@ -116,7 +116,7 @@ export function Component() {
             sequence: i + 1,
             pricePerHour: JSON.stringify(
               d.subRows.map((v) => ({
-                membershiptType: v.memberLevel,
+                membershipType: v.memberLevel,
                 1: v.partyOf1Fee,
                 2: v.partyOf2Fee,
                 3: v.partyOf3Fee,

@@ -51,6 +51,7 @@ export function DataTable<TData extends { id: string }, TValue>({
   globalFilter,
   setGlobalFilter,
 }: DataTableProps<TData, TValue>) {
+  // const [searchParams] = useSearchParams();
   const table = useReactTable({
     data: data,
     columns,

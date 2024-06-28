@@ -10,6 +10,7 @@ import trashCanIcon from "@/assets/trash-can-icon.svg";
 import pencilIcon from "@/assets/pencil.svg";
 import xIcon from "@/assets/x.svg";
 import redXIcon from "@/assets/red-x-icon.svg";
+import checkIcon from "@/assets/check.svg";
 import { ComponentProps, ReactNode, forwardRef } from "react";
 import { twMerge } from "tailwind-merge";
 
@@ -28,6 +29,7 @@ const iconMap = {
   pencil: pencilIcon,
   x: xIcon,
   redX: redXIcon,
+  check: checkIcon,
 };
 
 type IconButtonType = ComponentProps<"button"> & {

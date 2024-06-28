@@ -43,8 +43,6 @@ export function Component() {
   const { mutate, isPending } = useMutation({
     mutationKey: ["add-new-indoor-simulator-site"],
     mutationFn: async () => {
-      console.log(form.getValues("openingHours"));
-
       const response = await privateFetch(`/store/simulator`, {
         method: "POST",
         body: JSON.stringify({
@@ -136,7 +134,9 @@ export function Component() {
             type="indoor-simulator"
             formDisabled={isPending}
             stores={stores as SimpleStore[]}
-            onSubmit={() => mutate()}
+            onSubmit={() => {
+              mutate();
+            }}
             isPending={isPending}
           />
         </Form>

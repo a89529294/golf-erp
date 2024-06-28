@@ -48,6 +48,7 @@ export function Component() {
         queryKey: ["invitations"],
       });
       toast.success("刪除邀約成功");
+      setRowSelection({});
     },
     onError() {
       toast.error("刪除邀約失敗");

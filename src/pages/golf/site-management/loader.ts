@@ -27,6 +27,8 @@ export const genGolfStoresWithSitesQuery = (
 
       return golfStoresWithSitesSchema.parse(data).data;
     } else {
+      if (!allowedStores[0]) return [];
+
       const response = await privateFetch(
         `/store/${allowedStores[0].id}/golf?pageSize=99&populate=*`,
       );
@@ -62,7 +64,7 @@ export const golfStoresQuery = (allowedStores: SimpleStore[] | "all") => ({
 });
 
 export async function loader() {
-  return await queryClient.ensureQueryData(
+  return await queryClient.fetchQuery(
     genGolfStoresWithSitesQuery(await getAllowedStores("golf")),
   );
 }

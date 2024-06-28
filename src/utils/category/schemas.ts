@@ -91,10 +91,10 @@ const plansSchema = {
         id: z.string(),
         title: z.string().min(1, "請填寫名稱"),
         hours: z
-          .union([z.number(), z.literal("")])
+          .union([z.number(), z.string()])
           .refine((v) => v !== "", { message: "請填寫時數" }),
         price: z
-          .union([z.number(), z.literal("")])
+          .union([z.number(), z.string()])
           .refine((v) => v !== "", { message: "請填寫價錢" }),
         saved: z.boolean().optional(),
       }),

@@ -8,4 +8,5 @@ export const memberFormSchema = z.object({
   phone: z.string().trim().min(1, "必填"),
   gender: genderSchema,
   birthday: z.union([z.instanceof(Date), z.literal("")]),
+  isActive: z.boolean(),
 });

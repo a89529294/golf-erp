@@ -19,6 +19,7 @@ import { MemberForm } from "../components/member-form";
 import { memberFormSchema } from "../schemas";
 import { columns } from "./columns";
 import { genMemberDetailsQuery, loader } from "./loader";
+import { cn } from "@/lib/utils";
 
 export function Component() {
   const { id } = useParams();
@@ -38,6 +39,7 @@ export function Component() {
       phone: data.phone,
       gender: data.gender,
       birthday: data.birthday ? new Date(data.birthday) : "",
+      isActive: data.isActive,
     },
   });
   const queryClient = useQueryClient();
@@ -75,6 +77,27 @@ export function Component() {
       toast.error("更新失敗");
     },
   });
+  const { mutate: toggleMemberStatus, isPending: isUpdatingMemberStatus } =
+    useMutation({
+      mutationKey: ["update-member-status"],
+      mutationFn: async () => {
+        const response = await privateFetch(`/app-users/${id}`, {
+          method: "PATCH",
+          body: JSON.stringify({
+            isActive: !data.isActive,
+          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        return await response.json();
+      },
+      onSuccess() {
+        toast.success("更新狀態成功");
+        queryClient.invalidateQueries({ queryKey: ["members"] });
+      },
+    });
   const ref = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState(0);
 
@@ -101,12 +124,12 @@ export function Component() {
       phone: data.phone,
       gender: data.gender,
       birthday: data.birthday ? new Date(data.birthday) : "",
+      isActive: data.isActive,
     });
   }, [data, form]);
 
   function onSubmit(values: z.infer<typeof memberFormSchema>) {
     console.log(values);
-
     mutate();
   }
 
@@ -116,7 +139,10 @@ export function Component() {
         <>
           {disabled === true ? (
             <Link
-              className={button()}
+              className={cn(
+                button(),
+                isUpdatingMemberStatus && "pointer-events-none opacity-50",
+              )}
               to={linksKV["member-management"].paths["index"]}
             >
               <img src={backIcon} />
@@ -125,13 +151,37 @@ export function Component() {
           ) : (
             <IconWarningButton
               type="button"
-              onClick={() => setDisabled(true)}
+              onClick={() => {
+                setDisabled(true);
+                form.reset();
+              }}
               icon="redX"
               disabled={isPending}
             >
               取消編輯
             </IconWarningButton>
           )}
+
+          {disabled &&
+            (data.isActive ? (
+              <IconWarningButton
+                disabled={isUpdatingMemberStatus}
+                onClick={() => toggleMemberStatus()}
+                icon="redX"
+              >
+                停權
+              </IconWarningButton>
+            ) : (
+              <IconButton
+                className="bg-secondary-purple/10 text-secondary-purple outline-secondary-purple"
+                icon="check"
+                onClick={() => toggleMemberStatus()}
+                disabled={isUpdatingMemberStatus}
+              >
+                恢復
+              </IconButton>
+            ))}
+
           {disabled === true ? (
             <IconButton
               icon="pencil"
@@ -140,6 +190,7 @@ export function Component() {
                 e.preventDefault();
                 setDisabled(false);
               }}
+              disabled={isUpdatingMemberStatus}
             >
               編輯
             </IconButton>

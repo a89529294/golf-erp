@@ -197,7 +197,10 @@ export function Component() {
       headerChildren={
         <>
           {disabled ? (
-            <IconButton icon="back" onClick={() => navigate(-1)}>
+            <IconButton
+              icon="back"
+              onClick={() => navigate("/store-management?category=all")}
+            >
               返回
             </IconButton>
           ) : Object.keys(form.formState.dirtyFields).length !== 0 ? (
@@ -266,7 +269,7 @@ export function Component() {
       }
     >
       <div className="mb-2.5 w-full border border-line-gray p-1 ">
-        <div className="bg-light-gray py-2.5  text-center">建立廠商資料</div>
+        <div className="bg-light-gray py-2.5  text-center">編輯廠商資料</div>
         <StoreForm
           counties={counties}
           districts={districts}

@@ -32,6 +32,8 @@ export const genGroundStoresWithSitesQuery = (
 
         return data;
       } else {
+        if (!allowedStores[0]) return [];
+
         const response = await privateFetch(
           `/store/${allowedStores[0].id}/ground?pageSize=99&populate=*`,
         );
@@ -68,7 +70,7 @@ export const groundStoresQuery = (allowedStores: SimpleStore[] | "all") => ({
 });
 
 export async function loader() {
-  return await queryClient.ensureQueryData(
+  return await queryClient.fetchQuery(
     genGroundStoresWithSitesQuery(await getAllowedStores("ground")),
   );
 }

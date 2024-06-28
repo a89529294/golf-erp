@@ -17,6 +17,8 @@ export const genGolfSiteDetailsQuery = (storeId: string, siteId: string) => ({
 
     if (!site) throw new Error(`site non existent, id: ${siteId}`);
 
+    console.log(site.openTimes);
+
     return {
       ...site,
       openingDates: site.openDays?.map((od) => ({
