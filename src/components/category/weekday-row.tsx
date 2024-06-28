@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/select";
 import { UnderscoredInput } from "@/components/underscored-input";
 import { cn } from "@/lib/utils";
-import { onChange } from "@/pages/indoor-simulator/site-management/new/helpers";
 import {
   MemberLevel,
   WeekdayContent,
@@ -136,18 +135,20 @@ export function WeekdayRow({
               id={`start-time-${data.id}`}
               ref={startRef}
               value={start}
-              onChange={(e) =>
-                onChange(
-                  e,
-                  start,
-                  setStart,
-                  "start",
-                  start,
-                  end,
-                  endRef,
-                  groupRef,
-                )
-              }
+              // onChange={(e) =>
+              //   onChange(
+              //     e,
+              //     start,
+              //     setStart,
+              //     "start",
+              //     start,
+              //     end,
+              //     endRef,
+              //     groupRef,
+              //   )
+              // }
+              type="time"
+              onChange={(e) => setStart(e.currentTarget.value)}
               onFocus={onEdit}
             />
             <span>～</span>
@@ -155,9 +156,11 @@ export function WeekdayRow({
               className="flex-1 basis-0 px-0 text-center"
               ref={endRef}
               value={end}
-              onChange={(e) =>
-                onChange(e, end, setEnd, "end", start, end, endRef, groupRef)
-              }
+              // onChange={(e) =>
+              //   onChange(e, end, setEnd, "end", start, end, endRef, groupRef)
+              // }
+              type="time"
+              onChange={(e) => setEnd(e.currentTarget.value)}
               onFocus={onEdit}
             />
           </div>

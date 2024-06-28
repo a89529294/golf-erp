@@ -1,12 +1,11 @@
+import greenFileIcon from "@/assets/green-file-icon.svg";
+import pencilIcon from "@/assets/pencil.svg";
+import redXIcon from "@/assets/red-x-icon.svg";
+import redTrashCanIcon from "@/assets/trash-can-icon.svg";
 import { cn } from "@/lib/utils";
 import { VenueSettingsRowContent } from "@/utils/category/schemas";
 import React, { useRef, useState } from "react";
 import { UnderscoredInput } from "../underscored-input";
-import { onChange } from "@/pages/indoor-simulator/site-management/new/helpers";
-import greenFileIcon from "@/assets/green-file-icon.svg";
-import redXIcon from "@/assets/red-x-icon.svg";
-import redTrashCanIcon from "@/assets/trash-can-icon.svg";
-import pencilIcon from "@/assets/pencil.svg";
 
 export function VenueSettingsRow({
   onRemove,
@@ -96,14 +95,19 @@ export function VenueSettingsRow({
       >
         <UnderscoredInput
           className={cn(
-            "h-7 w-16 px-1 text-center ",
+            "h-7 w-24 px-1 text-center ",
             errorFields["start"] && "border-b-destructive",
           )}
           value={start}
+          // onChange={(e) => {
+          //   onChange(e, start, setStart, "start", start, end, endRef, feeRef);
+          //   setEnd("");
+          // }}
           onChange={(e) => {
-            onChange(e, start, setStart, "start", start, end, endRef, feeRef);
-            setEnd("");
+            setStart(e.currentTarget.value);
+            // setEnd("");
           }}
+          type="time"
           placeholder="00:00"
           inputMode="numeric"
           ref={startRef}
@@ -118,13 +122,17 @@ export function VenueSettingsRow({
         <span className="text-secondary-dark">～</span>
         <UnderscoredInput
           className={cn(
-            "h-7 w-16 px-1 text-center",
+            "h-7 w-24 px-1 text-center",
             errorFields["end"] && "border-b-destructive",
           )}
           value={end}
+          // onChange={(e) => {
+          //   onChange(e, end, setEnd, "end", start, end, endRef, feeRef);
+          // }}
           onChange={(e) => {
-            onChange(e, end, setEnd, "end", start, end, endRef, feeRef);
+            setEnd(e.currentTarget.value);
           }}
+          type="time"
           placeholder="23:00"
           inputMode="numeric"
           ref={endRef}

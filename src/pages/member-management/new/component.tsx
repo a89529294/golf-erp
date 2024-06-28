@@ -26,6 +26,7 @@ export function Component() {
       phone: "",
       gender: "unknown",
       birthday: "",
+      isActive: true,
     },
   });
   const { mutate, isPending } = useMutation<
@@ -57,7 +58,7 @@ export function Component() {
       toast.success("新增會員成功");
     },
     onError() {
-      toast.error("新增會員失敗");
+      toast.error("新增會員失敗, 請檢查電話格式");
     },
   });
 

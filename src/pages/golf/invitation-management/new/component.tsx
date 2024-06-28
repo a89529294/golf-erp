@@ -14,6 +14,7 @@ import { loader, storesWithoutEmployeesQuery } from "./loader";
 import { membersQuery } from "@/pages/member-management/loader";
 import { privateFetch } from "@/utils/utils";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 export function Component() {
   const navigate = useNavigate();
@@ -84,12 +85,20 @@ export function Component() {
         <>
           <Link
             to={linksKV.golf.subLinks["invitation-management"].paths.index}
-            className={button()}
+            className={cn(
+              button(),
+              isPending && "pointer-events-none opacity-50",
+            )}
           >
             <img src={back} />
             返回
           </Link>
-          <IconButton icon="save" form="appointment-form" type="submit">
+          <IconButton
+            icon="save"
+            form="appointment-form"
+            type="submit"
+            disabled={isPending}
+          >
             儲存
           </IconButton>
         </>
