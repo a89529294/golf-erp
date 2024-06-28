@@ -38,7 +38,7 @@ export const genEmployeesQuery = (
     queryKey: criteria ? keyMap[criteria] : ["employees"],
     queryFn: async () => {
       const response = await privateFetch(
-        `/employees?pageSize=999&populate=stores${criteria === "non-erp-users" ? "&populate=user&filter[user][$null]" : ""}`,
+        `/employees?pageSize=999&populate=stores&sort=updatedAt&order=DESC${criteria === "non-erp-users" ? "&populate=user&filter[user][$null]" : ""}`,
       );
 
       const data = await response.json();

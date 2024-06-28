@@ -9,7 +9,9 @@ export const storesWithoutEmployeesQuery = {
   queryFn: async () => {
     const stores = await getAllowedStores("golf");
     if (stores === "all") {
-      const response = await privateFetch("/store?pageSize=999");
+      const response = await privateFetch(
+        "/store?pageSize=999&filter[category]=golf",
+      );
       const data = await response.json();
 
       return storesWithoutEmployeesSchema.parse(data).data;

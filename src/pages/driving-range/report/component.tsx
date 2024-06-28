@@ -1,3 +1,3 @@
 export function Component() {
-  return <div>driving range report page</div>;
+  return <div className="w-full">driving range report page</div>;
 }

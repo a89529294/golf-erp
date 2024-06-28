@@ -19,7 +19,7 @@ export default function DashboardLayout() {
       </nav>
       <main
         className={cn(
-          "ml-52 w-full transition-opacity delay-200 duration-200",
+          "ml-52 flex w-full flex-row-reverse transition-opacity delay-200 duration-200",
           state === "loading" && "opacity-25",
         )}
       >

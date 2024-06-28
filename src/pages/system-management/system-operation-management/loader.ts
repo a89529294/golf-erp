@@ -4,6 +4,7 @@ import {
 } from "@/pages/system-management/personnel-management/loader";
 import { queryClient } from "@/utils/query-client";
 import { privateFetch } from "@/utils/utils";
+import queryString from "query-string";
 import { z } from "zod";
 
 export const userSchema = z.object({
@@ -31,9 +32,13 @@ export type UserWithEmployee = Required<User>;
 export const usersQuery = {
   queryKey: ["users"],
   queryFn: async () => {
-    const response = await privateFetch(
-      "/users?pageSize=999&populate=employee&populate=employee.stores",
-    );
+    const qs = queryString.stringify({
+      pageSize: 999,
+      populate: ["employee", "employee.stores"],
+      sort: "updatedAt",
+      order: "DESC",
+    });
+    const response = await privateFetch(`/users?${qs}`);
 
     const data = await response.json();
     const users = usersSchema.parse(data);

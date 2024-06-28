@@ -1,3 +1,3 @@
 export function Component() {
-  return <div>driving range appointment page</div>;
+  return <div className="w-full">driving range appointment page</div>;
 }

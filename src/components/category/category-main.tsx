@@ -312,7 +312,7 @@ function Section({
   }, [imgId]);
 
   return (
-    <section className="grid grid-cols-[128px_1fr_150px_192px_305px_20px] gap-x-2.5 border border-line-gray bg-white p-4">
+    <section className="grid grid-cols-[128px_1fr_150px_192px_305px_20px] gap-x-2.5 border border-line-gray bg-white p-4 lg:grid-cols-[128px_1fr_150px_20px] xl:grid-cols-[128px_1fr_150px_192px_20px]">
       {imgId ? (
         !img ? (
           <Skeleton className="mr-1.5 h-32 w-32 rounded-none bg-[#c1c1c1]" />
@@ -336,6 +336,7 @@ function Section({
       />
 
       <MiddleSection
+        className="lg:hidden"
         header="場地開放日期"
         list={openingDates}
         liContentRenderer={(d) => (
@@ -349,6 +350,7 @@ function Section({
 
       {type === "golf" ? (
         <MiddleSection
+          className="xl:hidden"
           header="場地開放時間"
           list={openingWeekDays}
           liContentRenderer={(h) => (
@@ -361,6 +363,7 @@ function Section({
         />
       ) : (
         <MiddleSection
+          className="xl:hidden"
           header="場地開放時間"
           list={openingHours}
           liContentRenderer={(h) => (
@@ -399,15 +402,22 @@ function MiddleSection<T>({
   useOrderedList,
   list,
   liContentRenderer,
+  className,
 }: {
   header: string;
   useOrderedList?: boolean;
   list: T[];
   liContentRenderer: (arg: T) => React.ReactElement;
+  className?: string;
 }) {
   const As = useOrderedList ? "ol" : "ul";
   return (
-    <div className="flex flex-col items-center whitespace-nowrap bg-light-gray pb-5 pt-2.5">
+    <div
+      className={cn(
+        "flex flex-col items-center whitespace-nowrap bg-light-gray pb-5 pt-2.5",
+        className,
+      )}
+    >
       <h2 className="text-lg font-semibold text-word-darker-gray">{header}</h2>
       <As
         className={cn(

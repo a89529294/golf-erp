@@ -1,3 +1,3 @@
 export function Component() {
-  return <div>indoor simulator report page</div>;
+  return <div className="w-full">indoor simulator report page</div>;
 }

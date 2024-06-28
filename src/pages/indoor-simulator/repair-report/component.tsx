@@ -53,7 +53,10 @@ export function Component() {
               dialogTriggerChildren={
                 <IconWarningButton icon="redX">刪除</IconWarningButton>
               }
-              onSubmit={deleteRepairReports}
+              onSubmit={async () => {
+                await deleteRepairReports();
+                setRowSelection({});
+              }}
             >
               是否刪除選取的報修回報?
             </Modal>

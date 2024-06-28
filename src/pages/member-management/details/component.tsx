@@ -13,7 +13,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { filterObject } from "@/utils";
 import { privateFetch } from "@/utils/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { MemberForm } from "../components/member-form";
 import { memberFormSchema } from "../schemas";
@@ -64,22 +64,12 @@ export function Component() {
 
       return await response.json();
     },
-    onSuccess(result) {
+    onSuccess() {
       toast.success("更新成功");
       queryClient.invalidateQueries({
         queryKey: ["members"],
       });
       setDisabled(true);
-
-      if (result.account) form.reset({ account: result.account });
-      if (result.appUserType) form.reset({ memberType: result.appUserType });
-      if (result.chName) form.reset({ chName: result.chName });
-      if (result.phone) form.reset({ phone: result.phone });
-      if (result.gender) form.reset({ gender: result.gender });
-      if (result.birthday)
-        form.reset({
-          birthday: result.birthday ? new Date(result.birthday) : "",
-        });
     },
     onError() {
       toast.error("更新失敗");
@@ -102,6 +92,17 @@ export function Component() {
 
     return () => refCurrent.removeEventListener("resize", heightListener);
   }, []);
+
+  useEffect(() => {
+    form.reset({
+      account: data.account,
+      memberType: data.appUserType,
+      chName: data.chName,
+      phone: data.phone,
+      gender: data.gender,
+      birthday: data.birthday ? new Date(data.birthday) : "",
+    });
+  }, [data, form]);
 
   function onSubmit(values: z.infer<typeof memberFormSchema>) {
     console.log(values);

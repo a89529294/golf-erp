@@ -1,3 +1,3 @@
 export function Component() {
-  return <div>golf report page</div>;
+  return <div className="w-full">golf report page</div>;
 }
