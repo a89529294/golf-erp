@@ -98,7 +98,7 @@ export function Component() {
       <InvitationForm
         form={form}
         onSubmit={onSubmit}
-        stores={stores.data}
+        stores={stores}
         disabled={isPending}
         appUsers={appUsers}
       />

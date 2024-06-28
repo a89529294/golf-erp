@@ -1,3 +1,4 @@
+import { StoreWithoutEmployees } from "@/pages/store-management/loader";
 import { privateFetch } from "./utils";
 import imageCompression from "browser-image-compression";
 
@@ -136,23 +137,17 @@ export const getAllowedStores = async (
   const permissionsResponse = await privateFetch("/auth/permissions");
   const permissions = await permissionsResponse.json();
 
-  let allowedStores: { id: string; name: string }[] | "all";
+  let allowedStores: StoreWithoutEmployees[] | "all";
   if (permissions.includes("system:admin")) allowedStores = "all";
   else {
     const authResponse = await privateFetch("/auth/me?populate=*");
     const user = (await authResponse.json()) as {
       employee: {
-        stores: {
-          id: string;
-          category: "ground" | "golf" | "simulator";
-          name: string;
-        }[];
+        stores: StoreWithoutEmployees[];
       };
     };
 
-    allowedStores = user.employee.stores
-      .filter((s) => s.category === type)
-      .map((s) => ({ id: s.id, name: s.name }));
+    allowedStores = user.employee.stores.filter((s) => s.category === type);
   }
 
   return allowedStores;

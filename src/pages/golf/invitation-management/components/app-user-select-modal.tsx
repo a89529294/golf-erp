@@ -57,6 +57,11 @@ export function AppUserSelectModal({
             id="xx"
             onSubmit={(e) => {
               e.preventDefault();
+              console.log(
+                Object.keys(rowSelection).map(
+                  (userId) => appUsers.find((au) => au.id === userId)!,
+                ),
+              );
               onSubmit(
                 Object.keys(rowSelection).map(
                   (userId) => appUsers.find((au) => au.id === userId)!,
@@ -76,22 +81,41 @@ export function AppUserSelectModal({
                 data={appUsers}
                 rowSelection={rowSelection}
                 setRowSelection={(setRowSelection) => {
-                  const rs =
-                    typeof setRowSelection === "function"
-                      ? setRowSelection(
-                          form
-                            .getValues("members")
-                            .reduce(
-                              (acc, curr) => ({ ...acc, [curr.id]: true }),
-                              {},
-                            ),
-                        )
-                      : setRowSelection;
-                  console.log(rs);
-                  form.setValue(
-                    "members",
-                    appUsers.filter((au) => Object.keys(rs).includes(au.id)),
-                  );
+                  if (typeof setRowSelection === "function") {
+                    if (isMembers) {
+                      const rs = setRowSelection(
+                        form
+                          .getValues("members")
+                          .reduce(
+                            (acc, curr) => ({ ...acc, [curr.id]: true }),
+                            {},
+                          ),
+                      );
+
+                      form.setValue(
+                        "members",
+                        appUsers.filter((au) =>
+                          Object.keys(rs).includes(au.id),
+                        ),
+                      );
+                    } else {
+                      const rs = setRowSelection(
+                        form
+                          .getValues("host")
+                          .reduce(
+                            (acc, curr) => ({ ...acc, [curr.id]: true }),
+                            {},
+                          ),
+                      );
+
+                      form.setValue(
+                        "host",
+                        appUsers.filter((au) =>
+                          Object.keys(rs).includes(au.id),
+                        ),
+                      );
+                    }
+                  }
                 }}
                 getRowId={(row) => row.id}
                 globalFilter={globalFilter}

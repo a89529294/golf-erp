@@ -11,101 +11,10 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { invitationsQuery, loader } from "./loader";
 import { privateFetch } from "@/utils/utils";
 import { toast } from "sonner";
-
-// const data = [
-//   {
-//     id: "1",
-//     title: "找球咖標題找球咖標題找球咖標題",
-//     date: "2024/05/22",
-//     time: "06:25",
-//     site: "台中國際高爾夫球俱樂部",
-//     fee: 2800,
-//     headcont: 1,
-//   },
-//   {
-//     id: "2",
-//     title: "找球咖標題找球咖標題找球咖標題",
-//     date: "2024/05/22",
-//     time: "06:25",
-//     site: "台中國際高爾夫球俱樂部",
-//     fee: 2800,
-//     headcont: 1,
-//   },
-//   {
-//     id: "3",
-//     title: "找球咖標題找球咖標題找球咖標題",
-//     date: "2024/05/22",
-//     time: "06:25",
-//     site: "台中國際高爾夫球俱樂部",
-//     fee: 2800,
-//     headcont: 1,
-//   },
-//   {
-//     id: "4",
-//     title: "找球咖標題找球咖標題找球咖標題",
-//     date: "2024/05/22",
-//     time: "06:25",
-//     site: "台中國際高爾夫球俱樂部",
-//     fee: 2800,
-//     headcont: 1,
-//   },
-//   {
-//     id: "5",
-//     title: "找球咖標題找球咖標題找球咖標題",
-//     date: "2024/05/22",
-//     time: "06:25",
-//     site: "台中國際高爾夫球俱樂部",
-//     fee: 2800,
-//     headcont: 1,
-//   },
-//   {
-//     id: "6",
-//     title: "找球咖標題找球咖標題找球咖標題",
-//     date: "2024/05/22",
-//     time: "06:25",
-//     site: "台中國際高爾夫球俱樂部",
-//     fee: 2800,
-//     headcont: 1,
-//   },
-//   {
-//     id: "7",
-//     title: "找球咖標題找球咖標題找球咖標題",
-//     date: "2024/05/22",
-//     time: "06:25",
-//     site: "台中國際高爾夫球俱樂部",
-//     fee: 2800,
-//     headcont: 1,
-//   },
-//   {
-//     id: "8",
-//     title: "找球咖標題找球咖標題找球咖標題",
-//     date: "2024/05/22",
-//     time: "06:25",
-//     site: "台中國際高爾夫球俱樂部",
-//     fee: 2800,
-//     headcont: 1,
-//   },
-//   {
-//     id: "9",
-//     title: "找球咖標題找球咖標題找球咖標題",
-//     date: "2024/05/22",
-//     time: "06:25",
-//     site: "台中國際高爾夫球俱樂部",
-//     fee: 2800,
-//     headcont: 1,
-//   },
-//   {
-//     id: "10",
-//     title: "找球咖標題找球咖標題找球咖標題",
-//     date: "2024/05/22",
-//     time: "06:25",
-//     site: "台中國際高爾夫球俱樂部",
-//     fee: 2800,
-//     headcont: 1,
-//   },
-// ];
+import { useAuth } from "@/hooks/use-auth";
 
 export function Component() {
+  const { user } = useAuth();
   const queryClient = useQueryClient();
   const [rowSelection, setRowSelection] = React.useState({});
   const [globalFilter, setGlobalFilter] = React.useState("");
@@ -114,6 +23,11 @@ export function Component() {
     ...invitationsQuery,
     initialData,
   });
+  if (!user?.isAdmin) {
+    data.data = data.data.filter((v) =>
+      user?.allowedStores.golf.map((g) => g.id).includes(v.store.id),
+    );
+  }
   const { mutate: deleteInvitations, isPending } = useMutation({
     mutationKey: ["delete-invitations"],
     mutationFn: async (ids: string[]) => {

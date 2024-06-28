@@ -1,15 +1,20 @@
 import { membersQuery } from "@/pages/member-management/loader";
 import { storesWithoutEmployeesSchema } from "@/pages/store-management/loader";
+import { getAllowedStores } from "@/utils";
 import { queryClient } from "@/utils/query-client";
 import { privateFetch } from "@/utils/utils";
 
 export const storesWithoutEmployeesQuery = {
   queryKey: ["stores-without-employees"],
   queryFn: async () => {
-    const response = await privateFetch("/store?pageSize=999");
-    const data = await response.json();
+    const stores = await getAllowedStores("golf");
+    if (stores === "all") {
+      const response = await privateFetch("/store?pageSize=999");
+      const data = await response.json();
 
-    return storesWithoutEmployeesSchema.parse(data);
+      return storesWithoutEmployeesSchema.parse(data).data;
+    }
+    return stores;
   },
 };
 
