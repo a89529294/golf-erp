@@ -222,6 +222,22 @@ export function CategoryMain({
                           hours: `${s.startTime.slice(11, 16)}～${s.endTime.slice(11, 16)}`,
                         });
                     });
+                } else {
+                  console.log(section.openTimes);
+                  if (section.openTimes) {
+                    section.openTimes.sort((a, b) => a.sequence - b.sequence);
+                    section.openTimes.forEach((o) =>
+                      openingHours.push({
+                        hours: `${o.startTime.slice(0, 5)}~${o.endTime.slice(0, 5)}`,
+                        duration: getDifferenceInHoursAndMinutes(
+                          +o.startTime.slice(0, 2) * 60 +
+                            +o.startTime.slice(3, 5),
+                          +o.endTime.slice(0, 2) * 60 + +o.endTime.slice(3, 5),
+                        ),
+                        fee: "",
+                      }),
+                    );
+                  }
                 }
 
                 return (
@@ -336,6 +352,7 @@ function Section({
       />
 
       <MiddleSection
+        alignCenter
         className="lg:hidden"
         header="場地開放日期"
         list={openingDates}
@@ -350,6 +367,7 @@ function Section({
 
       {type === "golf" ? (
         <MiddleSection
+          alignCenter
           className="xl:hidden"
           header="場地開放時間"
           list={openingWeekDays}
@@ -363,6 +381,7 @@ function Section({
         />
       ) : (
         <MiddleSection
+          alignCenter
           className="xl:hidden"
           header="場地開放時間"
           list={openingHours}
@@ -403,13 +422,16 @@ function MiddleSection<T>({
   list,
   liContentRenderer,
   className,
+  alignCenter,
 }: {
   header: string;
   useOrderedList?: boolean;
   list: T[];
   liContentRenderer: (arg: T) => React.ReactElement;
   className?: string;
+  alignCenter?: boolean;
 }) {
+  console.log(list);
   const As = useOrderedList ? "ol" : "ul";
   return (
     <div
@@ -421,18 +443,22 @@ function MiddleSection<T>({
       <h2 className="text-lg font-semibold text-word-darker-gray">{header}</h2>
       <As
         className={cn(
-          "space-y-1",
+          "w-full space-y-1 px-2.5",
           useOrderedList && "list-inside list-decimal",
+          alignCenter && "text-center",
         )}
       >
-        {list.map((h, i) => (
-          <li key={i} className="">
-            {/* this wrapper is necessary if you set li to flex, the list marker disappears */}
-            <div className="inline-flex justify-between font-mono ">
-              {liContentRenderer(h)}
-            </div>
-          </li>
-        ))}
+        {list.map((h, i) => {
+          console.log(h);
+          return (
+            <li key={i} className="">
+              {/* this wrapper is necessary if you set li to flex, the list marker disappears */}
+              <div className="inline-flex justify-between font-mono ">
+                {liContentRenderer(h)}
+              </div>
+            </li>
+          );
+        })}
       </As>
     </div>
   );

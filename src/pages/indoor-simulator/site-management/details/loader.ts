@@ -117,7 +117,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
       genSimulatorDetailsQuery(params.storeId!, params.siteId!),
     ),
     stores: await queryClient.ensureQueryData(
-      indoorSimulatorStoresQuery(await getAllowedStores("ground")),
+      indoorSimulatorStoresQuery(await getAllowedStores("simulator")),
     ),
   };
 }

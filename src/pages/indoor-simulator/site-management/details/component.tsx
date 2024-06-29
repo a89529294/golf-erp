@@ -35,6 +35,7 @@ export function Component() {
     ),
     initialData: initialData.stores,
   });
+  console.log(stores, data.storeId);
 
   const [defaultOpeningDates, setDefaultOpeningDates] = useState(
     data.openingDates,
