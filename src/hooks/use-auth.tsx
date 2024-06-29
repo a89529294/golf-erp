@@ -48,16 +48,13 @@ export const AuthProvider = ({
   const navigate = useNavigate();
 
   const login = async (data: LoginData) => {
-    const response = await privateFetch(
-      "/auth/login?populate=employee&populate=employee.stores",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
+    const response = await privateFetch("/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+      body: JSON.stringify(data),
+    });
 
     const authPromises = [
       await privateFetch("/auth/permissions"),

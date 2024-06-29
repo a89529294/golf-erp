@@ -3,17 +3,16 @@ import { z } from "zod";
 const repairRequestBaseSchema = z.object({
   id: z.string(),
   description: z.string(),
-  status: z
-    .union([
-      z.literal("pending"),
-      z.literal("complete"),
-      z.literal("no-problem"),
-    ])
-    .transform((v) => {
-      if (v === "pending") return "進行中";
-      if (v === "complete") return "完成";
-      return "沒有問題";
-    }),
+  status: z.union([
+    z.literal("pending"),
+    z.literal("complete"),
+    z.literal("no-problem"),
+  ]),
+  // .transform((v) => {
+  //   if (v === "pending") return "進行中";
+  //   if (v === "complete") return "已完成";
+  //   return "無須處理";
+  // }),
 });
 
 const simulatorRepairRequestsSchema = z.object({

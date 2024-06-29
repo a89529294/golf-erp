@@ -81,6 +81,10 @@ export function GenericDataTable<TData extends { id: string }, TValue>({
                     className={cn(
                       "sticky top-0 border-y border-line-gray bg-light-gray hover:bg-light-gray",
                     )}
+                    style={{
+                      width:
+                        header.getSize() !== 150 ? header.getSize() : "auto",
+                    }}
                   >
                     {header.isPlaceholder
                       ? null
@@ -97,7 +101,7 @@ export function GenericDataTable<TData extends { id: string }, TValue>({
 
         <TableBody className="relative ">
           {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row, index) => (
+            table.getRowModel().rows.map((row) => (
               <TableRow
                 key={row.id}
                 data-state={
@@ -110,7 +114,7 @@ export function GenericDataTable<TData extends { id: string }, TValue>({
                     key={cell.id}
                     className={cn(
                       "border-b border-b-line-gray",
-                      table.getRowCount() === index + 1 && "border-b-0",
+                      // table.getRowCount() === index + 1 && "border-b-0",
                     )}
                   >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
