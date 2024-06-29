@@ -50,7 +50,7 @@ export function UserDisplayLogout() {
   return (
     <div
       className={cn(
-        "sticky top-0 z-10 flex h-20 w-[232px] shrink-0 border-r-[10px] border-r-light-blue bg-light-gray py-2.5 pl-2.5",
+        "sticky top-0 z-10 flex h-20 shrink-0 border-r-[10px] border-r-light-blue bg-light-gray py-2.5 pl-2.5",
         navigation.state !== "idle" && "invisible",
       )}
       // style={{

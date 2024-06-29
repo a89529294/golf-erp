@@ -86,8 +86,6 @@ export const storesQuery = {
 
     const data = await response.json();
 
-    console.log(storeSchema.safeParse(data));
-
     const parsed = storesSchema.parse(data).data;
 
     const x = {

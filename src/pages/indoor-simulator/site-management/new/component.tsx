@@ -22,7 +22,7 @@ export function Component() {
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
   const { data: stores } = useQuery({
     ...indoorSimulatorStoresQuery(
-      user!.isAdmin ? "all" : user!.allowedStores.ground,
+      user!.isAdmin ? "all" : user!.allowedStores.simulator,
     ),
     initialData,
   });

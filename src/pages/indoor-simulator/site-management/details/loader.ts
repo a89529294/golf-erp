@@ -59,8 +59,6 @@ export const genSimulatorDetailsQuery = (storeId: string, siteId: string) => ({
     );
     const data = await response.json();
 
-    console.log(simulatorGETSchema.safeParse(data));
-
     const parsed = simulatorGETSchema
       .parse(data)
       .data.find((v) => v.id === siteId);

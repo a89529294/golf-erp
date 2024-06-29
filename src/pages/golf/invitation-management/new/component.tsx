@@ -48,7 +48,6 @@ export function Component() {
     mutationKey: ["add-new-invitation"],
     mutationFn: async () => {
       const values = form.getValues();
-      console.log(values);
 
       await privateFetch(`/store/${values.storeId}/golf/invite`, {
         method: "POST",

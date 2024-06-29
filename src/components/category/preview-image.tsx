@@ -37,7 +37,6 @@ export function PreviewImage({
           !disabled && "group-hover:block",
         )}
         onClick={() => {
-          console.log(file.id);
           !disabled && onRemoveImage(file.id);
         }}
       >

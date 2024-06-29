@@ -26,8 +26,6 @@ export const genGroundStoresWithSitesQuery = (
 
         const x = await response.json();
 
-        console.log(groundStoresWithSitesSchema.safeParse(x));
-
         const data = groundStoresWithSitesSchema.parse(x).data;
 
         return data;

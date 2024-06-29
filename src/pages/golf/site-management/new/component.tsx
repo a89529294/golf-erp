@@ -94,8 +94,6 @@ export function Component() {
         }),
       });
 
-      console.log(body);
-
       const response = await privateFetch("/store/golf", {
         method: "POST",
         body,

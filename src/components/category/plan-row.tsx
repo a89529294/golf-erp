@@ -44,7 +44,6 @@ export function PlanRow({
       return;
     }
     if (hoursError) {
-      console.log(hoursRef.current);
       setErrorFields((ef) => ({ ...ef, hours: true }));
       hoursRef.current?.focus();
 

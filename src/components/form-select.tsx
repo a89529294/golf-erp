@@ -54,7 +54,6 @@ export function FormSelect<T extends Record<string, string>>({
             onValueChange={(v) => {
               if (v === "") return;
               field.onChange(v);
-              console.log(v);
               onValueChange && onValueChange();
             }}
             value={field.value}

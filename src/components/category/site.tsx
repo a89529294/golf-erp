@@ -160,7 +160,7 @@ export function Site({
           render={({ field }) => (
             <FormItem className="grid grid-cols-[auto_1fr] items-baseline gap-x-5">
               <FormLabel>綁定廠商</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger
                     disabled={!isNewSite || isPending}

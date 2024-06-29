@@ -356,10 +356,6 @@ function EmployeeFormSelectField({
   disabled: boolean;
   onChange?: (v: string) => void;
 }) {
-  // const [selectKey, setSelectKey] = useState(0);
-
-  if (name === "storeId") console.log(form.getValues("storeId"));
-
   return (
     <FormField
       control={form.control}

@@ -31,10 +31,11 @@ export function Component() {
   });
   const { data: stores } = useQuery({
     ...indoorSimulatorStoresQuery(
-      user!.isAdmin ? "all" : user!.allowedStores.ground,
+      user!.isAdmin ? "all" : user!.allowedStores.simulator,
     ),
     initialData: initialData.stores,
   });
+
   const [defaultOpeningDates, setDefaultOpeningDates] = useState(
     data.openingDates,
   );
@@ -62,8 +63,6 @@ export function Component() {
         form.getValues(),
         Object.keys(dirtyFields) as (keyof typeof dirtyFields)[],
       );
-
-      console.log(changedValues);
 
       const x = {} as Partial<SimulatorPATCH>;
       if (changedValues["name"]) x.name = changedValues["name"];

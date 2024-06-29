@@ -186,8 +186,6 @@ export function Component() {
     setDefaultVenueSettings(data.venueSettings);
   }, [data, form]);
 
-  console.log(form.formState.dirtyFields);
-
   return (
     <MainLayout
       headerChildren={

@@ -65,13 +65,11 @@ export function Component() {
   function onSubmit(values: z.infer<typeof memberFormSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    console.log(values);
+
     mutate({
       ...values,
     });
   }
-
-  console.log(window.location.pathname);
 
   return (
     <MainLayout

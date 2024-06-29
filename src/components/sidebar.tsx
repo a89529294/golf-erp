@@ -155,6 +155,7 @@ function AccordionItemWrapper({
   setNextLinkPath: Dispatch<SetStateAction<string>>;
   nextLinkPath: string | null;
 }) {
+  const { user } = useAuth();
   const { pathname } = useLocation();
   const state = useNavigation();
   const [inSameRouteGroup, setInSameRouteGroup] = useState(false);
@@ -167,11 +168,6 @@ function AccordionItemWrapper({
         : link.paths.index;
 
   const isLinkActive = (link: NestedLink | MultipleLink) => {
-    // if (prevLink && isBelowLink(getPath(prevLink), pathname ?? "")) {
-    //   console.log(1);
-    //   return pathname.startsWith(getPath(link)) && nestedLinksClosed;
-    // }
-    // console.log(2);
     return pathname.startsWith(getPath(link));
   };
 
@@ -246,62 +242,61 @@ function AccordionItemWrapper({
             if (!pathname.startsWith(link.path)) setNestedLinksClosed(true);
           }}
         >
-          {(Object.values(link.subLinks) as (FlatLink | MultipleLink)[]).map(
-            (subLink) => {
-              const isActive =
-                subLink.type === "multiple"
-                  ? Object.values(subLink.paths).find((p) =>
-                      pathname.startsWith(typeof p === "object" ? p.path : p),
-                    )
-                  : pathname === subLink.path;
+          {(
+            Object.values(link.subLinks).filter((l) =>
+              user?.permissions.some((p) => l.allowedPermissions.includes(p)),
+            ) as (FlatLink | MultipleLink)[]
+          ).map((subLink) => {
+            const isActive =
+              subLink.type === "multiple"
+                ? Object.values(subLink.paths).find((p) =>
+                    pathname.startsWith(typeof p === "object" ? p.path : p),
+                  )
+                : pathname === subLink.path;
 
-              const path = (() => {
-                if (subLink.type === "multiple") {
-                  const x = Object.values(subLink.paths)[0];
-                  return typeof x === "object" ? x.path : x;
-                } else {
-                  return subLink.path;
-                }
-              })();
+            const path = (() => {
+              if (subLink.type === "multiple") {
+                const x = Object.values(subLink.paths)[0];
+                return typeof x === "object" ? x.path : x;
+              } else {
+                return subLink.path;
+              }
+            })();
 
-              return (
-                <NavLink
-                  to={path}
-                  className={() => {
-                    let base =
-                      "relative py-2.5 pl-10 text-sm transition-colors ";
-                    base +=
-                      isActive && state.state !== "loading" ? "text-white" : "";
-                    return base;
-                  }}
-                  key={path}
-                  onClick={() => {
-                    setInSameRouteGroup(
-                      sameRouteGroup(location.pathname, path),
-                    );
-                  }}
-                >
-                  {({ isPending }) => (
-                    <>
-                      {isActive && (
-                        <motion.div
-                          className="absolute inset-0  border-l-[3px] border-secondary-dark bg-orange"
-                          layoutId="nested-link-bg"
-                        />
-                      )}
-                      {isPending && (
-                        <motion.div
-                          className="absolute inset-0  border-l-[3px] border-secondary-dark bg-orange/50"
-                          layoutId="nested-link-bg"
-                        />
-                      )}
-                      <div className="relative">{subLink.label}</div>
-                    </>
-                  )}
-                </NavLink>
-              );
-            },
-          )}
+            return (
+              <NavLink
+                to={path}
+                className={() => {
+                  let base = "relative py-2.5 pl-10 text-sm transition-colors ";
+                  base +=
+                    isActive && state.state !== "loading" ? "text-white" : "";
+                  return base;
+                }}
+                key={path}
+                onClick={() => {
+                  setInSameRouteGroup(sameRouteGroup(location.pathname, path));
+                }}
+              >
+                {({ isPending }) => (
+                  <>
+                    {isActive && (
+                      <motion.div
+                        className="absolute inset-0  border-l-[3px] border-secondary-dark bg-orange"
+                        layoutId="nested-link-bg"
+                      />
+                    )}
+                    {isPending && (
+                      <motion.div
+                        className="absolute inset-0  border-l-[3px] border-secondary-dark bg-orange/50"
+                        layoutId="nested-link-bg"
+                      />
+                    )}
+                    <div className="relative">{subLink.label}</div>
+                  </>
+                )}
+              </NavLink>
+            );
+          })}
         </AccordionContent>
       )}
     </AccordionItem>

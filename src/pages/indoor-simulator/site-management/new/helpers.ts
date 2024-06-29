@@ -45,7 +45,7 @@ export function onChange(
       break;
     case 3: {
       const value2 = value[2];
-      console.log(value, start);
+
       if (value2 === ":") setTime(e.target.value);
       else if (+value2 >= 0 && +value2 <= 5) {
         if (type === "start") setTime(value[0] + value[1] + ":" + value2);

@@ -68,8 +68,6 @@ export const appointmentsQuery = {
 
     const data = await response.json();
 
-    console.log(appointmentsSchema.safeParse(data));
-
     const parsedData = appointmentsSchema.parse(data);
 
     const storesWithSiteAppointments = [] as StoreWithSiteAppointments[];
