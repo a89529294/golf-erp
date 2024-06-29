@@ -216,7 +216,7 @@ export const linksKV = {
     type: "nested" as const,
     basePath: SYSTEM_MANAGEMENT_BASE_PATH,
     path: `${SYSTEM_MANAGEMENT_BASE_PATH}/personnel-management`,
-    allowedPermissions: ["管理系統"],
+    allowedPermissions: ["系統管理"],
     subLinks: {
       "personnel-system-management": {
         label: "人員資料管理",
@@ -233,7 +233,7 @@ export const linksKV = {
             import("@/pages/system-management/personnel-management/details"),
         },
         type: "multiple" as const,
-        allowedPermissions: ["管理系統"],
+        allowedPermissions: ["系統管理"],
       },
       "system-operation-management": {
         label: "系統操作管理",
@@ -241,7 +241,7 @@ export const linksKV = {
         lazy: () =>
           import("@/pages/system-management/system-operation-management"),
         type: "flat" as const,
-        allowedPermissions: ["管理系統"],
+        allowedPermissions: ["系統管理"],
       },
       "app-permission-management": {
         label: "功能權限管理",
@@ -249,21 +249,21 @@ export const linksKV = {
         lazy: () =>
           import("@/pages/system-management/app-permission-management"),
         type: "flat" as const,
-        allowedPermissions: ["管理系統"],
+        allowedPermissions: ["系統管理"],
       },
       "app-expenditure-level": {
         label: "APP消費級距",
         path: `${SYSTEM_MANAGEMENT_BASE_PATH}/app-expenditure-level`,
         lazy: () => import("@/pages/system-management/app-expenditure-level"),
         type: "flat" as const,
-        allowedPermissions: ["管理系統"],
+        allowedPermissions: ["系統管理"],
       },
       "banner-carousel": {
         label: "Banner 設定",
         path: `${SYSTEM_MANAGEMENT_BASE_PATH}/banner-carousel`,
         lazy: () => import("@/pages/system-management/banner-carousel"),
         type: "flat" as const,
-        allowedPermissions: ["管理系統"],
+        allowedPermissions: ["系統管理"],
       },
     },
   },

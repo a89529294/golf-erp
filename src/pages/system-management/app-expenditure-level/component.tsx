@@ -136,6 +136,7 @@ function Section({
             "Content-Type": "application/json",
           },
         });
+        return { type };
       } else {
         const response = await privateFetch("/consumer-grade", {
           method: "POST",
@@ -150,21 +151,25 @@ function Section({
           },
         });
 
-        return (await response.json()).id;
+        return {
+          type,
+          id: (await response.json()).id,
+        };
       }
     },
     onSuccess: (data, variables) => {
       toast.success("更新成功");
-      if (variables.id)
+      if (data.type === "old") {
         dispatch({
           type: "after-patch-level",
           payload: { levelId: variables.id },
         });
-      else
+      } else {
         dispatch({
           type: "after-post-level",
-          payload: { oldLevelId: variables.level.id, newLevelId: data },
+          payload: { oldLevelId: variables.level.id, newLevelId: data.id },
         });
+      }
     },
     onError: (_data, variables) => {
       toast.error("更新失敗");
@@ -198,8 +203,8 @@ function Section({
     onError: () => toast.error("移除失敗"),
   });
 
-  const toggleSelected = (id: string) => {
-    if (selectedLevels.includes(id))
+  const toggleSelected = (id: string, exclude = false) => {
+    if (selectedLevels.includes(id) || exclude)
       setSelectedLevels(selectedLevels.filter((l) => l !== id));
     else setSelectedLevels([...selectedLevels, id]);
   };
@@ -321,7 +326,7 @@ function Li({
   level: Level;
   dispatch: Dispatch<Action>;
   selected: boolean;
-  toggleSelected: (s: string) => void;
+  toggleSelected: (s: string, exclude?: boolean) => void;
 }) {
   const formId = useId();
   const minConsumptionRef = useRef<HTMLInputElement>(null);
@@ -350,9 +355,16 @@ function Li({
           type="checkbox"
           className="peer hidden"
           checked={selected}
-          onChange={() => toggleSelected(level.id)}
+          onChange={() => {
+            toggleSelected(level.id);
+            if (!level.disabled)
+              dispatch({
+                type: "update-edit-status-reset",
+                payload: { levelId: level.id, isNew: level.isNew ?? false },
+              });
+          }}
         />
-        <div className="grid h-3 w-3 place-items-center border border-line-gray before:hidden before:h-1.5 before:w-1.5 before:bg-orange peer-checked:before:block" />
+        <div className="grid size-3 place-items-center border border-line-gray before:hidden before:h-1.5 before:w-1.5 before:bg-orange peer-checked:before:block" />
       </label>
 
       <form
@@ -461,6 +473,7 @@ function Li({
         <button
           className="ml-auto"
           onClick={() => {
+            toggleSelected(level.id, true);
             dispatch({
               type: "update-edit-status-enabled",
               payload: {
