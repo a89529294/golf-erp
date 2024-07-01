@@ -8,6 +8,7 @@ const repairRequestBaseSchema = z.object({
     z.literal("complete"),
     z.literal("no-problem"),
   ]),
+  images: z.array(z.string()),
   // .transform((v) => {
   //   if (v === "pending") return "進行中";
   //   if (v === "complete") return "已完成";

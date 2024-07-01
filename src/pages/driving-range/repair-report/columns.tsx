@@ -1,7 +1,12 @@
 import { GroundRepairRequest } from "@/types-and-schemas/repair-request";
-import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
+import {
+  ColumnDef,
+  createColumnHelper,
+  flexRender,
+} from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
+import { ImagesContainer } from "@/components/repair-images-container";
 
 const columnHelper = createColumnHelper<GroundRepairRequest>();
 
@@ -73,5 +78,12 @@ export const columns = [
   }),
   columnHelper.accessor("description", {
     header: "維修內容",
+  }),
+  columnHelper.accessor("images", {
+    header: "圖片",
+    cell: (prop) =>
+      flexRender(ImagesContainer, {
+        imageIds: prop.getValue(),
+      }),
   }),
 ] as ColumnDef<GroundRepairRequest>[];
