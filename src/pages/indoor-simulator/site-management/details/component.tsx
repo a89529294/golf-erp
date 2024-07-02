@@ -35,7 +35,6 @@ export function Component() {
     ),
     initialData: initialData.stores,
   });
-  console.log(stores, data.storeId);
 
   const [defaultOpeningDates, setDefaultOpeningDates] = useState(
     data.openingDates,
@@ -89,11 +88,13 @@ export function Component() {
       }
       if (changedValues["openingHours"]) {
         if (changedValues["openingHours"][0])
-          x.openTimes = {
-            startTime: changedValues["openingHours"][0].start,
-            endTime: changedValues["openingHours"][0].end,
-            sequence: 1,
-          };
+          x.openTimes = [
+            {
+              startTime: changedValues["openingHours"][0].start,
+              endTime: changedValues["openingHours"][0].end,
+              sequence: 1,
+            },
+          ];
       }
       if (changedValues["imageFiles"]) {
         const imagesToBeDeletedPromises: Promise<Response>[] = [];

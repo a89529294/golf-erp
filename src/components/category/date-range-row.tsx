@@ -1,7 +1,7 @@
 import { DatePicker } from "@/components/date-picker";
 import { addDays } from "date-fns";
 import { useState } from "react";
-import greenFileIcon from "@/assets/green-file-icon.svg";
+// import greenFileIcon from "@/assets/green-file-icon.svg";
 import trashCanIcon from "@/assets/trash-can-icon.svg";
 import redXIcon from "@/assets/red-x-icon.svg";
 import { cn } from "@/lib/utils";
@@ -13,7 +13,7 @@ export function DateRangeRow({
   data,
   onEdit,
   disabled,
-  errorMessage,
+  // errorMessage,
   myRef,
 }: {
   onRemove: () => void;
@@ -21,7 +21,7 @@ export function DateRangeRow({
   data: DateRange;
   onEdit: () => void;
   disabled?: boolean;
-  errorMessage?: string;
+  // errorMessage?: string;
   myRef?: React.RefObject<HTMLLIElement>;
 }) {
   const [start, setStart] = useState<Date | undefined>(data.start);
@@ -31,10 +31,12 @@ export function DateRangeRow({
     end: false,
   });
 
-  function onSaveDateRange() {
-    if (!start)
-      setErrorFields((errorFields) => ({ ...errorFields, start: true }));
-    if (!end) setErrorFields((errorFields) => ({ ...errorFields, end: true }));
+  // console.log(data);
+
+  function onSaveDateRange(start: Date, end: Date) {
+    // if (!start)
+    //   setErrorFields((errorFields) => ({ ...errorFields, start: true }));
+    // if (!end) setErrorFields((errorFields) => ({ ...errorFields, end: true }));
 
     if (start && end) {
       onSave({
@@ -46,13 +48,13 @@ export function DateRangeRow({
     }
   }
 
-  const errorMsg = errorFields.start
-    ? "請選起始日"
-    : errorFields.end
-      ? "請選結束日"
-      : errorMessage
-        ? errorMessage
-        : "";
+  // const errorMsg = errorFields.start
+  //   ? "請選起始日"
+  //   : errorFields.end
+  //     ? "請選結束日"
+  //     : errorMessage
+  //       ? errorMessage
+  //       : "";
 
   return (
     <li
@@ -65,7 +67,10 @@ export function DateRangeRow({
     >
       <DatePicker
         date={start}
-        setDate={setStart}
+        setDate={(e) => {
+          setStart(e);
+          if (end && e) onSaveDateRange(e, end);
+        }}
         error={!!errorFields["start"]}
         clearError={() => setErrorFields((ef) => ({ ...ef, start: false }))}
         toDate={end ? addDays(end, -1) : undefined}
@@ -75,7 +80,12 @@ export function DateRangeRow({
       <span className="px-2.5 text-secondary-dark">～</span>
       <DatePicker
         date={end}
-        setDate={setEnd}
+        setDate={(e) => {
+          setEnd(e);
+          if (start && e) {
+            onSaveDateRange(start, e);
+          }
+        }}
         error={!!errorFields["end"]}
         clearError={() => setErrorFields((ef) => ({ ...ef, end: false }))}
         fromDate={start ? addDays(start, 1) : undefined}
@@ -84,7 +94,7 @@ export function DateRangeRow({
       />
 
       <div className="ml-auto flex gap-4">
-        {errorMsg && <span className="text-red-500">{errorMsg}</span>}
+        {/* {errorMsg && <span className="text-red-500">{errorMsg}</span>} */}
         {data.saved ? (
           <>
             <button
@@ -98,9 +108,9 @@ export function DateRangeRow({
           </>
         ) : (
           <>
-            <button type="button" onClick={onSaveDateRange}>
+            {/* <button type="button" onClick={onSaveDateRange}>
               <img src={greenFileIcon} />
-            </button>
+            </button> */}
             <button type="button" onClick={onRemove}>
               <img src={redXIcon} />
             </button>

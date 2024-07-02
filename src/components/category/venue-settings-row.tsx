@@ -1,5 +1,5 @@
-import greenFileIcon from "@/assets/green-file-icon.svg";
-import pencilIcon from "@/assets/pencil.svg";
+// import greenFileIcon from "@/assets/green-file-icon.svg";
+// import pencilIcon from "@/assets/pencil.svg";
 import redXIcon from "@/assets/red-x-icon.svg";
 import redTrashCanIcon from "@/assets/trash-can-icon.svg";
 import { cn } from "@/lib/utils";
@@ -13,7 +13,7 @@ export function VenueSettingsRow({
   onEdit,
   data,
   formDisabled,
-  errorMessage,
+  // errorMessage,
   myRef,
 }: {
   data: VenueSettingsRowContent;
@@ -21,7 +21,7 @@ export function VenueSettingsRow({
   onEdit(): void;
   onSave(arg: VenueSettingsRowContent): void;
   formDisabled?: boolean;
-  errorMessage?: string;
+  // errorMessage?: string;
   myRef?: React.RefObject<HTMLLIElement>;
 }) {
   const [start, setStart] = useState(data.start);
@@ -41,22 +41,34 @@ export function VenueSettingsRow({
   });
   const disabled = data.saved;
 
-  function onSaveTimeRange() {
-    const startError = start.length !== 5;
-    const endError = end.length !== 5;
-    const feeError = fee === "";
-    const groupError = numberOfGroups === "";
-    const ballError = numberOfBalls === "";
+  function onSaveTimeRange({
+    start,
+    end,
+    fee,
+    numberOfGroups,
+    numberOfBalls,
+  }: {
+    start: string;
+    end: string;
+    fee: number | "";
+    numberOfGroups: number | "";
+    numberOfBalls: number | "";
+  }) {
+    // const startError = start.length !== 5;
+    // const endError = end.length !== 5;
+    // const feeError = fee === "";
+    // const groupError = numberOfGroups === "";
+    // const ballError = numberOfBalls === "";
 
-    if (startError) setErrorFields((ef) => ({ ...ef, start: true }));
-    if (endError) setErrorFields((ef) => ({ ...ef, end: true }));
-    if (feeError) setErrorFields((ef) => ({ ...ef, fee: true }));
-    if (groupError) setErrorFields((ef) => ({ ...ef, numberOfGroups: true }));
-    if (ballError) setErrorFields((ef) => ({ ...ef, numberOfBalls: true }));
+    // if (startError) setErrorFields((ef) => ({ ...ef, start: true }));
+    // if (endError) setErrorFields((ef) => ({ ...ef, end: true }));
+    // if (feeError) setErrorFields((ef) => ({ ...ef, fee: true }));
+    // if (groupError) setErrorFields((ef) => ({ ...ef, numberOfGroups: true }));
+    // if (ballError) setErrorFields((ef) => ({ ...ef, numberOfBalls: true }));
 
-    const hasErrors =
-      startError || endError || feeError || groupError || ballError;
-    if (hasErrors) return;
+    // const hasErrors =
+    //   startError || endError || feeError || groupError || ballError;
+    // if (hasErrors) return;
 
     onSave({
       id: data.id,
@@ -106,16 +118,31 @@ export function VenueSettingsRow({
           onChange={(e) => {
             setStart(e.currentTarget.value);
             // setEnd("");
+
+            if (
+              e.currentTarget.value &&
+              end &&
+              fee &&
+              numberOfBalls &&
+              numberOfGroups
+            )
+              onSaveTimeRange({
+                start: e.currentTarget.value,
+                end,
+                fee,
+                numberOfBalls,
+                numberOfGroups,
+              });
           }}
           type="time"
           placeholder="00:00"
           inputMode="numeric"
           ref={startRef}
-          onFocus={() => {
+          onClick={() => {
             clearFieldError("start");
             onEdit();
           }}
-          disabled={disabled}
+          // disabled={disabled}
           disabledClassNames={disabledClassNames}
         />
 
@@ -131,6 +158,21 @@ export function VenueSettingsRow({
           // }}
           onChange={(e) => {
             setEnd(e.currentTarget.value);
+
+            if (
+              e.currentTarget.value &&
+              start &&
+              fee &&
+              numberOfBalls &&
+              numberOfGroups
+            )
+              onSaveTimeRange({
+                start,
+                end: e.currentTarget.value,
+                fee,
+                numberOfBalls,
+                numberOfGroups,
+              });
           }}
           type="time"
           placeholder="23:00"
@@ -142,11 +184,11 @@ export function VenueSettingsRow({
               e.preventDefault();
             }
           }}
-          onFocus={() => {
+          onClick={() => {
             clearFieldError("end");
             onEdit();
           }}
-          disabled={disabled}
+          // disabled={disabled}
           disabledClassNames={disabledClassNames}
         />
       </div>
@@ -157,12 +199,22 @@ export function VenueSettingsRow({
         myRef={feeRef}
         errorFields={errorFields}
         clearFieldError={(arg) => clearFieldError(arg)}
-        disabled={disabled}
+        // disabled={disabled}
         field="fee"
         onEdit={onEdit}
         placeholder="價錢"
         state={fee}
-        setState={setFee}
+        setState={(v) => {
+          setFee(v);
+          if (v && start && end && numberOfBalls && numberOfGroups)
+            onSaveTimeRange({
+              start,
+              end,
+              fee: v,
+              numberOfBalls,
+              numberOfGroups,
+            });
+        }}
         disabledClassNames={disabledClassNames}
       />
 
@@ -171,12 +223,22 @@ export function VenueSettingsRow({
         unit="組"
         errorFields={errorFields}
         clearFieldError={(arg) => clearFieldError(arg)}
-        disabled={disabled}
+        // disabled={disabled}
         field="numberOfGroups"
         onEdit={onEdit}
         placeholder="數量"
         state={numberOfGroups}
-        setState={setNumberOfGroups}
+        setState={(v) => {
+          setNumberOfGroups(v);
+          if (v && start && end && fee && numberOfBalls)
+            onSaveTimeRange({
+              start,
+              end,
+              fee,
+              numberOfGroups: v,
+              numberOfBalls,
+            });
+        }}
         disabledClassNames={disabledClassNames}
       />
 
@@ -185,31 +247,41 @@ export function VenueSettingsRow({
         unit="顆"
         errorFields={errorFields}
         clearFieldError={(arg) => clearFieldError(arg)}
-        disabled={disabled}
+        // disabled={disabled}
         field="numberOfBalls"
         onEdit={onEdit}
         placeholder="數量"
         state={numberOfBalls}
-        setState={setNumberOfBalls}
+        setState={(v) => {
+          setNumberOfBalls(v);
+          if (v && start && end && fee && numberOfGroups)
+            onSaveTimeRange({
+              start,
+              end,
+              fee,
+              numberOfGroups,
+              numberOfBalls: v,
+            });
+        }}
         disabledClassNames={disabledClassNames}
       />
 
       <div className="ml-auto flex gap-4">
         {data.saved ? (
           <>
-            <button type="button" onClick={onEdit} className="">
+            {/* <button type="button" onClick={onEdit} className="">
               <img src={pencilIcon} />
-            </button>
+            </button> */}
             <button type="button" onClick={onRemove} className="">
               <img src={redTrashCanIcon} />
             </button>
           </>
         ) : (
           <>
-            <span className="text-red-500">{errorMessage}</span>
-            <button type="button" onClick={onSaveTimeRange}>
+            {/* <span className="text-red-500">{errorMessage}</span> */}
+            {/* <button type="button" onClick={onSaveTimeRange}>
               <img src={greenFileIcon} />
-            </button>
+            </button> */}
             <button type="button" onClick={onRemove}>
               <img src={redXIcon} />
             </button>
@@ -239,7 +311,7 @@ function NumberCell<E>({
   field: keyof E;
   errorFields: E;
   state: number | "";
-  setState: React.Dispatch<React.SetStateAction<number | "">>;
+  setState: (v: number | "") => void;
   placeholder: string;
   onEdit(): void;
   clearFieldError(arg: keyof E): void;

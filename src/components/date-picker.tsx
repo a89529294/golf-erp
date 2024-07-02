@@ -21,7 +21,7 @@ export function DatePicker({
   disabled,
 }: {
   date: Date | undefined;
-  setDate: React.Dispatch<React.SetStateAction<Date | undefined>>;
+  setDate: (e: Date | undefined) => void;
   error: boolean;
   clearError: () => void;
   fromDate?: Date | undefined;
@@ -47,7 +47,9 @@ export function DatePicker({
             error && "border-b-destructive",
             disabled && "cursor-not-allowed",
           )}
-          onFocus={onEdit}
+          onClick={() => {
+            onEdit();
+          }}
           disabled={disabled}
         >
           <span className="flex-1">

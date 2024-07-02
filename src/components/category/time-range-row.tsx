@@ -1,4 +1,4 @@
-import greenFileIcon from "@/assets/green-file-icon.svg";
+// import greenFileIcon from "@/assets/green-file-icon.svg";
 import redXIcon from "@/assets/red-x-icon.svg";
 import trashCanIcon from "@/assets/trash-can-icon.svg";
 import { Input } from "@/components/ui/input";
@@ -32,20 +32,20 @@ export function TimeRangeRow({
     end: false,
   });
 
-  function onSaveTimeRange() {
-    const startError = !start;
-    const endError = !end;
+  function onSaveTimeRange(start: string, end: string) {
+    // const startError = !start;
+    // const endError = !end;
 
-    if (startError) {
-      setErrorFields((ef) => ({ ...ef, start: true }));
-      startRef.current?.click();
-      return;
-    }
-    if (endError) {
-      setErrorFields((ef) => ({ ...ef, end: true }));
-      endRef.current?.click();
-      return;
-    }
+    // if (startError) {
+    //   setErrorFields((ef) => ({ ...ef, start: true }));
+    //   startRef.current?.click();
+    //   return;
+    // }
+    // if (endError) {
+    //   setErrorFields((ef) => ({ ...ef, end: true }));
+    //   endRef.current?.click();
+    //   return;
+    // }
 
     onSave([
       {
@@ -76,9 +76,12 @@ export function TimeRangeRow({
           onEdit();
         }}
         onChange={(e) => {
-          setStart(e.currentTarget.value + ":00");
-          if (e.currentTarget.value)
+          const val = e.currentTarget.value + ":00";
+          setStart(val);
+          if (val) {
             setErrorFields((ef) => ({ ...ef, start: false }));
+            if (end) onSaveTimeRange(val, end);
+          }
         }}
         value={start}
         ref={startRef}
@@ -96,9 +99,12 @@ export function TimeRangeRow({
           onEdit();
         }}
         onChange={(e) => {
-          setEnd(e.currentTarget.value + ":00");
-          if (e.currentTarget.value)
+          const val = e.currentTarget.value + ":00";
+          setEnd(val);
+          if (val) {
             setErrorFields((ef) => ({ ...ef, end: false }));
+            if (start) onSaveTimeRange(start, val);
+          }
         }}
         value={end}
         ref={endRef}
@@ -121,9 +127,9 @@ export function TimeRangeRow({
           </>
         ) : (
           <>
-            <button type="button" onClick={onSaveTimeRange}>
+            {/* <button type="button" onClick={onSaveTimeRange}>
               <img src={greenFileIcon} />
-            </button>
+            </button> */}
             <button type="button" onClick={onRemove}>
               <img src={redXIcon} />
             </button>

@@ -1,4 +1,4 @@
-import greenFileIcon from "@/assets/green-file-icon.svg";
+// import greenFileIcon from "@/assets/green-file-icon.svg";
 import redXIcon from "@/assets/red-x-icon.svg";
 import trashCanIcon from "@/assets/trash-can-icon.svg";
 import { Input } from "@/components/ui/input";
@@ -33,27 +33,31 @@ export function PlanRow({
     price: false,
   });
 
-  function onSaveTimeRange() {
-    const titleError = !title;
-    const hoursError = hours === "";
-    const priceError = price === "";
+  function onSaveTimeRange(
+    title: string,
+    hours: number | string,
+    price: number | string,
+  ) {
+    // const titleError = !title;
+    // const hoursError = hours === "";
+    // const priceError = price === "";
 
-    if (titleError) {
-      setErrorFields((ef) => ({ ...ef, title: true }));
-      titleRef.current?.focus();
-      return;
-    }
-    if (hoursError) {
-      setErrorFields((ef) => ({ ...ef, hours: true }));
-      hoursRef.current?.focus();
+    // if (titleError) {
+    //   setErrorFields((ef) => ({ ...ef, title: true }));
+    //   titleRef.current?.focus();
+    //   return;
+    // }
+    // if (hoursError) {
+    //   setErrorFields((ef) => ({ ...ef, hours: true }));
+    //   hoursRef.current?.focus();
 
-      return;
-    }
-    if (priceError) {
-      setErrorFields((ef) => ({ ...ef, price: true }));
-      priceRef.current?.focus();
-      return;
-    }
+    //   return;
+    // }
+    // if (priceError) {
+    //   setErrorFields((ef) => ({ ...ef, price: true }));
+    //   priceRef.current?.focus();
+    //   return;
+    // }
 
     onSave({
       id: data.id,
@@ -85,7 +89,10 @@ export function PlanRow({
         onChange={(e) => {
           const trimmedValue = e.currentTarget.value;
           setTitle(trimmedValue);
-          if (trimmedValue) clearErrorField("title");
+          if (trimmedValue) {
+            clearErrorField("title");
+            if (hours && price) onSaveTimeRange(trimmedValue, hours, price);
+          }
         }}
         value={title}
         ref={titleRef}
@@ -100,7 +107,10 @@ export function PlanRow({
         onChange={(e) => {
           const value = e.target.value === "" ? "" : +e.target.value;
           setHours(value);
-          if (value !== "") clearErrorField("hours");
+          if (value !== "") {
+            clearErrorField("hours");
+            onSaveTimeRange(title, value, price);
+          }
         }}
         value={hours}
         ref={hoursRef}
@@ -114,11 +124,13 @@ export function PlanRow({
             "h-7 w-32 rounded-none border-0 border-b border-b-secondary-dark bg-transparent font-mono *:w-full",
             errorFields.price && "border-red-500",
           )}
-          onClick={(e) => e.currentTarget.showPicker()}
           onChange={(e) => {
             const value = e.target.value === "" ? "" : +e.target.value;
             setPrice(value);
-            if (value !== "") clearErrorField("price");
+            if (value !== "") {
+              clearErrorField("price");
+              onSaveTimeRange(title, hours, value);
+            }
           }}
           value={price}
           ref={priceRef}
@@ -143,9 +155,9 @@ export function PlanRow({
           </>
         ) : (
           <>
-            <button type="button" onClick={onSaveTimeRange}>
+            {/* <button type="button" onClick={onSaveTimeRange}>
               <img src={greenFileIcon} />
-            </button>
+            </button> */}
             <button type="button" onClick={onRemove}>
               <img src={redXIcon} />
             </button>

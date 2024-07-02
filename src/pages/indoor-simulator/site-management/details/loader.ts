@@ -43,7 +43,7 @@ export const simulatorPATCHSchema = baseSimulatorSchema
     openDays: z.array(baseOpenDay.extend({ id: z.string().optional() })),
   })
   .extend({
-    openTimes: baseOpenTime,
+    openTimes: z.array(baseOpenTime),
   })
   .extend({ storeId: z.string() });
 

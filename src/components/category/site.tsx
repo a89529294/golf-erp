@@ -36,7 +36,7 @@ import {
 } from "@/utils/category/schemas";
 import { SimpleStore } from "@/utils/types";
 import React, { useRef } from "react";
-import { UseFormReturn, useFormContext } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import {
   onAddNewImages,
   onAddNewOpeningDateRange,
@@ -94,6 +94,8 @@ export function Site({
   const [activeValue, setActiveValue] = React.useState<Weekday>("monday");
   const form = useFormContext<S[typeof type]>();
   const openingHours = form.watch("openingHours");
+
+  console.log(form.getValues("openingDates"));
 
   return (
     <form
@@ -260,7 +262,7 @@ export function Site({
       >
         {form.watch("openingDates").length ? (
           <ul>
-            {form.getValues("openingDates").map((dateRange, i) => {
+            {form.getValues("openingDates").map((dateRange) => {
               return (
                 <DateRangeRow
                   myRef={openingDateRangeRef}
@@ -272,9 +274,9 @@ export function Site({
                   data={dateRange}
                   onEdit={() => onEditOpeningDateRange(dateRange.id, form)}
                   disabled={formDisabled}
-                  errorMessage={
-                    form.formState.errors.openingDates?.[i] ? "請先儲存" : ""
-                  }
+                  // errorMessage={
+                  //   form.formState.errors.openingDates?.[i] ? "請先儲存" : ""
+                  // }
                 />
               );
             })}
@@ -340,12 +342,12 @@ export function Site({
                 onEdit={() => onEditOpeningTimeRange(form)}
                 data={openingHours}
                 disabled={formDisabled}
-                errorMessage={
-                  (form as UseFormReturn<NewIndoorSimulator>).formState.errors
-                    .openingHours
-                    ? "請先儲存"
-                    : ""
-                }
+                // errorMessage={
+                //   (form as UseFormReturn<NewIndoorSimulator>).formState.errors
+                //     .openingHours
+                //     ? "請先儲存"
+                //     : ""
+                // }
               />
             ) : (
               <p className="py-2.5">尚未新增開放時間</p>
@@ -370,14 +372,14 @@ export function Site({
           >
             {form.watch("plans")?.length ? (
               <ul>
-                {form.getValues("plans")?.map((plan, i) => {
-                  let errorMessage = "";
-                  const planError = (form as UseFormReturn<NewIndoorSimulator>)
-                    .formState.errors.plans?.[i];
+                {form.getValues("plans")?.map((plan) => {
+                  // let errorMessage = "";
+                  // const planError = (form as UseFormReturn<NewIndoorSimulator>)
+                  //   .formState.errors.plans?.[i];
 
-                  if (planError) {
-                    errorMessage = "請先儲存";
-                  }
+                  // if (planError) {
+                  //   errorMessage = "請先儲存";
+                  // }
 
                   return (
                     <PlanRow
@@ -387,7 +389,7 @@ export function Site({
                       onSave={(plan: Plan) => onSavePlan(plan, form)}
                       data={plan}
                       disabled={formDisabled}
-                      errorMessage={errorMessage}
+                      // errorMessage={errorMessage}
                     />
                   );
                 })}
@@ -419,7 +421,7 @@ export function Site({
           >
             {form.watch("venueSettings").length ? (
               <ul>
-                {form.getValues("venueSettings").map((settings, i) => {
+                {form.getValues("venueSettings").map((settings) => {
                   return (
                     <VenueSettingsRow
                       key={settings.id}
@@ -432,12 +434,12 @@ export function Site({
                       onEdit={() => onEditVenueSettingsRow(settings.id, form)}
                       data={settings}
                       formDisabled={formDisabled}
-                      errorMessage={
-                        (form as UseFormReturn<ExistingDrivingRange>).formState
-                          .errors.venueSettings?.[i]
-                          ? "請先儲存"
-                          : ""
-                      }
+                      // errorMessage={
+                      //   (form as UseFormReturn<ExistingDrivingRange>).formState
+                      //     .errors.venueSettings?.[i]
+                      //     ? "請先儲存"
+                      //     : ""
+                      // }
                       myRef={venueSettingsRef}
                     />
                   );
