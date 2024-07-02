@@ -1,28 +1,28 @@
-import { indoorSimulatorStoresQuery } from "@/pages/indoor-simulator/site-management/loader";
+import { groundStoresQuery } from "@/pages/driving-range/site-management/loader";
 import {
   StoreWithSiteAppointments,
-  simulatorAppoitmentsSchema,
+  groundAppoitmentsSchema,
 } from "@/types-and-schemas/appointment";
 import { getAllowedStores } from "@/utils";
 import { queryClient } from "@/utils/query-client";
 import { privateFetch } from "@/utils/utils";
 
 export const appointmentsQuery = {
-  queryKey: ["appointments", "simulator"],
+  queryKey: ["appointments", "ground"],
   queryFn: async () => {
     const response = await privateFetch(
-      "/appointment/simulator?populate=storeSimulator&populate=appUser&populate=storeSimulator.store&pageSize=999",
+      "/appointment/ground?populate=storeGround&populate=appUser&populate=storeGround.store&pageSize=999",
     );
 
     const data = await response.json();
 
-    const parsedData = simulatorAppoitmentsSchema.parse(data);
+    const parsedData = groundAppoitmentsSchema.parse(data);
 
     const storesWithSiteAppointments = [] as StoreWithSiteAppointments[];
 
     parsedData.data.forEach((appointment) => {
-      const storeId = appointment.storeSimulator.store.id;
-      const siteId = appointment.storeSimulator.id;
+      const storeId = appointment.storeGround.store.id;
+      const siteId = appointment.storeGround.id;
       const foundStore = storesWithSiteAppointments.find(
         (v) => v.id === storeId,
       );
@@ -46,19 +46,19 @@ export const appointmentsQuery = {
         } else {
           foundStore.sites = [
             {
-              id: appointment.storeSimulator.id,
-              name: appointment.storeSimulator.name,
+              id: appointment.storeGround.id,
+              name: appointment.storeGround.name,
               appointments: [transformedAppointment],
             },
           ];
         }
       } else {
         storesWithSiteAppointments.push({
-          id: appointment.storeSimulator.store.id,
+          id: appointment.storeGround.store.id,
           sites: [
             {
-              id: appointment.storeSimulator.id,
-              name: appointment.storeSimulator.name,
+              id: appointment.storeGround.id,
+              name: appointment.storeGround.name,
               appointments: [transformedAppointment],
             },
           ],
@@ -73,7 +73,7 @@ export const appointmentsQuery = {
 export async function loader() {
   const promises = [
     queryClient.ensureQueryData(
-      indoorSimulatorStoresQuery(await getAllowedStores("simulator")),
+      groundStoresQuery(await getAllowedStores("ground")),
     ),
     queryClient.ensureQueryData(appointmentsQuery),
   ] as const;

@@ -62,7 +62,7 @@ export const columns: ColumnDef<Appointment>[] = [
           onSubmit={async () => {
             try {
               await privateFetch(
-                `/appointment/simulator/cancel/${appointment.id}`,
+                `/appointment/ground/cancel/${appointment.id}`,
                 {
                   method: "POST",
                 },
