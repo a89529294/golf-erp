@@ -137,11 +137,22 @@ export function CategoryMain({
               <SelectValue placeholder="選擇廠商" />
             </SelectTrigger>
             <SelectContent className="w-[280px]">
-              {stores.map((g) => (
-                <SelectItem key={g.id} value={g.id}>
-                  {g.name}
+              {stores.length === 0 ? (
+                <SelectItem key={0} value="undef" disabled>
+                  請先新增
+                  {type === "golf"
+                    ? "高爾夫廠商"
+                    : type === "ground"
+                      ? "練習場廠商"
+                      : "模擬器廠商"}
                 </SelectItem>
-              ))}
+              ) : (
+                stores.map((g) => (
+                  <SelectItem key={g.id} value={g.id}>
+                    {g.name}
+                  </SelectItem>
+                ))
+              )}
             </SelectContent>
           </Select>
         </>
@@ -328,7 +339,7 @@ function Section({
   }, [imgId]);
 
   return (
-    <section className="grid grid-cols-[128px_1fr_150px_192px_305px_20px] gap-x-2.5 border border-line-gray bg-white p-4 lg:grid-cols-[128px_1fr_150px_20px] xl:grid-cols-[128px_1fr_150px_192px_20px]">
+    <section className="grid grid-cols-[128px_1fr_150px_192px_305px_20px] gap-x-2.5 border border-line-gray bg-white p-4 xl:grid-cols-[128px_1fr_150px_192px_20px] lg:grid-cols-[128px_1fr_150px_20px]">
       {imgId ? (
         !img ? (
           <Skeleton className="mr-1.5 h-32 w-32 rounded-none bg-[#c1c1c1]" />

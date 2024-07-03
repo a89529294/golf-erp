@@ -15,7 +15,7 @@ export function FormTextField({
   disabled,
   className,
 }: {
-  name: "name" | "description";
+  name: "name" | "description" | "code";
   label: string;
   disabled?: boolean;
   className?: string;

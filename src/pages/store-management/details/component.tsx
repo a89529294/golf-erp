@@ -62,6 +62,7 @@ export function Component() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      code: store.code,
       name: store.name,
       category: store.category,
       openingHoursStart: store.businessHours
@@ -114,6 +115,7 @@ export function Component() {
     const dirtyFields = form.formState.dirtyFields;
 
     const transformedValues = {
+      code: values.code,
       name: values.name,
       category: values.category,
       businessHours: `${values.openingHoursStart}-${values.openingHoursEnd}`,
@@ -130,6 +132,7 @@ export function Component() {
     };
 
     const changedFields: Partial<typeof transformedValues> = {};
+    if (dirtyFields.code) changedFields.code = transformedValues.code;
     if (dirtyFields.name) changedFields.name = transformedValues.name;
     if (dirtyFields.category)
       changedFields.category = transformedValues.category;

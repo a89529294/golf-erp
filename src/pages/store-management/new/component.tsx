@@ -42,6 +42,7 @@ export function Component() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      code: "",
       name: "",
       category: storeCategories[0],
       openingHoursStart: "",
@@ -71,6 +72,7 @@ export function Component() {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     const transformedValues = {
+      code: values.code,
       name: values.name,
       category: values.category,
       businessHours: `${values.openingHoursStart}-${values.openingHoursEnd}`,

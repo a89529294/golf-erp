@@ -62,6 +62,12 @@ export function StoreForm({
           <StoreFormField
             disabled={isInputDisabled}
             form={form}
+            name={"code"}
+            label="廠商編號"
+          />
+          <StoreFormField
+            disabled={isInputDisabled}
+            form={form}
             name={"name"}
             label="廠商名稱"
           />

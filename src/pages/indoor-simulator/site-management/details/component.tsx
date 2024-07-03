@@ -45,6 +45,7 @@ export function Component() {
     resolver: zodResolver(existingIndoorSimulatorSchema),
     defaultValues: {
       name: data.name,
+      code: data.code,
       isActive: data.isActive,
       description: data.description,
       equipments: equipments,
@@ -249,7 +250,7 @@ export function Component() {
             }}
             stores={stores}
             formDisabled={formDisabled || isPending}
-            type="indoor-simulator"
+            type="existing-indoor-simulator"
             isPending={isPending}
           />
         </Form>

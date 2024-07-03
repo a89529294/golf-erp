@@ -5,6 +5,7 @@ import { storeCategories } from "@/utils";
 
 export const storeSchema = z.object({
   id: z.string(),
+  code: z.string(),
   name: z.string(),
   businessHours: z.string().nullable(),
   telphone: z.string().nullable(),
@@ -186,7 +187,10 @@ const existingIndoorSimulatorSchema = baseSchema
   .extend(equipmentsSchema)
   .extend(existingImagesSchema)
   .extend(openingHoursSchema)
-  .extend(plansSchema);
+  .extend(plansSchema)
+  .extend({
+    code: z.string(),
+  });
 type ExistingIndoorSimulator = z.infer<typeof existingIndoorSimulatorSchema>;
 
 const newGolfCourseSchema = baseSchema

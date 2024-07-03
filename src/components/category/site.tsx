@@ -95,8 +95,6 @@ export function Site({
   const form = useFormContext<S[typeof type]>();
   const openingHours = form.watch("openingHours");
 
-  console.log(form.getValues("openingDates"));
-
   return (
     <form
       onSubmit={form.handleSubmit(
@@ -183,6 +181,9 @@ export function Site({
             </FormItem>
           )}
         />
+        {type === "existing-indoor-simulator" && (
+          <FormTextField name="code" label="包廂編號" disabled={true} />
+        )}
       </section>
 
       <Section title="設備配置">
@@ -318,88 +319,89 @@ export function Site({
           />
         </Section>
       )}
-      {type === "indoor-simulator" && (
-        <>
-          <Section
-            title="場地開放時間"
-            inputButton={{
-              text: "新增時間",
-              element: (
-                <input
-                  type="button"
-                  className="hidden"
-                  onClick={() => onAddNewOpeningHoursRange(form)}
-                />
-              ),
-            }}
-            disabled={formDisabled || openingHours.length > 0}
-          >
-            {openingHours[0] ? (
-              <TimeRangeRow
-                myRef={openingHoursRef}
-                onRemove={() => onRemoveOpeningTimeRange(form)}
-                onSave={(tr) => onSaveOpeningTimeRange(form, tr)}
-                onEdit={() => onEditOpeningTimeRange(form)}
-                data={openingHours}
-                disabled={formDisabled}
-                // errorMessage={
-                //   (form as UseFormReturn<NewIndoorSimulator>).formState.errors
-                //     .openingHours
-                //     ? "請先儲存"
-                //     : ""
-                // }
-              />
-            ) : (
-              <p className="py-2.5">尚未新增開放時間</p>
-            )}
-          </Section>
-
-          <Section
-            title="場地方案"
-            inputButton={{
-              text: "新增方案",
-              element: (
-                <input
-                  type="button"
-                  className="hidden"
-                  onClick={() => onAddNewPlan(form)}
-                />
-              ),
-            }}
-            disabled={
-              formDisabled || form.getValues("plans")?.some((v) => !v.saved)
-            }
-          >
-            {form.watch("plans")?.length ? (
-              <ul>
-                {form.getValues("plans")?.map((plan) => {
-                  // let errorMessage = "";
-                  // const planError = (form as UseFormReturn<NewIndoorSimulator>)
-                  //   .formState.errors.plans?.[i];
-
-                  // if (planError) {
-                  //   errorMessage = "請先儲存";
+      {type === "indoor-simulator" ||
+        (type === "existing-indoor-simulator" && (
+          <>
+            <Section
+              title="場地開放時間"
+              inputButton={{
+                text: "新增時間",
+                element: (
+                  <input
+                    type="button"
+                    className="hidden"
+                    onClick={() => onAddNewOpeningHoursRange(form)}
+                  />
+                ),
+              }}
+              disabled={formDisabled || openingHours.length > 0}
+            >
+              {openingHours[0] ? (
+                <TimeRangeRow
+                  myRef={openingHoursRef}
+                  onRemove={() => onRemoveOpeningTimeRange(form)}
+                  onSave={(tr) => onSaveOpeningTimeRange(form, tr)}
+                  onEdit={() => onEditOpeningTimeRange(form)}
+                  data={openingHours}
+                  disabled={formDisabled}
+                  // errorMessage={
+                  //   (form as UseFormReturn<NewIndoorSimulator>).formState.errors
+                  //     .openingHours
+                  //     ? "請先儲存"
+                  //     : ""
                   // }
+                />
+              ) : (
+                <p className="py-2.5">尚未新增開放時間</p>
+              )}
+            </Section>
 
-                  return (
-                    <PlanRow
-                      myRef={plansRef}
-                      key={plan.id}
-                      onRemove={() => onRemovePlan(plan.id, form)}
-                      onSave={(plan: Plan) => onSavePlan(plan, form)}
-                      data={plan}
-                      disabled={formDisabled}
-                      // errorMessage={errorMessage}
-                    />
-                  );
-                })}
-              </ul>
-            ) : (
-              <p className="py-2.5">尚未新增方案</p>
-            )}
-          </Section>
-        </>
-      )}
+            <Section
+              title="場地方案"
+              inputButton={{
+                text: "新增方案",
+                element: (
+                  <input
+                    type="button"
+                    className="hidden"
+                    onClick={() => onAddNewPlan(form)}
+                  />
+                ),
+              }}
+              disabled={
+                formDisabled || form.getValues("plans")?.some((v) => !v.saved)
+              }
+            >
+              {form.watch("plans")?.length ? (
+                <ul>
+                  {form.getValues("plans")?.map((plan) => {
+                    // let errorMessage = "";
+                    // const planError = (form as UseFormReturn<NewIndoorSimulator>)
+                    //   .formState.errors.plans?.[i];
+
+                    // if (planError) {
+                    //   errorMessage = "請先儲存";
+                    // }
+
+                    return (
+                      <PlanRow
+                        myRef={plansRef}
+                        key={plan.id}
+                        onRemove={() => onRemovePlan(plan.id, form)}
+                        onSave={(plan: Plan) => onSavePlan(plan, form)}
+                        data={plan}
+                        disabled={formDisabled}
+                        // errorMessage={errorMessage}
+                      />
+                    );
+                  })}
+                </ul>
+              ) : (
+                <p className="py-2.5">尚未新增方案</p>
+              )}
+            </Section>
+          </>
+        ))}
       {(type === "driving-range" || type === "existing-driving-range") && (
         <>
           <Section
