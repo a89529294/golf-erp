@@ -129,6 +129,9 @@ export function Component() {
       district: values.district,
       address: values.address,
       employeeIds: values.employees.map((e) => e.id),
+      merchantId: values.merchantId,
+      hashIV: values.hashIV,
+      hashKey: values.hashKey,
     };
 
     const changedFields: Partial<typeof transformedValues> = {};
@@ -153,6 +156,10 @@ export function Component() {
     if (dirtyFields.address) changedFields.address = transformedValues.address;
     if (dirtyFields.employees)
       changedFields.employeeIds = transformedValues.employeeIds;
+    if (dirtyFields.merchantId)
+      changedFields.merchantId = transformedValues.merchantId;
+    if (dirtyFields.hashIV) changedFields.hashIV = transformedValues.hashIV;
+    if (dirtyFields.hashKey) changedFields.hashKey = transformedValues.hashKey;
 
     setIsMutating(true);
     submit(
@@ -171,11 +178,11 @@ export function Component() {
   useEffect(() => {
     if (searchParams.get("error")) {
       setIsMutating(false);
-      setSearchParams("");
+      setSearchParams({});
     } else {
       setIsMutating(false);
       setDisabled(true);
-      setSearchParams("");
+      setSearchParams({});
       form.reset({
         name: form.getValues("name"),
         category: form.getValues("category"),
@@ -191,6 +198,9 @@ export function Component() {
         district: form.getValues("district"),
         address: form.getValues("address"),
         employees: form.getValues("employees"),
+        merchantId: form.getValues("merchantId"),
+        hashIV: form.getValues("hashIV"),
+        hashKey: form.getValues("hashKey"),
       });
     }
   }, [searchParams, setSearchParams, form, oldCountyCode]);

@@ -203,9 +203,17 @@ export const linksKV = {
       },
       report: {
         label: "報表",
-        path: `${INDOOR_SIMULATOR_BASE_PATH}/report`,
-        lazy: () => import("@/pages/indoor-simulator/report"),
-        type: "flat" as const,
+        // path: `${INDOOR_SIMULATOR_BASE_PATH}/report/:storeId`,
+        paths: {
+          index: {
+            symbolicPath: `${INDOOR_SIMULATOR_BASE_PATH}/report/:storeId?`,
+            path: `${INDOOR_SIMULATOR_BASE_PATH}/report`,
+          },
+        },
+        lazy: {
+          index: () => import("@/pages/indoor-simulator/report"),
+        },
+        type: "multiple" as const,
         allowedPermissions: ["模擬器-報表"],
       },
     },

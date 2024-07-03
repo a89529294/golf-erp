@@ -224,7 +224,7 @@ export function StoreForm({
             disabled={isInputDisabled}
             form={form}
             name={"hashIV"}
-            label="HashId"
+            label="HashIV"
           />
         </section>
         <section className="flex w-[613px] flex-col gap-6 border border-line-gray px-12 pb-10">

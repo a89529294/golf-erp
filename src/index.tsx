@@ -116,6 +116,8 @@ const router = createBrowserRouter(
                     if (typeof pathConfig === "object")
                       path = pathConfig.symbolicPath;
                     else path = pathConfig;
+
+                    console.log(path);
                     return (
                       <Route
                         element={

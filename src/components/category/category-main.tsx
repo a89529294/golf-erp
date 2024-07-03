@@ -234,7 +234,6 @@ export function CategoryMain({
                         });
                     });
                 } else {
-                  console.log(section.openTimes);
                   if (section.openTimes) {
                     section.openTimes.sort((a, b) => a.sequence - b.sequence);
                     section.openTimes.forEach((o) =>
@@ -442,7 +441,6 @@ function MiddleSection<T>({
   className?: string;
   alignCenter?: boolean;
 }) {
-  console.log(list);
   const As = useOrderedList ? "ol" : "ul";
   return (
     <div
@@ -460,7 +458,6 @@ function MiddleSection<T>({
         )}
       >
         {list.map((h, i) => {
-          console.log(h);
           return (
             <li key={i} className="">
               {/* this wrapper is necessary if you set li to flex, the list marker disappears */}

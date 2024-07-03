@@ -18,11 +18,11 @@ export const action: ActionFunction = async ({ request }) => {
   const url = new URL(request.url);
   if (!response.ok) {
     toast.error("更新廠商失敗");
-    return redirect(`${url.pathname}/?error=true`);
+    return redirect(`${url.pathname}?error=true`);
   }
 
   toast.success("更新廠商成功");
   queryClient.invalidateQueries({ queryKey: ["stores"] });
 
-  return redirect(`${url.pathname}/?error=false`);
+  return redirect(`${url.pathname}?error=false`);
 };
