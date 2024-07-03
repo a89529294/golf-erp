@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useCallback, useEffect } from "react";
+import GraphTabs from "@/pages/indoor-simulator/report/components/graph-tabs";
 
 export function Component() {
   const navigate = useNavigate();
@@ -65,7 +66,9 @@ export function Component() {
         </>
       }
     >
-      hi
+      <div className="w-full border border-line-gray bg-light-gray p-5">
+        <GraphTabs />
+      </div>
     </MainLayout>
   );
 }

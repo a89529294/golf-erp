@@ -70,6 +70,7 @@ module.exports = {
         "line-green": "#34B166",
         "word-gray": "#c4c4c4",
         "word-darker-gray": "#ababab",
+        "word-gray-dark": "#858585",
         "light-blue": "#88CED5",
         "secondary-dark": "#0D152B",
         "hover-orange": "#feeed1",
