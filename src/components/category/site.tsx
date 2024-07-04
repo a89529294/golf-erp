@@ -62,6 +62,10 @@ import {
   onSelectEquipment,
 } from "./helper-functions";
 import { VenueSettingsRow } from "./venue-settings-row";
+import { IconShortButton } from "@/components/ui/button";
+import { privateFetch } from "@/utils/utils";
+import { useParams } from "react-router-dom";
+import { toast } from "sonner";
 
 type S = {
   golf: NewGolfCourse;
@@ -94,6 +98,23 @@ export function Site({
   const [activeValue, setActiveValue] = React.useState<Weekday>("monday");
   const form = useFormContext<S[typeof type]>();
   const openingHours = form.watch("openingHours");
+  const { siteId } = useParams();
+  const [isOpeningGate, setIsOpeningGate] = React.useState(false);
+
+  async function onOpenGate() {
+    try {
+      setIsOpeningGate(true);
+      await privateFetch(`/store/simulator/open-room-gate/${siteId}`, {
+        method: "POST",
+      });
+      toast.success("包廂門已開啟");
+    } catch (e) {
+      console.error(e);
+      toast.error("無法開啟包廂門");
+    } finally {
+      setIsOpeningGate(false);
+    }
+  }
 
   return (
     <form
@@ -123,7 +144,7 @@ export function Site({
       id="site-details"
     >
       <section className="space-y-6 border border-line-gray bg-white px-12 py-10">
-        <div className="flex items-baseline gap-5">
+        <div className="flex items-center gap-5">
           <FormTextField
             className="flex-1"
             name="name"
@@ -148,6 +169,15 @@ export function Site({
               </FormItem>
             )}
           />
+          {type === "existing-indoor-simulator" && (
+            <IconShortButton
+              onClick={onOpenGate}
+              icon="plus"
+              disabled={formDisabled || isOpeningGate}
+            >
+              開啟包廂門
+            </IconShortButton>
+          )}
         </div>
         <FormTextField
           name="description"

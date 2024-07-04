@@ -291,6 +291,7 @@ export function Component() {
           isMutating={isMutating}
           onSubmit={onSubmit}
           disabled={disabled}
+          isDetails={store.category === "simulator"}
         />
       </div>
     </MainLayout>

@@ -16,10 +16,14 @@ import greenPlusIcon from "@/assets/green-plus-icon.svg";
 import redMinusIcon from "@/assets/red-minus-icon.svg";
 import { AddEmployeeAsStoreManagerModal } from "@/components/select-employees-modal/add-employee-as-store-manager";
 import { Employee } from "@/pages/system-management/personnel-management/loader";
-import { SetStateAction } from "react";
+import { SetStateAction, useState } from "react";
 import { StoreFormAddressSelectFields } from "./store-form-address-select-field";
 import { StoreFormField } from "./store-form-field";
 import { StoreFormSelectField } from "./store-form-select-field";
+import { IconShortButton } from "@/components/ui/button";
+import { useParams } from "react-router-dom";
+import { privateFetch } from "@/utils/utils";
+import { toast } from "sonner";
 
 export function StoreForm({
   form,
@@ -29,6 +33,7 @@ export function StoreForm({
   districts,
   employees,
   disabled,
+  isDetails,
 }: {
   form: UseFormReturn<z.infer<typeof formSchema>>;
   onSubmit: (values: z.infer<typeof formSchema>) => void;
@@ -44,7 +49,25 @@ export function StoreForm({
     | undefined;
   employees: Employee[];
   disabled?: boolean;
+  isDetails?: boolean;
 }) {
+  const { storeId } = useParams();
+  const [isOpeningGate, setIsOpeningGate] = useState(false);
+  async function onOpenGate() {
+    try {
+      setIsOpeningGate(true);
+      await privateFetch(`/store/simulator/open-main-gate/${storeId}`, {
+        method: "POST",
+      });
+      toast.success("開啟大門成功");
+    } catch (e) {
+      console.log(e);
+      toast.error("無法開啟大門");
+    } finally {
+      setIsOpeningGate(false);
+    }
+  }
+
   const isInputDisabled = !!(isMutating || disabled);
   return (
     <Form {...form}>
@@ -59,6 +82,19 @@ export function StoreForm({
           <div className="-mx-12 mb-4 bg-light-gray py-1.5 text-center text-black">
             基本資料
           </div>
+          {isDetails && (
+            <div className="grid grid-cols-[auto_1fr] items-center">
+              <span className="w-28">開啟大門</span>
+              <IconShortButton
+                className="flex justify-center"
+                icon="plus"
+                onClick={onOpenGate}
+                disabled={isOpeningGate}
+              >
+                開啟
+              </IconShortButton>
+            </div>
+          )}
           <StoreFormField
             disabled={isInputDisabled}
             form={form}
