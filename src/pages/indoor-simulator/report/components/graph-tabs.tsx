@@ -9,6 +9,14 @@ const nf = new Intl.NumberFormat("en-us");
 // https://www.chartjs.org/docs/latest/samples/tooltip/html.html
 export default function GraphTabs() {
   React.useEffect(() => {
+    const secondaryPurple = "#262873";
+    const labels = Array(30)
+      .fill("")
+      .map((_, i) => `2024/6/${i + 1}`);
+    const data = Array(30)
+      .fill("")
+      .map(() => Math.floor(Math.random() * 100000));
+
     const myChart = new Chart(
       document.getElementById("chart") as HTMLCanvasElement,
       {
@@ -27,7 +35,7 @@ export default function GraphTabs() {
                 ctx.moveTo(x, yAxis.top);
                 ctx.lineTo(x, yAxis.bottom);
                 ctx.lineWidth = 1;
-                ctx.strokeStyle = "#262873";
+                ctx.strokeStyle = secondaryPurple;
                 ctx.stroke();
                 ctx.restore();
               }
@@ -45,7 +53,28 @@ export default function GraphTabs() {
               display: false,
             },
             tooltip: {
-              callbacks: {},
+              backgroundColor: secondaryPurple,
+              displayColors: false,
+              cornerRadius: 5,
+              padding: 10,
+              bodyFont: {
+                size: 14,
+                weight: 700,
+              },
+              titleFont: {
+                size: 14,
+                weight: 700,
+              },
+              bodyColor: "#ffffffa6",
+              callbacks: {
+                title(tooltipItems) {
+                  console.log(tooltipItems);
+                  return `$ ${nf.format(tooltipItems[0].parsed.y)}`;
+                },
+                label(tooltipItem) {
+                  return labels[tooltipItem.parsed.x];
+                },
+              },
             },
           },
           scales: {
@@ -76,17 +105,15 @@ export default function GraphTabs() {
           },
         },
         data: {
-          labels: Array(30)
-            .fill("")
-            .map((_, i) => `6/${i + 1}`),
+          labels: labels,
           datasets: [
             {
               label: "",
-              data: Array(30)
-                .fill("")
-                .map(() => Math.floor(Math.random() * 100000)),
+              data: data,
+              fill: true,
+              backgroundColor: "#88CED51A",
               segment: {
-                borderColor: "#262873",
+                borderColor: secondaryPurple,
                 borderWidth: 1,
               },
               pointStyle: (ctx) => {
@@ -94,7 +121,7 @@ export default function GraphTabs() {
                 return ctx.active ? "circle" : false;
               },
               pointBackgroundColor: "transparent",
-              pointBorderColor: "#262873",
+              pointBorderColor: secondaryPurple,
               pointHoverRadius: 5,
             },
           ],
