@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useCallback, useEffect } from "react";
-import GraphTabs from "@/pages/indoor-simulator/report/components/graph-tabs";
+import GraphTabs from "@/pages/indoor-simulator/report/components/graph-with-tabs";
 
 export function Component() {
   const navigate = useNavigate();

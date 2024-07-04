@@ -29,7 +29,7 @@ export function CircularProgressBar({
           cy={size / 2}
           r={(size - strokeWidth) / 2}
           fill="none"
-          stroke={type === "primary" ? "#262873" : "var(--orange)"}
+          stroke={type === "primary" ? "#262873" : "#E99E18"}
           strokeWidth={strokeWidth}
         ></circle>
         <circle

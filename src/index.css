@@ -118,3 +118,11 @@ input[type="number"] {
 select::-webkit-scrollbar {
   display: none;
 }
+
+.rdp-multiple_months > div {
+  flex-direction: row;
+}
+
+.rdp-multiple_months > div > div:last-of-type {
+  margin-top: 0 !important;
+}
