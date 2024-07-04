@@ -1,5 +1,8 @@
+import { CircularProgressBar } from "@/components/circular-progress-bar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import GraphNumberCell from "@/pages/indoor-simulator/report/components/graph-number-cell";
+import { GraphRevenueCell } from "@/pages/indoor-simulator/report/components/graph-revenue-cell";
+import { TextButton } from "@/pages/indoor-simulator/report/components/text-button";
 import Chart from "chart.js/auto";
 import React from "react";
 
@@ -8,11 +11,16 @@ const nf = new Intl.NumberFormat("en-us");
 // for custom tooltips
 // https://www.chartjs.org/docs/latest/samples/tooltip/html.html
 export default function GraphTabs() {
+  const [graphDateRange, setGraphDateRange] = React.useState([
+    new Date(),
+    new Date(),
+  ]);
+
   React.useEffect(() => {
     const secondaryPurple = "#262873";
     const labels = Array(30)
       .fill("")
-      .map((_, i) => `2024/6/${i + 1}`);
+      .map((_, i) => `6/${i + 1}`);
     const data = Array(30)
       .fill("")
       .map(() => Math.floor(Math.random() * 100000));
@@ -68,11 +76,10 @@ export default function GraphTabs() {
               bodyColor: "#ffffffa6",
               callbacks: {
                 title(tooltipItems) {
-                  console.log(tooltipItems);
                   return `$ ${nf.format(tooltipItems[0].parsed.y)}`;
                 },
                 label(tooltipItem) {
-                  return labels[tooltipItem.parsed.x];
+                  return `2024/${labels[tooltipItem.parsed.x]}`;
                 },
               },
             },
@@ -88,6 +95,8 @@ export default function GraphTabs() {
                     : "";
                 },
                 color: "#858585",
+                maxRotation: 0,
+                minRotation: 0,
               },
               grid: {
                 display: false,
@@ -117,7 +126,6 @@ export default function GraphTabs() {
                 borderWidth: 1,
               },
               pointStyle: (ctx) => {
-                console.log(ctx);
                 return ctx.active ? "circle" : false;
               },
               pointBackgroundColor: "transparent",
@@ -133,6 +141,24 @@ export default function GraphTabs() {
       myChart.destroy();
     };
   }, []);
+
+  const setDay = () => setGraphDateRange([new Date(), new Date()]);
+  const setMonth = () => {
+    const date = new Date();
+    setGraphDateRange([
+      new Date(date.getFullYear(), date.getMonth(), 1),
+      new Date(date.getFullYear(), date.getMonth() + 1, 0),
+    ]);
+  };
+  const setYear = () => {
+    const date = new Date();
+    setGraphDateRange([
+      new Date(date.getFullYear(), 0, 1),
+      new Date(date.getFullYear() + 1, 0, 0),
+    ]);
+  };
+
+  console.log(graphDateRange);
 
   return (
     <Tabs defaultValue="revenue" className="flex flex-col gap-2.5">
@@ -151,8 +177,20 @@ export default function GraphTabs() {
         </TabsTrigger>
       </TabsList>
       <TabsContent value="revenue" className="flex gap-2.5">
-        <div className="flex-1 rounded-md bg-white p-4">
-          hi
+        <div className="flex-1 space-y-2 rounded-md bg-white p-4">
+          <div className="flex gap-2.5">
+            <GraphRevenueCell title="總營業額" amount={23400000} />
+            <GraphRevenueCell
+              title="6月營業額"
+              amount={1100000}
+              leftSlot={<CircularProgressBar size={60} filledPercentage={60} />}
+            />
+            <div className="ml-auto space-x-1.5">
+              <TextButton onClick={setDay}>日</TextButton>
+              <TextButton onClick={setMonth}>月</TextButton>
+              <TextButton onClick={setYear}>年</TextButton>
+            </div>
+          </div>
           <canvas id="chart" />
         </div>
         <div className=" w-[267px] rounded-md bg-white p-4">
