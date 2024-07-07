@@ -263,8 +263,6 @@ function AccordionItemWrapper({
               }
             })();
 
-            // console.log(path);
-
             return (
               <NavLink
                 to={path}

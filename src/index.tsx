@@ -117,7 +117,6 @@ const router = createBrowserRouter(
                       path = pathConfig.symbolicPath;
                     else path = pathConfig;
 
-                    console.log(path);
                     return (
                       <Route
                         element={

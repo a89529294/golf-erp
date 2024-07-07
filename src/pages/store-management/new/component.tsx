@@ -91,8 +91,6 @@ export function Component() {
       ...(values.hashIV ? { hashIV: values.hashIV } : {}),
     };
 
-    console.log(transformedValues);
-
     setIsMutating(true);
     submit(transformedValues, {
       method: "post",
