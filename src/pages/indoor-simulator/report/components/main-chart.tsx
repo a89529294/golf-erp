@@ -26,19 +26,18 @@ export function MainChart({
   React.useEffect(() => {
     const secondaryPurple = "#262873";
     const labels = isYearData
-      ? Array(12)
-          .fill("")
-          .map((_, i) => `${(i + 1).toString().padStart(2, "0")}`)
-      : Array(30)
-          .fill("")
-          .map((_, i) => `6/${i + 1}`);
+      ? Object.keys(data.year).map(
+          (v) => `${new Date().getFullYear()}/${v.padStart(2, "0")}`,
+        )
+      : Object.keys(data.detailed).map((v) => v);
+
     const yData = isYearData
       ? Object.values(data.year).map((v) => {
           return activeDataType === "revenue" ? v.totalAmount : v.totalCount;
         })
-      : Array(30)
-          .fill("")
-          .map(() => Math.floor(Math.random() * 100000));
+      : Object.values(data.detailed).map((v) => {
+          return activeDataType === "revenue" ? v.totalAmount : v.totalCount;
+        });
 
     if (!document.getElementById("chart")) return;
     const myChart = new Chart(
@@ -78,6 +77,7 @@ export function MainChart({
               display: false,
             },
             tooltip: {
+              // mode: "index",
               backgroundColor: secondaryPurple,
               displayColors: false,
               cornerRadius: 5,
@@ -96,7 +96,13 @@ export function MainChart({
                   return `$ ${nf.format(tooltipItems[0].parsed.y)}`;
                 },
                 label(tooltipItem) {
-                  return `2024/${labels[tooltipItem.parsed.x]}`;
+                  console.log(tooltipItem);
+                  return tooltipItem.label;
+                  // const isMonthLabel = "1" in data.detailed;
+                  // if (isMonthLabel)
+                  //   return `${new Date().getFullYear()}/${labels[tooltipItem.parsed.x]}`;
+
+                  // return `${Object.keys(data.detailed)[tooltipItem.parsed.x]}`;
                 },
               },
             },
@@ -106,12 +112,7 @@ export function MainChart({
               ticks: {
                 // For a category axis, the val is the index so the lookup via getLabelForValue is needed
                 callback: function (_, index) {
-                  const visibleIndex = [0, 4, 9, 14, 19, 24, 29];
-                  return isYearData
-                    ? this.getLabelForValue(index)
-                    : visibleIndex.includes(index)
-                      ? this.getLabelForValue(index)
-                      : "";
+                  return this.getLabelForValue(index);
                 },
                 color: "#858585",
                 maxRotation: 0,
@@ -140,6 +141,7 @@ export function MainChart({
               label: "",
               data: yData,
               fill: true,
+              tension: 0.4,
               backgroundColor: "#88CED51A",
               segment: {
                 borderColor: secondaryPurple,

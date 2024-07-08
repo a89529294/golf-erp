@@ -1,7 +1,9 @@
 import { genIndoorSimulatorStoresWithSitesQuery } from "@/pages/indoor-simulator/site-management/loader";
+import { baseAppointmentSchema } from "@/types-and-schemas/appointment";
 import { formatDateAsString, getAllowedStores } from "@/utils";
 import { queryClient } from "@/utils/query-client";
 import { privateFetch } from "@/utils/utils";
+import { addDays, differenceInDays, subDays } from "date-fns";
 import queryString from "query-string";
 import { LoaderFunctionArgs } from "react-router-dom";
 import { z } from "zod";
@@ -12,22 +14,23 @@ const objectSchema = z.object({
   storeSimulatorAppointments: z.record(
     z.string(),
     z.array(
-      z.object({
-        id: z.string(),
-        startTime: z.coerce.date(),
-        endTime: z.coerce.date(),
-        amount: z.number(),
-        appUser: z.object({
-          id: z.string(),
-          chName: z.string(),
-          phone: z.string(),
-        }),
-      }),
+      // z.object({
+      //   id: z.string(),
+      //   startTime: z.coerce.date(),
+      //   endTime: z.coerce.date(),
+      //   amount: z.number(),
+      //   appUser: z.object({
+      //     id: z.string(),
+      //     chName: z.string(),
+      //     phone: z.string(),
+      //   }),
+      // }),
+      baseAppointmentSchema,
     ),
   ),
 });
 
-const yearSchema = z.object({
+export const yearSchema = z.object({
   1: objectSchema,
   2: objectSchema,
   3: objectSchema,
@@ -43,7 +46,7 @@ const yearSchema = z.object({
 });
 export type YearData = z.infer<typeof yearSchema>;
 
-const detailedSchema = z.record(z.string(), objectSchema);
+export const detailedSchema = z.record(z.string(), objectSchema);
 export type DetailedData = z.infer<typeof detailedSchema>;
 
 // const dataSchema = z.array(yearSchema);
@@ -56,9 +59,14 @@ export const genDataQuery = (storeId: string, startAt: Date, endAt: Date) => ({
       storeId,
     });
 
+    const updateStartAndEnd = differenceInDays(startAt, endAt) === 0;
+    console.log(updateStartAndEnd);
+
     const qs = queryString.stringify({
-      startAt: formatDateAsString(startAt),
-      endAt: formatDateAsString(endAt),
+      startAt: formatDateAsString(
+        updateStartAndEnd ? subDays(startAt, 1) : startAt,
+      ),
+      endAt: formatDateAsString(updateStartAndEnd ? addDays(endAt, 1) : endAt),
       storeId,
     });
 

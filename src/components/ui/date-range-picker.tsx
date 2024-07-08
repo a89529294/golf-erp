@@ -50,6 +50,7 @@ export function DateRangePicker({
               setDate(e);
             }}
             numberOfMonths={2}
+            max={90}
           />
         </PopoverContent>
       </Popover>

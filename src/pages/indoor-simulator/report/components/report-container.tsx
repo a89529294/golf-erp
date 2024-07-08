@@ -6,21 +6,26 @@ import { RightPanel } from "@/pages/indoor-simulator/report/components/right-pan
 import { SiteSection } from "@/pages/indoor-simulator/report/components/site-section";
 import { SwitchButton } from "@/pages/indoor-simulator/report/components/switch-button";
 import { DetailedData, YearData } from "@/pages/indoor-simulator/report/loader";
+import { SimulatorStoreWithSites } from "@/pages/store-management/loader";
+import { Appointment } from "@/types-and-schemas/appointment";
 import { DataType } from "@/types-and-schemas/report";
 import { formatDateAsString, updateSearchParams } from "@/utils";
 import { lastDayOfMonth } from "date-fns";
 import React from "react";
-import { useSearchParams } from "react-router-dom";
-// import { useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 
 export function ReportContainer({
   data,
+  stores,
 }: {
   data: {
     year: YearData;
     detailed: DetailedData;
   };
+  stores: SimulatorStoreWithSites[];
 }) {
+  const { storeId } = useParams();
+
   const [activeDataType, setActiveDataType] =
     React.useState<DataType>("revenue");
   const [, setSearchParams] = useSearchParams();
@@ -104,9 +109,25 @@ export function ReportContainer({
                 </div>
               </div>
             )}
-            <RightPanel ref={rightPanelRef} />
-            <SiteSection title="A包廂" />
-            <SiteSection title="B包廂" />
+            <RightPanel ref={rightPanelRef} data={data} />
+            {stores
+              .find((s) => s.id === storeId)
+              ?.sites.map((site) => {
+                const siteAppointments: Appointment[] = [];
+                Object.values(data.detailed).forEach((v) => {
+                  const appointments =
+                    v.storeSimulatorAppointments[site.id] ?? [];
+                  siteAppointments.push(...appointments);
+                });
+
+                return (
+                  <SiteSection
+                    appointments={siteAppointments}
+                    title={site.name}
+                    key={site.id}
+                  />
+                );
+              })}
           </>
         )}
       </div>

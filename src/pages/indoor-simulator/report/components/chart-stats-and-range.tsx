@@ -53,6 +53,10 @@ export function ChartStatsAndRange({
     (acc, v) => acc + v.totalCount,
     0,
   );
+  const percentage =
+    activeDataType === "revenue"
+      ? (rangeTotalRevenue / (yearTotalRevenue || 1)) * 100
+      : (rangeTotalAppointments / (yearTotalAppointments || 1)) * 100;
 
   function setRange(rangeString: string) {
     updateSearchParams({
@@ -102,7 +106,9 @@ export function ChartStatsAndRange({
             ? rangeTotalRevenue
             : rangeTotalAppointments
         }
-        leftSlot={<CircularProgressBar size={60} filledPercentage={60} />}
+        leftSlot={
+          <CircularProgressBar size={60} filledPercentage={percentage} />
+        }
       />
       <div className="ml-auto flex flex-col items-end gap-2.5">
         <div className="flex gap-1.5 text-sm">

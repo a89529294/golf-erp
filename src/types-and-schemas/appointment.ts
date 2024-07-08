@@ -1,8 +1,9 @@
 import { fromDateToDateTimeString } from "@/utils";
 import { z } from "zod";
 
-const baseAppointmentSchema = z.object({
+export const baseAppointmentSchema = z.object({
   id: z.string(), // appointmentId
+  amount: z.number(),
   startTime: z.coerce.date().transform((v) => fromDateToDateTimeString(v)),
   endTime: z.coerce.date().transform((v) => fromDateToDateTimeString(v)),
   status: z
@@ -13,10 +14,8 @@ const baseAppointmentSchema = z.object({
       return "取消";
     }),
   order: z
-    .union([z.literal("success"), z.literal("pending")])
-    .transform((v) => {
-      if (v === "success") return "完成";
-      return "進行中";
+    .object({
+      id: z.string(),
     })
     .optional(),
   appUser: z.object({

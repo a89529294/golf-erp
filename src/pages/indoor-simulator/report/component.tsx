@@ -32,6 +32,7 @@ export function Component() {
     ),
     initialData: initialData.simulators,
   });
+  console.log(stores);
   const { data } = useQuery({
     ...genDataQuery(
       storeId!,
@@ -86,7 +87,7 @@ export function Component() {
       }
     >
       <div className="w-full border border-line-gray bg-light-gray p-5">
-        {data && <ReportContainer data={data} />}
+        {data && <ReportContainer data={data} stores={stores} />}
       </div>
     </MainLayout>
   );

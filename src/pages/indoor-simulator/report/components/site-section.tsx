@@ -4,21 +4,16 @@ import { columns } from "./site-section-columns";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import React from "react";
 import { TextButton } from "@/pages/indoor-simulator/report/components/text-button";
+import { Appointment } from "@/types-and-schemas/appointment";
 
-export function SiteSection({ title }: { title: string }) {
+export function SiteSection({
+  title,
+  appointments,
+}: {
+  title: string;
+  appointments: Appointment[];
+}) {
   const [open, setOpen] = React.useState(false);
-  const [data] = React.useState(
-    Array(Math.floor(Math.random() * 20))
-      .fill("")
-      .map((_, i) => ({
-        id: crypto.randomUUID() + i,
-        name: "王小明",
-        phone: "093450193",
-        startDateTime: "2024/06/13  18:30",
-        endDateTime: "2024/06/13  18:30",
-        amount: 1600,
-      })),
-  );
 
   return (
     <section className="col-span-2 rounded-md bg-white px-5 py-4">
@@ -53,7 +48,17 @@ export function SiteSection({ title }: { title: string }) {
       </ul>
 
       <ScrollArea className={open ? "max-h-[390px]" : "max-h-0"}>
-        <GenericDataTable columns={columns} data={data} />
+        <GenericDataTable
+          columns={columns}
+          data={appointments.map((v) => ({
+            id: v.id,
+            name: v.appUser.chName,
+            phone: v.appUser.phone,
+            startDateTime: v.startTime,
+            endDateTime: v.endTime,
+            amount: v.amount,
+          }))}
+        />
       </ScrollArea>
     </section>
   );

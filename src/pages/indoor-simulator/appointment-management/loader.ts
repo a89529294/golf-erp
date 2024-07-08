@@ -36,6 +36,7 @@ export const appointmentsQuery = {
           phone: appointment.appUser.phone,
         },
         status: appointment.status,
+        amount: appointment.amount,
       };
 
       if (foundStore) {
