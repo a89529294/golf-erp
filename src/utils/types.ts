@@ -8,4 +8,10 @@ export type JSONValue =
 
 export type ValueOf<T> = T[keyof T];
 
-export type SimpleStore = { id: string; name: string };
+export type SimpleStore = {
+  id: string;
+  name: string;
+  county: string;
+  district: string;
+  address: string;
+};

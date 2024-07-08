@@ -1,11 +1,21 @@
-import { StoreWithoutEmployees } from "@/pages/store-management/loader";
-import { privateFetch } from "./utils";
+import { User } from "@/hooks/use-auth";
+import { ReportInterval, reportTimeRange } from "@/types-and-schemas/report";
+import { SimpleStore } from "@/utils/types";
 import imageCompression from "browser-image-compression";
+import {
+  endOfMonth,
+  endOfYear,
+  isSameDay,
+  startOfMonth,
+  startOfYear,
+} from "date-fns";
+import { SetURLSearchParams } from "react-router-dom";
+import { privateFetch } from "./utils";
 
 export const base_url =
   "https://shinjhu-golf-reservation-system-be.caprover.credot-web.com";
 
-export const localStorageUserKey = "user";
+export const localStorageUserKey = "golf-erp-user";
 
 export const storeCategoryMap = {
   golf: "高爾夫",
@@ -134,21 +144,79 @@ export const numberToWeekDay = {
 export const getAllowedStores = async (
   type: "ground" | "golf" | "simulator",
 ) => {
-  const permissionsResponse = await privateFetch("/auth/permissions");
-  const permissions = await permissionsResponse.json();
+  // let allowedStores: StoreWithoutEmployees[] | "all";
+  let allowedStores: SimpleStore[] | "all";
+  const userFromLocalStorage = JSON.parse(
+    localStorage.getItem(localStorageUserKey)!,
+  ) as Exclude<User, null>;
+  if (userFromLocalStorage.isAdmin) allowedStores = "all";
+  else allowedStores = userFromLocalStorage.allowedStores[type];
 
-  let allowedStores: StoreWithoutEmployees[] | "all";
-  if (permissions.includes("system:admin")) allowedStores = "all";
-  else {
-    const authResponse = await privateFetch("/auth/me?populate=*");
-    const user = (await authResponse.json()) as {
-      employee: {
-        stores: StoreWithoutEmployees[];
-      };
-    };
+  // const permissionsResponse = await privateFetch("/auth/permissions");
+  // const permissions = await permissionsResponse.json();
 
-    allowedStores = user.employee.stores.filter((s) => s.category === type);
-  }
+  // if (permissions.includes("system:admin")) allowedStores = "all";
+  // else {
+  //   const authResponse = await privateFetch("/auth/me?populate=*");
+  //   const user = (await authResponse.json()) as {
+  //     employee: {
+  //       stores: StoreWithoutEmployees[];
+  //     };
+  //   };
+
+  //   allowedStores = user.employee.stores.filter((s) => s.category === type);
+  // }
 
   return allowedStores;
 };
+
+export function formatDateAsString(d: Date) {
+  return `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, "0")}-${d.getDate().toString().padStart(2, "0")}`;
+}
+
+export function updateSearchParams({
+  setSearchParams,
+  key,
+  value,
+}: {
+  setSearchParams: SetURLSearchParams;
+  key: string;
+  value: string;
+}) {
+  setSearchParams((searchParams) => {
+    const object = {} as Record<string, string>;
+    searchParams.forEach((v, k) => {
+      object[k] = v;
+    });
+
+    object[key] = value;
+
+    return object;
+  });
+}
+
+export function fromRangeStringToLastDateSetBy(
+  rangeString: reportTimeRange,
+): ReportInterval {
+  const start = rangeString.split(":")[0];
+  const end = rangeString.split(":")[1];
+  if (
+    isSameDay(startOfYear(new Date()), new Date(start)) &&
+    isSameDay(endOfYear(new Date()), new Date(end))
+  )
+    return "year";
+
+  if (
+    isSameDay(startOfMonth(new Date()), new Date(start)) &&
+    isSameDay(endOfMonth(new Date()), new Date(end))
+  )
+    return "month";
+
+  if (
+    isSameDay(new Date(), new Date(start)) &&
+    isSameDay(new Date(), new Date(end))
+  )
+    return "day";
+
+  return "range-picker";
+}

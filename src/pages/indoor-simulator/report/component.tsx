@@ -1,7 +1,12 @@
 import { useAuth } from "@/hooks/use-auth";
 import { MainLayout } from "@/layouts/main-layout";
-import { useLoaderData, useParams, useNavigate } from "react-router-dom";
-import { loader } from "./loader";
+import {
+  useLoaderData,
+  useParams,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
+import { genDataQuery, loader } from "./loader";
 import { useQuery } from "@tanstack/react-query";
 import { genIndoorSimulatorStoresWithSitesQuery } from "@/pages/indoor-simulator/site-management/loader";
 import {
@@ -15,6 +20,8 @@ import { useCallback, useEffect } from "react";
 import { ReportContainer } from "@/pages/indoor-simulator/report/components/report-container";
 
 export function Component() {
+  const [searchParams] = useSearchParams();
+  const range = searchParams.get("range");
   const navigate = useNavigate();
   const { user } = useAuth();
   const { storeId } = useParams();
@@ -25,14 +32,22 @@ export function Component() {
     ),
     initialData: initialData.simulators,
   });
+  const { data } = useQuery({
+    ...genDataQuery(
+      storeId!,
+      new Date((range ?? ":").split(":")[0]),
+      new Date((range ?? ":").split(":")[1]),
+    ),
+    initialData: initialData.data,
+    enabled: false,
+  });
 
   const onStoreValueChange = useCallback(
     (storeId: string, replace: boolean) => {
       const range = encodeURIComponent("2024-01-01:2024-12-31");
-      navigate(
-        `/indoor-simulator/report/${storeId}?query=revenue&range=${range}`,
-        { replace },
-      );
+      navigate(`/indoor-simulator/report/${storeId}?range=${range}`, {
+        replace,
+      });
     },
     [navigate],
   );
@@ -71,7 +86,7 @@ export function Component() {
       }
     >
       <div className="w-full border border-line-gray bg-light-gray p-5">
-        <ReportContainer />
+        {data && <ReportContainer data={data} />}
       </div>
     </MainLayout>
   );

@@ -78,9 +78,18 @@ export const AuthProvider = ({
           id: string;
           category: "ground" | "golf" | "simulator";
           name: string;
+          county: string;
+          district: string;
+          address: string;
         },
       ) => {
-        acc[store.category].push({ id: store.id, name: store.name });
+        acc[store.category].push({
+          id: store.id,
+          name: store.name,
+          county: store.county,
+          district: store.district,
+          address: store.address,
+        });
         return acc;
       },
       {

@@ -12,19 +12,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { StoreWithoutEmployees } from "@/pages/store-management/loader";
-import { FieldPath, useFormContext } from "react-hook-form";
-import { TextFormField } from "./text-form-field";
-import { formSchema } from "..";
-import { z } from "zod";
 import { UnderscoredInput } from "@/components/underscored-input";
+import { SimpleStore } from "@/utils/types";
+import { FieldPath, useFormContext } from "react-hook-form";
+import { z } from "zod";
+import { formSchema } from "..";
+import { TextFormField } from "./text-form-field";
 
 export function AddressFields({
   disabled,
   stores,
 }: {
   disabled?: boolean;
-  stores: StoreWithoutEmployees[];
+  stores: SimpleStore[];
 }) {
   return (
     <>
@@ -52,7 +52,7 @@ function StoreSelectField({
   stores,
   disabled,
 }: {
-  stores: StoreWithoutEmployees[];
+  stores: SimpleStore[];
   disabled?: boolean;
 }) {
   const form = useFormContext();

@@ -4,7 +4,8 @@ import redMinusIcon from "@/assets/red-minus-icon.svg";
 import { Form } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
 import { SimpleMember } from "@/pages/member-management/loader";
-import { StoreWithoutEmployees } from "@/pages/store-management/loader";
+import { SimpleStore } from "@/utils/types";
+import { useEffect } from "react";
 import { SubmitHandler, UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 import { formSchema } from "..";
@@ -16,7 +17,6 @@ import { TextFormField } from "../components/text-form-field";
 import { TimeFormField } from "../components/time-form-field";
 import { AppUserSelectModal } from "./app-user-select-modal";
 import { inviteHostcolumns } from "./invite-host-columns";
-import { useEffect } from "react";
 
 export function InvitationForm({
   form,
@@ -28,7 +28,7 @@ export function InvitationForm({
   form: UseFormReturn<z.infer<typeof formSchema>>;
   onSubmit: SubmitHandler<z.infer<typeof formSchema>>;
   disabled?: boolean;
-  stores: StoreWithoutEmployees[];
+  stores: SimpleStore[];
   appUsers: SimpleMember[];
 }) {
   const headcount = form.watch("headcount");

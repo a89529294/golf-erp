@@ -11,19 +11,22 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { TextButton } from "@/pages/indoor-simulator/report/components/text-button";
+import { formatDateAsString } from "@/utils";
 
 export function DateRangePicker({
   className,
-  date,
-  setDate,
+  setRange,
   setLastDateIsSetByRangePicker,
   selected,
 }: React.HTMLAttributes<HTMLDivElement> & {
-  date: DateRange | undefined;
-  setDate: React.Dispatch<React.SetStateAction<DateRange | undefined>>;
+  setRange: (rangeString: string) => void;
   setLastDateIsSetByRangePicker: () => void;
   selected: boolean;
 }) {
+  const [date, setDate] = React.useState<DateRange | undefined>({
+    from: new Date(),
+  });
+
   return (
     <div className={cn("grid gap-2", className)}>
       <Popover>
@@ -37,7 +40,13 @@ export function DateRangePicker({
             defaultMonth={date?.from}
             selected={date}
             onSelect={(e) => {
-              if (e?.from && e?.to) setLastDateIsSetByRangePicker();
+              if (e?.from && e?.to) {
+                setLastDateIsSetByRangePicker();
+
+                setRange(
+                  `${formatDateAsString(e.from)}:${formatDateAsString(e.to)}`,
+                );
+              }
               setDate(e);
             }}
             numberOfMonths={2}

@@ -1,6 +1,7 @@
 import { Site } from "@/components/category/site";
 import { IconButton } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
+import { useAuth } from "@/hooks/use-auth";
 import { MainLayout } from "@/layouts/main-layout";
 import { equipments } from "@/utils/category/equipment";
 import { newIndoorSimulatorSchema } from "@/utils/category/schemas";
@@ -14,8 +15,6 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { indoorSimulatorStoresQuery } from "../loader";
 import { loader } from "./loader";
-import { useAuth } from "@/hooks/use-auth";
-import { SimpleStore } from "@/utils/types";
 
 export function Component() {
   const { user } = useAuth();
@@ -133,7 +132,7 @@ export function Component() {
           <Site
             type="indoor-simulator"
             formDisabled={isPending}
-            stores={stores as SimpleStore[]}
+            stores={stores}
             onSubmit={() => {
               mutate();
             }}

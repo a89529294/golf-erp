@@ -1,17 +1,44 @@
+import { DetailedData, YearData } from "@/pages/indoor-simulator/report/loader";
+import { DataType, reportTimeRange } from "@/types-and-schemas/report";
+import { fromRangeStringToLastDateSetBy } from "@/utils";
 import Chart from "chart.js/auto";
 import React from "react";
+import { useSearchParams } from "react-router-dom";
 
 const nf = new Intl.NumberFormat("en-us");
 
-export function MainChart({ rightPanelHeight }: { rightPanelHeight: number }) {
+export function MainChart({
+  data,
+  rightPanelHeight,
+  activeDataType,
+}: {
+  data: {
+    year: YearData;
+    detailed: DetailedData;
+  };
+  rightPanelHeight: number;
+  activeDataType: DataType;
+}) {
+  const [searchParams] = useSearchParams();
+  const range = searchParams.get("range")! as reportTimeRange;
+  const isYearData = fromRangeStringToLastDateSetBy(range) === "year";
+
   React.useEffect(() => {
     const secondaryPurple = "#262873";
-    const labels = Array(30)
-      .fill("")
-      .map((_, i) => `6/${i + 1}`);
-    const data = Array(30)
-      .fill("")
-      .map(() => Math.floor(Math.random() * 100000));
+    const labels = isYearData
+      ? Array(12)
+          .fill("")
+          .map((_, i) => `${(i + 1).toString().padStart(2, "0")}`)
+      : Array(30)
+          .fill("")
+          .map((_, i) => `6/${i + 1}`);
+    const yData = isYearData
+      ? Object.values(data.year).map((v) => {
+          return activeDataType === "revenue" ? v.totalAmount : v.totalCount;
+        })
+      : Array(30)
+          .fill("")
+          .map(() => Math.floor(Math.random() * 100000));
 
     if (!document.getElementById("chart")) return;
     const myChart = new Chart(
@@ -80,9 +107,11 @@ export function MainChart({ rightPanelHeight }: { rightPanelHeight: number }) {
                 // For a category axis, the val is the index so the lookup via getLabelForValue is needed
                 callback: function (_, index) {
                   const visibleIndex = [0, 4, 9, 14, 19, 24, 29];
-                  return visibleIndex.includes(index)
+                  return isYearData
                     ? this.getLabelForValue(index)
-                    : "";
+                    : visibleIndex.includes(index)
+                      ? this.getLabelForValue(index)
+                      : "";
                 },
                 color: "#858585",
                 maxRotation: 0,
@@ -109,7 +138,7 @@ export function MainChart({ rightPanelHeight }: { rightPanelHeight: number }) {
           datasets: [
             {
               label: "",
-              data: data,
+              data: yData,
               fill: true,
               backgroundColor: "#88CED51A",
               segment: {
@@ -131,7 +160,7 @@ export function MainChart({ rightPanelHeight }: { rightPanelHeight: number }) {
     return () => {
       myChart?.destroy();
     };
-  }, [rightPanelHeight]);
+  }, [activeDataType, data, isYearData, rightPanelHeight]);
 
   return <canvas id="chart" />;
 }
