@@ -54,9 +54,11 @@ export function ChartStatsAndRange({
     0,
   );
   const percentage =
-    activeDataType === "revenue"
-      ? (rangeTotalRevenue / (yearTotalRevenue || 1)) * 100
-      : (rangeTotalAppointments / (yearTotalAppointments || 1)) * 100;
+    Math.round(
+      (activeDataType === "revenue"
+        ? (rangeTotalRevenue / (yearTotalRevenue || 1)) * 100
+        : (rangeTotalAppointments / (yearTotalAppointments || 1)) * 100) * 10,
+    ) / 10;
 
   function setRange(rangeString: string) {
     updateSearchParams({
@@ -134,7 +136,7 @@ export function ChartStatsAndRange({
               {date && date.to && format(date.to, "yyyy/MM/dd")}
             </span>
             <button
-              className="grid size-4 place-items-center rounded-full bg-word-gray"
+              className="grid rounded-full size-4 place-items-center bg-word-gray"
               onClick={setMonth}
             >
               <img src={x} />

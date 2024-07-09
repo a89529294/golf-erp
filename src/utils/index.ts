@@ -220,3 +220,7 @@ export function fromRangeStringToLastDateSetBy(
 
   return "range-picker";
 }
+
+export function roundUpToOneDecimalPlace(num: number) {
+  return Math.round(num * 10) / 10;
+}

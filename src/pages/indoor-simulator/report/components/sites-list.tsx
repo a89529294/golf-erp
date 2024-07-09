@@ -15,6 +15,10 @@ export function SitesList({
   };
 }) {
   const { storeId } = useParams();
+  const currentYearRevenueForAllSites = Object.values(data.year).reduce(
+    (acc, v) => acc + v.totalAmount,
+    0,
+  );
   return stores
     .find((s) => s.id === storeId)
     ?.sites.map((site) => {
@@ -26,9 +30,12 @@ export function SitesList({
 
       return (
         <SiteSection
+          key={site.id}
+          id={site.id}
           appointments={siteAppointments}
           title={site.name}
-          key={site.id}
+          data={data}
+          currentYearRevenueForAllSites={currentYearRevenueForAllSites}
         />
       );
     });

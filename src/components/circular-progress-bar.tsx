@@ -1,5 +1,5 @@
 export function CircularProgressBar({
-  size = 55,
+  size = 60,
   strokeWidth = 10,
   filledPercentage,
   type = "primary",
