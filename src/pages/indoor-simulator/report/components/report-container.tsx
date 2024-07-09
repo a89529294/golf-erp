@@ -3,16 +3,15 @@ import { ChartStatsAndRange } from "@/pages/indoor-simulator/report/components/c
 // import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { MainChart } from "@/pages/indoor-simulator/report/components/main-chart";
 import { RightPanel } from "@/pages/indoor-simulator/report/components/right-panel";
-import { SiteSection } from "@/pages/indoor-simulator/report/components/site-section";
+import { SitesList } from "@/pages/indoor-simulator/report/components/sites-list";
 import { SwitchButton } from "@/pages/indoor-simulator/report/components/switch-button";
 import { DetailedData, YearData } from "@/pages/indoor-simulator/report/loader";
 import { SimulatorStoreWithSites } from "@/pages/store-management/loader";
-import { Appointment } from "@/types-and-schemas/appointment";
 import { DataType } from "@/types-and-schemas/report";
 import { formatDateAsString, updateSearchParams } from "@/utils";
 import { lastDayOfMonth } from "date-fns";
 import React from "react";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 export function ReportContainer({
   data,
@@ -24,8 +23,6 @@ export function ReportContainer({
   };
   stores: SimulatorStoreWithSites[];
 }) {
-  const { storeId } = useParams();
-
   const [activeDataType, setActiveDataType] =
     React.useState<DataType>("revenue");
   const [, setSearchParams] = useSearchParams();
@@ -67,7 +64,7 @@ export function ReportContainer({
 
   return (
     <div className="flex flex-col gap-2.5">
-      <nav className="space-x-3 self-center bg-transparent">
+      <nav className="self-center space-x-3 bg-transparent">
         <SwitchButton
           value="revenue"
           activeDataType={activeDataType}
@@ -89,7 +86,7 @@ export function ReportContainer({
             {rightPanelHeight && (
               <div
                 style={{ height: rightPanelHeight }}
-                className="flex flex-1 flex-col gap-2 rounded-md bg-white p-4"
+                className="flex flex-col flex-1 gap-2 p-4 bg-white rounded-md"
               >
                 <ChartStatsAndRange
                   setDay={setDay}
@@ -110,24 +107,7 @@ export function ReportContainer({
               </div>
             )}
             <RightPanel ref={rightPanelRef} data={data} />
-            {stores
-              .find((s) => s.id === storeId)
-              ?.sites.map((site) => {
-                const siteAppointments: Appointment[] = [];
-                Object.values(data.detailed).forEach((v) => {
-                  const appointments =
-                    v.storeSimulatorAppointments[site.id] ?? [];
-                  siteAppointments.push(...appointments);
-                });
-
-                return (
-                  <SiteSection
-                    appointments={siteAppointments}
-                    title={site.name}
-                    key={site.id}
-                  />
-                );
-              })}
+            <SitesList data={data} stores={stores} />
           </>
         )}
       </div>

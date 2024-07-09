@@ -49,8 +49,6 @@ export type YearData = z.infer<typeof yearSchema>;
 export const detailedSchema = z.record(z.string(), objectSchema);
 export type DetailedData = z.infer<typeof detailedSchema>;
 
-// const dataSchema = z.array(yearSchema);
-
 export const genDataQuery = (storeId: string, startAt: Date, endAt: Date) => ({
   queryKey: ["simulator", storeId, "report-data", startAt, endAt],
   queryFn: async () => {

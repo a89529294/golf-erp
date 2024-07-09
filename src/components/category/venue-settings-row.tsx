@@ -266,7 +266,7 @@ export function VenueSettingsRow({
         disabledClassNames={disabledClassNames}
       />
 
-      <div className="ml-auto flex gap-4">
+      <div className="flex gap-4 ml-auto">
         {data.saved ? (
           <>
             {/* <button type="button" onClick={onEdit} className="">
