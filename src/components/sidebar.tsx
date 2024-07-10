@@ -80,29 +80,9 @@ export function Sidebar() {
             : linkOnMount.paths.index;
       })()}
     >
-      {isLinkAllowed(linksKV["driving-range"]) && (
+      {isLinkAllowed(linksKV["member-management"]) && (
         <AccordionItemWrapper
-          link={linksKV["driving-range"]}
-          prevLink={prevLink}
-          nestedLinksClosed={nestedLinksClosed}
-          setNestedLinksClosed={setNestedLinksClosed}
-          nextLinkPath={nextLinkPath}
-          setNextLinkPath={setNextLinkPath}
-        />
-      )}
-      {isLinkAllowed(linksKV["golf"]) && (
-        <AccordionItemWrapper
-          link={linksKV["golf"]}
-          prevLink={prevLink}
-          nestedLinksClosed={nestedLinksClosed}
-          setNestedLinksClosed={setNestedLinksClosed}
-          nextLinkPath={nextLinkPath}
-          setNextLinkPath={setNextLinkPath}
-        />
-      )}
-      {isLinkAllowed(linksKV["indoor-simulator"]) && (
-        <AccordionItemWrapper
-          link={linksKV["indoor-simulator"]}
+          link={linksKV["member-management"]}
           prevLink={prevLink}
           nestedLinksClosed={nestedLinksClosed}
           setNestedLinksClosed={setNestedLinksClosed}
@@ -130,9 +110,31 @@ export function Sidebar() {
           setNextLinkPath={setNextLinkPath}
         />
       )}
-      {isLinkAllowed(linksKV["member-management"]) && (
+      {isLinkAllowed(linksKV["indoor-simulator"]) && (
         <AccordionItemWrapper
-          link={linksKV["member-management"]}
+          link={linksKV["indoor-simulator"]}
+          prevLink={prevLink}
+          nestedLinksClosed={nestedLinksClosed}
+          setNestedLinksClosed={setNestedLinksClosed}
+          nextLinkPath={nextLinkPath}
+          setNextLinkPath={setNextLinkPath}
+        />
+      )}
+
+      {isLinkAllowed(linksKV["golf"]) && (
+        <AccordionItemWrapper
+          link={linksKV["golf"]}
+          prevLink={prevLink}
+          nestedLinksClosed={nestedLinksClosed}
+          setNestedLinksClosed={setNestedLinksClosed}
+          nextLinkPath={nextLinkPath}
+          setNextLinkPath={setNextLinkPath}
+        />
+      )}
+
+      {isLinkAllowed(linksKV["driving-range"]) && (
+        <AccordionItemWrapper
+          link={linksKV["driving-range"]}
           prevLink={prevLink}
           nestedLinksClosed={nestedLinksClosed}
           setNestedLinksClosed={setNestedLinksClosed}
@@ -185,7 +187,7 @@ function AccordionItemWrapper({
   return (
     <AccordionItem value={path} className="overflow-hidden">
       <AccordionTrigger asChild>
-        <NavLink to={path} className="group relative block py-3 pl-7">
+        <NavLink to={path} className="relative block py-3 group pl-7">
           {({ isPending }) => {
             let isPathPending = isPending;
 
@@ -237,7 +239,7 @@ function AccordionItemWrapper({
       </AccordionTrigger>
       {link.type === "nested" && (
         <AccordionContent
-          className="flex flex-col bg-white pt-1"
+          className="flex flex-col pt-1 bg-white"
           onAnimationEnd={() => {
             if (!pathname.startsWith(link.path)) setNestedLinksClosed(true);
           }}

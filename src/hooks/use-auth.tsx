@@ -111,7 +111,7 @@ export const AuthProvider = ({
         allowedStores,
         expiresAt: new Date(user.expires).getTime() + 1000 * 60 * 60,
       });
-      navigate("/", { replace: true });
+      navigate("/member-management", { replace: true });
     } catch (e) {
       console.log(e);
 
