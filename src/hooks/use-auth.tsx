@@ -48,69 +48,75 @@ export const AuthProvider = ({
   const navigate = useNavigate();
 
   const login = async (data: LoginData) => {
-    const response = await privateFetch("/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-
-    const authPromises = [
-      await privateFetch("/auth/permissions"),
-      await privateFetch("/erp-features/me"),
-    ];
-
-    const auth = await Promise.all(authPromises);
-
-    const isAdmin = (await auth[0].json()).includes("system:admin");
-    const permissions = await auth[1].json();
-    const user = await response.json();
-
-    const allowedStores = user.employee?.stores.reduce(
-      (
-        acc: {
-          ground: SimpleStore[];
-          golf: SimpleStore[];
-          simulator: SimpleStore[];
+    try {
+      const response = await privateFetch("/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-        store: {
-          id: string;
-          category: "ground" | "golf" | "simulator";
-          name: string;
-          county: string;
-          district: string;
-          address: string;
+        body: JSON.stringify(data),
+      });
+
+      const authPromises = [
+        await privateFetch("/auth/permissions"),
+        await privateFetch("/erp-features/me"),
+      ];
+
+      const auth = await Promise.all(authPromises);
+
+      const isAdmin = (await auth[0].json()).includes("system:admin");
+      const permissions = await auth[1].json();
+      const user = await response.json();
+
+      const allowedStores = user.employee?.stores.reduce(
+        (
+          acc: {
+            ground: SimpleStore[];
+            golf: SimpleStore[];
+            simulator: SimpleStore[];
+          },
+          store: {
+            id: string;
+            category: "ground" | "golf" | "simulator";
+            name: string;
+            county: string;
+            district: string;
+            address: string;
+          },
+        ) => {
+          acc[store.category].push({
+            id: store.id,
+            name: store.name,
+            county: store.county,
+            district: store.district,
+            address: store.address,
+          });
+          return acc;
         },
-      ) => {
-        acc[store.category].push({
-          id: store.id,
-          name: store.name,
-          county: store.county,
-          district: store.district,
-          address: store.address,
-        });
-        return acc;
-      },
-      {
+        {
+          ground: [],
+          golf: [],
+          simulator: [],
+        },
+      ) ?? {
         ground: [],
         golf: [],
         simulator: [],
-      },
-    ) ?? {
-      ground: [],
-      golf: [],
-      simulator: [],
-    };
+      };
 
-    setUser({
-      account: user.account,
-      isAdmin,
-      permissions: permissions.map((p: { name: string }) => p.name),
-      allowedStores,
-      expiresAt: new Date(user.expires).getTime() + 1000 * 60 * 60,
-    });
-    navigate("/", { replace: true });
+      setUser({
+        account: user.account,
+        isAdmin,
+        permissions: permissions.map((p: { name: string }) => p.name),
+        allowedStores,
+        expiresAt: new Date(user.expires).getTime() + 1000 * 60 * 60,
+      });
+      navigate("/", { replace: true });
+    } catch (e) {
+      console.log(e);
+
+      throw new Error("login failed");
+    }
   };
 
   const logout = useCallback(() => {
