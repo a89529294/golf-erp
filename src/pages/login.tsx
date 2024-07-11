@@ -24,17 +24,18 @@ const Login = () => {
     login({
       account: data.get("account") as string,
       password: data.get("password") as string,
-    }).catch(() => {
-      toast.error("登入失敗,請確認帳號密碼");
+    }).catch((e) => {
+      console.log(e);
+      toast.error("登入失敗,請檢查帳號密碼");
       setLogginIn(false);
     });
   };
 
   return (
-    <div className="relative flex justify-center h-full overflow-hidden">
-      <img src={loginTopWave} className="absolute top-0 left-0 h-96" />
+    <div className="relative flex h-full justify-center overflow-hidden">
+      <img src={loginTopWave} className="absolute left-0 top-0 h-96" />
 
-      <div className="absolute flex items-center gap-6 left-20 top-16 xl:flex-col lg:hidden">
+      <div className="absolute left-20 top-16 flex items-center gap-6 xl:flex-col lg:hidden">
         <img src={logo} />
         <div className="font-bold">
           <h2 className="text-5xl">找打球</h2>
@@ -50,7 +51,7 @@ const Login = () => {
       />
 
       <form
-        className="relative z-10 flex flex-col self-start px-12 py-8 bg-white border-t-4 shadow-xl gap-14 border-light-blue"
+        className="relative z-10 flex flex-col gap-14 self-start border-t-4 border-light-blue bg-white px-12 py-8 shadow-xl"
         onSubmit={handleSubmit}
         style={{
           marginTop: ((document.documentElement.clientHeight - 414) / 5) * 3, // 414 height of form
@@ -65,7 +66,7 @@ const Login = () => {
           <Label className="flex items-baseline gap-5">
             帳號
             <Input
-              className="w-64 border-0 border-b rounded-none border-b-secondary-dark"
+              className="w-64 rounded-none border-0 border-b border-b-secondary-dark"
               placeholder="請輸入帳號"
               name="account"
               required
@@ -75,7 +76,7 @@ const Login = () => {
           <Label className="relative flex items-baseline gap-5">
             密碼
             <Input
-              className="w-64 border-0 border-b rounded-none border-b-secondary-dark"
+              className="w-64 rounded-none border-0 border-b border-b-secondary-dark"
               placeholder="請輸入密碼"
               name="password"
               type={showPassword ? "text" : "password"}
@@ -83,7 +84,7 @@ const Login = () => {
               disabled={logginIn}
             />
             <button
-              className="absolute right-0 -translate-y-1/2 top-1/2 size-5 "
+              className="absolute right-0 top-1/2 size-5 -translate-y-1/2 "
               type="button"
               onClick={() => setShowPassword(!showPassword)}
             >
