@@ -68,9 +68,15 @@ export function GenericDataTable<TData extends { id: string }, TValue>({
     },
   });
 
+  // const extraClasses = "table-fixed w-auto ";
   return (
     <div className="w-full border-x border-b border-line-gray px-1">
-      <Table className="relative isolate border-separate border-spacing-0">
+      <Table
+        className={cn(
+          `relative isolate  border-separate border-spacing-0 `,
+          // extraClasses,
+        )}
+      >
         <TableHeader className="relative z-10">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id} className="border-b-line-gray">

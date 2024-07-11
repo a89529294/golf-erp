@@ -66,7 +66,7 @@ const Login = () => {
           <Label className="flex items-baseline gap-5">
             帳號
             <Input
-              className="w-64 rounded-none border-0 border-b border-b-secondary-dark"
+              className="w-64 rounded-none border-0 border-b border-b-secondary-dark sm:w-40"
               placeholder="請輸入帳號"
               name="account"
               required
@@ -76,7 +76,7 @@ const Login = () => {
           <Label className="relative flex items-baseline gap-5">
             密碼
             <Input
-              className="w-64 rounded-none border-0 border-b border-b-secondary-dark"
+              className="w-64 rounded-none border-0 border-b border-b-secondary-dark sm:w-40"
               placeholder="請輸入密碼"
               name="password"
               type={showPassword ? "text" : "password"}

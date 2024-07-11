@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { type UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 import { memberFormSchema } from "../schemas";
+import { MobileFields } from "@/pages/member-management/components/mobile-fields";
 
 export function MemberForm({
   form,
@@ -26,8 +27,13 @@ export function MemberForm({
         id="member-form"
         className="space-y-4 border border-line-gray p-1"
       >
-        <div className="grid grid-cols-[152fr_110fr_110fr_110fr_110fr_80fr_140fr_152fr] gap-x-10 pt-2.5 sm:grid-cols-2">
+        <div className="grid grid-cols-[152fr_110fr_110fr_110fr_110fr_80fr_140fr_152fr] gap-x-10 pt-2.5 sm:flex sm:flex-col">
           <DesktopFields
+            disabled={disabled}
+            memberTypeRef={memberTypeRef}
+            genderRef={genderRef}
+          />
+          <MobileFields
             disabled={disabled}
             memberTypeRef={memberTypeRef}
             genderRef={genderRef}
@@ -35,7 +41,7 @@ export function MemberForm({
         </div>
 
         <div className="flex justify-center bg-secondary-dark py-3">
-          <div className="flex gap-36">
+          <div className="flex gap-36 sm:flex-col sm:gap-4">
             <AmountCell label="累積消費金額" amount={coin} />
             <AmountCell label="消費儲值金額" amount={0} />
             <AmountCell label="剩餘消費金額" amount={0} />

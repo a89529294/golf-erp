@@ -5,7 +5,7 @@ import { useLoaderData, useParams } from "react-router-dom";
 import { z } from "zod";
 
 import { GenericDataTable } from "@/components/generic-data-table";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useIsMobile } from "@/hooks/use-is-mobile";
 import { DesktopMenubar } from "@/pages/member-management/components/desktop-menubar";
 import { filterObject } from "@/utils";
@@ -20,7 +20,6 @@ import { genMemberDetailsQuery, loader } from "./loader";
 import { MobileMenubar } from "@/pages/member-management/components/mobile-menubar";
 
 export function Component() {
-  const isMobile = useIsMobile();
   const { id } = useParams();
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
   const { data } = useQuery({
@@ -99,6 +98,7 @@ export function Component() {
     });
   const ref = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState(0);
+  const isMobile = useIsMobile();
 
   useLayoutEffect(() => {
     const refCurrent = ref.current;
@@ -172,11 +172,17 @@ export function Component() {
         </button>
         <div className="grow" ref={ref}>
           {!!height && (
-            <ScrollArea style={{ height }}>
+            <ScrollArea
+              style={{
+                height: !isMobile ? height : undefined,
+                maxHeight: isMobile ? 500 : undefined,
+              }}
+            >
               <GenericDataTable
                 columns={columns}
                 data={data.appChargeHistories}
               />
+              <ScrollBar className="hidden sm:block" orientation="horizontal" />
             </ScrollArea>
           )}
         </div>

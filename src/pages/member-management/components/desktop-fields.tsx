@@ -131,7 +131,7 @@ function Cell({
     <label
       htmlFor={htmlFor}
       className={cn(
-        "relative flex ",
+        "relative flex sm:hidden",
         withBottomBorder && "border-b border-line-gray ",
         withGapBorder &&
           "after:absolute after:left-full after:top-full after:block after:w-10 after:border-b after:border-line-gray",

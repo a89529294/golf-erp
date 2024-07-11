@@ -72,7 +72,11 @@ export function Component() {
             新增人員
           </Link>
 
-          <SearchInput value={globalFilter} setValue={setGlobalFilter} />
+          <SearchInput
+            className="sm:hidden"
+            value={globalFilter}
+            setValue={setGlobalFilter}
+          />
         </>
       }
     >
