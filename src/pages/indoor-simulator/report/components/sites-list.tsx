@@ -1,5 +1,5 @@
 import { SiteSection } from "@/pages/indoor-simulator/report/components/site-section";
-import { DetailedData, YearData } from "@/pages/indoor-simulator/report/loader";
+import { ReportData } from "@/pages/indoor-simulator/report/loader";
 import { SimulatorStoreWithSites } from "@/pages/store-management/loader";
 import { Appointment } from "@/types-and-schemas/appointment";
 import { useParams } from "react-router-dom";
@@ -9,10 +9,7 @@ export function SitesList({
   data,
 }: {
   stores: SimulatorStoreWithSites[];
-  data: {
-    year: YearData;
-    detailed: DetailedData;
-  };
+  data: ReportData;
 }) {
   const { storeId } = useParams();
   const currentYearRevenueForAllSites = Object.values(data.year).reduce(

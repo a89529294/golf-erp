@@ -32,7 +32,6 @@ export function Component() {
     ),
     initialData: initialData.simulators,
   });
-  console.log(stores);
   const { data } = useQuery({
     ...genDataQuery(
       storeId!,

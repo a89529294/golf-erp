@@ -1,13 +1,11 @@
 import { GenericDataTable } from "@/components/generic-data-table";
-import { CircularProgressWithDesc } from "@/pages/indoor-simulator/report/components/circular-progress-with-desc";
-import { columns } from "./site-section-columns";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import React from "react";
+import { CircularProgressWithDesc } from "@/pages/indoor-simulator/report/components/circular-progress-with-desc";
 import { TextButton } from "@/pages/indoor-simulator/report/components/text-button";
+import { ReportData } from "@/pages/indoor-simulator/report/loader";
 import { Appointment } from "@/types-and-schemas/appointment";
-import { DetailedData, YearData } from "@/pages/indoor-simulator/report/loader";
-import { useSearchParams } from "react-router-dom";
 import { reportTimeRange } from "@/types-and-schemas/report";
+import { roundUpToOneDecimalPlace } from "@/utils";
 import {
   endOfMonth,
   endOfYear,
@@ -15,7 +13,9 @@ import {
   startOfMonth,
   startOfYear,
 } from "date-fns";
-import { roundUpToOneDecimalPlace } from "@/utils";
+import React from "react";
+import { useSearchParams } from "react-router-dom";
+import { columns } from "./site-section-columns";
 
 export function SiteSection({
   id,
@@ -27,10 +27,7 @@ export function SiteSection({
   id: string;
   title: string;
   appointments: Appointment[];
-  data: {
-    year: YearData;
-    detailed: DetailedData;
-  };
+  data: ReportData;
   currentYearRevenueForAllSites: number;
 }) {
   const [searchParams] = useSearchParams();
@@ -165,7 +162,7 @@ export function SiteSection({
   })();
 
   return (
-    <section className="col-span-2 px-5 py-4 bg-white rounded-md">
+    <section className="col-span-2 rounded-md bg-white px-5 py-4">
       <h2 className="text-lg font-bold">{title}</h2>
       <ul className="mb-4 mt-2.5 flex gap-4">
         <CircularProgressWithDesc
@@ -191,7 +188,7 @@ export function SiteSection({
           type="secondary"
         />
 
-        <TextButton className="self-end ml-auto" onClick={() => setOpen(!open)}>
+        <TextButton className="ml-auto self-end" onClick={() => setOpen(!open)}>
           展開訂單
         </TextButton>
       </ul>

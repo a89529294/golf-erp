@@ -3,7 +3,7 @@ import { CircularProgressBar } from "@/components/circular-progress-bar";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { GraphRevenueCell } from "@/pages/indoor-simulator/report/components/graph-revenue-cell";
 import { TextButton } from "@/pages/indoor-simulator/report/components/text-button";
-import { DetailedData, YearData } from "@/pages/indoor-simulator/report/loader";
+import { ReportData } from "@/pages/indoor-simulator/report/loader";
 import { DataType, reportTimeRange } from "@/types-and-schemas/report";
 import { fromRangeStringToLastDateSetBy, updateSearchParams } from "@/utils";
 import { format } from "date-fns";
@@ -19,10 +19,7 @@ export function ChartStatsAndRange({
   setMonth(): void;
   setYear(): void;
   setDay(): void;
-  data: {
-    year: YearData;
-    detailed: DetailedData;
-  };
+  data: ReportData;
   activeDataType: DataType;
 }) {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -37,8 +34,11 @@ export function ChartStatsAndRange({
         to: new Date(range.split(":")[1]),
       }
     : undefined;
+  const totalRevenue = data.total.totalAmount;
+  const totalAppointmentCount = data.total.totalCount;
+
   const yearTotalRevenue = Object.values(data.year).reduce(
-    (acc, v) => acc + v.totalAmount,
+    (acc, v) => acc + (v.totalAmount ?? 0),
     0,
   );
   const yearTotalAppointments = Object.values(data.year).reduce(
@@ -46,19 +46,24 @@ export function ChartStatsAndRange({
     0,
   );
   const rangeTotalRevenue = Object.values(data.detailed).reduce(
-    (acc, v) => acc + v.totalAmount,
+    (acc, v) => acc + (v.totalAmount ?? 0),
     0,
   );
   const rangeTotalAppointments = Object.values(data.detailed).reduce(
     (acc, v) => acc + v.totalCount,
     0,
   );
-  const percentage =
-    Math.round(
-      (activeDataType === "revenue"
-        ? (rangeTotalRevenue / (yearTotalRevenue || 1)) * 100
-        : (rangeTotalAppointments / (yearTotalAppointments || 1)) * 100) * 10,
-    ) / 10;
+  const percentage = Math.round(
+    (() => {
+      if (activeDataType === "revenue") {
+        if (isYearData) return yearTotalRevenue / totalRevenue;
+        return rangeTotalRevenue / totalRevenue;
+      } else {
+        if (isYearData) return yearTotalAppointments / totalAppointmentCount;
+        return rangeTotalAppointments / totalAppointmentCount;
+      }
+    })() * 100,
+  );
 
   function setRange(rangeString: string) {
     updateSearchParams({
@@ -94,11 +99,9 @@ export function ChartStatsAndRange({
   return (
     <div className="flex gap-2.5">
       <GraphRevenueCell
-        title={activeDataType === "revenue" ? "年度總營業額" : "年度總訂單數"}
+        title={activeDataType === "revenue" ? "總營業額" : "總訂單數"}
         amount={
-          activeDataType === "revenue"
-            ? yearTotalRevenue
-            : yearTotalAppointments
+          activeDataType === "revenue" ? totalRevenue : totalAppointmentCount
         }
       />
       <GraphRevenueCell
@@ -136,7 +139,7 @@ export function ChartStatsAndRange({
               {date && date.to && format(date.to, "yyyy/MM/dd")}
             </span>
             <button
-              className="grid rounded-full size-4 place-items-center bg-word-gray"
+              className="grid size-4 place-items-center rounded-full bg-word-gray"
               onClick={setMonth}
             >
               <img src={x} />

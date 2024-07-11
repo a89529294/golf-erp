@@ -5,7 +5,7 @@ import { MainChart } from "@/pages/indoor-simulator/report/components/main-chart
 import { RightPanel } from "@/pages/indoor-simulator/report/components/right-panel";
 import { SitesList } from "@/pages/indoor-simulator/report/components/sites-list";
 import { SwitchButton } from "@/pages/indoor-simulator/report/components/switch-button";
-import { DetailedData, YearData } from "@/pages/indoor-simulator/report/loader";
+import { ReportData } from "@/pages/indoor-simulator/report/loader";
 import { SimulatorStoreWithSites } from "@/pages/store-management/loader";
 import { DataType } from "@/types-and-schemas/report";
 import { formatDateAsString, updateSearchParams } from "@/utils";
@@ -17,10 +17,7 @@ export function ReportContainer({
   data,
   stores,
 }: {
-  data: {
-    year: YearData;
-    detailed: DetailedData;
-  };
+  data: ReportData;
   stores: SimulatorStoreWithSites[];
 }) {
   const [activeDataType, setActiveDataType] =
@@ -64,7 +61,7 @@ export function ReportContainer({
 
   return (
     <div className="flex flex-col gap-2.5">
-      <nav className="self-center space-x-3 bg-transparent">
+      <nav className="space-x-3 self-center bg-transparent">
         <SwitchButton
           value="revenue"
           activeDataType={activeDataType}
@@ -86,7 +83,7 @@ export function ReportContainer({
             {rightPanelHeight && (
               <div
                 style={{ height: rightPanelHeight }}
-                className="flex flex-col flex-1 gap-2 p-4 bg-white rounded-md"
+                className="flex flex-1 flex-col gap-2 rounded-md bg-white p-4"
               >
                 <ChartStatsAndRange
                   setDay={setDay}

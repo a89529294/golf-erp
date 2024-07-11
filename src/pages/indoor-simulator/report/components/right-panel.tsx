@@ -1,7 +1,7 @@
 import { usePrevIntervalReportDataQuery } from "@/api/use-prev-interval-report-data-query";
 import { cn } from "@/lib/utils";
 import GraphNumberCell from "@/pages/indoor-simulator/report/components/graph-number-cell";
-import { DetailedData, YearData } from "@/pages/indoor-simulator/report/loader";
+import { ReportData } from "@/pages/indoor-simulator/report/loader";
 import { reportTimeRange } from "@/types-and-schemas/report";
 import { fromRangeStringToLastDateSetBy } from "@/utils";
 import React from "react";
@@ -12,10 +12,7 @@ const nf = new Intl.NumberFormat("en-us");
 export const RightPanel = React.forwardRef<
   HTMLDivElement,
   {
-    data: {
-      year: YearData;
-      detailed: DetailedData;
-    };
+    data: ReportData;
   }
 >(function ({ data }, ref) {
   const { storeId } = useParams();
@@ -43,9 +40,12 @@ export const RightPanel = React.forwardRef<
     ? (new Date().getFullYear() - 1).toString() + "年"
     : "";
   const firstCellAmount = isYear
-    ? Object.values(data.year).reduce((acc, val) => acc + val.totalAmount, 0)
+    ? Object.values(data.year).reduce(
+        (acc, val) => acc + (val.totalAmount ?? 0),
+        0,
+      )
     : Object.values(data.detailed).reduce(
-        (acc, val) => acc + val.totalAmount,
+        (acc, val) => acc + (val.totalAmount ?? 0),
         0,
       );
 
@@ -59,8 +59,8 @@ export const RightPanel = React.forwardRef<
     if (firstCellAmount === 0) return "+0%";
     if (secondCellAmount === 0) return "+∞%";
     return (
-      (amountDiff >= 0 ? "+" : "-") +
-      (amountDiff / secondCellAmount) * 100 +
+      (amountDiff > 0 ? "+" : "") +
+      Math.round((amountDiff / secondCellAmount) * 10000) / 100 +
       "%"
     );
   })();
@@ -100,11 +100,11 @@ export const RightPanel = React.forwardRef<
         secondary
       />
       {amountDiff >= 0 ? (
-        <div className="py-5 mt-4 text-3xl text-center rounded-md bg-line-green/10 text-line-green">
+        <div className="mt-4 rounded-md bg-line-green/10 py-5 text-center text-3xl text-line-green">
           +{nf.format(amountDiff)}
         </div>
       ) : (
-        <div className="py-5 mt-4 text-3xl text-center rounded-md bg-word-red/10 text-word-red">
+        <div className="mt-4 rounded-md bg-word-red/10 py-5 text-center text-3xl text-word-red">
           -{nf.format(amountDiff)}
         </div>
       )}

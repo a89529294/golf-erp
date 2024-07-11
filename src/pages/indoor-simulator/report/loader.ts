@@ -9,25 +9,15 @@ import { LoaderFunctionArgs } from "react-router-dom";
 import { z } from "zod";
 
 const objectSchema = z.object({
-  totalAmount: z.number(),
+  totalAmount: z
+    .number()
+    .nullable()
+    .transform((v) => v ?? 0),
   totalCount: z.number(),
-  storeSimulatorAppointments: z.record(
-    z.string(),
-    z.array(
-      // z.object({
-      //   id: z.string(),
-      //   startTime: z.coerce.date(),
-      //   endTime: z.coerce.date(),
-      //   amount: z.number(),
-      //   appUser: z.object({
-      //     id: z.string(),
-      //     chName: z.string(),
-      //     phone: z.string(),
-      //   }),
-      // }),
-      baseAppointmentSchema,
-    ),
-  ),
+  storeSimulatorAppointments: z
+    .record(z.string(), z.array(baseAppointmentSchema))
+    .optional()
+    .transform((v) => v ?? {}),
 });
 
 export const yearSchema = z.object({
@@ -43,8 +33,15 @@ export const yearSchema = z.object({
   10: objectSchema,
   11: objectSchema,
   12: objectSchema,
+  all: z.object({
+    totalAmount: z
+      .number()
+      .nullable()
+      .transform((v) => v ?? 0),
+    totalCount: z.number(),
+  }),
 });
-export type YearData = z.infer<typeof yearSchema>;
+export type YearData = Omit<z.infer<typeof yearSchema>, "all">;
 
 export const detailedSchema = z.record(z.string(), objectSchema);
 export type DetailedData = z.infer<typeof detailedSchema>;
@@ -82,11 +79,32 @@ export const genDataQuery = (storeId: string, startAt: Date, endAt: Date) => ({
     const detailedData = detailedSchema.parse(data[1]);
 
     return {
-      year: yearData,
-      detailed: detailedData,
+      total: yearData["all"],
+      year: {
+        1: yearData["1"],
+        2: yearData["2"],
+        3: yearData["3"],
+        4: yearData["4"],
+        5: yearData["5"],
+        6: yearData["6"],
+        7: yearData["7"],
+        8: yearData["8"],
+        9: yearData["9"],
+        10: yearData["10"],
+        11: yearData["11"],
+        12: yearData["12"],
+      },
+      detailed: Object.entries(detailedData).reduce((acc, value) => {
+        if (value[0] !== "all") acc[value[0]] = value[1];
+        return acc;
+      }, {} as DetailedData),
     };
   },
 });
+
+export type ReportData = Awaited<
+  ReturnType<ReturnType<typeof genDataQuery>["queryFn"]>
+>;
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
   // export async function loader() {

@@ -1,4 +1,4 @@
-import { DetailedData, YearData } from "@/pages/indoor-simulator/report/loader";
+import { ReportData } from "@/pages/indoor-simulator/report/loader";
 import { DataType, reportTimeRange } from "@/types-and-schemas/report";
 import { fromRangeStringToLastDateSetBy } from "@/utils";
 import Chart from "chart.js/auto";
@@ -12,10 +12,7 @@ export function MainChart({
   rightPanelHeight,
   activeDataType,
 }: {
-  data: {
-    year: YearData;
-    detailed: DetailedData;
-  };
+  data: ReportData;
   rightPanelHeight: number;
   activeDataType: DataType;
 }) {
