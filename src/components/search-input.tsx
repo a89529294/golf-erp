@@ -8,10 +8,12 @@ export function SearchInput({
   value,
   setValue,
   disabled,
+  className,
 }: {
   value: string;
   setValue: Dispatch<SetStateAction<string>>;
   disabled?: boolean;
+  className?: string;
 }) {
   const [isCursorOut, setIsCursorOut] = useState(true);
   const isActive = !isCursorOut ? true : !!value;
@@ -22,6 +24,7 @@ export function SearchInput({
         "flex h-11 cursor-pointer items-center gap-1 border  bg-light-gray px-3 ",
         value && isCursorOut && "border-[1.5px]",
         disabled && " cursor-not-allowed opacity-50",
+        className,
       )}
       animate={{
         width: isActive ? 250 : 46,

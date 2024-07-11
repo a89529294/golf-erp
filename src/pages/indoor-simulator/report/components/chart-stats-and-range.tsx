@@ -55,6 +55,9 @@ export function ChartStatsAndRange({
   );
   const percentage = Math.round(
     (() => {
+      if (totalRevenue === 0) return 0;
+      if (totalAppointmentCount === 0) return 0;
+
       if (activeDataType === "revenue") {
         if (isYearData) return yearTotalRevenue / totalRevenue;
         return rangeTotalRevenue / totalRevenue;

@@ -1,15 +1,13 @@
-import backIcon from "@/assets/back.svg";
-import { IconButton, IconWarningButton } from "@/components/ui/button";
-import { button } from "@/components/ui/button-cn";
 import { MainLayout } from "@/layouts/main-layout";
-import { linksKV } from "@/utils/links";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Link, useLoaderData, useParams } from "react-router-dom";
+import { useLoaderData, useParams } from "react-router-dom";
 import { z } from "zod";
 
 import { GenericDataTable } from "@/components/generic-data-table";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useIsMobile } from "@/hooks/use-is-mobile";
+import { DesktopMenubar } from "@/pages/member-management/components/desktop-menubar";
 import { filterObject } from "@/utils";
 import { privateFetch } from "@/utils/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -19,9 +17,10 @@ import { MemberForm } from "../components/member-form";
 import { memberFormSchema } from "../schemas";
 import { columns } from "./columns";
 import { genMemberDetailsQuery, loader } from "./loader";
-import { cn } from "@/lib/utils";
+import { MobileMenubar } from "@/pages/member-management/components/mobile-menubar";
 
 export function Component() {
+  const isMobile = useIsMobile();
   const { id } = useParams();
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
   const { data } = useQuery({
@@ -128,9 +127,7 @@ export function Component() {
     });
   }, [data, form]);
 
-  function onSubmit(values: z.infer<typeof memberFormSchema>) {
-    // do not remove
-    console.log(values);
+  function onSubmit() {
     mutate();
   }
 
@@ -138,75 +135,27 @@ export function Component() {
     <MainLayout
       headerChildren={
         <>
-          {disabled === true ? (
-            <Link
-              className={cn(
-                button(),
-                isUpdatingMemberStatus && "pointer-events-none opacity-50",
-              )}
-              to={linksKV["member-management"].paths["index"]}
-            >
-              <img src={backIcon} />
-              返回
-            </Link>
+          {isMobile ? (
+            <MobileMenubar
+              disabled={disabled}
+              isUpdatingMemberStatus={isUpdatingMemberStatus}
+              data={data}
+              form={form}
+              isPending={isPending}
+              setDisabled={setDisabled}
+              toggleMemberStatus={toggleMemberStatus}
+              onSubmit={onSubmit}
+            />
           ) : (
-            <IconWarningButton
-              type="button"
-              onClick={() => {
-                setDisabled(true);
-                form.reset();
-              }}
-              icon="redX"
-              disabled={isPending}
-            >
-              取消編輯
-            </IconWarningButton>
-          )}
-
-          {disabled &&
-            (data.isActive ? (
-              <IconWarningButton
-                disabled={isUpdatingMemberStatus}
-                onClick={() => toggleMemberStatus()}
-                icon="redX"
-              >
-                停權
-              </IconWarningButton>
-            ) : (
-              <IconButton
-                className="bg-secondary-purple/10 text-secondary-purple outline-secondary-purple"
-                icon="check"
-                onClick={() => toggleMemberStatus()}
-                disabled={isUpdatingMemberStatus}
-              >
-                恢復
-              </IconButton>
-            ))}
-
-          {disabled === true ? (
-            <IconButton
-              icon="pencil"
-              type="button"
-              onClick={(e) => {
-                e.preventDefault();
-                setDisabled(false);
-              }}
-              disabled={isUpdatingMemberStatus}
-            >
-              編輯
-            </IconButton>
-          ) : (
-            <IconButton
-              disabled={
-                Object.keys(form.formState.dirtyFields).length === 0 ||
-                isPending
-              }
-              icon="save"
-              type="submit"
-              form="member-form"
-            >
-              儲存
-            </IconButton>
+            <DesktopMenubar
+              disabled={disabled}
+              isUpdatingMemberStatus={isUpdatingMemberStatus}
+              data={data}
+              form={form}
+              isPending={isPending}
+              setDisabled={setDisabled}
+              toggleMemberStatus={toggleMemberStatus}
+            />
           )}
         </>
       }

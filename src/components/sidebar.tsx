@@ -22,7 +22,13 @@ import { ChevronDown } from "lucide-react";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { NavLink, useLocation, useNavigation } from "react-router-dom";
 
-export function Sidebar() {
+export function Sidebar({
+  className,
+  onLinkClick,
+}: {
+  className?: string;
+  onLinkClick?: () => void;
+}) {
   const { pathname } = useLocation();
   const prevLink = usePrevious(findLinkFromPathname(pathname));
   const [nextLinkPath, setNextLinkPath] = useState("");
@@ -68,7 +74,7 @@ export function Sidebar() {
     <Accordion
       type="single"
       collapsible
-      className="w-full"
+      className={cn("w-full", className)}
       defaultValue={(() => {
         const linkOnMount = findLinkFromPathname(pathname);
         if (!linkOnMount) return undefined;
@@ -88,6 +94,7 @@ export function Sidebar() {
           setNestedLinksClosed={setNestedLinksClosed}
           nextLinkPath={nextLinkPath}
           setNextLinkPath={setNextLinkPath}
+          onLinkClick={onLinkClick}
         />
       )}
       {isLinkAllowed(linksKV["system-management"]) && (
@@ -98,6 +105,7 @@ export function Sidebar() {
           setNestedLinksClosed={setNestedLinksClosed}
           nextLinkPath={nextLinkPath}
           setNextLinkPath={setNextLinkPath}
+          onLinkClick={onLinkClick}
         />
       )}
       {isLinkAllowed(linksKV["store-management"]) && (
@@ -108,6 +116,7 @@ export function Sidebar() {
           setNestedLinksClosed={setNestedLinksClosed}
           nextLinkPath={nextLinkPath}
           setNextLinkPath={setNextLinkPath}
+          onLinkClick={onLinkClick}
         />
       )}
       {isLinkAllowed(linksKV["indoor-simulator"]) && (
@@ -118,6 +127,7 @@ export function Sidebar() {
           setNestedLinksClosed={setNestedLinksClosed}
           nextLinkPath={nextLinkPath}
           setNextLinkPath={setNextLinkPath}
+          onLinkClick={onLinkClick}
         />
       )}
 
@@ -129,6 +139,7 @@ export function Sidebar() {
           setNestedLinksClosed={setNestedLinksClosed}
           nextLinkPath={nextLinkPath}
           setNextLinkPath={setNextLinkPath}
+          onLinkClick={onLinkClick}
         />
       )}
 
@@ -140,6 +151,7 @@ export function Sidebar() {
           setNestedLinksClosed={setNestedLinksClosed}
           nextLinkPath={nextLinkPath}
           setNextLinkPath={setNextLinkPath}
+          onLinkClick={onLinkClick}
         />
       )}
     </Accordion>
@@ -149,6 +161,7 @@ export function Sidebar() {
 function AccordionItemWrapper({
   link,
   setNestedLinksClosed,
+  onLinkClick,
 }: {
   link: NestedLink | MultipleLink;
   prevLink: NestedLink | MultipleLink | undefined;
@@ -156,6 +169,7 @@ function AccordionItemWrapper({
   setNestedLinksClosed: Dispatch<SetStateAction<boolean>>;
   setNextLinkPath: Dispatch<SetStateAction<string>>;
   nextLinkPath: string | null;
+  onLinkClick?: () => void;
 }) {
   const { user } = useAuth();
   const { pathname } = useLocation();
@@ -186,8 +200,13 @@ function AccordionItemWrapper({
 
   return (
     <AccordionItem value={path} className="overflow-hidden">
-      <AccordionTrigger asChild>
-        <NavLink to={path} className="relative block py-3 group pl-7">
+      <AccordionTrigger
+        asChild
+        onClick={() => {
+          if (link.type !== "nested" && onLinkClick) onLinkClick();
+        }}
+      >
+        <NavLink to={path} className="group relative block py-3 pl-7">
           {({ isPending }) => {
             let isPathPending = isPending;
 
@@ -239,7 +258,7 @@ function AccordionItemWrapper({
       </AccordionTrigger>
       {link.type === "nested" && (
         <AccordionContent
-          className="flex flex-col pt-1 bg-white"
+          className="flex flex-col bg-white pt-1"
           onAnimationEnd={() => {
             if (!pathname.startsWith(link.path)) setNestedLinksClosed(true);
           }}
@@ -276,6 +295,7 @@ function AccordionItemWrapper({
                 }}
                 key={path}
                 onClick={() => {
+                  onLinkClick && onLinkClick();
                   setInSameRouteGroup(sameRouteGroup(location.pathname, path));
                 }}
               >
