@@ -15,7 +15,13 @@ import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ReactElement, useState } from "react";
 import { toast } from "sonner";
-import { columns as userColumns } from "./columns";
+import {
+  columns as userColumns,
+  mobileColumns as mobileUserColumns,
+} from "./columns";
+import { useIsMobile } from "@/hooks/use-is-mobile";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Scrollbar } from "@radix-ui/react-scroll-area";
 
 // const newERPUserReturnSchema = z.object({
 //   user: userSchema,
@@ -31,6 +37,7 @@ export function AddPermissionModal({
   allUsers: AppPermissionUser[];
   featureId: string;
 }) {
+  const isMobile = useIsMobile();
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const [rowSelection, setRowSelection] = useState({});
@@ -79,24 +86,39 @@ export function AddPermissionModal({
               e.preventDefault();
               mutate();
             }}
-            className={cn(`flex h-[610px] w-[790px] flex-col pb-5`)}
+            className={cn(`flex h-[610px] w-[790px] flex-col  pb-5 sm:w-80`)}
           >
-            <DialogHeader className="relative isolate mb-5 block overflow-auto px-14">
+            <DialogHeader className="relative block mb-5 overflow-auto isolate px-14 sm:px-4">
               <EmployeesModalSearchHeader
                 globalFilter={globalFilter}
                 setGlobalFilter={setGlobalFilter}
                 selectedStoreId={selectedStoreId}
                 setSelectedStoreId={setSelectedStoreId}
               />
-              <ModalDataTable
-                columns={userColumns}
-                data={filteredUsers}
-                rowSelection={rowSelection}
-                setRowSelection={setRowSelection}
-                getRowId={(row) => row.employeeId}
-                globalFilter={globalFilter}
-                setGlobalFilter={setGlobalFilter}
-              />
+              {isMobile ? (
+                <ScrollArea className="overflow-auto sm:h-[417px] sm:w-72">
+                  <ModalDataTable
+                    columns={mobileUserColumns}
+                    data={filteredUsers}
+                    rowSelection={rowSelection}
+                    setRowSelection={setRowSelection}
+                    getRowId={(row) => row.employeeId}
+                    globalFilter={globalFilter}
+                    setGlobalFilter={setGlobalFilter}
+                  />
+                  <Scrollbar orientation="horizontal" />
+                </ScrollArea>
+              ) : (
+                <ModalDataTable
+                  columns={userColumns}
+                  data={filteredUsers}
+                  rowSelection={rowSelection}
+                  setRowSelection={setRowSelection}
+                  getRowId={(row) => row.employeeId}
+                  globalFilter={globalFilter}
+                  setGlobalFilter={setGlobalFilter}
+                />
+              )}
             </DialogHeader>
             <DialogFooter className="justify-center ">
               <TextButton

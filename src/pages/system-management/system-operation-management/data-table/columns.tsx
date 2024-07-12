@@ -40,21 +40,25 @@ export const columns: ColumnDef<UserWithEmployee>[] = [
   }),
   {
     accessorKey: "idNumber",
+    id: "idNumber",
     header: "編號",
     accessorFn: (user) => user.employee.idNumber,
   },
   {
     accessorKey: "chName",
+    id: "chName",
     header: "姓名",
     accessorFn: (user) => user.employee.chName,
   },
   {
     accessorKey: "telphone",
+    id: "telphone",
     header: "電話",
     accessorFn: (user) => user.employee.telphone,
   },
   {
     accessorKey: "storeCategory",
+    id: "storeCategory",
     header: "分類",
     accessorFn: (user) => {
       if (!user.employee.stores || !user.employee.stores[0]) return "";
@@ -64,6 +68,7 @@ export const columns: ColumnDef<UserWithEmployee>[] = [
     },
   },
   {
+    id: "storeName",
     accessorKey: "storeName",
     header: "廠商名稱",
     accessorFn: (user) => {
@@ -72,3 +77,20 @@ export const columns: ColumnDef<UserWithEmployee>[] = [
     },
   },
 ];
+
+export const mobileColumns = columns.map((c) => {
+  const sizeMap = {
+    select: 80,
+    password: 80,
+    idNumber: 120,
+    chName: 100,
+    telphone: 140,
+    storeCategory: 130,
+    storeName: 160,
+  } as Record<string, number>;
+
+  return {
+    ...c,
+    size: sizeMap[c.id!],
+  };
+});

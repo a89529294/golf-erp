@@ -16,19 +16,35 @@ export function Modal({
   children,
   onSubmit,
   title,
+  onModalClose,
 }: {
-  dialogTriggerChildren: ReactElement;
+  dialogTriggerChildren:
+    | ReactElement
+    | (({ setOpen }: { setOpen: (arg: boolean) => void }) => ReactNode);
   children?: ReactNode;
   onSubmit: () => void | Promise<void>;
   title?: string;
+  onModalClose?: () => void;
 }) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [disabled, setDisabled] = useState(false);
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>{dialogTriggerChildren}</DialogTrigger>
+    <Dialog
+      open={open}
+      onOpenChange={(open) => {
+        setOpen(open);
+
+        console.log(open);
+        onModalClose && !open && onModalClose();
+      }}
+    >
+      <DialogTrigger asChild>
+        {typeof dialogTriggerChildren === "function"
+          ? dialogTriggerChildren({ setOpen })
+          : dialogTriggerChildren}
+      </DialogTrigger>
 
       <DialogContent>
         <form
@@ -63,6 +79,7 @@ export function Modal({
               form="xx"
               loading={loading}
               disabled={loading}
+              onClick={() => onModalClose && onModalClose()}
             >
               確定
             </TextButton>

@@ -74,8 +74,8 @@ export function Component() {
   return (
     <MainLayout>
       <div className="mb-2.5 flex-1 border border-line-gray bg-light-gray">
-        <div className="p-5 ">
-          <header className="flex justify-between py-4 pl-5">
+        <div className="p-5 sm:p-1">
+          <header className="flex justify-between py-4 pl-5 sm:pr-5">
             <h1 className="font-medium">輪播圖設定</h1>
             <label
               className={cn(
@@ -105,10 +105,10 @@ export function Component() {
               >
                 <img
                   src={img.data}
-                  className="h-full w-full border border-line-gray object-contain"
+                  className="object-contain w-full h-full border border-line-gray"
                 />
                 <button
-                  className="absolute right-0 top-0 -translate-y-1/2 translate-x-1/2 rounded-full border border-line-red bg-white"
+                  className="absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 bg-white border rounded-full border-line-red"
                   onClick={() => onRemoveBanner(img.name)}
                 >
                   <img src={redXIcon} />
@@ -116,7 +116,7 @@ export function Component() {
               </li>
             ))}
             {data.length === 0 && (
-              <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-word-gray">
+              <div className="absolute -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2 text-word-gray">
                 尚未新增圖片
               </div>
             )}

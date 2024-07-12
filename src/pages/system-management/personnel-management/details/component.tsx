@@ -1,8 +1,10 @@
 import { Form } from "@/components/ui/form";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 
 import { MainLayout } from "@/layouts/main-layout";
 import { storesQuery } from "@/pages/store-management/loader";
 import { DetailsDesktopMenubar } from "@/pages/system-management/personnel-management/components/details-desktop-menubar";
+import { DetailsMobileMenubar } from "@/pages/system-management/personnel-management/components/details-mobile-menubar";
 import { EmployeeFormField } from "@/pages/system-management/personnel-management/components/employee-form-field";
 import { EmployeeFormSelectField } from "@/pages/system-management/personnel-management/components/employee-form-select-field";
 import { formSchema } from "@/pages/system-management/personnel-management/components/schemas";
@@ -34,6 +36,7 @@ import { z } from "zod";
 
 // TODO fix flickering when selecting clear store option
 export function Component() {
+  const isMobile = useIsMobile();
   const queryClient = useQueryClient();
   const [disabled, setDisabled] = useState(true);
   const submit = useSubmit();
@@ -135,24 +138,45 @@ export function Component() {
   return (
     <MainLayout
       headerChildren={
-        <DetailsDesktopMenubar
-          setDisabled={setDisabled}
-          disabled={disabled}
-          isBasicInfoDirty={isBasicInfoDirty}
-          isCategoryStoreDirty={isCategoryStoreDirty}
-          isMutating={isMutating}
-          employeeName={employee.chName}
-          onDeleteEmployee={deleteEmployee}
-          onSubmit={() => {
-            setDisabled(true);
-            form.reset();
-            setStoreOptions(
-              toValueLabelArray(
-                stores[employee.stores?.[0]?.category ?? storeCategories[0]],
-              ),
-            );
-          }}
-        />
+        !isMobile ? (
+          <DetailsDesktopMenubar
+            setDisabled={setDisabled}
+            disabled={disabled}
+            isBasicInfoDirty={isBasicInfoDirty}
+            isCategoryStoreDirty={isCategoryStoreDirty}
+            isMutating={isMutating}
+            employeeName={employee.chName}
+            onDeleteEmployee={deleteEmployee}
+            onSubmit={() => {
+              setDisabled(true);
+              form.reset();
+              setStoreOptions(
+                toValueLabelArray(
+                  stores[employee.stores?.[0]?.category ?? storeCategories[0]],
+                ),
+              );
+            }}
+          />
+        ) : (
+          <DetailsMobileMenubar
+            setDisabled={setDisabled}
+            disabled={disabled}
+            isBasicInfoDirty={isBasicInfoDirty}
+            isCategoryStoreDirty={isCategoryStoreDirty}
+            isMutating={isMutating}
+            employeeName={employee.chName}
+            onDeleteEmployee={deleteEmployee}
+            onSubmit={() => {
+              setDisabled(true);
+              form.reset();
+              setStoreOptions(
+                toValueLabelArray(
+                  stores[employee.stores?.[0]?.category ?? storeCategories[0]],
+                ),
+              );
+            }}
+          />
+        )
       }
     >
       <div className="mb-2.5 w-full border border-line-gray p-1">

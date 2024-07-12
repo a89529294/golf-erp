@@ -17,7 +17,7 @@ export function NumberInput({
       <Input
         type="text"
         className={cn(
-          "peer w-36 border-2 border-line-gray bg-light-gray text-center focus:border-orange disabled:border-0 disabled:opacity-100",
+          "peer w-36 border-2 border-line-gray bg-light-gray text-center focus:border-orange disabled:border-0 disabled:opacity-100 sm:w-20",
           className,
         )}
         ref={myRef}

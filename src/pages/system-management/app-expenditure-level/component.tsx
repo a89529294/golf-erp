@@ -6,7 +6,7 @@ import {
   IconShortButton,
   IconShortWarningButton,
 } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { MainLayout } from "@/layouts/main-layout";
 import { cn } from "@/lib/utils";
 import {
@@ -21,7 +21,6 @@ import {
   Dispatch,
   useEffect,
   useId,
-  useLayoutEffect,
   useReducer,
   useRef,
   useState,
@@ -55,28 +54,14 @@ export function Component() {
     sections[level.category].push(newLevel);
   });
 
-  const ref = useRef<HTMLDivElement>(null);
-  const [containerHeight, setContainerHeight] = useState(0);
-
-  useLayoutEffect(() => {
-    if (!ref.current) return;
-
-    const cb = () =>
-      setContainerHeight(ref.current?.getBoundingClientRect().height ?? 0);
-    cb();
-
-    window.addEventListener("resize", cb);
-    return () => window.removeEventListener("resize", cb);
-  }, []);
-
   return (
     <MainLayout>
-      <div className="w-full self-stretch " ref={ref}>
-        <ScrollArea
-          style={{ height: `${containerHeight - 10}px` }}
-          className="mb-2.5 border border-line-gray bg-light-gray p-5"
-        >
-          {containerHeight ? (
+      {({ height }) => {
+        return (
+          <ScrollArea
+            style={{ height: `${height - 10}px` }}
+            className="mb-2.5 w-full border border-line-gray bg-light-gray p-5"
+          >
             <div className="flex flex-col gap-5 ">
               {(Object.entries(sections) as [StoreCategory, Level[]][]).map(
                 ([category, levels]) => {
@@ -90,9 +75,10 @@ export function Component() {
                 },
               )}
             </div>
-          ) : null}
-        </ScrollArea>
-      </div>
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
+        );
+      }}
     </MainLayout>
   );
 }
@@ -246,7 +232,7 @@ function Section({
         <label className="block px-6 py-5">
           <input
             type="checkbox"
-            className="peer hidden"
+            className="hidden peer"
             checked={
               selectedLevels.length === levels.length && levels.length !== 0
             }
@@ -262,7 +248,7 @@ function Section({
         {selectedLevels.length > 0 && (
           <IconShortWarningButton
             icon="minus"
-            className={cn("ml-auto", deletingLevels && "opacity-50")}
+            className={cn("ml-auto sm:ml-6", deletingLevels && "opacity-50")}
             onClick={() =>
               dispatch({
                 type: "prep-delete-levels",
@@ -286,7 +272,7 @@ function Section({
           icon="plus"
           className={cn(
             "mr-px",
-            selectedLevels.length === 0 && "ml-auto",
+            selectedLevels.length === 0 && "ml-6",
             deletingLevels && "opacity-50",
           )}
           disabled={isSomeLevelBeingEdited || deletingLevels}
@@ -353,7 +339,7 @@ function Li({
       <label className="block px-6 py-6">
         <input
           type="checkbox"
-          className="peer hidden"
+          className="hidden peer"
           checked={selected}
           onChange={() => {
             toggleSelected(level.id);
@@ -381,8 +367,8 @@ function Li({
         className="flex items-center gap-2.5"
         id={formId}
       >
-        消費級距
-        <div className="isolate flex items-center">
+        <span className="whitespace-nowrap">消費級距</span>
+        <div className="flex items-center isolate">
           <div className="relative">
             <NumberInput
               autoFocus={autoFocusMinConsumption}
@@ -409,13 +395,13 @@ function Li({
               )}
             />
             {level.errorState?.field === "minConsumption" && (
-              <p className="absolute bottom-0 translate-y-full whitespace-nowrap text-sm text-red-600">
+              <p className="absolute bottom-0 text-sm text-red-600 translate-y-full whitespace-nowrap">
                 {level.errorState?.msg}
               </p>
             )}
           </div>
 
-          <div className="black-circles-before-after relative z-10 h-px w-4 bg-secondary-dark"></div>
+          <div className="relative z-10 w-4 h-px black-circles-before-after bg-secondary-dark"></div>
 
           <div className="relative">
             <NumberInput
@@ -443,14 +429,14 @@ function Li({
               myRef={maxConsumptionRef}
             />
             {level.errorState?.field === "maxConsumption" && (
-              <p className="absolute bottom-0 translate-y-full whitespace-nowrap text-sm text-red-600">
+              <p className="absolute bottom-0 text-sm text-red-600 translate-y-full whitespace-nowrap">
                 {level.errorState?.msg}
               </p>
             )}
           </div>
 
           <div className="ml-12 flex items-center gap-2.5">
-            <label>開放預定天數</label>
+            <label className="whitespace-nowrap">開放預定天數</label>
             <NumberInput
               disabled={level.disabled}
               value={level.canAppointDays}
@@ -492,14 +478,14 @@ function Li({
       )}
 
       {!level.disabled && (
-        <div className="ml-auto flex gap-4">
+        <div className="flex gap-4 ml-auto sm:w-10 sm:gap-1">
           <button
             type="submit"
             form={formId}
             disabled={!!level.saveToDb}
             className="disabled:opacity-50"
           >
-            <img src={greenFileIcon} />
+            <img src={greenFileIcon} className="size-5" />
           </button>
           <button
             onClick={() =>
@@ -511,7 +497,7 @@ function Li({
             disabled={!!level.saveToDb}
             className="disabled:opacity-50"
           >
-            <img src={redXIcon} />
+            <img src={redXIcon} className="size-5" />
           </button>
         </div>
       )}

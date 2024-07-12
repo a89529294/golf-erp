@@ -59,7 +59,7 @@ export function EmployeeFormSelectField({
                 <FormControl>
                   <SelectTrigger
                     className={cn(
-                      "h-7 w-60 rounded-none border-0 border-b border-b-secondary-dark focus:border-b-[1.5px] focus:border-b-orange",
+                      "h-7 w-60 rounded-none border-0 border-b border-b-secondary-dark text-left focus:border-b-[1.5px] focus:border-b-orange sm:w-40",
                       field.value && "border-b-orange",
                     )}
                   >

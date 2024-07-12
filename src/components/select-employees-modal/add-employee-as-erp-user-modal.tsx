@@ -16,8 +16,13 @@ import { userSchema } from "@/pages/system-management/system-operation-managemen
 import { PasswordModalContent } from "@/pages/system-management/system-operation-management/password-modal/modal-content";
 import { Employee } from "@/pages/system-management/personnel-management/loader";
 import { ModalDataTable } from "@/components/select-employees-modal/data-table";
-import { columns as employeeColumns } from "./columns";
+import {
+  columns as employeeColumns,
+  mobileColumns as mobileEmployeeColumns,
+} from "./columns";
 import { EmployeesModalSearchHeader } from "@/components/employees-modal-search-header";
+import { ScrollArea, Scrollbar } from "@radix-ui/react-scroll-area";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 
 const newERPUserReturnSchema = z.object({
   user: userSchema,
@@ -31,6 +36,7 @@ export function AddEmployeeAsERPUserModal({
   dialogTriggerChildren: ReactElement;
   employees: Employee[];
 }) {
+  const isMobile = useIsMobile();
   const queryClient = useQueryClient();
   const [password, setPassword] = useState("");
   const [newERPUserChName, setNewERPUserChName] = useState("");
@@ -98,23 +104,37 @@ export function AddEmployeeAsERPUserModal({
               e.preventDefault();
               mutate();
             }}
-            className={cn(`flex h-[610px] w-[790px] flex-col pb-5`)}
+            className={cn(`flex h-[610px] w-[790px] flex-col pb-5 sm:w-80`)}
           >
-            <DialogHeader className="relative isolate mb-5 block overflow-auto px-14">
+            <DialogHeader className="relative block mb-5 overflow-auto isolate px-14 sm:overflow-hidden sm:px-4">
               <EmployeesModalSearchHeader
                 globalFilter={globalFilter}
                 setGlobalFilter={setGlobalFilter}
                 selectedStoreId={selectedStoreId}
                 setSelectedStoreId={setSelectedStoreId}
               />
-              <ModalDataTable
-                columns={employeeColumns}
-                data={filteredEmployees}
-                rowSelection={rowSelection}
-                setRowSelection={setRowSelection}
-                globalFilter={globalFilter}
-                setGlobalFilter={setGlobalFilter}
-              />
+              {isMobile ? (
+                <ScrollArea className="overflow-auto sm:h-[417px] sm:w-72">
+                  <ModalDataTable
+                    columns={mobileEmployeeColumns}
+                    data={filteredEmployees}
+                    rowSelection={rowSelection}
+                    setRowSelection={setRowSelection}
+                    globalFilter={globalFilter}
+                    setGlobalFilter={setGlobalFilter}
+                  />
+                  <Scrollbar orientation="horizontal" />
+                </ScrollArea>
+              ) : (
+                <ModalDataTable
+                  columns={employeeColumns}
+                  data={filteredEmployees}
+                  rowSelection={rowSelection}
+                  setRowSelection={setRowSelection}
+                  globalFilter={globalFilter}
+                  setGlobalFilter={setGlobalFilter}
+                />
+              )}
             </DialogHeader>
             <DialogFooter className="justify-center ">
               <TextButton

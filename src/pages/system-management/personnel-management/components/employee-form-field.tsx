@@ -36,7 +36,7 @@ export function EmployeeFormField({
             <FormControl>
               <Input
                 className={cn(
-                  "h-7 w-60 rounded-none border-0 border-b border-b-secondary-dark focus-visible:border-b-[1.5px] focus-visible:border-b-orange",
+                  "h-7 w-60 rounded-none border-0 border-b border-b-secondary-dark focus-visible:border-b-[1.5px] focus-visible:border-b-orange sm:w-40",
                   field.value && "border-b-orange",
                 )}
                 placeholder={`請輸入${label}`}

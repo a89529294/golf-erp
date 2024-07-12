@@ -2,20 +2,20 @@ import {
   IconShortButton,
   IconShortWarningButton,
 } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { MainLayout } from "@/layouts/main-layout";
+import { cn } from "@/lib/utils";
+import { AddPermissionModal } from "@/pages/system-management/app-permission-management/add-permission-modal/modal";
 import {
   AppPermissionUser,
   erpFeaturesWithUsersQuery,
 } from "@/pages/system-management/app-permission-management/loader";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useLayoutEffect, useRef, useState } from "react";
-import { useActionData } from "react-router-dom";
-import { loader } from "./loader";
-import { AddPermissionModal } from "@/pages/system-management/app-permission-management/add-permission-modal/modal";
-import { cn } from "@/lib/utils";
 import { privateFetch } from "@/utils/utils";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+import { useActionData } from "react-router-dom";
 import { toast } from "sonner";
+import { loader } from "./loader";
 
 export function Component() {
   const initialData = useActionData() as Awaited<ReturnType<typeof loader>>;
@@ -25,29 +25,15 @@ export function Component() {
   });
   // const allUsersWithoutCurrentPermission = (currentPermission:sting)=>data['all-users']
 
-  const ref = useRef<HTMLDivElement>(null);
-  const [containerHeight, setContainerHeight] = useState(0);
-
-  useLayoutEffect(() => {
-    if (!ref.current) return;
-
-    const cb = () =>
-      setContainerHeight(ref.current?.getBoundingClientRect().height ?? 0);
-    cb();
-
-    window.addEventListener("resize", cb);
-    return () => window.removeEventListener("resize", cb);
-  }, []);
-
   return (
     <MainLayout>
-      <div className="w-full self-stretch" ref={ref}>
-        <ScrollArea
-          style={{ height: `${containerHeight - 10}px` }}
-          className="mb-2.5 border border-line-gray bg-light-gray px-5 py-12"
-        >
-          {containerHeight ? (
-            <div className="flex h-full flex-col gap-5">
+      {({ height }) => {
+        return (
+          <ScrollArea
+            style={{ height: `${height - 10}px` }}
+            className="mb-2.5 w-full border border-line-gray bg-light-gray px-5 py-12"
+          >
+            <div className="flex flex-col h-full gap-5">
               {data.erpFeaturesWithUsers.map((feature) => (
                 <Section
                   key={feature.featureId}
@@ -63,9 +49,10 @@ export function Component() {
                 />
               ))}
             </div>
-          ) : null}
-        </ScrollArea>
-      </div>
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
+        );
+      }}
     </MainLayout>
   );
 }
@@ -111,7 +98,7 @@ function Section({
         <label className="px-6 py-5">
           <input
             type="checkbox"
-            className="peer hidden"
+            className="hidden peer"
             checked={users.length === rowSelection.size && users.length > 0}
             onChange={(e) => {
               if (e.target.checked)
@@ -159,7 +146,7 @@ function Section({
               <label className="block px-6 py-5">
                 <input
                   type="checkbox"
-                  className="peer hidden"
+                  className="hidden peer"
                   checked={rowSelection.has(user.employeeId)}
                   onChange={(e) => {
                     if (e.target.checked) {
@@ -179,11 +166,19 @@ function Section({
                 />
                 <div className="grid h-3 w-3 place-items-center border border-line-gray before:hidden before:h-1.5 before:w-1.5 before:bg-orange peer-checked:border-secondary-dark peer-checked:before:block" />
               </label>
-              <div className="mr-14 w-28">{user.idNumber}</div>
-              <div className="mr-20 w-28">{user.chName}</div>
-              <div className="mr-14 w-28">{user.telphone}</div>
-              <div className="mr-20 w-28">{user.storeCategory}</div>
-              <div>{user.store?.name}</div>
+              <div className="mr-14 w-28 sm:w-14 sm:shrink-0">
+                {user.idNumber}
+              </div>
+              <div className="mr-20 w-28 sm:mr-5 sm:w-14 sm:shrink-0">
+                {user.chName}
+              </div>
+              <div className="mr-14 w-28 sm:w-14 sm:shrink-0">
+                {user.telphone}
+              </div>
+              <div className="mr-20 w-28 sm:mr-5 sm:w-20 sm:shrink-0">
+                {user.storeCategory}
+              </div>
+              <div className="sm:w-28">{user.store?.name}</div>
             </li>
           ))
         ) : (
@@ -194,4 +189,34 @@ function Section({
       </ul>
     </section>
   );
+}
+
+{
+  /* <MainLayout>
+      <div className="self-stretch w-full" ref={ref}>
+        <ScrollArea
+          style={{ height: `${containerHeight - 10}px` }}
+          className="mb-2.5 border border-line-gray bg-light-gray px-5 py-12"
+        >
+          {containerHeight ? (
+            <div className="flex flex-col h-full gap-5">
+              {data.erpFeaturesWithUsers.map((feature) => (
+                <Section
+                  key={feature.featureId}
+                  title={feature.featureName}
+                  users={feature.users}
+                  allUsers={data.allUsers.filter(
+                    (user) =>
+                      !feature.users.find(
+                        (erpUser) => erpUser.idNumber === user.idNumber,
+                      ),
+                  )}
+                  featureId={feature.featureId}
+                />
+              ))}
+            </div>
+          ) : null}
+        </ScrollArea>
+      </div>
+    </MainLayout> */
 }

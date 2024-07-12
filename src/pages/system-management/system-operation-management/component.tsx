@@ -3,7 +3,10 @@ import { SearchInput } from "@/components/search-input";
 import { IconButton, IconWarningButton } from "@/components/ui/button";
 import { MainLayout } from "@/layouts/main-layout";
 
-import { columns } from "@/pages/system-management/system-operation-management/data-table/columns";
+import {
+  columns,
+  mobileColumns,
+} from "@/pages/system-management/system-operation-management/data-table/columns";
 import { DataTable } from "@/pages/system-management/system-operation-management/data-table/data-table";
 import {
   loader,
@@ -16,8 +19,11 @@ import { useLoaderData } from "react-router-dom";
 import { genEmployeesQuery } from "@/pages/system-management/personnel-management/loader";
 import { AddEmployeeAsERPUserModal } from "@/components/select-employees-modal/add-employee-as-erp-user-modal";
 import { toast } from "sonner";
+import { useIsMobile } from "@/hooks/use-is-mobile";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 export function Component() {
+  const isMobile = useIsMobile();
   const [rowSelection, setRowSelection] = useState({});
   const [globalFilter, setGlobalFilter] = useState("");
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
@@ -65,25 +71,51 @@ export function Component() {
               onSubmit={mutateAsync}
               title="確定移除選取員工系統權限?"
             />
-          ) : null}
-          <AddEmployeeAsERPUserModal
-            dialogTriggerChildren={
-              <IconButton icon="plus">新增系統操作人員</IconButton>
-            }
-            employees={employees}
+          ) : (
+            <AddEmployeeAsERPUserModal
+              dialogTriggerChildren={
+                <IconButton icon="plus" className="sm:text-sm">
+                  新增系統{!isMobile && "操作"}人員
+                </IconButton>
+              }
+              employees={employees}
+            />
+          )}
+
+          <SearchInput
+            className="sm:hidden"
+            value={globalFilter}
+            setValue={setGlobalFilter}
           />
-          <SearchInput value={globalFilter} setValue={setGlobalFilter} />
         </>
       }
     >
-      <DataTable
-        columns={columns}
-        data={users}
-        rowSelection={rowSelection}
-        setRowSelection={setRowSelection}
-        globalFilter={globalFilter}
-        setGlobalFilter={setGlobalFilter}
-      />
+      {isMobile ? (
+        ({ height }) => {
+          return (
+            <ScrollArea className="" style={{ height }}>
+              <DataTable
+                columns={mobileColumns}
+                data={users}
+                rowSelection={rowSelection}
+                setRowSelection={setRowSelection}
+                globalFilter={globalFilter}
+                setGlobalFilter={setGlobalFilter}
+              />
+              <ScrollBar orientation="horizontal" />
+            </ScrollArea>
+          );
+        }
+      ) : (
+        <DataTable
+          columns={columns}
+          data={users}
+          rowSelection={rowSelection}
+          setRowSelection={setRowSelection}
+          globalFilter={globalFilter}
+          setGlobalFilter={setGlobalFilter}
+        />
+      )}
     </MainLayout>
   );
 }
