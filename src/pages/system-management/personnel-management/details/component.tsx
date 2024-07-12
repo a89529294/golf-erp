@@ -1,34 +1,26 @@
-import { IconButton, IconWarningButton } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Form } from "@/components/ui/form";
 
-import { Modal } from "@/components/modal";
-import { Input } from "@/components/ui/input";
 import { MainLayout } from "@/layouts/main-layout";
-import { cn } from "@/lib/utils";
 import { storesQuery } from "@/pages/store-management/loader";
+import { DetailsDesktopMenubar } from "@/pages/system-management/personnel-management/components/details-desktop-menubar";
+import { EmployeeFormField } from "@/pages/system-management/personnel-management/components/employee-form-field";
+import { EmployeeFormSelectField } from "@/pages/system-management/personnel-management/components/employee-form-select-field";
+import { formSchema } from "@/pages/system-management/personnel-management/components/schemas";
 import {
   genEmployeeQuery,
   loader,
 } from "@/pages/system-management/personnel-management/details/loader";
-import { StoreCategory, storeCategories, storeCategoryMap } from "@/utils";
+import {
+  StoreCategory,
+  storeCategories,
+  storeCategoryMap,
+  toValueLabelArray,
+} from "@/utils";
+import { privateFetch } from "@/utils/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { UseFormReturn, useForm, useWatch } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import {
   useLoaderData,
   useLocation,
@@ -37,23 +29,8 @@ import {
   useSearchParams,
   useSubmit,
 } from "react-router-dom";
-import { z } from "zod";
-import { privateFetch } from "@/utils/utils";
 import { toast } from "sonner";
-
-const toValueLabelArray = (obj: { name: string; id: string }[]) => {
-  const options: Record<string, string> = {};
-  obj.forEach((s) => (options[s.id] = s.name));
-  return options;
-};
-
-const formSchema = z.object({
-  idNumber: z.string().min(1, { message: "請填入編號" }),
-  name: z.string().min(1, { message: "請填入姓名" }),
-  phoneno: z.string().min(1, { message: "請填入電話" }),
-  category: z.enum(storeCategories),
-  storeId: z.union([z.string(), z.undefined()]),
-});
+import { z } from "zod";
 
 // TODO fix flickering when selecting clear store option
 export function Component() {
@@ -158,80 +135,24 @@ export function Component() {
   return (
     <MainLayout
       headerChildren={
-        <>
-          {isBasicInfoDirty || isCategoryStoreDirty ? (
-            <Modal
-              dialogTriggerChildren={
-                <IconWarningButton icon="redX" disabled={isMutating}>
-                  取消編輯
-                </IconWarningButton>
-              }
-              onSubmit={() => {
-                setDisabled(true);
-                form.reset();
-                setStoreOptions(
-                  toValueLabelArray(
-                    stores[
-                      employee.stores?.[0]?.category ?? storeCategories[0]
-                    ],
-                  ),
-                );
-              }}
-            >
-              資料尚未儲存，是否返回？
-            </Modal>
-          ) : disabled ? (
-            <IconButton
-              disabled={isMutating}
-              icon="back"
-              onClick={() =>
-                navigate("/system-management/personnel-management")
-              }
-            >
-              返回
-            </IconButton>
-          ) : (
-            <IconWarningButton icon="redX" onClick={() => setDisabled(true)}>
-              取消編輯
-            </IconWarningButton>
-          )}
-          {disabled ? (
-            <>
-              <Modal
-                dialogTriggerChildren={
-                  <IconWarningButton icon="redX">刪除</IconWarningButton>
-                }
-                onSubmit={deleteEmployee}
-              >
-                確認刪除{employee.chName}?
-              </Modal>
-              <IconButton
-                type="button"
-                icon="pencil"
-                onClick={(e) => {
-                  // necessary to prevent the save button from firing
-                  e.nativeEvent.stopImmediatePropagation();
-                  setTimeout(() => {
-                    setDisabled(false);
-                  }, 0);
-                }}
-                // key="edit-btn"
-              >
-                編輯
-              </IconButton>
-            </>
-          ) : (
-            <IconButton
-              disabled={
-                isMutating || !(isBasicInfoDirty || isCategoryStoreDirty)
-              }
-              icon="save"
-              form="new-employee-form"
-            >
-              儲存
-            </IconButton>
-          )}
-        </>
+        <DetailsDesktopMenubar
+          setDisabled={setDisabled}
+          disabled={disabled}
+          isBasicInfoDirty={isBasicInfoDirty}
+          isCategoryStoreDirty={isCategoryStoreDirty}
+          isMutating={isMutating}
+          employeeName={employee.chName}
+          onDeleteEmployee={deleteEmployee}
+          onSubmit={() => {
+            setDisabled(true);
+            form.reset();
+            setStoreOptions(
+              toValueLabelArray(
+                stores[employee.stores?.[0]?.category ?? storeCategories[0]],
+              ),
+            );
+          }}
+        />
       }
     >
       <div className="mb-2.5 w-full border border-line-gray p-1">
@@ -242,7 +163,7 @@ export function Component() {
             onSubmit={form.handleSubmit(onSubmit)}
             className="flex flex-col items-center pt-12"
           >
-            <section className="flex w-fit flex-col gap-6 border border-line-gray px-16 pb-10">
+            <section className="flex flex-col gap-6 px-16 pb-10 border w-fit border-line-gray">
               <div className="-mx-16 mb-4 bg-light-gray py-1.5 text-center text-black">
                 基本資料
               </div>
@@ -265,7 +186,7 @@ export function Component() {
                 disabled={disabled || isMutating}
               />
             </section>
-            <section className="flex w-fit flex-col gap-6 border border-line-gray px-16 pb-10">
+            <section className="flex flex-col gap-6 px-16 pb-10 border w-fit border-line-gray">
               <div className="-mx-16 bg-light-gray py-1.5 text-center text-black">
                 綁定廠商
               </div>
@@ -298,111 +219,5 @@ export function Component() {
         </Form>
       </div>
     </MainLayout>
-  );
-}
-
-function EmployeeFormField({
-  form,
-  name,
-  label,
-
-  disabled,
-}: {
-  form: UseFormReturn<z.infer<typeof formSchema>, unknown, undefined>;
-  name: keyof z.infer<typeof formSchema>;
-  label: string;
-
-  disabled: boolean;
-}) {
-  return (
-    <FormField
-      control={form.control}
-      name={name}
-      render={({ field }) => (
-        <FormItem className="flex flex-col gap-1">
-          <div className="flex items-baseline gap-7">
-            <FormLabel required>{label}</FormLabel>
-            <FormControl>
-              <Input
-                className={cn(
-                  "h-7 w-60 rounded-none border-0 border-b border-b-secondary-dark focus-visible:border-b-[1.5px] focus-visible:border-b-orange",
-                  field.value && "border-b-orange",
-                )}
-                placeholder={`請輸入${label}`}
-                {...field}
-                disabled={disabled}
-              />
-            </FormControl>
-          </div>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-  );
-}
-
-function EmployeeFormSelectField({
-  form,
-  name,
-  label,
-  options,
-  disabled,
-  onChange,
-}: {
-  form: UseFormReturn<z.infer<typeof formSchema>, unknown, undefined>;
-  name: keyof z.infer<typeof formSchema>;
-  label: string;
-  options: Record<string, string>;
-  disabled: boolean;
-  onChange?: (v: string) => void;
-}) {
-  return (
-    <FormField
-      control={form.control}
-      name={name}
-      render={({ field }) => {
-        return (
-          <FormItem className="flex flex-col gap-1">
-            <div className="flex items-baseline gap-7">
-              <FormLabel>{label}</FormLabel>
-              <Select
-                disabled={disabled}
-                onValueChange={(v) => {
-                  if (v === "reset") {
-                    // setSelectKey(selectKey + 1);
-                    field.onChange("");
-                    onChange && onChange("");
-                  } else {
-                    field.onChange(v);
-                    onChange && onChange(v);
-                  }
-                }}
-                value={field.value}
-                // key={selectKey}
-              >
-                <FormControl>
-                  <SelectTrigger
-                    className={cn(
-                      "h-7 w-60 rounded-none border-0 border-b border-b-secondary-dark focus:border-b-[1.5px] focus:border-b-orange",
-                      field.value && "border-b-orange",
-                    )}
-                  >
-                    <SelectValue placeholder={`選擇${label}`} />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {Object.entries(options).map(([value, label]) => (
-                    <SelectItem value={value} key={value}>
-                      {label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <FormMessage />
-          </FormItem>
-        );
-      }}
-    />
   );
 }

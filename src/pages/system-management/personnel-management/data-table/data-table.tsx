@@ -16,6 +16,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Dispatch, SetStateAction } from "react";
+import { cn } from "@/lib/utils";
 
 declare module "@tanstack/react-table" {
   interface FilterFns {
@@ -70,17 +71,24 @@ export function DataTable<TData extends { id: string }, TValue>({
   });
 
   return (
-    <div className="mb-2.5 w-full border border-line-gray">
-      <Table className="relative isolate">
+    <div className="mb-2.5 w-full border border-line-gray ">
+      <Table className="relative isolate sm:table-fixed">
         <TableHeader className="relative z-10">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id} className="">
               {headerGroup.headers.map((header) => {
+                console.log(header.getSize());
                 return (
                   <TableHead
                     key={header.id}
                     // height of header 80 plus gap 10
-                    className="sticky top-[90px] bg-light-gray hover:bg-light-gray"
+                    className={cn(
+                      "sticky top-[90px] w-full bg-light-gray hover:bg-light-gray sm:top-0",
+                    )}
+                    style={{
+                      width:
+                        header.getSize() !== 150 ? header.getSize() : "auto",
+                    }}
                   >
                     {header.isPlaceholder
                       ? null

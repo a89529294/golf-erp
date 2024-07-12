@@ -49,7 +49,9 @@ export function Modal({
 
             e.stopPropagation();
           }}
-          className={cn(`flex h-[190px] w-[400px] flex-col items-center pb-5`)}
+          className={cn(
+            `flex h-[190px] w-[400px] flex-col items-center pb-5 sm:w-72`,
+          )}
         >
           <DialogHeader className="">
             <DialogTitle>{title}</DialogTitle>

@@ -224,3 +224,9 @@ export function fromRangeStringToLastDateSetBy(
 export function roundUpToOneDecimalPlace(num: number) {
   return Math.round(num * 10) / 10;
 }
+
+export const toValueLabelArray = (obj: { name: string; id: string }[]) => {
+  const options: Record<string, string> = {};
+  obj.forEach((s) => (options[s.id] = s.name));
+  return options;
+};
