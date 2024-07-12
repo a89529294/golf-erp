@@ -33,7 +33,7 @@ export function StoreForm({
   districts,
   employees,
   disabled,
-  isDetails,
+  isSimulatorDetails,
 }: {
   form: UseFormReturn<z.infer<typeof formSchema>>;
   onSubmit: (values: z.infer<typeof formSchema>) => void;
@@ -49,7 +49,7 @@ export function StoreForm({
     | undefined;
   employees: Employee[];
   disabled?: boolean;
-  isDetails?: boolean;
+  isSimulatorDetails?: boolean;
 }) {
   const { storeId } = useParams();
   const [isOpeningGate, setIsOpeningGate] = useState(false);
@@ -78,11 +78,11 @@ export function StoreForm({
         })}
         className="flex flex-col items-center pt-12"
       >
-        <section className="flex w-[613px] flex-col gap-6 border border-line-gray px-12 pb-10">
+        <section className="flex w-[613px] flex-col gap-6 border border-line-gray px-12 pb-10 sm:w-80">
           <div className="-mx-12 mb-4 bg-light-gray py-1.5 text-center text-black">
             基本資料
           </div>
-          {isDetails && (
+          {isSimulatorDetails && (
             <div className="grid grid-cols-[auto_1fr] items-center">
               <span className="w-28">開啟大門</span>
               <IconShortButton
@@ -113,17 +113,17 @@ export function StoreForm({
             name="category"
             label="類別"
           />
-          <div className="flex">
+          <div className="flex sm:flex-col">
             <FormField
               control={form.control}
               name="openingHoursStart"
               render={({ field }) => (
-                <FormItem className="grid grid-cols-[auto_auto] items-baseline gap-y-1">
+                <FormItem className="grid grid-cols-[auto_auto] items-baseline gap-y-1 sm:grid-cols-1">
                   <FormLabel className="w-28">營業時間</FormLabel>
                   <FormControl>
                     <Input
                       className={cn(
-                        "h-7 w-48 rounded-none border-0 border-b border-b-secondary-dark p-1 focus-visible:border-b-[1.5px] focus-visible:border-b-orange",
+                        "h-7 w-48 rounded-none border-0 border-b border-b-secondary-dark p-1 focus-visible:border-b-[1.5px] focus-visible:border-b-orange sm:w-full",
                         field.value && "border-b-orange",
                       )}
                       placeholder={`請輸入起始營業時間`}
@@ -146,7 +146,7 @@ export function StoreForm({
                   <FormControl>
                     <Input
                       className={cn(
-                        "h-7 w-48 rounded-none border-0 border-b border-b-secondary-dark focus-visible:border-b-[1.5px] focus-visible:border-b-orange",
+                        "h-7 w-48 rounded-none border-0 border-b border-b-secondary-dark focus-visible:border-b-[1.5px] focus-visible:border-b-orange sm:w-full sm:p-1",
                         field.value && "border-b-orange",
                       )}
                       placeholder={`請輸入結束營業時間`}
@@ -163,17 +163,17 @@ export function StoreForm({
             />
           </div>
 
-          <div className="flex">
+          <div className="flex ">
             <FormField
               control={form.control}
               name="phoneAreaCode"
               render={({ field }) => (
-                <FormItem className="grid grid-cols-[auto_auto] items-baseline gap-y-1">
-                  <FormLabel className="w-28">市話</FormLabel>
+                <FormItem className="grid grid-cols-[auto_auto] items-baseline gap-y-1 sm:gap-x-3">
+                  <FormLabel className="w-28 sm:w-auto">市話</FormLabel>
                   <FormControl>
                     <Input
                       className={cn(
-                        "h-7 w-14 rounded-none border-0 border-b border-b-secondary-dark p-1 focus-visible:border-b-[1.5px] focus-visible:border-b-orange",
+                        "h-7 w-14 rounded-none border-0 border-b border-b-secondary-dark p-1 focus-visible:border-b-[1.5px] focus-visible:border-b-orange sm:w-7",
                         field.value && "border-b-orange",
                       )}
                       placeholder={`02`}
@@ -190,11 +190,11 @@ export function StoreForm({
               control={form.control}
               name="phone"
               render={({ field }) => (
-                <FormItem className="ml-4 flex flex-col gap-1">
+                <FormItem className="flex flex-col gap-1 ml-4">
                   <FormControl>
                     <Input
                       className={cn(
-                        "h-7 w-80 rounded-none border-0 border-b border-b-secondary-dark p-1 focus-visible:border-b-[1.5px] focus-visible:border-b-orange",
+                        "h-7 w-80 rounded-none border-0 border-b border-b-secondary-dark p-1 focus-visible:border-b-[1.5px] focus-visible:border-b-orange sm:w-[132px]",
                         field.value && "border-b-orange",
                       )}
                       placeholder={`12345678`}
@@ -263,13 +263,16 @@ export function StoreForm({
             label="HashIV"
           />
         </section>
-        <section className="flex w-[613px] flex-col gap-6 border border-line-gray px-12 pb-10">
+        <section className="flex w-[613px] flex-col gap-6 border border-line-gray px-12 pb-10 sm:w-80">
           <div className="-mx-12 mb-4 bg-light-gray py-1.5 text-center text-black">
             系統管理
           </div>
 
           {form.watch("employees").map((employee, idx) => (
-            <div className="grid grid-cols-[auto_1fr]" key={employee.id}>
+            <div
+              className="grid grid-cols-[auto_1fr] sm:hidden"
+              key={employee.id}
+            >
               <div className="w-28">{idx === 0 && "系統管理者"}</div>
 
               <div
@@ -297,9 +300,37 @@ export function StoreForm({
               </div>
             </div>
           ))}
+          <div className="hidden w-28 sm:block">系統管理者</div>
+          {form.watch("employees").map((employee) => {
+            return (
+              <div
+                className={cn(
+                  "hidden flex-1 items-center border-b border-orange pb-1 pl-1 sm:flex",
+                  isInputDisabled && "opacity-50",
+                )}
+              >
+                {employee.chName} <span className="text-word-gray">/</span>{" "}
+                {employee.telphone}
+                <button
+                  className="ml-auto mr-1"
+                  onClick={() =>
+                    form.setValue(
+                      "employees",
+                      form
+                        .getValues("employees")
+                        .filter((e) => e.id !== employee.id),
+                    )
+                  }
+                  disabled={isInputDisabled}
+                >
+                  <img src={redMinusIcon} />
+                </button>
+              </div>
+            );
+          })}
 
-          <div className="grid grid-cols-[auto_1fr]">
-            <div className="w-28 ">
+          <div className="grid grid-cols-[auto_1fr] ">
+            <div className="w-28 sm:hidden">
               {form.watch("employees").length === 0 && "系統管理者"}
             </div>
 
@@ -307,7 +338,7 @@ export function StoreForm({
               dialogTriggerChildren={
                 <button
                   className={cn(
-                    "flex items-center border-b border-line-gray pb-1 pl-1",
+                    "flex items-center border-b border-line-gray pb-1 pl-1 sm:col-start-2",
                     isInputDisabled && "cursor-not-allowed opacity-50",
                   )}
                   disabled={isInputDisabled}

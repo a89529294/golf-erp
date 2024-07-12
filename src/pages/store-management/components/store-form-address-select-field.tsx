@@ -31,13 +31,13 @@ export function StoreFormAddressSelectFields({
   disabled: boolean;
 }) {
   return (
-    <div className="grid grid-cols-[270fr_186fr] gap-3">
+    <div className="grid grid-cols-[270fr_186fr] gap-3 sm:flex sm:flex-col">
       <FormSelect
         name="county"
         formItemClass="grid grid-cols-[auto_1fr] items-baseline gap-y-1"
         disabled={disabled}
         label="地址"
-        labeClassName="w-28"
+        labeClassName="w-28 sm:w-9"
         placeholder="選擇縣市"
         options={counties}
         optionKey="countycode"
@@ -48,7 +48,7 @@ export function StoreFormAddressSelectFields({
       />
       <FormSelect
         name="district"
-        formItemClass="flex flex-col gap-1"
+        formItemClass="flex sm:ml-9 flex-col gap-1"
         disabled={disabled}
         placeholder={form.watch("county") ? "選擇鄉鎮" : "先選擇縣市"}
         options={districts}
@@ -62,7 +62,7 @@ export function StoreFormAddressSelectFields({
         render={({ field }) => (
           <FormItem className="flex flex-col gap-1 ">
             <div className="flex items-baseline ">
-              <div className="w-28" />
+              <div className="w-28 sm:w-9" />
               <FormControl>
                 <Input
                   className={cn(

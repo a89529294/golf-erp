@@ -28,7 +28,7 @@ export const columns: ColumnDef<Store>[] = [
         />
       </div>
     ),
-    size: 5,
+    size: 80,
   },
   {
     id: "name-address",
@@ -42,27 +42,24 @@ export const columns: ColumnDef<Store>[] = [
         </p>
       </div>
     ),
-    size: 25,
     accessorFn: (row) =>
       `${row.name} ${row.county} ${row.district} ${row.address}`,
   },
   {
     accessorKey: "category",
+    id: "category",
     header: "類別",
-    size: 15,
     accessorFn: (row) => storeCategoryMap[row.category],
   },
   {
-    // TODO change this once telphone column is added
     accessorKey: "telphone",
+    id: "telphone",
     header: "市話",
-    size: 15,
     accessorFn: (row) => row.telphone ?? "",
   },
   {
     id: "contact-name-phone",
     header: "聯絡人 / 電話",
-    size: undefined,
     accessorFn: (row) => `${row.contact} ${row.contactPhone}`,
     cell: ({ row }) => (
       <>
@@ -72,3 +69,17 @@ export const columns: ColumnDef<Store>[] = [
     ),
   },
 ];
+
+export const mobileColumns = columns.map((c) => {
+  const sizeMap = {
+    select: 80,
+    "name-address": 180,
+    category: 120,
+    telphone: 120,
+    "contact-name-phone": 180,
+  } as Record<string, number>;
+  return {
+    ...c,
+    size: sizeMap[c.id!],
+  };
+});

@@ -11,8 +11,13 @@ import { cn } from "@/lib/utils";
 import { Employee } from "@/pages/system-management/personnel-management/loader";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { Dispatch, ReactElement, SetStateAction, useState } from "react";
-import { columns as employeeColumns } from "./columns";
+import {
+  columns as employeeColumns,
+  mobileColumns as employeeMobileColumns,
+} from "./columns";
 import { EmployeesModalSearchHeader } from "@/components/employees-modal-search-header";
+import { ScrollArea, Scrollbar } from "@radix-ui/react-scroll-area";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 
 export function AddEmployeeAsStoreManagerModal({
   dialogTriggerChildren,
@@ -27,6 +32,7 @@ export function AddEmployeeAsStoreManagerModal({
   selectedEmployees: Employee[];
   setRowSelection: Dispatch<SetStateAction<Record<string, boolean>>>;
 }) {
+  const isMobile = useIsMobile();
   const [open, setOpen] = useState(false);
   const rowSelection = (() => {
     const obj: Record<string, true> = {};
@@ -35,17 +41,6 @@ export function AddEmployeeAsStoreManagerModal({
 
     return obj;
   })();
-  // const [rowSelection, setRowSelection] = useState<Record<string, boolean>>(
-  //   selectedEmployees
-  //     ? (() => {
-  //         const obj: Record<string, true> = {};
-
-  //         selectedEmployees.forEach((e) => (obj[e.id] = true));
-
-  //         return obj;
-  //       })()
-  //     : {},
-  // );
 
   const [selectedStoreId, setSelectedStoreId] = useState<string | undefined>(
     undefined,
@@ -71,27 +66,46 @@ export function AddEmployeeAsStoreManagerModal({
             setOpen(false);
             e.stopPropagation();
           }}
-          className={cn(`flex h-[610px] w-[790px] flex-col pb-5`)}
+          className={cn(`flex h-[610px] w-[790px] flex-col pb-5 sm:w-80`)}
         >
-          <DialogHeader className="relative isolate mb-5 block overflow-auto px-14">
+          <DialogHeader className="relative block mb-5 overflow-auto isolate px-14 sm:px-4">
             <EmployeesModalSearchHeader
               globalFilter={globalFilter}
               setGlobalFilter={setGlobalFilter}
               selectedStoreId={selectedStoreId}
               setSelectedStoreId={setSelectedStoreId}
             />
-            <ModalDataTable
-              columns={[
-                ...employeeColumns.slice(0, -2),
-                employeeColumns.at(-1)!,
-              ]}
-              data={filteredEmployees}
-              rowSelection={rowSelection}
-              setRowSelection={setRowSelection}
-              globalFilter={globalFilter}
-              setGlobalFilter={setGlobalFilter}
-              enableMultiRowSelection
-            />
+
+            {isMobile ? (
+              <ScrollArea className="overflow-auto sm:h-[417px] sm:w-72">
+                <ModalDataTable
+                  columns={[
+                    ...employeeMobileColumns.slice(0, -2),
+                    employeeMobileColumns.at(-1)!,
+                  ]}
+                  data={filteredEmployees}
+                  rowSelection={rowSelection}
+                  setRowSelection={setRowSelection}
+                  globalFilter={globalFilter}
+                  setGlobalFilter={setGlobalFilter}
+                  enableMultiRowSelection
+                />
+                <Scrollbar orientation="horizontal" />
+              </ScrollArea>
+            ) : (
+              <ModalDataTable
+                columns={[
+                  ...employeeColumns.slice(0, -2),
+                  employeeColumns.at(-1)!,
+                ]}
+                data={filteredEmployees}
+                rowSelection={rowSelection}
+                setRowSelection={setRowSelection}
+                globalFilter={globalFilter}
+                setGlobalFilter={setGlobalFilter}
+                enableMultiRowSelection
+              />
+            )}
           </DialogHeader>
           <DialogFooter className="justify-center ">
             <TextButton type="submit" form="xx">

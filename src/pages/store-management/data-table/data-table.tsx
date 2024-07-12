@@ -72,7 +72,7 @@ export function DataTable<TData extends { id: string }, TValue>({
 
   return (
     <div className="mb-2.5 w-full border-y border-line-gray ">
-      <Table className="relative isolate table-fixed">
+      <Table className="relative table-fixed isolate">
         <TableHeader className="relative z-10">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id} className="border-b-line-gray">
@@ -82,12 +82,11 @@ export function DataTable<TData extends { id: string }, TValue>({
                     key={header.id}
                     // height of header 80 plus gap 10
                     className={cn(
-                      "sticky top-[90px] bg-light-gray hover:bg-light-gray",
+                      "sticky top-[90px] bg-light-gray hover:bg-light-gray sm:top-px ",
                     )}
                     style={{
-                      width: header.column.columnDef.size
-                        ? `${header.column.columnDef.size}%`
-                        : "auto",
+                      width:
+                        header.getSize() !== 150 ? header.getSize() : "auto",
                     }}
                   >
                     {header.isPlaceholder
@@ -116,7 +115,7 @@ export function DataTable<TData extends { id: string }, TValue>({
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     {row.getVisibleCells().length === idx + 1 && (
                       <Link
-                        className="absolute right-5 top-1/2 hidden -translate-y-1/2 group-hover:block"
+                        className="absolute hidden -translate-y-1/2 right-5 top-1/2 group-hover:block sm:right-5 sm:block"
                         to={`/store-management/details/${row.original.id}`}
                       >
                         <img src={blackFileIcon} />

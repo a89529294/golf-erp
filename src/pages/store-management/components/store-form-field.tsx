@@ -29,7 +29,7 @@ export function StoreFormField({
       control={form.control}
       name={name}
       render={({ field }) => (
-        <FormItem className="grid grid-cols-[auto_1fr] items-baseline gap-y-1">
+        <FormItem className="grid grid-cols-[auto_1fr] items-baseline gap-y-1 sm:grid-cols-1">
           <FormLabel className="w-28">{label}</FormLabel>
           <FormControl>
             <Input
