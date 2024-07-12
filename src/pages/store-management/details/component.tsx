@@ -1,6 +1,3 @@
-import { IconButton, IconWarningButton } from "@/components/ui/button";
-
-import { Modal } from "@/components/modal";
 import { MainLayout } from "@/layouts/main-layout";
 import { loader } from "@/pages/store-management/details/loader";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,15 +14,19 @@ import {
 } from "react-router-dom";
 import { z } from "zod";
 
+import { countyQuery, generateDistrictQuery } from "@/api/county-district";
+import { DetailsDesktopMenubar } from "@/pages/store-management/components/details-desktop-menubar";
 import { genEmployeesQuery } from "@/pages/system-management/personnel-management/loader";
 import { privateFetch } from "@/utils/utils";
 import { toast } from "sonner";
 import { StoreForm } from "../components/store-form";
 import { formSchema } from "../schemas";
 import { genStoreQuery } from "./loader";
-import { countyQuery, generateDistrictQuery } from "@/api/county-district";
+import { DetailsMobileMenubar } from "@/pages/store-management/components/details-mobile-menubar";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 
 export function Component() {
+  const isMobile = useIsMobile();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -111,7 +112,8 @@ export function Component() {
   });
   const [isMutating, setIsMutating] = useState(false);
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit() {
+    const values = form.getValues();
     const dirtyFields = form.formState.dirtyFields;
 
     const transformedValues = {
@@ -208,77 +210,34 @@ export function Component() {
   return (
     <MainLayout
       headerChildren={
-        <>
-          {disabled ? (
-            <IconButton
-              icon="back"
-              onClick={() => navigate("/store-management?category=all")}
-            >
-              返回
-            </IconButton>
-          ) : Object.keys(form.formState.dirtyFields).length !== 0 ? (
-            <Modal
-              dialogTriggerChildren={
-                <IconWarningButton disabled={isMutating} icon="redX">
-                  取消編輯
-                </IconWarningButton>
-              }
-              onSubmit={() => {
-                setDisabled(true);
-                form.reset();
-              }}
-            >
-              資料尚未儲存，是否返回？
-            </Modal>
-          ) : (
-            <IconWarningButton icon="redX" onClick={() => setDisabled(true)}>
-              取消編輯
-            </IconWarningButton>
-          )}
-
-          {disabled && (
-            <Modal
-              dialogTriggerChildren={
-                <IconWarningButton
-                  disabled={isMutating}
-                  icon="trashCan"
-                  type="button"
-                >
-                  刪除
-                </IconWarningButton>
-              }
-              onSubmit={async () => {
-                setIsMutating(true);
-                await deleteStore(storeId!);
-                setIsMutating(false);
-              }}
-              title={`是否刪除${store.name}`}
-            />
-          )}
-
-          {disabled ? (
-            <IconButton
-              icon="save"
-              type="button"
-              onClick={() => {
-                setTimeout(() => {
-                  setDisabled(false);
-                }, 0);
-              }}
-            >
-              編輯
-            </IconButton>
-          ) : (
-            <IconButton
-              disabled={isMutating || !form.formState.isDirty}
-              icon="save"
-              form="store-form"
-              type="submit"
-            >
-              儲存
-            </IconButton>
-          )}
-        </>
+        isMobile ? (
+          <DetailsMobileMenubar
+            onDeleteStore={async () => {
+              setIsMutating(true);
+              await deleteStore(storeId!);
+              setIsMutating(false);
+            }}
+            disabled={disabled}
+            form={form}
+            isMutating={isMutating}
+            setDisabled={setDisabled}
+            storeName={store.name}
+            onPatchStore={onSubmit}
+          />
+        ) : (
+          <DetailsDesktopMenubar
+            onSubmit={async () => {
+              setIsMutating(true);
+              await deleteStore(storeId!);
+              setIsMutating(false);
+            }}
+            disabled={disabled}
+            form={form}
+            isMutating={isMutating}
+            setDisabled={setDisabled}
+            storeName={store.name}
+          />
+        )
       }
     >
       <div className="mb-2.5 w-full border border-line-gray p-1 ">
