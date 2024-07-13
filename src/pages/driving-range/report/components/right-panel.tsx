@@ -1,7 +1,7 @@
 import { usePrevIntervalReportDataQuery } from "@/api/use-prev-interval-report-data-query";
 import { cn } from "@/lib/utils";
-import GraphNumberCell from "@/pages/indoor-simulator/report/components/graph-number-cell";
-import { ReportData } from "@/pages/indoor-simulator/report/loader";
+import GraphNumberCell from "@/pages/driving-range/report/components/graph-number-cell";
+import { ReportData } from "@/pages/driving-range/report/loader";
 import { reportTimeRange } from "@/types-and-schemas/report";
 import { fromRangeStringToLastDateSetBy } from "@/utils";
 import React from "react";

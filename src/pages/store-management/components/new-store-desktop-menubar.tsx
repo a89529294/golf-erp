@@ -1,7 +1,6 @@
 import { Modal } from "@/components/modal";
-import backIcon from "@/assets/back.svg";
+import { IconButton } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import saveIcon from "@/assets/save.svg";
 
 export function NewStoreDesktopMenubar({
   isDirty,
@@ -17,28 +16,25 @@ export function NewStoreDesktopMenubar({
       {isDirty ? (
         <Modal
           dialogTriggerChildren={
-            <button disabled={isMutating} className="flex gap-1">
-              <img src={backIcon} />
+            <IconButton disabled={isMutating} icon="back">
               返回
-            </button>
+            </IconButton>
           }
           onSubmit={() => navigate(-1)}
           title="資料尚未儲存，是否返回列表？"
         />
       ) : (
-        <button
+        <IconButton
           disabled={isMutating}
-          className="flex gap-1"
           onClick={() => navigate(-1)}
+          icon="back"
         >
-          <img src={backIcon} />
           返回
-        </button>
+        </IconButton>
       )}
-      <button disabled={isMutating} className="flex gap-1" form="store-form">
-        <img src={saveIcon} />
+      <IconButton disabled={isMutating} icon="save" form="store-form">
         儲存
-      </button>
+      </IconButton>
     </>
   );
 }

@@ -1,3 +1,14 @@
+import { useAuth } from "@/hooks/use-auth";
+import { MainLayout } from "@/layouts/main-layout";
+import {
+  useLoaderData,
+  useParams,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
+import { genDataQuery, loader } from "./loader";
+import { useQuery } from "@tanstack/react-query";
+import { genIndoorSimulatorStoresWithSitesQuery } from "@/pages/indoor-simulator/site-management/loader";
 import {
   Select,
   SelectContent,
@@ -5,19 +16,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useAuth } from "@/hooks/use-auth";
-import { MainLayout } from "@/layouts/main-layout";
-import { ReportContainer } from "@/pages/driving-range/report/components/report-container";
-import { genGroundStoresWithSitesQuery } from "@/pages/driving-range/site-management/loader";
-import { useQuery } from "@tanstack/react-query";
 import { useCallback, useEffect } from "react";
-import {
-  useLoaderData,
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from "react-router-dom";
-import { genDataQuery, loader } from "./loader";
+import { ReportContainer } from "@/pages/indoor-simulator/report/components/report-container";
 
 export function Component() {
   const [searchParams] = useSearchParams();
@@ -27,10 +27,10 @@ export function Component() {
   const { storeId } = useParams();
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
   const { data: stores } = useQuery({
-    ...genGroundStoresWithSitesQuery(
-      user!.isAdmin ? "all" : user!.allowedStores.ground,
+    ...genIndoorSimulatorStoresWithSitesQuery(
+      user!.isAdmin ? "all" : user!.allowedStores.simulator,
     ),
-    initialData: initialData.ground,
+    initialData: initialData.simulators,
   });
   const { data } = useQuery({
     ...genDataQuery(
@@ -45,7 +45,7 @@ export function Component() {
   const onStoreValueChange = useCallback(
     (storeId: string, replace: boolean) => {
       const range = encodeURIComponent("2024-01-01:2024-12-31");
-      navigate(`/driving-range/report/${storeId}?range=${range}`, {
+      navigate(`/indoor-simulator/report/${storeId}?range=${range}`, {
         replace,
       });
     },
@@ -71,7 +71,7 @@ export function Component() {
             <SelectContent className="w-[280px]">
               {stores.length === 0 ? (
                 <SelectItem key={0} value="undef" disabled>
-                  請先新增練習場廠商
+                  請先新增模擬器廠商
                 </SelectItem>
               ) : (
                 stores.map((g) => (

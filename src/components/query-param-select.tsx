@@ -60,11 +60,17 @@ export function QueryParamSelect<T extends Record<string, string>>({
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent className="max-h-72">
-        {options?.map((option) => (
-          <SelectItem value={option[optionKey]} key={option[optionKey]}>
-            {option[optionValue]}
+        {options && options.length ? (
+          options.map((option) => (
+            <SelectItem value={option[optionKey]} key={option[optionKey]}>
+              {option[optionValue]}
+            </SelectItem>
+          ))
+        ) : (
+          <SelectItem value={"no-ground-store"} key={""} disabled>
+            請先新增練習場廠商
           </SelectItem>
-        ))}
+        )}
       </SelectContent>
     </Select>
   );

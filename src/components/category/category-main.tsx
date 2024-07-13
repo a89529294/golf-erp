@@ -27,17 +27,10 @@ import {
 } from "@/utils";
 import { privateFetch } from "@/utils/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { Modal } from "../modal";
-import React from "react";
 import { toast } from "sonner";
+import { Modal } from "../modal";
 
 export function CategoryMain({
   newSiteHref,
@@ -89,8 +82,7 @@ export function CategoryMain({
   const navigate = useNavigate();
   const { storeId } = useParams();
   const [globalFilter, setGlobalFilter] = useState("");
-  const ref = useRef<HTMLDivElement>(null);
-  const [height, setHeight] = useState(0);
+
   const sites = stores.find((store) => store.id === storeId)?.sites;
 
   const onStoreValueChange = useCallback(
@@ -104,16 +96,6 @@ export function CategoryMain({
     },
     [navigate, type],
   );
-
-  useLayoutEffect(() => {
-    const setHeightIfRef = () =>
-      ref.current && setHeight(ref.current.clientHeight - 10); // - 10 because of pb-2.5
-    setHeightIfRef();
-
-    window.addEventListener("resize", setHeightIfRef);
-
-    return () => window.removeEventListener("resize", setHeightIfRef);
-  }, []);
 
   useEffect(() => {
     if (storeId) return;
@@ -158,12 +140,12 @@ export function CategoryMain({
         </>
       }
     >
-      <div className="w-full flex-1 pb-2.5" ref={ref}>
-        <ScrollArea
-          className="w-full overflow-auto border border-line-gray bg-light-gray p-5"
-          style={{ height: height }}
-        >
-          {height && (
+      {({ height }) => {
+        return (
+          <ScrollArea
+            className="w-full overflow-auto border border-line-gray bg-light-gray p-5"
+            style={{ height: height }}
+          >
             <div className="relative flex h-full flex-col gap-2.5">
               {/* {isPending && fetchStatus === "idle" && (
                 <p className="font-medium">請先選廠商</p>
@@ -197,7 +179,10 @@ export function CategoryMain({
                   duration: string;
                   fee: string;
                 }[];
-                const openingWeekDays = [] as { day: string; hours: string }[];
+                const openingWeekDays = [] as {
+                  day: string;
+                  hours: string;
+                }[];
 
                 if (type === "ground") {
                   (section.openTimes
@@ -275,9 +260,9 @@ export function CategoryMain({
                 );
               })}
             </div>
-          )}
-        </ScrollArea>
-      </div>
+          </ScrollArea>
+        );
+      }}
     </MainLayout>
   );
 }

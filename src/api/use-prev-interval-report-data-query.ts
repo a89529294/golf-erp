@@ -1,4 +1,5 @@
 import {
+  ReportItem,
   detailedSchema,
   yearSchema,
 } from "@/pages/indoor-simulator/report/loader";
@@ -54,7 +55,13 @@ export function usePrevIntervalReportDataQuery({
 
         const parsedData = detailedSchema.parse(data);
 
-        return parsedData;
+        return Object.entries(parsedData).reduce(
+          (acc, [key, value]) => {
+            if (key !== "all") acc[key] = value;
+            return acc;
+          },
+          {} as Record<string, ReportItem>,
+        );
       }
     },
   });

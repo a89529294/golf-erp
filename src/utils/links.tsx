@@ -82,9 +82,17 @@ export const linksKV = {
       },
       report: {
         label: "報表",
-        path: `${DRIVING_RANGE_BASE_PATH}/report`,
-        lazy: () => import("@/pages/driving-range/report"),
-        type: "flat" as const,
+        // path: `${INDOOR_SIMULATOR_BASE_PATH}/report/:storeId`,
+        paths: {
+          index: {
+            symbolicPath: `${DRIVING_RANGE_BASE_PATH}/report/:storeId?`,
+            path: `${DRIVING_RANGE_BASE_PATH}/report`,
+          },
+        },
+        lazy: {
+          index: () => import("@/pages/driving-range/report"),
+        },
+        type: "multiple" as const,
         allowedPermissions: ["練習場-報表"],
       },
     },

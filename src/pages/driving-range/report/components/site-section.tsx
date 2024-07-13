@@ -1,8 +1,8 @@
 import { GenericDataTable } from "@/components/generic-data-table";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { CircularProgressWithDesc } from "@/pages/indoor-simulator/report/components/circular-progress-with-desc";
-import { TextButton } from "@/pages/indoor-simulator/report/components/text-button";
-import { ReportData } from "@/pages/indoor-simulator/report/loader";
+import { CircularProgressWithDesc } from "@/pages/driving-range/report/components/circular-progress-with-desc";
+import { TextButton } from "@/pages/driving-range/report/components/text-button";
+import { ReportData } from "@/pages/driving-range/report/loader";
 import { Appointment } from "@/types-and-schemas/appointment";
 import { reportTimeRange } from "@/types-and-schemas/report";
 import { roundUpToOneDecimalPlace } from "@/utils";
@@ -46,8 +46,7 @@ export function SiteSection({
 
   const currentYearRevenue = Object.values(data.year).reduce(
     (acc, v) =>
-      acc +
-      v.storeSimulatorAppointments[id].reduce((acc, v) => acc + v.amount, 0),
+      acc + v.storeGroundAppointments[id].reduce((acc, v) => acc + v.amount, 0),
     0,
   );
 
@@ -55,7 +54,7 @@ export function SiteSection({
     if (currentYearRevenue === 0) return 0;
     if (data.total.totalAmount === 0) return 0;
     return roundUpToOneDecimalPlace(
-      (data.total.storeSimulatorAppointments[id].totalAmount /
+      (data.total.storeGroundAppointments[id].totalAmount /
         data.total.totalAmount) *
         100,
     );
@@ -83,7 +82,7 @@ export function SiteSection({
     const currentPeriodRevenue = Object.values(data.detailed).reduce(
       (acc, v) =>
         acc +
-        v.storeSimulatorAppointments[id].reduce((acc, v) => acc + v.amount, 0),
+        v.storeGroundAppointments[id].reduce((acc, v) => acc + v.amount, 0),
       0,
     );
     const currentPeriodRevenueForAllSites = Object.values(data.detailed).reduce(
@@ -109,7 +108,7 @@ export function SiteSection({
     if (totalAppointmentCountForAllSites === 0) return 0;
 
     return roundUpToOneDecimalPlace(
-      (data.total.storeSimulatorAppointments[id].totalCount /
+      (data.total.storeGroundAppointments[id].totalCount /
         totalAppointmentCountForAllSites) *
         100,
     );
@@ -118,12 +117,12 @@ export function SiteSection({
   const currentPeriodSiteAppointmentCount = (() => {
     if (isCurrentYearSelected)
       return Object.values(data.year).reduce(
-        (acc, v) => acc + v.storeSimulatorAppointments[id].length,
+        (acc, v) => acc + v.storeGroundAppointments[id].length,
         0,
       );
 
     return Object.values(data.detailed).reduce(
-      (acc, v) => acc + v.storeSimulatorAppointments[id].length,
+      (acc, v) => acc + v.storeGroundAppointments[id].length,
       0,
     );
   })();
@@ -131,7 +130,7 @@ export function SiteSection({
   const currentPeriodSiteAppointmentPercentage = (() => {
     const currentPeriodSiteAppointmentCount = Object.values(
       data.detailed,
-    ).reduce((acc, v) => acc + v.storeSimulatorAppointments[id].length, 0);
+    ).reduce((acc, v) => acc + v.storeGroundAppointments[id].length, 0);
     const currenPeriodSiteAppointCountForAllSites = Object.values(
       data.detailed,
     ).reduce((acc, v) => acc + v.totalCount, 0);

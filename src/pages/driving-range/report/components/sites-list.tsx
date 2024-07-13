@@ -1,6 +1,6 @@
-import { SiteSection } from "@/pages/indoor-simulator/report/components/site-section";
-import { ReportData } from "@/pages/indoor-simulator/report/loader";
-import { SimulatorStoreWithSites } from "@/pages/store-management/loader";
+import { SiteSection } from "@/pages/driving-range/report/components/site-section";
+import { ReportData } from "@/pages/driving-range/report/loader";
+import { GroundStoreWithSites } from "@/pages/store-management/loader";
 import { Appointment } from "@/types-and-schemas/appointment";
 import { useParams } from "react-router-dom";
 
@@ -8,7 +8,7 @@ export function SitesList({
   stores,
   data,
 }: {
-  stores: SimulatorStoreWithSites[];
+  stores: GroundStoreWithSites[];
   data: ReportData;
 }) {
   const { storeId } = useParams();
@@ -18,7 +18,7 @@ export function SitesList({
     ?.sites.map((site) => {
       const siteAppointments: Appointment[] = [];
       Object.values(data.detailed).forEach((v) => {
-        const appointments = v.storeSimulatorAppointments[site.id] ?? [];
+        const appointments = v.storeGroundAppointments[site.id] ?? [];
         siteAppointments.push(...appointments);
       });
 

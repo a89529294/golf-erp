@@ -1,4 +1,4 @@
-import { genIndoorSimulatorStoresWithSitesQuery } from "@/pages/indoor-simulator/site-management/loader";
+import { genGroundStoresWithSitesQuery } from "@/pages/driving-range/site-management/loader";
 import { baseAppointmentSchema } from "@/types-and-schemas/appointment";
 import { formatDateAsString, getAllowedStores } from "@/utils";
 import { queryClient } from "@/utils/query-client";
@@ -14,7 +14,7 @@ const totalSchema = z.object({
     .nullable()
     .transform((v) => v ?? 0),
   totalCount: z.number(),
-  storeSimulatorAppointments: z.record(
+  storeGroundAppointments: z.record(
     z.string(),
     z.object({
       totalAmount: z.number(),
@@ -29,7 +29,7 @@ const objectSchema = z.object({
     .nullable()
     .transform((v) => v ?? 0),
   totalCount: z.number(),
-  storeSimulatorAppointments: z
+  storeGroundAppointments: z
     .record(z.string(), z.array(baseAppointmentSchema))
     .optional()
     .transform((v) => v ?? {}),
@@ -64,7 +64,7 @@ export const detailedSchema = z.record(z.string(), objectSchema);
 export type DetailedData = Omit<z.infer<typeof detailedSchema>, "all">;
 
 export const genDataQuery = (storeId: string, startAt: Date, endAt: Date) => ({
-  queryKey: ["simulator", storeId, "report-data", startAt, endAt],
+  queryKey: ["ground", storeId, "report-data", startAt, endAt],
   queryFn: async () => {
     const qsYear = queryString.stringify({
       year: new Date().getFullYear(),
@@ -83,13 +83,13 @@ export const genDataQuery = (storeId: string, startAt: Date, endAt: Date) => ({
     });
 
     const promises = [
-      privateFetch(
-        `/appointment/simulator/report/count?storeId=${storeId}`,
-      ).then((r) => r.json()),
-      privateFetch(`/appointment/simulator/report?${qsYear}`).then((r) =>
+      privateFetch(`/appointment/ground/report/count?storeId=${storeId}`).then(
+        (r) => r.json(),
+      ),
+      privateFetch(`/appointment/ground/report?${qsYear}`).then((r) =>
         r.json(),
       ),
-      privateFetch(`/appointment/simulator/daily-report?${qs}`).then((r) =>
+      privateFetch(`/appointment/ground/daily-report?${qs}`).then((r) =>
         r.json(),
       ),
     ];
@@ -132,13 +132,13 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   const url = new URL(request.url);
   const range = url.searchParams.get("range")!;
 
-  const simulators = await queryClient.ensureQueryData(
-    genIndoorSimulatorStoresWithSitesQuery(await getAllowedStores("simulator")),
+  const ground = await queryClient.ensureQueryData(
+    genGroundStoresWithSitesQuery(await getAllowedStores("ground")),
   );
 
   if (!params.storeId)
     return {
-      simulators,
+      ground,
     };
 
   const data = await queryClient.fetchQuery(
@@ -150,7 +150,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   );
 
   return {
-    simulators,
+    ground,
     data,
   };
 }
