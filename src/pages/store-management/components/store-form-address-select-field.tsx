@@ -72,6 +72,10 @@ export function StoreFormAddressSelectFields({
                   placeholder={`請輸入${label}`}
                   {...field}
                   disabled={disabled}
+                  onChange={(e) => {
+                    field.onChange(e);
+                    form.clearErrors(names[2]);
+                  }}
                 />
               </FormControl>
             </div>

@@ -1,39 +1,25 @@
-import { IconButton } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Form } from "@/components/ui/form";
 
-import { Input } from "@/components/ui/input";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 import { MainLayout } from "@/layouts/main-layout";
-import { cn } from "@/lib/utils";
+import { storesQuery } from "@/pages/store-management/loader";
+import { EmployeeFormField } from "@/pages/system-management/personnel-management/components/employee-form-field";
+import { EmployeeFormSelectField } from "@/pages/system-management/personnel-management/components/employee-form-select-field";
+import { NewPersonnelDesktopMenubar } from "@/pages/system-management/personnel-management/components/new-personnel-desktop-menubar";
+import { NewPersonnelMobileMenubar } from "@/pages/system-management/personnel-management/components/new-personnel-mobile-menubar";
 import { loader } from "@/pages/system-management/personnel-management/new/loader";
 import { storeCategories, storeCategoryMap } from "@/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { UseFormReturn, useForm, useWatch } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import {
   useLoaderData,
   useLocation,
-  useNavigate,
   useSearchParams,
   useSubmit,
 } from "react-router-dom";
 import { z } from "zod";
-import { Modal } from "@/components/modal";
-import { storesQuery } from "@/pages/store-management/loader";
 
 const toValueLabelArray = (obj: { name: string; id: string }[]) => {
   const options: Record<string, string> = {};
@@ -50,10 +36,10 @@ const formSchema = z.object({
 });
 
 export function Component() {
+  const isMobile = useIsMobile();
   const submit = useSubmit();
   const { pathname } = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
-  const navigate = useNavigate();
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
   const { data: stores } = useQuery({ ...storesQuery, initialData });
   const form = useForm<z.infer<typeof formSchema>>({
@@ -105,34 +91,21 @@ export function Component() {
   return (
     <MainLayout
       headerChildren={
-        <>
-          {form.formState.isDirty ? (
-            <Modal
-              dialogTriggerChildren={
-                <IconButton disabled={isMutating} icon="back">
-                  返回
-                </IconButton>
-              }
-              onSubmit={() => navigate(-1)}
-              title="資料尚未儲存，是否返回列表？"
-            />
-          ) : (
-            <IconButton
-              disabled={isMutating}
-              icon="back"
-              onClick={() => navigate(-1)}
-            >
-              返回
-            </IconButton>
-          )}
-          <IconButton
-            disabled={isMutating}
-            icon="save"
-            form="new-employee-form"
-          >
-            儲存
-          </IconButton>
-        </>
+        isMobile ? (
+          <NewPersonnelMobileMenubar
+            isDirty={form.formState.isDirty}
+            isMutating={isMutating}
+            onSubmit={async () => {
+              const success = await form.trigger();
+              if (success) onSubmit(form.getValues());
+            }}
+          />
+        ) : (
+          <NewPersonnelDesktopMenubar
+            isDirty={form.formState.isDirty}
+            isMutating={isMutating}
+          />
+        )
       }
     >
       <div className="mb-2.5 w-full border border-line-gray p-1">
@@ -151,19 +124,19 @@ export function Component() {
                 form={form}
                 name={"idNumber"}
                 label="編號"
-                isMutating={isMutating}
+                disabled={isMutating}
               />
               <EmployeeFormField
                 form={form}
                 name={"name"}
                 label="姓名"
-                isMutating={isMutating}
+                disabled={isMutating}
               />
               <EmployeeFormField
                 form={form}
                 name={"phoneno"}
                 label="電話"
-                isMutating={isMutating}
+                disabled={isMutating}
               />
             </section>
             <section className="flex w-fit flex-col gap-6 border border-line-gray px-16 pb-10">
@@ -175,7 +148,7 @@ export function Component() {
                 name="category"
                 label="類別"
                 options={storeCategoryMap}
-                isMutating={isMutating}
+                disabled={isMutating}
               />
               <EmployeeFormSelectField
                 form={form}
@@ -183,112 +156,12 @@ export function Component() {
                 label="店名"
                 options={storeOptions}
                 key={categorySelected}
-                isMutating={isMutating}
+                disabled={isMutating}
               />
             </section>
           </form>
         </Form>
       </div>
     </MainLayout>
-  );
-}
-
-function EmployeeFormField({
-  form,
-  name,
-  label,
-  isMutating,
-}: {
-  form: UseFormReturn<z.infer<typeof formSchema>, unknown, undefined>;
-  name: keyof z.infer<typeof formSchema>;
-  label: string;
-  isMutating: boolean;
-}) {
-  return (
-    <FormField
-      control={form.control}
-      name={name}
-      render={({ field }) => (
-        <FormItem className="grid grid-cols-[1fr_auto] items-baseline gap-x-7 gap-y-1">
-          <FormLabel required>{label}</FormLabel>
-          <FormControl>
-            <Input
-              className={cn(
-                "h-7 w-60 rounded-none border-0 border-b border-b-secondary-dark p-1 focus-visible:border-b-[1.5px] focus-visible:border-b-orange",
-                field.value && "border-b-orange",
-              )}
-              placeholder={`請輸入${label}`}
-              {...field}
-              disabled={isMutating}
-            />
-          </FormControl>
-
-          <FormMessage className="col-start-2" />
-        </FormItem>
-      )}
-    />
-  );
-}
-
-function EmployeeFormSelectField({
-  form,
-  name,
-  label,
-  options,
-  isMutating,
-}: {
-  form: UseFormReturn<z.infer<typeof formSchema>, unknown, undefined>;
-  name: keyof z.infer<typeof formSchema>;
-  label: string;
-  options: Record<string, string>;
-  isMutating: boolean;
-}) {
-  const [selectKey, setSelectKey] = useState(0);
-
-  return (
-    <FormField
-      control={form.control}
-      name={name}
-      render={({ field }) => (
-        <FormItem className="flex flex-col gap-1">
-          <div className="flex items-baseline gap-7">
-            <FormLabel>{label}</FormLabel>
-            <Select
-              disabled={isMutating}
-              onValueChange={(v) => {
-                if (v === "reset") {
-                  setSelectKey(selectKey + 1);
-                  field.onChange(undefined);
-                } else {
-                  field.onChange(v);
-                }
-              }}
-              defaultValue={field.value}
-              key={selectKey}
-            >
-              <FormControl>
-                <SelectTrigger
-                  className={cn(
-                    "h-7 w-60 rounded-none border-0 border-b border-b-secondary-dark focus:border-b-[1.5px] focus:border-b-orange",
-                    field.value && "border-b-orange",
-                  )}
-                >
-                  {/* <SelectValue placeholder={`選擇${label}`} /> */}
-                  <SelectValue placeholder={`選擇${label}`} />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                {Object.entries(options).map(([value, label]) => (
-                  <SelectItem value={value} key={value}>
-                    {label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
   );
 }

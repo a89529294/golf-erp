@@ -222,7 +222,10 @@ export function Component() {
             isMutating={isMutating}
             setDisabled={setDisabled}
             storeName={store.name}
-            onPatchStore={onSubmit}
+            onPatchStore={async () => {
+              const success = await form.trigger();
+              if (success) onSubmit();
+            }}
           />
         ) : (
           <DetailsDesktopMenubar

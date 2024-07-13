@@ -104,11 +104,11 @@ export function Component() {
                 key={img.id}
               >
                 <img
-                  src={img.data}
-                  className="object-contain w-full h-full border border-line-gray"
+                  src={img.uri}
+                  className="h-full w-full border border-line-gray object-contain"
                 />
                 <button
-                  className="absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 bg-white border rounded-full border-line-red"
+                  className="absolute right-0 top-0 -translate-y-1/2 translate-x-1/2 rounded-full border border-line-red bg-white"
                   onClick={() => onRemoveBanner(img.name)}
                 >
                   <img src={redXIcon} />
@@ -116,7 +116,7 @@ export function Component() {
               </li>
             ))}
             {data.length === 0 && (
-              <div className="absolute -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2 text-word-gray">
+              <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-word-gray">
                 尚未新增圖片
               </div>
             )}

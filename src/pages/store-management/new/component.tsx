@@ -1,8 +1,5 @@
-import { IconButton } from "@/components/ui/button";
-
 import { MainLayout } from "@/layouts/main-layout";
 
-import { Modal } from "@/components/modal";
 import { loader } from "@/pages/store-management/new/loader";
 import { storeCategories } from "@/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,22 +9,24 @@ import { useForm } from "react-hook-form";
 import {
   useLoaderData,
   useLocation,
-  useNavigate,
   useSearchParams,
   useSubmit,
 } from "react-router-dom";
 import { z } from "zod";
 
+import { countyQuery, generateDistrictQuery } from "@/api/county-district";
+import { useIsMobile } from "@/hooks/use-is-mobile";
+import { NewStoreDesktopMenubar } from "@/pages/store-management/components/new-store-desktop-menubar";
 import { genEmployeesQuery } from "@/pages/system-management/personnel-management/loader";
 import { StoreForm } from "../components/store-form";
 import { formSchema } from "../schemas";
-import { countyQuery, generateDistrictQuery } from "@/api/county-district";
+import { NewStoreMobileMenubar } from "@/pages/store-management/components/new-store-mobile-menubar";
 
 export function Component() {
   const submit = useSubmit();
   const { pathname } = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
-  const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
 
   const { data: employees } = useQuery({
@@ -109,30 +108,21 @@ export function Component() {
   return (
     <MainLayout
       headerChildren={
-        <>
-          {form.formState.isDirty ? (
-            <Modal
-              dialogTriggerChildren={
-                <IconButton disabled={isMutating} icon="back">
-                  返回
-                </IconButton>
-              }
-              onSubmit={() => navigate(-1)}
-              title="資料尚未儲存，是否返回列表？"
-            />
-          ) : (
-            <IconButton
-              disabled={isMutating}
-              icon="back"
-              onClick={() => navigate(-1)}
-            >
-              返回
-            </IconButton>
-          )}
-          <IconButton disabled={isMutating} icon="save" form="store-form">
-            儲存
-          </IconButton>
-        </>
+        isMobile ? (
+          <NewStoreMobileMenubar
+            isDirty={form.formState.isDirty}
+            isMutating={isMutating}
+            onSubmit={async () => {
+              const success = await form.trigger();
+              if (success) onSubmit(form.getValues());
+            }}
+          />
+        ) : (
+          <NewStoreDesktopMenubar
+            isMutating={isMutating}
+            isDirty={form.formState.isDirty}
+          />
+        )
       }
     >
       <div className="mb-2.5 w-full border border-line-gray p-1">

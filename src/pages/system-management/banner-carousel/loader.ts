@@ -1,4 +1,3 @@
-import { fromImageIdsToSrc } from "@/utils";
 import { queryClient } from "@/utils/query-client";
 import { privateFetch } from "@/utils/utils";
 
@@ -10,20 +9,23 @@ export const bannerQuery = {
       id: string;
       name: string;
       createdAt: string;
+      uri: string;
     }[];
     data.sort(
       (a, b) =>
         new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
     );
-    const ids = data.map((d) => ({ id: d.id, name: d.name }));
 
-    const images = await fromImageIdsToSrc(ids.map((v) => v.id));
+    return data;
+    // const ids = data.map((d) => ({ id: d.id, name: d.name }));
 
-    return images.map((tempURL, idx) => ({
-      id: ids[idx].id,
-      name: ids[idx].name,
-      data: tempURL,
-    }));
+    // const images = await fromImageIdsToSrc(ids.map((v) => v.id));
+
+    // return images.map((tempURL, idx) => ({
+    //   id: ids[idx].id,
+    //   name: ids[idx].name,
+    //   data: tempURL,
+    // }));
   },
 };
 

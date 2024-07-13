@@ -55,6 +55,7 @@ export function FormSelect<T extends Record<string, string>>({
               if (v === "") return;
               field.onChange(v);
               onValueChange && onValueChange();
+              form.clearErrors(name);
             }}
             value={field.value}
           >

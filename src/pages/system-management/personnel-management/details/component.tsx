@@ -187,7 +187,7 @@ export function Component() {
             onSubmit={form.handleSubmit(onSubmit)}
             className="flex flex-col items-center pt-12"
           >
-            <section className="flex flex-col gap-6 px-16 pb-10 border w-fit border-line-gray">
+            <section className="flex w-fit flex-col gap-6 border border-line-gray px-16 pb-10">
               <div className="-mx-16 mb-4 bg-light-gray py-1.5 text-center text-black">
                 基本資料
               </div>
@@ -210,7 +210,7 @@ export function Component() {
                 disabled={disabled || isMutating}
               />
             </section>
-            <section className="flex flex-col gap-6 px-16 pb-10 border w-fit border-line-gray">
+            <section className="flex w-fit flex-col gap-6 border border-line-gray px-16 pb-10">
               <div className="-mx-16 bg-light-gray py-1.5 text-center text-black">
                 綁定廠商
               </div>

@@ -42,6 +42,10 @@ export function StoreFormField({
               disabled={disabled}
               inputMode={asNumber ? "decimal" : "text"}
               type={asNumber ? "number" : "text"}
+              onChange={(e) => {
+                field.onChange(e);
+                form.clearErrors(name);
+              }}
             />
           </FormControl>
 

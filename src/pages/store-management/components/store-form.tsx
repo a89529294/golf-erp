@@ -131,6 +131,10 @@ export function StoreForm({
                       {...field}
                       disabled={isInputDisabled}
                       onClick={(e) => e.currentTarget.showPicker()}
+                      onChange={(e) => {
+                        field.onChange(e);
+                        form.clearErrors("openingHoursStart");
+                      }}
                     />
                   </FormControl>
 
@@ -154,6 +158,10 @@ export function StoreForm({
                       {...field}
                       disabled={isInputDisabled}
                       onClick={(e) => e.currentTarget.showPicker()}
+                      onChange={(e) => {
+                        field.onChange(e);
+                        form.clearErrors("openingHoursEnd");
+                      }}
                     />
                   </FormControl>
 
@@ -179,6 +187,10 @@ export function StoreForm({
                       placeholder={`02`}
                       {...field}
                       disabled={isInputDisabled}
+                      onChange={(e) => {
+                        field.onChange(e);
+                        form.clearErrors("phoneAreaCode");
+                      }}
                     />
                   </FormControl>
 
@@ -190,7 +202,7 @@ export function StoreForm({
               control={form.control}
               name="phone"
               render={({ field }) => (
-                <FormItem className="flex flex-col gap-1 ml-4">
+                <FormItem className="ml-4 flex flex-col gap-1">
                   <FormControl>
                     <Input
                       className={cn(
@@ -200,6 +212,10 @@ export function StoreForm({
                       placeholder={`12345678`}
                       {...field}
                       disabled={isInputDisabled}
+                      onChange={(e) => {
+                        field.onChange(e);
+                        form.clearErrors("phone");
+                      }}
                     />
                   </FormControl>
 
