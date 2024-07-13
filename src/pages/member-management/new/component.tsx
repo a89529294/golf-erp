@@ -1,20 +1,20 @@
-import backIcon from "@/assets/back.svg";
-import { IconButton } from "@/components/ui/button";
-import { button } from "@/components/ui/button-cn";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 import { MainLayout } from "@/layouts/main-layout";
+import { NewFormDesktopMenubar } from "@/pages/member-management/components/new-form-desktop-menubar";
 import { linksKV } from "@/utils/links";
+import { privateFetch } from "@/utils/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { z } from "zod";
 import { MemberForm } from "../components/member-form";
 import { memberFormSchema } from "../schemas";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { privateFetch } from "@/utils/utils";
-import { cn } from "@/lib/utils";
-import { toast } from "sonner";
+import { NewFormMobileMenubar } from "@/pages/member-management/components/new-form-mobile-menubar";
 
 export function Component() {
+  const isMobile = useIsMobile();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const form = useForm<z.infer<typeof memberFormSchema>>({
@@ -62,51 +62,40 @@ export function Component() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof memberFormSchema>) {
+  function onSubmit() {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
 
     mutate({
-      ...values,
+      ...form.getValues(),
     });
   }
 
   return (
     <MainLayout
       headerChildren={
-        <>
-          <Link
-            className={cn(
-              button(),
-              isPending ? "cursor-not-allowed opacity-50" : "",
-            )}
-            to={
-              isPending
-                ? window.location.pathname
-                : linksKV["member-management"].paths["index"]
-            }
-          >
-            <img src={backIcon} />
-            返回
-          </Link>
-
-          <IconButton
-            icon="save"
-            type="submit"
-            form="member-form"
-            disabled={isPending}
-          >
-            儲存
-          </IconButton>
-        </>
+        isMobile ? (
+          <NewFormMobileMenubar
+            isPending={isPending}
+            onSubmit={async () => {
+              const success = await form.trigger();
+              if (success) onSubmit();
+            }}
+          />
+        ) : (
+          <NewFormDesktopMenubar isPending={isPending} />
+        )
       }
     >
-      <MemberForm
-        coin={0}
-        form={form}
-        disabled={isPending}
-        onSubmit={onSubmit}
-      />
+      <div className="mb-2.5 flex w-full flex-col gap-5 border border-line-gray bg-light-gray p-5">
+        <MemberForm
+          coin={0}
+          form={form}
+          disabled={isPending}
+          onSubmit={onSubmit}
+          newMemberForm
+        />
+      </div>
     </MainLayout>
   );
 }
