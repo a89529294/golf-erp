@@ -1,17 +1,9 @@
 import pencilIcon from "@/assets/pencil.svg";
-import plusIcon from "@/assets/plus-icon.svg";
 import trashCanIcon from "@/assets/trash-can-icon.svg";
-import { SearchInput } from "@/components/search-input";
-import { button } from "@/components/ui/button-cn";
+import { CategoryDesktopMenubar } from "@/components/category/category-desktop-menubar";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 import { MainLayout } from "@/layouts/main-layout";
 import { cn } from "@/lib/utils";
 import {
@@ -31,6 +23,8 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { Modal } from "../modal";
+import { CategoryMobileMenubar } from "@/components/category/category-mobile-menubar";
+import { Scrollbar } from "@radix-ui/react-scroll-area";
 
 export function CategoryMain({
   newSiteHref,
@@ -79,6 +73,7 @@ export function CategoryMain({
     | GroundStoreWithSites[]
     | SimulatorStoreWithSites[];
 }): React.JSX.Element {
+  const isMobile = useIsMobile();
   const navigate = useNavigate();
   const { storeId } = useParams();
   const [globalFilter, setGlobalFilter] = useState("");
@@ -105,39 +100,25 @@ export function CategoryMain({
   return (
     <MainLayout
       headerChildren={
-        <>
-          <Link to={newSiteHref} className={button()} id="new-site-link">
-            <img src={plusIcon} />
-            新增場地
-          </Link>
-          <SearchInput value={globalFilter} setValue={setGlobalFilter} />
-          <Select
-            value={storeId}
-            onValueChange={(v) => onStoreValueChange(v, false)}
-          >
-            <SelectTrigger className="h-11 w-[280px] rounded-none border-0 border-b border-secondary-dark">
-              <SelectValue placeholder="選擇廠商" />
-            </SelectTrigger>
-            <SelectContent className="w-[280px]">
-              {stores.length === 0 ? (
-                <SelectItem key={0} value="undef" disabled>
-                  請先新增
-                  {type === "golf"
-                    ? "高爾夫廠商"
-                    : type === "ground"
-                      ? "練習場廠商"
-                      : "模擬器廠商"}
-                </SelectItem>
-              ) : (
-                stores.map((g) => (
-                  <SelectItem key={g.id} value={g.id}>
-                    {g.name}
-                  </SelectItem>
-                ))
-              )}
-            </SelectContent>
-          </Select>
-        </>
+        isMobile ? (
+          <CategoryMobileMenubar
+            newSiteHref={newSiteHref}
+            onStoreValueChange={onStoreValueChange}
+            storeId={storeId}
+            stores={stores}
+            type={type}
+          />
+        ) : (
+          <CategoryDesktopMenubar
+            globalFilter={globalFilter}
+            setGlobalFilter={setGlobalFilter}
+            newSiteHref={newSiteHref}
+            onStoreValueChange={onStoreValueChange}
+            storeId={storeId}
+            stores={stores}
+            type={type}
+          />
+        )
       }
     >
       {({ height }) => {
@@ -147,17 +128,6 @@ export function CategoryMain({
             style={{ height: height }}
           >
             <div className="relative flex h-full flex-col gap-2.5">
-              {/* {isPending && fetchStatus === "idle" && (
-                <p className="font-medium">請先選廠商</p>
-              )}
-              {isPending && fetchStatus === "fetching" && (
-                <div
-                  className="absolute inset-0 flex items-center justify-center h-full"
-                  style={{ height: height - 42 }}
-                >
-                  <Spinner />
-                </div>
-              )} */}
               {!sites || (sites.length === 0 && <h2>查無資料</h2>)}
               {sites?.map((section) => {
                 const openingDates = (
@@ -260,6 +230,7 @@ export function CategoryMain({
                 );
               })}
             </div>
+            <Scrollbar orientation="horizontal" />
           </ScrollArea>
         );
       }}
@@ -334,7 +305,7 @@ function Section({
         <div className="mr-1.5 h-32 w-32 bg-[#c1c1c1]" />
       )}
 
-      <div className="flex-1 basis-0 bg-light-gray px-4 pb-5 pt-2.5">
+      <div className="flex-1 basis-0 bg-light-gray px-4 pb-5 pt-2.5 sm:w-44">
         <h2 className="text-lg font-semibold text-secondary-purple">{name}</h2>
         <p>{desc}</p>
       </div>

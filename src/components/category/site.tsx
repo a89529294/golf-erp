@@ -140,10 +140,20 @@ export function Site({
             openingTimesRef.current?.scrollIntoView();
         },
       )}
-      className="space-y-10 px-20"
+      className="space-y-10 px-20 sm:px-4"
       id="site-details"
     >
-      <section className="space-y-6 border border-line-gray bg-white px-12 py-10">
+      <section className="space-y-6 border border-line-gray bg-white px-12 py-10 sm:px-2 sm:py-4">
+        {type === "existing-indoor-simulator" && (
+          <IconShortButton
+            onClick={onOpenGate}
+            icon="plus"
+            disabled={formDisabled || isOpeningGate}
+            className="hidden sm:flex"
+          >
+            開啟包廂門
+          </IconShortButton>
+        )}
         <div className="flex items-center gap-5">
           <FormTextField
             className="flex-1"
@@ -174,6 +184,7 @@ export function Site({
               onClick={onOpenGate}
               icon="plus"
               disabled={formDisabled || isOpeningGate}
+              className="sm:hidden"
             >
               開啟包廂門
             </IconShortButton>
@@ -217,7 +228,9 @@ export function Site({
       </section>
 
       <Section title="設備配置">
-        <div className={cn("flex flex-wrap gap-3 p-5 text-secondary-dark")}>
+        <div
+          className={cn("flex flex-wrap gap-3 p-5 text-secondary-dark sm:p-2")}
+        >
           {form.watch("equipments").map((e) => {
             return (
               <button
@@ -257,7 +270,7 @@ export function Site({
         {form.watch("imageFiles").length ? (
           <div
             className={cn(
-              "grid grid-cols-[repeat(auto-fill,minmax(130px,1fr))] px-3 py-5",
+              "grid grid-cols-[repeat(auto-fill,minmax(130px,1fr))] px-3 py-5 sm:p-2",
             )}
           >
             {form.getValues("imageFiles").map((file) => {

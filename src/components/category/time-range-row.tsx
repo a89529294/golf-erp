@@ -59,7 +59,7 @@ export function TimeRangeRow({
   return (
     <li
       className={cn(
-        "flex items-center border-b-[1.5px] border-b-transparent pb-4 pl-8 pr-5 pt-5 text-secondary-dark ",
+        "flex items-center border-b-[1.5px] border-b-transparent pb-4 pl-8 pr-5 pt-5 text-secondary-dark sm:px-2",
         !data[0].saved && "border-b-orange bg-hover-orange",
         disabled && "opacity-50",
       )}

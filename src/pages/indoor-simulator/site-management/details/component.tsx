@@ -1,25 +1,27 @@
 import { Site } from "@/components/category/site";
-import { IconButton, IconWarningButton } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { MainLayout } from "@/layouts/main-layout";
 
+import { useAuth } from "@/hooks/use-auth";
+import { DetailsSimulatorDesktopMenubar } from "@/pages/indoor-simulator/site-management/components/details-simulator-desktop-menubar";
+import { filterObject } from "@/utils";
+import { equipments } from "@/utils/category/equipment";
 import { existingIndoorSimulatorSchema } from "@/utils/category/schemas";
+import { privateFetch } from "@/utils/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useLoaderData, useNavigate, useParams } from "react-router-dom";
-import { z } from "zod";
-import { genSimulatorDetailsQuery, loader, SimulatorPATCH } from "./loader";
-import { indoorSimulatorStoresQuery } from "../loader";
-import { equipments } from "@/utils/category/equipment";
-import { filterObject } from "@/utils";
-import { privateFetch } from "@/utils/utils";
 import { toast } from "sonner";
-import { Modal } from "@/components/modal";
-import { useAuth } from "@/hooks/use-auth";
+import { z } from "zod";
+import { indoorSimulatorStoresQuery } from "../loader";
+import { SimulatorPATCH, genSimulatorDetailsQuery, loader } from "./loader";
+import { useIsMobile } from "@/hooks/use-is-mobile";
+import { DetailsSimulatorMobileMenubar } from "@/pages/indoor-simulator/site-management/components/details-simultor-mobile-menubar";
 
 export function Component() {
+  const isMobile = useIsMobile();
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const { storeId, siteId } = useParams();
@@ -178,65 +180,41 @@ export function Component() {
   return (
     <MainLayout
       headerChildren={
-        <>
-          {formDisabled ? (
-            <IconButton icon="back" onClick={() => navigate(-1)}>
-              返回
-            </IconButton>
-          ) : Object.keys(form.formState.dirtyFields).length !== 0 ? (
-            <Modal
-              dialogTriggerChildren={
-                <IconWarningButton disabled={isPending} icon="redX">
-                  取消編輯
-                </IconWarningButton>
-              }
-              onSubmit={() => {
-                setFormDisabled(true);
-                form.reset(data);
-                setDefaultOpeningDates(data.openingDates);
-                setDefaultImageFiles(data.imageFiles);
-              }}
-            >
-              資料尚未儲存，是否返回？
-            </Modal>
-          ) : (
-            <IconWarningButton
-              icon="redX"
-              onClick={() => setFormDisabled(true)}
-            >
-              取消編輯
-            </IconWarningButton>
-          )}
-          {formDisabled && (
-            <Modal
-              dialogTriggerChildren={
-                <IconWarningButton icon="trashCan" disabled={isPending}>
-                  刪除
-                </IconWarningButton>
-              }
-              title={`確認刪除${form.getValues("name")}`}
-              onSubmit={deleteSite}
-            ></Modal>
-          )}
-          {formDisabled ? (
-            <IconButton
-              icon="pencil"
-              type="button"
-              onClick={() => setTimeout(() => setFormDisabled(false), 0)}
-            >
-              編輯
-            </IconButton>
-          ) : (
-            <IconButton
-              disabled={isPending || !form.formState.isDirty}
-              icon="save"
-              type="submit"
-              form="site-details"
-            >
-              儲存
-            </IconButton>
-          )}
-        </>
+        isMobile ? (
+          <DetailsSimulatorMobileMenubar
+            deleteModalTitle={`確認刪除${form.getValues("name")}`}
+            deleteSite={deleteSite}
+            form={form}
+            formDisabled={formDisabled}
+            setFormDisabled={setFormDisabled}
+            isPending={isPending}
+            onReset={() => {
+              setFormDisabled(true);
+              form.reset(data);
+              setDefaultOpeningDates(data.openingDates);
+              setDefaultImageFiles(data.imageFiles);
+            }}
+            onSubmit={async () => {
+              const success = await form.trigger();
+              if (success) mutate();
+            }}
+          />
+        ) : (
+          <DetailsSimulatorDesktopMenubar
+            deleteModalTitle={`確認刪除${form.getValues("name")}`}
+            deleteSite={deleteSite}
+            form={form}
+            formDisabled={formDisabled}
+            setFormDisabled={setFormDisabled}
+            isPending={isPending}
+            onReset={() => {
+              setFormDisabled(true);
+              form.reset(data);
+              setDefaultOpeningDates(data.openingDates);
+              setDefaultImageFiles(data.imageFiles);
+            }}
+          />
+        )
       }
     >
       <div className="flex w-full flex-col gap-10 border border-line-gray bg-light-gray p-1">

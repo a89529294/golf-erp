@@ -42,7 +42,7 @@ export function DatePicker({
       <PopoverTrigger asChild>
         <button
           className={cn(
-            "flex h-7 w-44 items-center border-b border-secondary-dark text-secondary-dark",
+            "flex h-7 w-44 items-center border-b border-secondary-dark text-secondary-dark sm:w-32",
             !date && "text-word-gray",
             error && "border-b-destructive",
             disabled && "cursor-not-allowed",

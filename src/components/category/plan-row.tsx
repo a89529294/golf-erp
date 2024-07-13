@@ -75,7 +75,7 @@ export function PlanRow({
   return (
     <li
       className={cn(
-        "flex items-center gap-4 border-b-[1.5px] border-b-transparent pb-4 pl-8 pr-5 pt-5 text-secondary-dark ",
+        "flex items-center gap-4 border-b-[1.5px] border-b-transparent pb-4 pl-8 pr-5 pt-5 text-secondary-dark sm:px-2",
         !data.saved && "border-b-orange bg-hover-orange",
         disabled && "opacity-50",
       )}
@@ -83,7 +83,7 @@ export function PlanRow({
     >
       <Input
         className={cn(
-          "h-7 w-52 rounded-none border-0 border-b border-secondary-dark bg-transparent font-mono",
+          "h-7 w-52 rounded-none border-0 border-b border-secondary-dark bg-transparent font-mono sm:w-20",
           errorFields.title && "border-red-500",
         )}
         onChange={(e) => {
@@ -101,7 +101,7 @@ export function PlanRow({
 
       <Input
         className={cn(
-          "h-7 w-32 rounded-none border-0 border-b border-b-secondary-dark bg-transparent font-mono ",
+          "h-7 w-32 rounded-none border-0 border-b border-b-secondary-dark bg-transparent font-mono sm:w-16 ",
           errorFields.hours && "border-red-500",
         )}
         onChange={(e) => {
@@ -121,7 +121,7 @@ export function PlanRow({
       <div className="relative">
         <Input
           className={cn(
-            "h-7 w-32 rounded-none border-0 border-b border-b-secondary-dark bg-transparent font-mono *:w-full",
+            "h-7 w-32 rounded-none border-0 border-b border-b-secondary-dark bg-transparent font-mono *:w-full sm:w-20",
             errorFields.price && "border-red-500",
           )}
           onChange={(e) => {

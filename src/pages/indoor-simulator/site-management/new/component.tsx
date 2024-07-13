@@ -1,8 +1,10 @@
 import { Site } from "@/components/category/site";
-import { IconButton } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { useAuth } from "@/hooks/use-auth";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 import { MainLayout } from "@/layouts/main-layout";
+import { NewSimulatorDesktopMenubar } from "@/pages/indoor-simulator/site-management/components/new-simulator-desktop-menubar";
+import { NewSimulatorMobileMenubar } from "@/pages/indoor-simulator/site-management/components/new-simulator-mobile-menubar";
 import { equipments } from "@/utils/category/equipment";
 import { newIndoorSimulatorSchema } from "@/utils/category/schemas";
 import { linksKV } from "@/utils/links";
@@ -17,6 +19,7 @@ import { indoorSimulatorStoresQuery } from "../loader";
 import { loader } from "./loader";
 
 export function Component() {
+  const isMobile = useIsMobile();
   const { user } = useAuth();
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
   const { data: stores } = useQuery({
@@ -110,18 +113,17 @@ export function Component() {
   return (
     <MainLayout
       headerChildren={
-        <>
-          <IconButton
-            disabled={isPending}
-            icon="back"
-            onClick={() => navigate(-1)}
-          >
-            返回
-          </IconButton>
-          <IconButton disabled={isPending} icon="save" form="site-details">
-            儲存
-          </IconButton>
-        </>
+        isMobile ? (
+          <NewSimulatorMobileMenubar
+            onSubmit={async () => {
+              const success = await form.trigger();
+              if (success) mutate();
+            }}
+            isPending={isPending}
+          />
+        ) : (
+          <NewSimulatorDesktopMenubar isPending={isPending} />
+        )
       }
     >
       <div className="flex w-full flex-col gap-10 border border-line-gray bg-light-gray p-1">

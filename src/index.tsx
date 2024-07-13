@@ -2,7 +2,7 @@ import { linksKV } from "@/utils/links";
 import { PermissionGuard } from "@/utils/permission-guard";
 import { queryClient } from "@/utils/query-client";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+// import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import {
@@ -239,7 +239,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <QueryClientProvider client={queryClient}>
       <RouterProvider router={router} />
       <Toaster richColors={true} theme="light" visibleToasts={1} />
-      <ReactQueryDevtools buttonPosition="bottom-right" />
+      {/* <ReactQueryDevtools buttonPosition="bottom-right" /> */}
     </QueryClientProvider>
   </React.StrictMode>,
 );

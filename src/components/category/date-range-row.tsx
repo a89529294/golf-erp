@@ -59,7 +59,7 @@ export function DateRangeRow({
   return (
     <li
       className={cn(
-        "flex items-center border-b-[1.5px] border-b-transparent pb-4 pl-8 pr-5 pt-5 ",
+        "flex items-center border-b-[1.5px] border-b-transparent pb-4 pl-8 pr-5 pt-5 sm:px-2",
         !data.saved && "border-b-orange bg-hover-orange",
         disabled && "opacity-50",
       )}
