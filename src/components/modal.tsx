@@ -17,6 +17,7 @@ export function Modal({
   onSubmit,
   title,
   onModalClose,
+  onClickSubmit,
 }: {
   dialogTriggerChildren:
     | ReactElement
@@ -25,6 +26,7 @@ export function Modal({
   onSubmit: () => void | Promise<void>;
   title?: string;
   onModalClose?: () => void;
+  onClickSubmit?: () => void;
 }) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -36,7 +38,6 @@ export function Modal({
       onOpenChange={(open) => {
         setOpen(open);
 
-        console.log(open);
         onModalClose && !open && onModalClose();
       }}
     >
@@ -79,7 +80,10 @@ export function Modal({
               form="xx"
               loading={loading}
               disabled={loading}
-              onClick={() => onModalClose && onModalClose()}
+              onClick={() => {
+                onModalClose && onModalClose();
+                onClickSubmit && onClickSubmit();
+              }}
             >
               確定
             </TextButton>

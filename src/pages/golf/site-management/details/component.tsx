@@ -1,8 +1,8 @@
 import { Site } from "@/components/category/site";
-import { Modal } from "@/components/modal";
-import { IconButton, IconWarningButton } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 import { MainLayout } from "@/layouts/main-layout";
+import { DetailsDesktopMenubar } from "@/pages/driving-range/site-management/components/details-desktop-menubar";
 import { filterObject, fromDateToDateTimeString } from "@/utils";
 import {
   ExistingGolfCourse,
@@ -16,8 +16,10 @@ import { useForm } from "react-hook-form";
 import { useLoaderData, useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { genGolfSiteDetailsQuery, loader } from "./loader";
+import { DetailsMobileMenubar } from "@/pages/driving-range/site-management/components/details-mobile-menubar";
 
 export function Component() {
+  const isMobile = useIsMobile();
   const queryClient = useQueryClient();
   const [formDisabled, setFormDisabled] = useState(true);
   const navigate = useNavigate();
@@ -212,88 +214,52 @@ export function Component() {
     });
   }, [data, form]);
 
+  function onBackWithoutSave() {
+    setFormDisabled(true);
+    form.reset({
+      name: data.name,
+      isActive: data.isActive,
+      description: data.introduce,
+      equipments: data.equipments,
+      imageFiles: data.imageFiles,
+      openingDates: data.openingDates,
+      storeId: data.store.id,
+      monday: data.openTimes.filter((v) => v.day === 1),
+      tuesday: data.openTimes.filter((v) => v.day === 2),
+      wednesday: data.openTimes.filter((v) => v.day === 3),
+      thursday: data.openTimes.filter((v) => v.day === 4),
+      friday: data.openTimes.filter((v) => v.day === 5),
+      saturday: data.openTimes.filter((v) => v.day === 6),
+      sunday: data.openTimes.filter((v) => v.day === 0),
+      store: data.store,
+    });
+  }
+
   return (
     <MainLayout
       headerChildren={
-        <>
-          {formDisabled ? (
-            <IconButton icon="back" onClick={() => navigate(-1)}>
-              返回
-            </IconButton>
-          ) : Object.keys(form.formState.dirtyFields).length !== 0 ? (
-            <Modal
-              dialogTriggerChildren={
-                <IconWarningButton disabled={isPending} icon="redX">
-                  取消編輯
-                </IconWarningButton>
-              }
-              onSubmit={() => {
-                setFormDisabled(true);
-                form.reset({
-                  name: data.name,
-                  isActive: data.isActive,
-                  description: data.introduce,
-                  equipments: data.equipments,
-                  imageFiles: data.imageFiles,
-                  openingDates: data.openingDates,
-                  storeId: data.store.id,
-                  monday: data.openTimes.filter((v) => v.day === 1),
-                  tuesday: data.openTimes.filter((v) => v.day === 2),
-                  wednesday: data.openTimes.filter((v) => v.day === 3),
-                  thursday: data.openTimes.filter((v) => v.day === 4),
-                  friday: data.openTimes.filter((v) => v.day === 5),
-                  saturday: data.openTimes.filter((v) => v.day === 6),
-                  sunday: data.openTimes.filter((v) => v.day === 0),
-                  store: data.store,
-                });
-              }}
-            >
-              資料尚未儲存，是否返回？
-            </Modal>
-          ) : (
-            <IconWarningButton
-              icon="redX"
-              onClick={() => setFormDisabled(true)}
-            >
-              取消編輯
-            </IconWarningButton>
-          )}
-
-          {formDisabled && (
-            <Modal
-              dialogTriggerChildren={
-                <IconWarningButton disabled={isPending} icon="trashCan">
-                  刪除
-                </IconWarningButton>
-              }
-              title={`確認刪除${form.getValues("name")}`}
-              onSubmit={deleteSite}
-            />
-          )}
-
-          {formDisabled ? (
-            <IconButton
-              icon="pencil"
-              type="button"
-              onClick={() => setTimeout(() => setFormDisabled(false), 0)}
-            >
-              編輯
-            </IconButton>
-          ) : (
-            <IconButton
-              icon="save"
-              type="submit"
-              form="site-details"
-              onClick={() => {}}
-              disabled={
-                Object.keys(form.formState.dirtyFields).length === 0 ||
-                isPending
-              }
-            >
-              儲存
-            </IconButton>
-          )}
-        </>
+        isMobile ? (
+          <DetailsMobileMenubar
+            deleteSite={deleteSite}
+            dirtyFieldsLength={Object.keys(form.formState.dirtyFields).length}
+            formDisabled={formDisabled}
+            setFormDisabled={setFormDisabled}
+            isPending={isPending}
+            onBackWithoutSave={onBackWithoutSave}
+            siteName={form.getValues("name")}
+            onPatchForm={mutate}
+          />
+        ) : (
+          <DetailsDesktopMenubar
+            deleteSite={deleteSite}
+            dirtyFieldsLength={Object.keys(form.formState.dirtyFields).length}
+            formDisabled={formDisabled}
+            setFormDisabled={setFormDisabled}
+            isPending={isPending}
+            onBackWithoutSave={onBackWithoutSave}
+            siteName={form.getValues("name")}
+          />
+        )
       }
     >
       <div className="flex w-full flex-col gap-10 border border-line-gray bg-light-gray p-1">

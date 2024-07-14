@@ -1,5 +1,9 @@
 import { equipments } from "@/utils/category/equipment";
-import { ExistingDrivingRange, storeSchema } from "@/utils/category/schemas";
+import {
+  ExistingDrivingRange,
+  plansSchema,
+  storeSchema,
+} from "@/utils/category/schemas";
 import { queryClient } from "@/utils/query-client";
 import { privateFetch } from "@/utils/utils";
 import { LoaderFunctionArgs } from "react-router-dom";
@@ -14,9 +18,6 @@ const baseOpenDay = z.object({
 const baseOpenTime = z.object({
   startTime: z.string(),
   endTime: z.string(),
-  pricePerHour: z.number(),
-  openQuantity: z.number(),
-  openBallQuantity: z.number(),
   sequence: z.number(),
 });
 
@@ -25,6 +26,7 @@ const baseDrivingRangeSchema = z.object({
   name: z.string(),
   introduce: z.string(),
   ballPrice: z.number(),
+  plans: plansSchema.plans.optional(),
   equipment: z.string().nullable(),
   isActive: z.boolean(),
 });
@@ -102,14 +104,12 @@ export const genDrivingRangeDetailsQuery = (
       })),
       venueSettings: parsed.openTimes.map((v) => ({
         id: v.id,
-        start: v.startTime.slice(11, 16),
-        end: v.endTime.slice(11, 16),
-        fee: v.pricePerHour,
+        start: v.startTime,
+        end: v.endTime,
         saved: true,
-        numberOfBalls: v.openBallQuantity,
-        numberOfGroups: v.openQuantity,
       })),
       store: parsed.store,
+      plans: parsed.plans?.map((p) => ({ ...p, saved: true })) ?? [],
     };
   },
 });

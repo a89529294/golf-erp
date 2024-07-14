@@ -13,7 +13,7 @@ export function GraphRevenueCell({
     <div className="flex gap-3 bg-light-blue/10 px-3 py-2.5">
       {leftSlot}
       <div className="font-bold">
-        <p className="text-sm">{title}</p>
+        <p className="whitespace-nowrap text-sm">{title}</p>
         <p className="text-3xl text-secondary-purple">{nf.format(amount)}</p>
       </div>
     </div>

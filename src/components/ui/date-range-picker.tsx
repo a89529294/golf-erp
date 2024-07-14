@@ -31,7 +31,9 @@ export function DateRangePicker({
     <div className={cn("grid gap-2", className)}>
       <Popover>
         <PopoverTrigger asChild>
-          <TextButton selected={selected}>指定範圍</TextButton>
+          <TextButton selected={selected} className="whitespace-nowrap">
+            指定範圍
+          </TextButton>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="end">
           <Calendar

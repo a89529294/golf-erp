@@ -3,6 +3,7 @@ import x from "@/assets/x.svg";
 import { cn } from "@/lib/utils";
 import { Dispatch, SetStateAction, useState } from "react";
 import { motion } from "framer-motion";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 
 export function SearchInput({
   value,
@@ -15,6 +16,7 @@ export function SearchInput({
   disabled?: boolean;
   className?: string;
 }) {
+  const isMobile = useIsMobile();
   const [isCursorOut, setIsCursorOut] = useState(true);
   const isActive = !isCursorOut ? true : !!value;
 
@@ -27,7 +29,7 @@ export function SearchInput({
         className,
       )}
       animate={{
-        width: isActive ? 250 : 46,
+        width: isActive ? (isMobile ? 160 : 250) : 46,
         borderColor: isActive ? "rgb(233 158 24)" : "rgb(182 182 182)", // orange line-gray
       }}
       transition={{ duration: 0.1 }}

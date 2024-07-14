@@ -40,6 +40,7 @@ export function Component() {
       openingDates: [],
       venueSettings: [],
       costPerBox: 0,
+      plans: [],
     },
   });
   const { mutate, isPending } = useMutation({
@@ -66,11 +67,14 @@ export function Component() {
           })),
           openTimes: v.venueSettings.map((v, idx) => ({
             sequence: idx + 1,
-            startTime: `${new Date().toISOString().slice(0, 10)}T${v.start}`,
-            endTime: `${new Date().toISOString().slice(0, 10)}T${v.end}`,
-            pricePerHour: v.fee,
-            openQuantity: v.numberOfGroups,
-            openBallQuantity: v.numberOfBalls,
+            startTime: `${v.start}:00`,
+            endTime: `${v.end}:00`,
+          })),
+          plans: form.getValues("plans")?.map((v, i) => ({
+            title: v.title,
+            hours: v.hours,
+            price: v.price,
+            sequence: i + 1,
           })),
         }),
         headers: {

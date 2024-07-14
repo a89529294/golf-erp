@@ -1,8 +1,9 @@
 import { Site } from "@/components/category/site";
-import { Modal } from "@/components/modal";
-import { IconButton, IconWarningButton } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 import { MainLayout } from "@/layouts/main-layout";
+import { DetailsDesktopMenubar } from "@/pages/driving-range/site-management/components/details-desktop-menubar";
+import { DetailsMobileMenubar } from "@/pages/driving-range/site-management/components/details-mobile-menubar";
 import { filterObject } from "@/utils";
 import { existingDrivingRangeSchema } from "@/utils/category/schemas";
 import { privateFetch } from "@/utils/utils";
@@ -20,6 +21,7 @@ import {
 } from "./loader";
 
 export function Component() {
+  const isMobile = useIsMobile();
   const queryClient = useQueryClient();
   const { storeId, siteId } = useParams();
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
@@ -35,6 +37,7 @@ export function Component() {
   const [defaultVenueSettings, setDefaultVenueSettings] = useState(
     data.venueSettings,
   );
+  console.log(data);
   const [defaultImageFiles, setDefaultImageFiles] = useState(data.imageFiles);
   const form = useForm<z.infer<typeof existingDrivingRangeSchema>>({
     resolver: zodResolver(existingDrivingRangeSchema),
@@ -48,6 +51,7 @@ export function Component() {
       openingDates: data.openingDates,
       venueSettings: data.venueSettings,
       costPerBox: data.costPerBox,
+      plans: data.plans,
     },
   });
   const [formDisabled, setFormDisabled] = useState(true);
@@ -74,6 +78,9 @@ export function Component() {
             isActive: e.selected,
           })),
         );
+      if (changedFields["plans"]) {
+        x.plans = changedFields["plans"];
+      }
       if ("openingDates" in changedFields) {
         changedFields.openingDates?.forEach((od, i) => {
           if (defaultOpeningDates.find((dod) => dod.id === od.id)) {
@@ -100,21 +107,16 @@ export function Component() {
             x.openTimes ||= [];
             x.openTimes.push({
               id: vs.id,
-              startTime: `${new Date().toISOString().slice(0, 10)}T${vs.start}`,
-              endTime: `${new Date().toISOString().slice(0, 10)}T${vs.end}`,
-              pricePerHour: vs.fee || 0,
-              openQuantity: vs.numberOfGroups || 0,
-              openBallQuantity: vs.numberOfBalls || 0,
+              startTime: vs.start + ":00",
+              endTime: vs.end + ":00",
               sequence: i + 1,
             });
           } else {
             x.openTimes ||= [];
             x.openTimes.push({
-              startTime: `${new Date().toISOString().slice(0, 10)}T${vs.start}`,
-              endTime: `${new Date().toISOString().slice(0, 10)}T${vs.end}`,
-              pricePerHour: vs.fee || 0,
-              openQuantity: vs.numberOfGroups || 0,
-              openBallQuantity: vs.numberOfBalls || 0,
+              startTime: vs.start + ":00",
+              endTime: vs.end + ":00",
+
               sequence: i + 1,
             });
           }
@@ -163,6 +165,9 @@ export function Component() {
       });
       setFormDisabled(true);
     },
+    onError: () => {
+      toast.error("更新失敗");
+    },
   });
   const { mutateAsync: deleteSite } = useMutation({
     mutationKey: ["delete-ground-site"],
@@ -186,76 +191,39 @@ export function Component() {
     setDefaultVenueSettings(data.venueSettings);
   }, [data, form]);
 
+  function onBackWithoutSave() {
+    setFormDisabled(true);
+    form.reset(data);
+    setDefaultImageFiles(data.imageFiles);
+    setDefaultOpeningDates(data.openingDates);
+    setDefaultVenueSettings(data.venueSettings);
+  }
+
   return (
     <MainLayout
       headerChildren={
-        <>
-          {formDisabled ? (
-            <IconButton icon="back" onClick={() => navigate(-1)}>
-              返回
-            </IconButton>
-          ) : Object.keys(form.formState.dirtyFields).length !== 0 ? (
-            <Modal
-              dialogTriggerChildren={
-                <IconWarningButton disabled={isPending} icon="redX">
-                  取消編輯
-                </IconWarningButton>
-              }
-              onSubmit={() => {
-                setFormDisabled(true);
-                form.reset(data);
-                setDefaultImageFiles(data.imageFiles);
-                setDefaultOpeningDates(data.openingDates);
-                setDefaultVenueSettings(data.venueSettings);
-              }}
-            >
-              資料尚未儲存，是否返回？
-            </Modal>
-          ) : (
-            <IconWarningButton
-              icon="redX"
-              onClick={() => setFormDisabled(true)}
-            >
-              取消編輯
-            </IconWarningButton>
-          )}
-
-          {formDisabled && (
-            <Modal
-              dialogTriggerChildren={
-                <IconWarningButton icon="trashCan">刪除</IconWarningButton>
-              }
-              onSubmit={deleteSite}
-            >
-              確認刪除{form.getValues("name")}?
-            </Modal>
-          )}
-
-          {formDisabled ? (
-            <IconButton
-              icon="pencil"
-              type="button"
-              onClick={(e) => {
-                e.preventDefault();
-                setFormDisabled(false);
-              }}
-            >
-              編輯
-            </IconButton>
-          ) : (
-            <IconButton
-              disabled={
-                isPending ||
-                Object.keys(form.formState.dirtyFields).length === 0
-              }
-              icon="save"
-              form="site-details"
-              onClick={() => {}}
-            >
-              儲存
-            </IconButton>
-          )}
-        </>
+        isMobile ? (
+          <DetailsMobileMenubar
+            deleteSite={deleteSite}
+            dirtyFieldsLength={Object.keys(form.formState.dirtyFields).length}
+            formDisabled={formDisabled}
+            isPending={isPending}
+            onBackWithoutSave={onBackWithoutSave}
+            setFormDisabled={setFormDisabled}
+            siteName={form.getValues("name")}
+            onPatchForm={mutate}
+          />
+        ) : (
+          <DetailsDesktopMenubar
+            deleteSite={deleteSite}
+            dirtyFieldsLength={Object.keys(form.formState.dirtyFields).length}
+            formDisabled={formDisabled}
+            isPending={isPending}
+            onBackWithoutSave={onBackWithoutSave}
+            setFormDisabled={setFormDisabled}
+            siteName={form.getValues("name")}
+          />
+        )
       }
     >
       <div className="flex w-full flex-col gap-10 border border-line-gray bg-light-gray p-1">

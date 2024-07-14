@@ -154,41 +154,7 @@ export function CategoryMain({
                   hours: string;
                 }[];
 
-                if (type === "ground") {
-                  (section.openTimes
-                    ? section.openTimes.toSorted(
-                        (a, b) => a.sequence - b.sequence,
-                      )
-                    : []
-                  ).forEach((v) => {
-                    const startTime = v.startTime.slice(11, 16);
-                    const startHour = +startTime.split(":")[0];
-                    const startMin = +startTime.split(":")[1];
-                    const endTime = v.endTime.slice(11, 16);
-                    const endHour = +endTime.split(":")[0];
-                    const endMin = +endTime.split(":")[1];
-                    openingHours.push({
-                      hours: `${startTime}～${endTime}`,
-                      duration: getDifferenceInHoursAndMinutes(
-                        startHour * 60 + startMin,
-                        endHour * 60 + endMin,
-                      ),
-                      fee: "pricePerHour" in v ? `${v.pricePerHour}元` : "0元",
-                    });
-                  });
-                } else if (type === "golf") {
-                  section.openTimes
-                    ?.sort((a, b) => a.sequence - b.sequence)
-                    .forEach((s) => {
-                      if ("day" in s)
-                        openingWeekDays.push({
-                          day: numberToWeekDay[
-                            s.day as keyof typeof numberToWeekDay
-                          ],
-                          hours: `${s.startTime.slice(11, 16)}～${s.endTime.slice(11, 16)}`,
-                        });
-                    });
-                } else {
+                if (type === "ground" || type === "simulator") {
                   if (section.openTimes) {
                     section.openTimes.sort((a, b) => a.sequence - b.sequence);
                     section.openTimes.forEach((o) =>
@@ -203,6 +169,18 @@ export function CategoryMain({
                       }),
                     );
                   }
+                } else {
+                  section.openTimes
+                    ?.sort((a, b) => a.sequence - b.sequence)
+                    .forEach((s) => {
+                      if ("day" in s)
+                        openingWeekDays.push({
+                          day: numberToWeekDay[
+                            s.day as keyof typeof numberToWeekDay
+                          ],
+                          hours: `${s.startTime.slice(11, 16)}～${s.endTime.slice(11, 16)}`,
+                        });
+                    });
                 }
 
                 return (

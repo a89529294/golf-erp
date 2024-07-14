@@ -3,7 +3,8 @@ import { Form } from "@/components/ui/form";
 import { MainLayout } from "@/layouts/main-layout";
 
 import { useAuth } from "@/hooks/use-auth";
-import { DetailsSimulatorDesktopMenubar } from "@/pages/indoor-simulator/site-management/components/details-simulator-desktop-menubar";
+import { DetailsDesktopMenubar } from "@/pages/driving-range/site-management/components/details-desktop-menubar";
+import { DetailsMobileMenubar } from "@/pages/driving-range/site-management/components/details-mobile-menubar";
 import { filterObject } from "@/utils";
 import { equipments } from "@/utils/category/equipment";
 import { existingIndoorSimulatorSchema } from "@/utils/category/schemas";
@@ -18,7 +19,6 @@ import { z } from "zod";
 import { indoorSimulatorStoresQuery } from "../loader";
 import { SimulatorPATCH, genSimulatorDetailsQuery, loader } from "./loader";
 import { useIsMobile } from "@/hooks/use-is-mobile";
-import { DetailsSimulatorMobileMenubar } from "@/pages/indoor-simulator/site-management/components/details-simultor-mobile-menubar";
 
 export function Component() {
   const isMobile = useIsMobile();
@@ -181,33 +181,33 @@ export function Component() {
     <MainLayout
       headerChildren={
         isMobile ? (
-          <DetailsSimulatorMobileMenubar
-            deleteModalTitle={`確認刪除${form.getValues("name")}`}
+          <DetailsMobileMenubar
+            siteName={form.getValues("name")}
             deleteSite={deleteSite}
-            form={form}
+            dirtyFieldsLength={Object.keys(form.formState.dirtyFields).length}
             formDisabled={formDisabled}
             setFormDisabled={setFormDisabled}
             isPending={isPending}
-            onReset={() => {
+            onBackWithoutSave={() => {
               setFormDisabled(true);
               form.reset(data);
               setDefaultOpeningDates(data.openingDates);
               setDefaultImageFiles(data.imageFiles);
             }}
-            onSubmit={async () => {
+            onPatchForm={async () => {
               const success = await form.trigger();
               if (success) mutate();
             }}
           />
         ) : (
-          <DetailsSimulatorDesktopMenubar
-            deleteModalTitle={`確認刪除${form.getValues("name")}`}
+          <DetailsDesktopMenubar
+            siteName={form.getValues("name")}
             deleteSite={deleteSite}
-            form={form}
             formDisabled={formDisabled}
             setFormDisabled={setFormDisabled}
             isPending={isPending}
-            onReset={() => {
+            dirtyFieldsLength={Object.keys(form.formState.dirtyFields).length}
+            onBackWithoutSave={() => {
               setFormDisabled(true);
               form.reset(data);
               setDefaultOpeningDates(data.openingDates);

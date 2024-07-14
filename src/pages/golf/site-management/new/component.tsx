@@ -1,10 +1,13 @@
 import { Site } from "@/components/category/site";
-import { IconButton } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { MainLayout } from "@/layouts/main-layout";
 import { equipments } from "@/utils/category/equipment";
 import { NewGolfCourse, newGolfCourseSchema } from "@/utils/category/schemas";
 
+import { useAuth } from "@/hooks/use-auth";
+import { useIsMobile } from "@/hooks/use-is-mobile";
+import { NewDesktopMenubar } from "@/pages/golf/site-management/components/new-desktop-menubar";
+import { NewMobileMenubar } from "@/pages/golf/site-management/components/new-mobile-menubar";
 import { privateFetch } from "@/utils/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -13,9 +16,9 @@ import { useLoaderData, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { golfStoresQuery } from "../loader";
 import { loader } from "./loader";
-import { useAuth } from "@/hooks/use-auth";
 
 export function Component() {
+  const isMobile = useIsMobile();
   const { user } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -44,7 +47,8 @@ export function Component() {
   });
   const { mutate, isPending } = useMutation({
     mutationKey: ["add-new-golf-site"],
-    mutationFn: async (v: NewGolfCourse) => {
+    mutationFn: async () => {
+      const v = form.getValues();
       const body = JSON.stringify({
         name: v.name,
         isActive: v.isActive,
@@ -129,18 +133,11 @@ export function Component() {
   return (
     <MainLayout
       headerChildren={
-        <>
-          <IconButton
-            icon="back"
-            onClick={() => navigate(-1)}
-            disabled={isPending}
-          >
-            返回
-          </IconButton>
-          <IconButton icon="save" form="site-details" disabled={isPending}>
-            儲存
-          </IconButton>
-        </>
+        isMobile ? (
+          <NewMobileMenubar isPending={isPending} onSave={mutate} />
+        ) : (
+          <NewDesktopMenubar isPending={isPending} />
+        )
       }
     >
       <div className="flex w-full flex-col gap-10 border border-line-gray bg-light-gray p-1">
@@ -152,7 +149,7 @@ export function Component() {
             type="golf"
             formDisabled={isPending}
             stores={stores}
-            onSubmit={(v) => mutate(v as NewGolfCourse)}
+            onSubmit={() => mutate()}
             isPending={isPending}
           />
         </Form>

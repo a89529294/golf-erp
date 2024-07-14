@@ -156,13 +156,6 @@ const venueSettingsSchema = {
       id: z.string(),
       start: z.string(),
       end: z.string(),
-      fee: z.union([z.literal(""), z.number()]).refine((v) => v !== ""),
-      numberOfGroups: z
-        .union([z.literal(""), z.number()])
-        .refine((v) => v !== ""),
-      numberOfBalls: z
-        .union([z.literal(""), z.number()])
-        .refine((v) => v !== ""),
       saved: z.boolean(),
     }),
   ),
@@ -212,7 +205,8 @@ const newDrivingRangeSchema = baseSchema
   .extend(equipmentsSchema)
   .extend(newImagesSchema)
   .extend(venueSettingsSchema)
-  .extend(costPerBoxSchema);
+  .extend(costPerBoxSchema)
+  .extend(plansSchema);
 type NewDrivingRange = z.infer<typeof newDrivingRangeSchema> & {
   category: "driving-range";
 };
@@ -224,7 +218,8 @@ const existingDrivingRangeSchema = baseSchema
   .extend(equipmentsSchema)
   .extend(existingImagesSchema)
   .extend(venueSettingsSchema)
-  .extend(costPerBoxSchema);
+  .extend(costPerBoxSchema)
+  .extend(plansSchema);
 type ExistingDrivingRange = z.infer<typeof existingDrivingRangeSchema>;
 
 const genericSitesSchema = z.object({
@@ -256,9 +251,18 @@ export const groundSitesSchema = z.object({
             id: z.string(),
             startTime: z.string(),
             endTime: z.string(),
-            pricePerHour: z.number(),
-            openQuantity: z.number(),
-            openBallQuantity: z.number(),
+            pricePerHour: z
+              .number()
+              .optional()
+              .transform((v) => v ?? 0),
+            openQuantity: z
+              .number()
+              .optional()
+              .transform((v) => v ?? 0),
+            openBallQuantity: z
+              .number()
+              .optional()
+              .transform((v) => v ?? 0),
             sequence: z.number(),
           }),
         )

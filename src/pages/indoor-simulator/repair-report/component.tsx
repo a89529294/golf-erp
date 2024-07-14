@@ -1,17 +1,19 @@
 import { GenericDataTable } from "@/components/generic-data-table";
-import { SearchInput } from "@/components/search-input";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 import { MainLayout } from "@/layouts/main-layout";
-import { useState } from "react";
-import { columns } from "./columns";
-import { useLoaderData } from "react-router-dom";
-import { loader, simulatorRepairRequestsQuery } from "./loader";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Modal } from "@/components/modal";
-import { IconWarningButton } from "@/components/ui/button";
+import { RepairDesktopMenubar } from "@/pages/indoor-simulator/repair-report/components/repair-desktop-menubar";
 import { privateFetch } from "@/utils/utils";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+import { useLoaderData } from "react-router-dom";
 import { toast } from "sonner";
+import { columns } from "./columns";
+import { loader, simulatorRepairRequestsQuery } from "./loader";
+import { RepairMobileMenubar } from "@/pages/indoor-simulator/repair-report/components/repair-mobile-menubar";
 
 export function Component() {
+  const isMobile = useIsMobile();
   const queryClient = useQueryClient();
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
   const { data } = useQuery({
@@ -44,35 +46,57 @@ export function Component() {
   const [globalFilter, setGlobalFilter] = useState("");
   const [rowSelection, setRowSelection] = useState({});
 
+  async function onDeleteRepairReports() {
+    await deleteRepairReports();
+    setRowSelection({});
+  }
+
   return (
     <MainLayout
       headerChildren={
-        <>
-          {Object.keys(rowSelection).length > 0 && (
-            <Modal
-              dialogTriggerChildren={
-                <IconWarningButton icon="redX">刪除</IconWarningButton>
-              }
-              onSubmit={async () => {
-                await deleteRepairReports();
-                setRowSelection({});
-              }}
-            >
-              是否刪除選取的報修回報?
-            </Modal>
-          )}
-          <SearchInput value={globalFilter} setValue={setGlobalFilter} />
-        </>
+        isMobile ? (
+          <RepairMobileMenubar
+            onDeleteRepairReports={onDeleteRepairReports}
+            globalFilter={globalFilter}
+            setGlobalFilter={setGlobalFilter}
+            rowSelection={rowSelection}
+          />
+        ) : (
+          <RepairDesktopMenubar
+            onDeleteRepairReports={onDeleteRepairReports}
+            globalFilter={globalFilter}
+            setGlobalFilter={setGlobalFilter}
+            rowSelection={rowSelection}
+          />
+        )
       }
     >
-      <GenericDataTable
-        columns={columns}
-        data={data}
-        rowSelection={rowSelection}
-        setRowSelection={setRowSelection}
-        globalFilter={globalFilter}
-        setGlobalFilter={setGlobalFilter}
-      />
+      {isMobile ? (
+        ({ height }) => {
+          return (
+            <ScrollArea style={{ height }}>
+              <GenericDataTable
+                columns={columns}
+                data={data}
+                rowSelection={rowSelection}
+                setRowSelection={setRowSelection}
+                globalFilter={globalFilter}
+                setGlobalFilter={setGlobalFilter}
+              />
+              <ScrollBar orientation="horizontal" />
+            </ScrollArea>
+          );
+        }
+      ) : (
+        <GenericDataTable
+          columns={columns}
+          data={data}
+          rowSelection={rowSelection}
+          setRowSelection={setRowSelection}
+          globalFilter={globalFilter}
+          setGlobalFilter={setGlobalFilter}
+        />
+      )}
     </MainLayout>
   );
 }

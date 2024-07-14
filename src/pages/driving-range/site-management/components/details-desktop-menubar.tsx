@@ -1,41 +1,39 @@
 import { Modal } from "@/components/modal";
 import { IconButton, IconWarningButton } from "@/components/ui/button";
-import { FieldValues, UseFormReturn } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
-export function DetailsSimulatorDesktopMenubar<T extends FieldValues>({
+export function DetailsDesktopMenubar({
   formDisabled,
-  setFormDisabled,
   isPending,
-  form,
-  onReset,
-  deleteModalTitle,
+  dirtyFieldsLength,
+  onBackWithoutSave,
+  setFormDisabled,
   deleteSite,
+  siteName,
 }: {
   formDisabled: boolean;
-  setFormDisabled: (arg: boolean) => void;
   isPending: boolean;
-  form: UseFormReturn<T>;
-  onReset: () => void;
-  deleteModalTitle: string;
+  dirtyFieldsLength: number;
+  onBackWithoutSave: () => void;
+  setFormDisabled: (arg: boolean) => void;
   deleteSite: () => void;
+  siteName: string;
 }) {
   const navigate = useNavigate();
-
   return (
     <>
       {formDisabled ? (
         <IconButton icon="back" onClick={() => navigate(-1)}>
           返回
         </IconButton>
-      ) : Object.keys(form.formState.dirtyFields).length !== 0 ? (
+      ) : dirtyFieldsLength !== 0 ? (
         <Modal
           dialogTriggerChildren={
             <IconWarningButton disabled={isPending} icon="redX">
               取消編輯
             </IconWarningButton>
           }
-          onSubmit={onReset}
+          onSubmit={onBackWithoutSave}
         >
           資料尚未儲存，是否返回？
         </Modal>
@@ -44,31 +42,35 @@ export function DetailsSimulatorDesktopMenubar<T extends FieldValues>({
           取消編輯
         </IconWarningButton>
       )}
+
       {formDisabled && (
         <Modal
           dialogTriggerChildren={
-            <IconWarningButton icon="trashCan" disabled={isPending}>
-              刪除
-            </IconWarningButton>
+            <IconWarningButton icon="trashCan">刪除</IconWarningButton>
           }
-          title={deleteModalTitle}
           onSubmit={deleteSite}
-        ></Modal>
+        >
+          確認刪除{siteName}?
+        </Modal>
       )}
+
       {formDisabled ? (
         <IconButton
           icon="pencil"
           type="button"
-          onClick={() => setTimeout(() => setFormDisabled(false), 0)}
+          onClick={(e) => {
+            e.preventDefault();
+            setFormDisabled(false);
+          }}
         >
           編輯
         </IconButton>
       ) : (
         <IconButton
-          disabled={isPending || !form.formState.isDirty}
+          disabled={isPending || dirtyFieldsLength === 0}
           icon="save"
-          type="submit"
           form="site-details"
+          onClick={() => {}}
         >
           儲存
         </IconButton>
