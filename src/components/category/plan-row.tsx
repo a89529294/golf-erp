@@ -83,7 +83,7 @@ export function PlanRow({
     >
       <Input
         className={cn(
-          "h-7 w-52 rounded-none border-0 border-b border-secondary-dark bg-transparent font-mono sm:w-20",
+          "h-7 w-52 rounded-none border-0 border-b border-secondary-dark bg-transparent font-mono sm:w-24",
           errorFields.title && "border-red-500",
         )}
         onChange={(e) => {
@@ -101,7 +101,7 @@ export function PlanRow({
 
       <Input
         className={cn(
-          "h-7 w-32 rounded-none border-0 border-b border-b-secondary-dark bg-transparent font-mono sm:w-16 ",
+          "h-7 w-32 rounded-none border-0 border-b border-b-secondary-dark bg-transparent font-mono sm:w-28 ",
           errorFields.hours && "border-red-500",
         )}
         onChange={(e) => {
@@ -137,10 +137,10 @@ export function PlanRow({
           placeholder="費用"
           type="number"
         />
-        <div className="absolute right-0 top-1/2 -translate-y-1/2">元</div>
+        <div className="absolute right-0 -translate-y-1/2 top-1/2">元</div>
       </div>
 
-      <div className="ml-auto flex gap-4">
+      <div className="flex gap-4 ml-auto">
         <span className="text-red-500">{errorMessage}</span>
         {data.saved ? (
           <>

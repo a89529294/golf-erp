@@ -1,10 +1,10 @@
+import { NewSiteDesktopMenubar } from "@/components/category/new-site-desktop-menubar";
+import { NewSiteMobileMenubar } from "@/components/category/new-site-mobile-menubar";
 import { Site } from "@/components/category/site";
 import { Form } from "@/components/ui/form";
 import { useAuth } from "@/hooks/use-auth";
 import { useIsMobile } from "@/hooks/use-is-mobile";
 import { MainLayout } from "@/layouts/main-layout";
-import { NewSimulatorDesktopMenubar } from "@/pages/indoor-simulator/site-management/components/new-simulator-desktop-menubar";
-import { NewSimulatorMobileMenubar } from "@/pages/indoor-simulator/site-management/components/new-simulator-mobile-menubar";
 import { equipments } from "@/utils/category/equipment";
 import { newIndoorSimulatorSchema } from "@/utils/category/schemas";
 import { linksKV } from "@/utils/links";
@@ -114,19 +114,19 @@ export function Component() {
     <MainLayout
       headerChildren={
         isMobile ? (
-          <NewSimulatorMobileMenubar
-            onSubmit={async () => {
+          <NewSiteMobileMenubar
+            onSave={async () => {
               const success = await form.trigger();
               if (success) mutate();
             }}
             isPending={isPending}
           />
         ) : (
-          <NewSimulatorDesktopMenubar isPending={isPending} />
+          <NewSiteDesktopMenubar isPending={isPending} />
         )
       }
     >
-      <div className="flex w-full flex-col gap-10 border border-line-gray bg-light-gray p-1">
+      <div className="flex flex-col w-full gap-10 p-1 border border-line-gray bg-light-gray">
         <h1 className="bg-mid-gray py-2.5 text-center text-black">
           建立場地資料
         </h1>

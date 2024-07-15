@@ -36,9 +36,13 @@ export function FormTextField({
           <FormControl>
             <UnderscoredInput
               placeholder={`請輸入${label}`}
-              className="h-7 p-0 pb-1"
+              className="p-0 pb-1 h-7"
               disabled={disabled}
               {...field}
+              onChange={(e) => {
+                field.onChange(e);
+                form.clearErrors(name);
+              }}
             />
           </FormControl>
 

@@ -140,10 +140,10 @@ export function Site({
             openingTimesRef.current?.scrollIntoView();
         },
       )}
-      className="space-y-10 px-20 sm:px-4"
+      className="px-20 space-y-10 sm:px-4"
       id="site-details"
     >
-      <section className="space-y-6 border border-line-gray bg-white px-12 py-10 sm:px-2 sm:py-4">
+      <section className="px-12 py-10 space-y-6 bg-white border border-line-gray sm:px-2 sm:py-4">
         {type === "existing-indoor-simulator" && (
           <IconShortButton
             onClick={onOpenGate}
@@ -201,11 +201,17 @@ export function Site({
           render={({ field }) => (
             <FormItem className="grid grid-cols-[auto_1fr] items-baseline gap-x-5">
               <FormLabel>綁定廠商</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value}>
+              <Select
+                onValueChange={(e) => {
+                  field.onChange(e);
+                  form.clearErrors("storeId");
+                }}
+                value={field.value}
+              >
                 <FormControl>
                   <SelectTrigger
                     disabled={!isNewSite || isPending}
-                    className="h-7 rounded-none border-0 border-b border-secondary-dark pl-0"
+                    className="pl-0 border-0 border-b rounded-none h-7 border-secondary-dark"
                   >
                     <SelectValue placeholder="選擇廠商" />
                   </SelectTrigger>
@@ -512,7 +518,7 @@ export function Site({
                     <FormControl>
                       <UnderscoredInput
                         placeholder={`價錢`}
-                        className="h-7 w-28 p-0 pb-1 text-center text-secondary-dark"
+                        className="p-0 pb-1 text-center h-7 w-28 text-secondary-dark"
                         disabled={formDisabled}
                         {...field}
                         onChange={(e) => {
@@ -520,6 +526,7 @@ export function Site({
                             ? field.value
                             : +e.target.value;
                           field.onChange(value);
+                          form.clearErrors("costPerBox");
                         }}
                       />
                     </FormControl>

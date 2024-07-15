@@ -23,7 +23,7 @@ export function SearchInput({
   return (
     <motion.label
       className={cn(
-        "flex h-11 cursor-pointer items-center gap-1 border  bg-light-gray px-3 ",
+        "flex h-11 cursor-pointer items-center gap-1 border bg-light-gray px-3 ",
         value && isCursorOut && "border-[1.5px]",
         disabled && " cursor-not-allowed opacity-50",
         className,

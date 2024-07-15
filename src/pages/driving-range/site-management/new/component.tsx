@@ -1,13 +1,14 @@
+import { NewSiteDesktopMenubar } from "@/components/category/new-site-desktop-menubar";
+import { NewSiteMobileMenubar } from "@/components/category/new-site-mobile-menubar";
 import { Site } from "@/components/category/site";
-import { IconButton } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
+import { useAuth } from "@/hooks/use-auth";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 import { MainLayout } from "@/layouts/main-layout";
 import { equipments } from "@/utils/category/equipment";
-import {
-  NewDrivingRange,
-  newDrivingRangeSchema,
-} from "@/utils/category/schemas";
+import { newDrivingRangeSchema } from "@/utils/category/schemas";
 import { linksKV } from "@/utils/links";
+import { SimpleStore } from "@/utils/types";
 import { privateFetch } from "@/utils/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -17,10 +18,9 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { groundStoresQuery } from "../loader";
 import { loader } from "./loader";
-import { useAuth } from "@/hooks/use-auth";
-import { SimpleStore } from "@/utils/types";
 
 export function Component() {
+  const isMobile = useIsMobile();
   const { user } = useAuth();
   const navigate = useNavigate();
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
@@ -45,7 +45,8 @@ export function Component() {
   });
   const { mutate, isPending } = useMutation({
     mutationKey: ["add-new-ground-site"],
-    mutationFn: async (v: NewDrivingRange) => {
+    mutationFn: async () => {
+      const v = form.getValues();
       const response = await privateFetch("/store/ground", {
         method: "POST",
         body: JSON.stringify({
@@ -106,21 +107,20 @@ export function Component() {
   return (
     <MainLayout
       headerChildren={
-        <>
-          <IconButton
-            disabled={isPending}
-            icon="back"
-            onClick={() => navigate(-1)}
-          >
-            返回
-          </IconButton>
-          <IconButton disabled={isPending} icon="save" form="site-details">
-            儲存
-          </IconButton>
-        </>
+        isMobile ? (
+          <NewSiteMobileMenubar
+            isPending={isPending}
+            onSave={async () => {
+              const success = await form.trigger();
+              if (success) mutate();
+            }}
+          />
+        ) : (
+          <NewSiteDesktopMenubar isPending={isPending} />
+        )
       }
     >
-      <div className="flex w-full flex-col gap-10 border border-line-gray bg-light-gray p-1">
+      <div className="flex flex-col w-full gap-10 p-1 border border-line-gray bg-light-gray">
         <h1 className="bg-mid-gray py-2.5 text-center text-black">
           建立場地資料
         </h1>
@@ -129,7 +129,7 @@ export function Component() {
             type="driving-range"
             formDisabled={isPending}
             stores={stores as SimpleStore[]}
-            onSubmit={(v) => mutate(v as NewDrivingRange)}
+            onSubmit={() => mutate()}
             isPending={isPending}
           />
         </Form>

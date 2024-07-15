@@ -18,8 +18,12 @@ import {
   useSearchParams,
 } from "react-router-dom";
 import { genDataQuery, loader } from "./loader";
+import { useIsMobile } from "@/hooks/use-is-mobile";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Scrollbar } from "@radix-ui/react-scroll-area";
 
 export function Component() {
+  const isMobile = useIsMobile();
   const [searchParams] = useSearchParams();
   const range = searchParams.get("range");
   const navigate = useNavigate();
@@ -65,7 +69,7 @@ export function Component() {
             value={storeId}
             onValueChange={(v) => onStoreValueChange(v, false)}
           >
-            <SelectTrigger className="h-11 w-[280px] rounded-none border-0 border-b border-secondary-dark">
+            <SelectTrigger className="h-11 w-[280px] rounded-none border-0 border-b border-secondary-dark sm:w-40">
               <SelectValue placeholder="選擇廠商" />
             </SelectTrigger>
             <SelectContent className="w-[280px]">
@@ -85,9 +89,23 @@ export function Component() {
         </>
       }
     >
-      <div className="w-full border border-line-gray bg-light-gray p-5">
+      {isMobile ? (
+        ({ height }) => (
+          <ScrollArea style={{ height }}>
+            <div className="w-full p-5 border border-line-gray bg-light-gray">
+              {data && <ReportContainer data={data} stores={stores} />}
+            </div>
+            <Scrollbar orientation="horizontal" />
+          </ScrollArea>
+        )
+      ) : (
+        <div className="w-full p-5 border border-line-gray bg-light-gray">
+          {data && <ReportContainer data={data} stores={stores} />}
+        </div>
+      )}
+      {/* <div className="w-full p-5 border border-line-gray bg-light-gray">
         {data && <ReportContainer data={data} stores={stores} />}
-      </div>
+      </div> */}
     </MainLayout>
   );
 }

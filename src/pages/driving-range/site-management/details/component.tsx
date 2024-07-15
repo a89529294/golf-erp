@@ -37,7 +37,6 @@ export function Component() {
   const [defaultVenueSettings, setDefaultVenueSettings] = useState(
     data.venueSettings,
   );
-  console.log(data);
   const [defaultImageFiles, setDefaultImageFiles] = useState(data.imageFiles);
   const form = useForm<z.infer<typeof existingDrivingRangeSchema>>({
     resolver: zodResolver(existingDrivingRangeSchema),
@@ -226,7 +225,7 @@ export function Component() {
         )
       }
     >
-      <div className="flex w-full flex-col gap-10 border border-line-gray bg-light-gray p-1">
+      <div className="flex flex-col w-full gap-10 p-1 border border-line-gray bg-light-gray">
         <h1 className="bg-mid-gray py-2.5 text-center text-black">
           編輯場地資料
         </h1>

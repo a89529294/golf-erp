@@ -10,8 +10,11 @@ import { Modal } from "@/components/modal";
 import { IconWarningButton } from "@/components/ui/button";
 import { privateFetch } from "@/utils/utils";
 import { toast } from "sonner";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 
 export function Component() {
+  const isMobile = useIsMobile();
   const queryClient = useQueryClient();
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
   const { data } = useQuery({
@@ -62,14 +65,32 @@ export function Component() {
         </>
       }
     >
-      <GenericDataTable
-        columns={columns}
-        data={data}
-        rowSelection={rowSelection}
-        setRowSelection={setRowSelection}
-        globalFilter={globalFilter}
-        setGlobalFilter={setGlobalFilter}
-      />
+      {isMobile ? (
+        ({ height }) => {
+          return (
+            <ScrollArea style={{ height }}>
+              <GenericDataTable
+                columns={columns}
+                data={data}
+                rowSelection={rowSelection}
+                setRowSelection={setRowSelection}
+                globalFilter={globalFilter}
+                setGlobalFilter={setGlobalFilter}
+              />
+              <ScrollBar orientation="horizontal" />
+            </ScrollArea>
+          );
+        }
+      ) : (
+        <GenericDataTable
+          columns={columns}
+          data={data}
+          rowSelection={rowSelection}
+          setRowSelection={setRowSelection}
+          globalFilter={globalFilter}
+          setGlobalFilter={setGlobalFilter}
+        />
+      )}
     </MainLayout>
   );
 }

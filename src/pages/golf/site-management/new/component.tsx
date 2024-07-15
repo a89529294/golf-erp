@@ -134,13 +134,19 @@ export function Component() {
     <MainLayout
       headerChildren={
         isMobile ? (
-          <NewMobileMenubar isPending={isPending} onSave={mutate} />
+          <NewMobileMenubar
+            isPending={isPending}
+            onSave={async () => {
+              const success = await form.trigger();
+              if (success) mutate();
+            }}
+          />
         ) : (
           <NewDesktopMenubar isPending={isPending} />
         )
       }
     >
-      <div className="flex w-full flex-col gap-10 border border-line-gray bg-light-gray p-1">
+      <div className="flex flex-col w-full gap-10 p-1 border border-line-gray bg-light-gray">
         <h1 className="bg-mid-gray py-2.5 text-center text-black">
           建立場地資料
         </h1>

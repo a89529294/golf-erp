@@ -1,5 +1,5 @@
 import { QueryParamSelect } from "@/components/query-param-select";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useAuth } from "@/hooks/use-auth";
 import { MainLayout } from "@/layouts/main-layout";
 import { groundStoresQuery } from "@/pages/driving-range/site-management/loader";
@@ -35,7 +35,7 @@ export function Component() {
           optionValue="name"
           placeholder="請選廠商"
           queryKey="storeId"
-          className="w-56"
+          className="w-56 sm:w-40"
         />
       }
     >
@@ -46,8 +46,12 @@ export function Component() {
           store.sites.map((site) => (
             <section key={site.id} className="space-y-1">
               <h2>{site.name}</h2>
-              <ScrollArea viewportCN="max-h-[200px] h-auto" className="h-auto">
+              <ScrollArea
+                viewportCN="max-h-[200px] h-auto"
+                className="h-auto sm:w-[calc(100vw-54px)]"
+              >
                 <DataTable columns={columns} data={site.appointments} />
+                <ScrollBar orientation="horizontal" />
               </ScrollArea>
             </section>
           ))
