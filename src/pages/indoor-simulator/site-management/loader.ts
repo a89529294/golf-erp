@@ -28,23 +28,37 @@ export const genIndoorSimulatorStoresWithSitesQuery = (
     } else {
       if (!allowedStores[0]) return [];
 
-      const response = await privateFetch(
-        `/store/${allowedStores[0].id}/simulator?pageSize=99&populate=*`,
+      const promises = allowedStores.map((as) =>
+        privateFetch(`/store/${as.id}/simulator?pageSize=99&populate=*`),
       );
 
-      const data = await response.json();
+      const responses = await Promise.all(promises);
+      const data = await Promise.all(responses.map((r) => r.json()));
+      const parsedData = data.map((d) => sitesSchema.parse(d));
 
-      const parsed = sitesSchema.parse(data);
+      return parsedData.map((pd, i) => ({
+        id: allowedStores[i].id,
+        name: allowedStores[i].name,
+        sites: pd.data,
+      }));
 
-      return [
-        {
-          ...(parsed.data[0]?.store ?? {
-            id: allowedStores[0].id,
-            name: allowedStores[0].name,
-          }),
-          sites: parsed.data,
-        },
-      ];
+      // const response = await privateFetch(
+      //   `/store/${allowedStores[0].id}/simulator?pageSize=99&populate=*`,
+      // );
+
+      // const data = await response.json();
+
+      // const parsed = sitesSchema.parse(data);
+
+      // return [
+      //   {
+      //     ...(parsed.data[0]?.store ?? {
+      //       id: allowedStores[0].id,
+      //       name: allowedStores[0].name,
+      //     }),
+      //     sites: parsed.data,
+      //   },
+      // ];
     }
   },
 });
