@@ -79,7 +79,7 @@ export function StoreFormAddressSelectFields({
                 />
               </FormControl>
             </div>
-            <FormMessage className="ml-[76px]" />
+            <FormMessage className="ml-28 sm:ml-9" />
           </FormItem>
         )}
       />

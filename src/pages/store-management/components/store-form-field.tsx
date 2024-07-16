@@ -50,7 +50,7 @@ export function StoreFormField({
               />
             </FormControl>
 
-            <FormMessage className="col-start-2" />
+            <FormMessage className="col-start-2 sm:col-start-1" />
           </FormItem>
         );
       }}

@@ -1,3 +1,5 @@
+import { Navigate } from "react-router-dom";
+
 export default function Index() {
-  return null;
+  return <Navigate to={"/member-management"} replace />;
 }
