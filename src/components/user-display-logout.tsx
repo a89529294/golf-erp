@@ -58,7 +58,7 @@ export function UserDisplayLogout() {
       // }}
       ref={ref}
     >
-      <IconButtonBorderLess icon="pfp">{user?.account}</IconButtonBorderLess>
+      <IconButtonBorderLess icon="pfp">{user?.username}</IconButtonBorderLess>
       <div className="h-full border-r border-line-gray" />
       <IconButtonBorderLess icon="leave" onClick={logout}>
         登出

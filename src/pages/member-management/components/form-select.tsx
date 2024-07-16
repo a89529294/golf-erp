@@ -34,7 +34,7 @@ export function FormSelect({
       name={name}
       render={({ field }) => (
         <FormItem className="flex-1">
-          <Select onValueChange={field.onChange} defaultValue={field.value}>
+          <Select onValueChange={field.onChange} value={field.value}>
             <FormControl>
               <SelectTrigger
                 ref={myRef}

@@ -6,10 +6,12 @@ import { Link } from "react-router-dom";
 
 import { cn } from "@/lib/utils";
 import { Member } from "@/pages/member-management/loader";
+import { memberFormSchema } from "@/pages/member-management/schemas";
 import React from "react";
-import { FieldValues, UseFormReturn } from "react-hook-form";
+import { UseFormReturn } from "react-hook-form";
+import { z } from "zod";
 
-export function DesktopMenubar<T extends FieldValues>({
+export function DesktopMenubar({
   disabled,
   setDisabled,
   isUpdatingMemberStatus,
@@ -24,7 +26,7 @@ export function DesktopMenubar<T extends FieldValues>({
   data: Member;
   toggleMemberStatus(): void;
   isPending: boolean;
-  form: UseFormReturn<T>;
+  form: UseFormReturn<z.infer<typeof memberFormSchema>>;
 }) {
   return (
     <>
@@ -76,7 +78,15 @@ export function DesktopMenubar<T extends FieldValues>({
             type="button"
             onClick={() => {
               setDisabled(true);
-              form.reset();
+              form.reset({
+                account: data.account,
+                memberType: data.appUserType,
+                chName: data.chName,
+                phone: data.phone,
+                gender: data.gender,
+                birthday: data.birthday ? new Date(data.birthday) : "",
+                isActive: data.isActive,
+              });
             }}
             icon="redX"
             disabled={isPending}

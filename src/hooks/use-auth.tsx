@@ -14,6 +14,7 @@ import { SimpleStore } from "@/utils/types";
 type AuthContextValue = {
   user: {
     account: string;
+    username: string;
     isAdmin: boolean;
     permissions: string[];
     allowedStores: {
@@ -106,6 +107,7 @@ export const AuthProvider = ({
 
       setUser({
         account: user.account,
+        username: user.username,
         isAdmin,
         permissions: permissions.map((p: { name: string }) => p.name),
         allowedStores,

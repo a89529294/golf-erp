@@ -186,6 +186,7 @@ export function Component() {
       setDisabled(true);
       setSearchParams({});
       form.reset({
+        code: form.getValues("code"),
         name: form.getValues("name"),
         category: form.getValues("category"),
         openingHoursStart: form.getValues("openingHoursStart"),
@@ -253,7 +254,7 @@ export function Component() {
           isMutating={isMutating}
           onSubmit={onSubmit}
           disabled={disabled}
-          isSimulatorDetails={store.category === "simulator"}
+          // isSimulatorDetails={store.category === "simulator"}
         />
       </div>
     </MainLayout>

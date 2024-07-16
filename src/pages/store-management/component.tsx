@@ -104,13 +104,13 @@ export function Component() {
     >
       {({ height }) => {
         return (
-          <div className="flex flex-col w-full p-1 border border-line-gray bg-light-gray">
+          <div className="flex w-full flex-col border border-line-gray bg-light-gray p-1">
             <nav
               ref={(e) => {
                 setNav(e);
               }}
             >
-              <ul className="flex items-center gap-3 py-2 pl-5 isolate sm:hidden">
+              <ul className="isolate flex items-center gap-3 py-2 pl-5 sm:hidden">
                 {Object.entries(storeCategoryWithAllMap).map(([key, value]) => (
                   <li key={key}>
                     <button
@@ -121,7 +121,7 @@ export function Component() {
                     >
                       {category === key && (
                         <motion.div
-                          className="absolute inset-0 z-10 bg-black rounded-full"
+                          className="absolute inset-0 z-10 rounded-full bg-black"
                           layoutId="category-tab"
                           transition={{
                             duration: 0.3,
@@ -147,13 +147,17 @@ export function Component() {
                   value={category ?? ""}
                   onValueChange={setCategory}
                 >
-                  <SelectTrigger className="grid px-5 text-white border rounded-full h-9 place-items-center border-line-gray bg-secondary-dark">
+                  <SelectTrigger className="grid h-9 place-items-center rounded-full border border-line-gray bg-secondary-dark px-5 text-white">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     {Object.entries(storeCategoryWithAllMap).map(
                       ([key, value]) => {
-                        return <SelectItem value={key}>{value}</SelectItem>;
+                        return (
+                          <SelectItem value={key} key={key}>
+                            {value}
+                          </SelectItem>
+                        );
                       },
                     )}
                   </SelectContent>

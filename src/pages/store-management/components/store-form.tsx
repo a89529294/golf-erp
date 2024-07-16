@@ -20,10 +20,12 @@ import { SetStateAction, useState } from "react";
 import { StoreFormAddressSelectFields } from "./store-form-address-select-field";
 import { StoreFormField } from "./store-form-field";
 import { StoreFormSelectField } from "./store-form-select-field";
-import { IconShortButton } from "@/components/ui/button";
-import { useParams } from "react-router-dom";
-import { privateFetch } from "@/utils/utils";
-import { toast } from "sonner";
+// import { IconShortButton } from "@/components/ui/button";
+// import { useParams } from "react-router-dom";
+// import { privateFetch } from "@/utils/utils";
+// import { toast } from "sonner";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 
 export function StoreForm({
   form,
@@ -33,7 +35,6 @@ export function StoreForm({
   districts,
   employees,
   disabled,
-  isSimulatorDetails,
 }: {
   form: UseFormReturn<z.infer<typeof formSchema>>;
   onSubmit: (values: z.infer<typeof formSchema>) => void;
@@ -49,24 +50,24 @@ export function StoreForm({
     | undefined;
   employees: Employee[];
   disabled?: boolean;
-  isSimulatorDetails?: boolean;
 }) {
-  const { storeId } = useParams();
-  const [isOpeningGate, setIsOpeningGate] = useState(false);
-  async function onOpenGate() {
-    try {
-      setIsOpeningGate(true);
-      await privateFetch(`/store/simulator/open-main-gate/${storeId}`, {
-        method: "POST",
-      });
-      toast.success("開啟大門成功");
-    } catch (e) {
-      console.log(e);
-      toast.error("無法開啟大門");
-    } finally {
-      setIsOpeningGate(false);
-    }
-  }
+  const [checked, setChecked] = useState<boolean | "indeterminate">(false);
+  // const { storeId } = useParams();
+  // const [isOpeningGate, setIsOpeningGate] = useState(false);
+  // async function onOpenGate() {
+  //   try {
+  //     setIsOpeningGate(true);
+  //     await privateFetch(`/store/simulator/open-main-gate/${storeId}`, {
+  //       method: "POST",
+  //     });
+  //     toast.success("開啟大門成功");
+  //   } catch (e) {
+  //     console.log(e);
+  //     toast.error("無法開啟大門");
+  //   } finally {
+  //     setIsOpeningGate(false);
+  //   }
+  // }
 
   const isInputDisabled = !!(isMutating || disabled);
   return (
@@ -82,7 +83,7 @@ export function StoreForm({
           <div className="-mx-12 mb-4 bg-light-gray py-1.5 text-center text-black">
             基本資料
           </div>
-          {isSimulatorDetails && (
+          {/* {isSimulatorDetails && (
             <div className="grid grid-cols-[auto_1fr] items-center">
               <span className="w-28">開啟大門</span>
               <IconShortButton
@@ -94,7 +95,7 @@ export function StoreForm({
                 開啟
               </IconShortButton>
             </div>
-          )}
+          )} */}
           <StoreFormField
             disabled={isInputDisabled}
             form={form}
@@ -114,12 +115,12 @@ export function StoreForm({
             label="類別"
           />
           <div className="flex sm:flex-col">
+            <FormLabel className="w-28">營業時間</FormLabel>
             <FormField
               control={form.control}
               name="openingHoursStart"
               render={({ field }) => (
-                <FormItem className="grid grid-cols-[auto_auto] items-baseline gap-y-1 sm:grid-cols-1">
-                  <FormLabel className="w-28">營業時間</FormLabel>
+                <FormItem className="flex flex-1 flex-col gap-1">
                   <FormControl>
                     <Input
                       className={cn(
@@ -133,12 +134,18 @@ export function StoreForm({
                       onClick={(e) => e.currentTarget.showPicker()}
                       onChange={(e) => {
                         field.onChange(e);
+                        if (
+                          form.getValues("openingHoursEnd") === "23:59" &&
+                          e.target.value === "00:00"
+                        )
+                          setChecked(true);
+                        else setChecked(false);
                         form.clearErrors("openingHoursStart");
                       }}
                     />
                   </FormControl>
 
-                  <FormMessage className="col-start-2" />
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -146,7 +153,7 @@ export function StoreForm({
               control={form.control}
               name="openingHoursEnd"
               render={({ field }) => (
-                <FormItem className="flex flex-col gap-1">
+                <FormItem className="flex flex-1 flex-col gap-1">
                   <FormControl>
                     <Input
                       className={cn(
@@ -160,6 +167,12 @@ export function StoreForm({
                       onClick={(e) => e.currentTarget.showPicker()}
                       onChange={(e) => {
                         field.onChange(e);
+                        if (
+                          form.getValues("openingHoursStart") === "00:00" &&
+                          e.target.value === "23:59"
+                        )
+                          setChecked(true);
+                        else setChecked(false);
                         form.clearErrors("openingHoursEnd");
                       }}
                     />
@@ -170,6 +183,21 @@ export function StoreForm({
               )}
             />
           </div>
+
+          <Label className="flex items-center gap-2">
+            24小時營業
+            <Checkbox
+              className=""
+              checked={checked}
+              onCheckedChange={(e) => {
+                if (e === true) {
+                  form.setValue("openingHoursStart", "00:00");
+                  form.setValue("openingHoursEnd", "23:59");
+                }
+                setChecked(e);
+              }}
+            />
+          </Label>
 
           <div className="flex ">
             <FormField

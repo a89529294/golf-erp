@@ -69,6 +69,7 @@ export const genSimulatorDetailsQuery = (storeId: string, siteId: string) => ({
     const transformedEquipments = (() => {
       const parsedEquipments = parsed.equipment;
       if (parsedEquipments) {
+        console.log(parsedEquipments);
         const x = JSON.parse(parsedEquipments) as {
           name: string;
           isActive: boolean;
