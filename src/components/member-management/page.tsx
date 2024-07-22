@@ -13,7 +13,7 @@ import useMediaQuery from "@/hooks/use-media-query.ts";
 import { ScrollArea } from "@/components/ui/scroll-area.tsx";
 import { Scrollbar } from "@radix-ui/react-scroll-area";
 
-export function Component() {
+export function MemberManagementPage() {
   const isMobile = useMediaQuery("(max-width: 639px)");
   const [rowSelection, setRowSelection] = useState({});
   const [globalFilter, setGlobalFilter] = useState("");

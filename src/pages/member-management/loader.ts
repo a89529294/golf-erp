@@ -68,6 +68,7 @@ export const membersQuery = {
       pageSize: 999,
       sort: "updatedAt",
       order: "DESC",
+      populate: "store",
     });
     const response = await privateFetch(`/app-users?${queryString}`);
 

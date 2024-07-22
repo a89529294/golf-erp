@@ -1,3 +1,5 @@
+import { MemberManagementPage } from "@/components/member-management/page";
+
 export function Component() {
-  return <div>driving range member management</div>;
+  return <MemberManagementPage />;
 }

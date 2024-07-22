@@ -2,7 +2,11 @@ import fileIcon from "@/assets/black-file-icon.svg";
 import { Tablet, TabletSendPoints } from "@/components/tablet";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { Link } from "react-router-dom";
-import { SimpleMember, genderEnChMap, memberTypeEnChMap } from "../loader";
+import {
+  SimpleMember,
+  genderEnChMap,
+  memberTypeEnChMap,
+} from "@/pages/member-management/loader";
 import { Modal } from "@/components/modal";
 
 const columnHelper = createColumnHelper<SimpleMember>();

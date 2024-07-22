@@ -1,3 +1,5 @@
+import { MemberManagementPage } from "@/components/member-management/page";
+
 export function Component() {
-  return <div>indoor simulator members page</div>;
+  return <MemberManagementPage />;
 }

@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import React from "react";
 
 export function Tablet({ active }: { active: boolean }) {
   return (
@@ -14,3 +15,24 @@ export function Tablet({ active }: { active: boolean }) {
     </div>
   );
 }
+
+export const TabletSendPoints = React.forwardRef<
+  HTMLButtonElement,
+  React.DetailedHTMLProps<
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
+    HTMLButtonElement
+  >
+>(function ({ className, ...rest }, ref) {
+  return (
+    <button
+      className={cn(
+        "flex h-5 items-center justify-center whitespace-nowrap rounded-full border border-green-500 px-1 text-sm font-medium text-green-500",
+        className,
+      )}
+      ref={ref}
+      {...rest}
+    >
+      贈送點數
+    </button>
+  );
+});

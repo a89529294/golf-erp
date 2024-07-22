@@ -40,13 +40,6 @@ export const linksKV = {
     allowedPermissions: ["練習場-基本操作", "練習場-報表"],
     allowedStoreCategory: "ground" as const,
     subLinks: {
-      // "member-management": {
-      //   label: "會員管理",
-      //   path: `${DRIVING_RANGE_BASE_PATH}/member-management`,
-      //   lazy: () => import("@/pages/driving-range/member-management"),
-      //   type: "flat" as const,
-      //   allowedPermissions: ["練習場-基本操作"],
-      // },
       "site-management": {
         label: "場地管理",
         paths: {
@@ -64,6 +57,13 @@ export const linksKV = {
             import("@/pages/driving-range/site-management/details"),
         },
         type: "multiple" as const,
+        allowedPermissions: ["練習場-基本操作"],
+      },
+      "member-management": {
+        label: "會員管理",
+        path: `${DRIVING_RANGE_BASE_PATH}/member-management`,
+        lazy: () => import("@/pages/driving-range/member-management"),
+        type: "flat" as const,
         allowedPermissions: ["練習場-基本操作"],
       },
       "appointment-management": {
@@ -105,13 +105,6 @@ export const linksKV = {
     allowedPermissions: ["高爾夫球-基本操作", "高爾夫球-報表"],
     allowedStoreCategory: "golf" as const,
     subLinks: {
-      // "member-management": {
-      //   label: "會員管理",
-      //   path: `${GOLF_BASE_PATH}/member-management`,
-      //   lazy: () => import("@/pages/golf/member-management"),
-      //   type: "flat" as const,
-      //   allowedPermissions: ["高爾夫球-基本操作"],
-      // },
       "site-management": {
         label: "場地管理",
         paths: {
@@ -128,6 +121,13 @@ export const linksKV = {
           details: () => import("@/pages/golf/site-management/details"),
         },
         type: "multiple" as const,
+        allowedPermissions: ["高爾夫球-基本操作"],
+      },
+      "member-management": {
+        label: "會員管理",
+        path: `${GOLF_BASE_PATH}/member-management`,
+        lazy: () => import("@/pages/golf/member-management"),
+        type: "flat" as const,
         allowedPermissions: ["高爾夫球-基本操作"],
       },
       "invitation-management": {
@@ -169,13 +169,6 @@ export const linksKV = {
     allowedPermissions: ["模擬器-基本操作", "模擬器-報表"],
     allowedStoreCategory: "simulator" as const,
     subLinks: {
-      // "member-management": {
-      //   label: "會員管理",
-      //   path: `${INDOOR_SIMULATOR_BASE_PATH}/member-management`,
-      //   lazy: () => import("@/pages/indoor-simulator/member-management"),
-      //   type: "flat" as const,
-      //   allowedPermissions: ["模擬器-基本操作"],
-      // },
       "site-management": {
         label: "場地管理",
         paths: {
@@ -193,6 +186,13 @@ export const linksKV = {
             import("@/pages/indoor-simulator/site-management/details"),
         },
         type: "multiple" as const,
+        allowedPermissions: ["模擬器-基本操作"],
+      },
+      "member-management": {
+        label: "會員管理",
+        path: `${INDOOR_SIMULATOR_BASE_PATH}/member-management`,
+        lazy: () => import("@/pages/indoor-simulator/member-management"),
+        type: "flat" as const,
         allowedPermissions: ["模擬器-基本操作"],
       },
       "appointment-management": {
