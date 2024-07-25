@@ -4,6 +4,8 @@ import {
   flexRender,
   getCoreRowModel,
   useReactTable,
+  SortingState,
+  getSortedRowModel,
 } from "@tanstack/react-table";
 
 import {
@@ -14,6 +16,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useState } from "react";
 
 const fuzzyFilter: FilterFn<unknown> = (row, columnId, value) => {
   return (row.getValue(columnId) as string)
@@ -30,6 +33,8 @@ export function DataTable<TData extends { id: string }, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
+  const [sorting, setSorting] = useState<SortingState>([]);
+
   const table = useReactTable({
     data,
     columns,
@@ -38,6 +43,11 @@ export function DataTable<TData extends { id: string }, TValue>({
       fuzzy: fuzzyFilter, //define as a filter function that can be used in column definitions
     },
     getRowId: (originalRow) => originalRow.id,
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
+    state: {
+      sorting,
+    },
   });
 
   return (

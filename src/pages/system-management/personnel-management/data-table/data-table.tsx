@@ -5,6 +5,8 @@ import {
   getCoreRowModel,
   getFilteredRowModel,
   useReactTable,
+  SortingState,
+  getSortedRowModel,
 } from "@tanstack/react-table";
 
 import {
@@ -15,7 +17,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { cn } from "@/lib/utils";
 
 declare module "@tanstack/react-table" {
@@ -52,6 +54,8 @@ export function DataTable<TData extends { id: string }, TValue>({
   globalFilter,
   setGlobalFilter,
 }: DataTableProps<TData, TValue>) {
+  const [sorting, setSorting] = useState<SortingState>([]);
+
   const table = useReactTable({
     data: data,
     columns,
@@ -64,9 +68,12 @@ export function DataTable<TData extends { id: string }, TValue>({
     onRowSelectionChange: setRowSelection,
     getFilteredRowModel: getFilteredRowModel(),
     getRowId: (row) => row.id,
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
     state: {
       rowSelection,
       globalFilter,
+      sorting,
     },
   });
 

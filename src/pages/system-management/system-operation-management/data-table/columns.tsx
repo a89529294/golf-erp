@@ -3,6 +3,7 @@ import { UserWithEmployee } from "@/pages/system-management/system-operation-man
 import { PasswordModal } from "@/pages/system-management/system-operation-management/password-modal/modal";
 import { StoreCategory, storeCategoryMap } from "@/utils";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
+import { ArrowUpDown } from "lucide-react";
 
 const columnHelper = createColumnHelper<UserWithEmployee>();
 
@@ -41,13 +42,33 @@ export const columns: ColumnDef<UserWithEmployee>[] = [
   {
     accessorKey: "idNumber",
     id: "idNumber",
-    header: "編號",
+    header: ({ column }) => {
+      return (
+        <button
+          className="flex items-center gap-1"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          編號
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </button>
+      );
+    },
     accessorFn: (user) => user.employee.idNumber,
   },
   {
     accessorKey: "chName",
     id: "chName",
-    header: "姓名",
+    header: ({ column }) => {
+      return (
+        <button
+          className="flex items-center gap-1"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          姓名
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </button>
+      );
+    },
     accessorFn: (user) => user.employee.chName,
   },
   {
@@ -59,7 +80,17 @@ export const columns: ColumnDef<UserWithEmployee>[] = [
   {
     accessorKey: "storeCategory",
     id: "storeCategory",
-    header: "分類",
+    header: ({ column }) => {
+      return (
+        <button
+          className="flex items-center gap-1"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          分類
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </button>
+      );
+    },
     accessorFn: (user) => {
       if (!user.employee.stores || !user.employee.stores[0]) return "";
       return storeCategoryMap[
@@ -70,7 +101,17 @@ export const columns: ColumnDef<UserWithEmployee>[] = [
   {
     id: "storeName",
     accessorKey: "storeName",
-    header: "廠商名稱",
+    header: ({ column }) => {
+      return (
+        <button
+          className="flex items-center gap-1"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          廠商名稱
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </button>
+      );
+    },
     accessorFn: (user) => {
       if (!user.employee.stores || !user.employee.stores[0]) return "";
       return user.employee.stores?.[0].name;

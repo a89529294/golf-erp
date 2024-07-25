@@ -3,6 +3,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Store } from "@/pages/store-management/loader";
 import { storeCategoryMap } from "@/utils";
 import { ColumnDef } from "@tanstack/react-table";
+import { ArrowUpDown } from "lucide-react";
 
 export const columns: ColumnDef<Store>[] = [
   {
@@ -32,7 +33,17 @@ export const columns: ColumnDef<Store>[] = [
   },
   {
     id: "name-address",
-    header: "廠商名稱 / 地址",
+    header: ({ column }) => {
+      return (
+        <button
+          className="flex items-center gap-1"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          廠商名稱 / 地址
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </button>
+      );
+    },
     cell: ({ row }) => (
       <div>
         <p>{row.original.name}</p>
@@ -48,7 +59,17 @@ export const columns: ColumnDef<Store>[] = [
   {
     accessorKey: "category",
     id: "category",
-    header: "類別",
+    header: ({ column }) => {
+      return (
+        <button
+          className="flex items-center gap-1"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          類別
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </button>
+      );
+    },
     accessorFn: (row) => storeCategoryMap[row.category],
   },
   {
@@ -59,7 +80,17 @@ export const columns: ColumnDef<Store>[] = [
   },
   {
     id: "contact-name-phone",
-    header: "聯絡人 / 電話",
+    header: ({ column }) => {
+      return (
+        <button
+          className="flex items-center gap-1"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          聯絡人 / 電話
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </button>
+      );
+    },
     accessorFn: (row) => `${row.contact} ${row.contactPhone}`,
     cell: ({ row }) => (
       <>

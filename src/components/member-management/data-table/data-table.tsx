@@ -5,6 +5,8 @@ import {
   getCoreRowModel,
   getFilteredRowModel,
   useReactTable,
+  SortingState,
+  getSortedRowModel,
 } from "@tanstack/react-table";
 
 import {
@@ -16,7 +18,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 
 declare module "@tanstack/react-table" {
   interface FilterFns {
@@ -49,6 +51,8 @@ export function DataTable<TData extends { id: string }, TValue>({
   globalFilter,
   setGlobalFilter,
 }: DataTableProps<TData, TValue>) {
+  const [sorting, setSorting] = useState<SortingState>([]);
+
   const table = useReactTable({
     data: data,
     columns,
@@ -61,15 +65,18 @@ export function DataTable<TData extends { id: string }, TValue>({
     onRowSelectionChange: setRowSelection,
     getFilteredRowModel: getFilteredRowModel(),
     getRowId: (row) => row.id,
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
     state: {
       rowSelection,
       globalFilter,
+      sorting,
     },
   });
 
   return (
     <div className="mb-2.5 w-fit border-y border-t-0 border-line-gray sm:w-max">
-      <Table className="relative table-fixed isolate sm:w-max">
+      <Table className="relative isolate table-fixed sm:w-max">
         <TableHeader className="relative z-10">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id} className="border-b-line-gray">

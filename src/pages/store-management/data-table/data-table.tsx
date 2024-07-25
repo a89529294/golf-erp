@@ -5,6 +5,8 @@ import {
   getCoreRowModel,
   getFilteredRowModel,
   useReactTable,
+  SortingState,
+  getSortedRowModel,
 } from "@tanstack/react-table";
 
 import {
@@ -15,7 +17,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
 import blackFileIcon from "@/assets/black-file-icon.svg";
@@ -51,7 +53,8 @@ export function DataTable<TData extends { id: string }, TValue>({
   globalFilter,
   setGlobalFilter,
 }: DataTableProps<TData, TValue>) {
-  // const [searchParams] = useSearchParams();
+  const [sorting, setSorting] = useState<SortingState>([]);
+
   const table = useReactTable({
     data: data,
     columns,
@@ -64,15 +67,18 @@ export function DataTable<TData extends { id: string }, TValue>({
     onRowSelectionChange: setRowSelection,
     getFilteredRowModel: getFilteredRowModel(),
     getRowId: (row) => row.id,
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
     state: {
       rowSelection,
       globalFilter,
+      sorting,
     },
   });
 
   return (
     <div className="mb-2.5 w-full border-y border-line-gray ">
-      <Table className="relative table-fixed isolate">
+      <Table className="relative isolate table-fixed">
         <TableHeader className="relative z-10">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id} className="border-b-line-gray">
@@ -115,7 +121,7 @@ export function DataTable<TData extends { id: string }, TValue>({
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     {row.getVisibleCells().length === idx + 1 && (
                       <Link
-                        className="absolute hidden -translate-y-1/2 right-5 top-1/2 group-hover:block sm:right-5 sm:block"
+                        className="absolute right-5 top-1/2 hidden -translate-y-1/2 group-hover:block sm:right-5 sm:block"
                         to={`/store-management/details/${row.original.id}`}
                       >
                         <img src={blackFileIcon} />

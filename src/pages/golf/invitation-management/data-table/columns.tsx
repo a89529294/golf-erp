@@ -4,6 +4,7 @@ import { linksKV } from "@/utils/links";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { Link } from "react-router-dom";
 import { Invitation } from "../loader";
+import { ArrowUpDown } from "lucide-react";
 
 const columnHelper = createColumnHelper<Invitation>();
 
@@ -33,22 +34,82 @@ export const columns = [
     ),
   }),
   columnHelper.accessor("title", {
-    header: "標題",
+    header: ({ column }) => {
+      return (
+        <button
+          className="flex items-center gap-1"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          標題
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </button>
+      );
+    },
   }),
   columnHelper.accessor("date", {
-    header: "日期",
+    header: ({ column }) => {
+      return (
+        <button
+          className="flex items-center gap-1"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          日期
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </button>
+      );
+    },
   }),
   columnHelper.accessor("time", {
-    header: "時段",
+    header: ({ column }) => {
+      return (
+        <button
+          className="flex items-center gap-1"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          時段
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </button>
+      );
+    },
   }),
   columnHelper.accessor("store.name", {
-    header: "球場",
+    header: ({ column }) => {
+      return (
+        <button
+          className="flex items-center gap-1"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          球場
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </button>
+      );
+    },
   }),
   columnHelper.accessor("price", {
-    header: "費用",
+    header: ({ column }) => {
+      return (
+        <button
+          className="flex items-center gap-1"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          費用
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </button>
+      );
+    },
   }),
   columnHelper.accessor("inviteCount", {
-    header: "邀約人數",
+    header: ({ column }) => {
+      return (
+        <button
+          className="flex items-center gap-1"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          要約人數
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </button>
+      );
+    },
   }),
 
   columnHelper.display({

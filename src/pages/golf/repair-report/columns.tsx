@@ -7,6 +7,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 import { ImagesContainer } from "@/components/repair-images-container";
+import { ArrowUpDown } from "lucide-react";
 
 const columnHelper = createColumnHelper<GolfRepairRequest>();
 
@@ -33,7 +34,17 @@ export const columns = [
     ),
   }),
   columnHelper.accessor("status", {
-    header: "狀態",
+    header: ({ column }) => {
+      return (
+        <button
+          className="flex items-center gap-1"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          狀態
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </button>
+      );
+    },
     cell: (prop) => (
       <div className="space-y-4 text-sm text-word-darker-gray">
         <div
@@ -68,16 +79,46 @@ export const columns = [
     size: 130,
   }),
   columnHelper.accessor("storeGolf.store.name", {
-    header: "廠商",
+    header: ({ column }) => {
+      return (
+        <button
+          className="flex items-center gap-1"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          廠商
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </button>
+      );
+    },
     cell: (prop) => <div className="whitespace-nowrap">{prop.getValue()}</div>,
   }),
 
   columnHelper.accessor("storeGolf.name", {
-    header: "場地",
+    header: ({ column }) => {
+      return (
+        <button
+          className="flex items-center gap-1"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          場地
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </button>
+      );
+    },
     cell: (prop) => <div className="whitespace-nowrap">{prop.getValue()}</div>,
   }),
   columnHelper.accessor("description", {
-    header: "維修內容",
+    header: ({ column }) => {
+      return (
+        <button
+          className="flex items-center gap-1"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          維修內容
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </button>
+      );
+    },
   }),
   columnHelper.accessor("images", {
     header: "圖片",

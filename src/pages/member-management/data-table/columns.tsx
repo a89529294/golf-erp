@@ -3,6 +3,7 @@ import { Tablet } from "@/components/tablet";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { Link } from "react-router-dom";
 import { SimpleMember, genderEnChMap, memberTypeEnChMap } from "../loader";
+import { ArrowUpDown } from "lucide-react";
 
 const columnHelper = createColumnHelper<SimpleMember>();
 
@@ -35,17 +36,47 @@ export const columns = [
   //   size: 11.2,
   // }),
   columnHelper.accessor("account", {
-    header: "帳號",
+    header: ({ column }) => {
+      return (
+        <button
+          className="flex items-center gap-1"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          帳號
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </button>
+      );
+    },
     cell: (props) => props.getValue(),
     size: 10.5,
   }),
   columnHelper.accessor((row) => memberTypeEnChMap[row.appUserType], {
     id: "appUserType",
-    header: "會員類別",
+    header: ({ column }) => {
+      return (
+        <button
+          className="flex items-center gap-1"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          會員類別
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </button>
+      );
+    },
     size: 10.5,
   }),
   columnHelper.accessor("chName", {
-    header: "姓名",
+    header: ({ column }) => {
+      return (
+        <button
+          className="flex items-center gap-1"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          姓名
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </button>
+      );
+    },
     cell: (props) => (
       <span className="whitespace-nowrap">{props.getValue()}</span>
     ),
@@ -58,11 +89,31 @@ export const columns = [
   }),
   columnHelper.accessor((row) => genderEnChMap[row.gender], {
     id: "gender",
-    header: "性別",
-    size: 6,
+    header: ({ column }) => {
+      return (
+        <button
+          className="flex items-center gap-1"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          性別
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </button>
+      );
+    },
+    size: 8,
   }),
   columnHelper.accessor("birthday", {
-    header: "生日",
+    header: ({ column }) => {
+      return (
+        <button
+          className="flex items-center gap-1"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          生日
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </button>
+      );
+    },
     cell: (props) => props.getValue(),
     size: 11.5,
   }),
@@ -75,7 +126,17 @@ export const columns = [
         .toString(),
     {
       id: "coin",
-      header: "累積儲值金額",
+      header: ({ column }) => {
+        return (
+          <button
+            className="flex items-center gap-1"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            累積儲值金額
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </button>
+        );
+      },
       cell: (props) => {
         return (
           <div className="flex gap-1">
