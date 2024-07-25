@@ -129,19 +129,19 @@ export const linksKV = {
         type: "multiple" as const,
         allowedPermissions: ["高爾夫球-基本操作"],
       },
-      "member-management": {
-        label: "會員管理",
-        type: "multiple" as const,
-        paths: {
-          index: `${GOLF_BASE_PATH}/member-management`,
-          details: `${GOLF_BASE_PATH}/member-management/details/:id`,
-        },
-        lazy: {
-          index: () => import("@/pages/golf/member-management"),
-          details: () => import("@/pages/member-management/details"),
-        },
-        allowedPermissions: ["高爾夫球-基本操作"],
-      },
+      // "member-management": {
+      //   label: "會員管理",
+      //   type: "multiple" as const,
+      //   paths: {
+      //     index: `${GOLF_BASE_PATH}/member-management`,
+      //     details: `${GOLF_BASE_PATH}/member-management/details/:id`,
+      //   },
+      //   lazy: {
+      //     index: () => import("@/pages/golf/member-management"),
+      //     details: () => import("@/pages/member-management/details"),
+      //   },
+      //   allowedPermissions: ["高爾夫球-基本操作"],
+      // },
       "invitation-management": {
         label: "邀約管理",
         paths: {

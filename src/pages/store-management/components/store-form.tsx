@@ -130,7 +130,7 @@ export function StoreForm({
                       placeholder={`請輸入起始營業時間`}
                       type="time"
                       {...field}
-                      disabled={isInputDisabled}
+                      disabled={isInputDisabled || !!checked}
                       onClick={(e) => e.currentTarget.showPicker()}
                       onChange={(e) => {
                         field.onChange(e);
@@ -163,7 +163,7 @@ export function StoreForm({
                       placeholder={`請輸入結束營業時間`}
                       type="time"
                       {...field}
-                      disabled={isInputDisabled}
+                      disabled={isInputDisabled || !!checked}
                       onClick={(e) => e.currentTarget.showPicker()}
                       onChange={(e) => {
                         field.onChange(e);
@@ -335,6 +335,9 @@ export function StoreForm({
                       form
                         .getValues("employees")
                         .filter((e) => e.id !== employee.id),
+                      {
+                        shouldDirty: true,
+                      },
                     )
                   }
                   disabled={isInputDisabled}
@@ -352,6 +355,7 @@ export function StoreForm({
                   "hidden flex-1 items-center border-b border-orange pb-1 pl-1 sm:flex",
                   isInputDisabled && "opacity-50",
                 )}
+                key={employee.id}
               >
                 {employee.chName} <span className="text-word-gray">/</span>{" "}
                 {employee.telphone}
