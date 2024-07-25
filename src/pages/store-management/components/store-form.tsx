@@ -124,7 +124,7 @@ export function StoreForm({
                   <FormControl>
                     <Input
                       className={cn(
-                        "h-7 w-48 rounded-none border-0 border-b border-b-secondary-dark p-1 focus-visible:border-b-[1.5px] focus-visible:border-b-orange sm:w-full",
+                        "h-7 w-full rounded-none border-0 border-b border-b-secondary-dark p-1 focus-visible:border-b-[1.5px] focus-visible:border-b-orange sm:w-full",
                         field.value && "border-b-orange",
                       )}
                       placeholder={`請輸入起始營業時間`}
@@ -157,7 +157,7 @@ export function StoreForm({
                   <FormControl>
                     <Input
                       className={cn(
-                        "h-7 w-48 rounded-none border-0 border-b border-b-secondary-dark focus-visible:border-b-[1.5px] focus-visible:border-b-orange sm:w-full sm:p-1",
+                        "h-7 w-full rounded-none border-0 border-b border-b-secondary-dark focus-visible:border-b-[1.5px] focus-visible:border-b-orange sm:w-full sm:p-1",
                         field.value && "border-b-orange",
                       )}
                       placeholder={`請輸入結束營業時間`}
@@ -182,22 +182,22 @@ export function StoreForm({
                 </FormItem>
               )}
             />
+            <Label className="flex items-center gap-2">
+              24小時營業
+              <Checkbox
+                className="disabled:opacity-25"
+                checked={checked}
+                onCheckedChange={(e) => {
+                  if (e === true) {
+                    form.setValue("openingHoursStart", "00:00");
+                    form.setValue("openingHoursEnd", "23:59");
+                  }
+                  setChecked(e);
+                }}
+                disabled={isInputDisabled}
+              />
+            </Label>
           </div>
-
-          <Label className="flex items-center gap-2">
-            24小時營業
-            <Checkbox
-              className=""
-              checked={checked}
-              onCheckedChange={(e) => {
-                if (e === true) {
-                  form.setValue("openingHoursStart", "00:00");
-                  form.setValue("openingHoursEnd", "23:59");
-                }
-                setChecked(e);
-              }}
-            />
-          </Label>
 
           <div className="flex ">
             <FormField
