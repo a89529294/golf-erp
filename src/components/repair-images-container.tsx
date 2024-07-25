@@ -1,11 +1,20 @@
+import { ImagePortalContainer } from "@/components/image-portal-container";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { fromImageIdsToSrc } from "@/utils";
 import React from "react";
+import { createPortal } from "react-dom";
 
 export function ImagesContainer({ imageIds }: { imageIds: string[] }) {
   const [imageSrcs, setImageSrcs] = React.useState<string[]>([]);
   const [displayImgIdx, setDisplayImgIdx] = React.useState(0);
+  const [showImagePortal, setShowImagePortal] = React.useState(false);
+
+  React.useEffect(() => {
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") setShowImagePortal(false);
+    });
+  }, []);
 
   React.useEffect(() => {
     (async () => {
@@ -37,12 +46,14 @@ export function ImagesContainer({ imageIds }: { imageIds: string[] }) {
       </button>
       {imageIds.length ? (
         imageSrcs.length ? (
-          <img
-            src={imageSrcs[displayImgIdx]}
-            className="mx-auto h-full w-16 shrink-0 object-contain"
-          />
+          <button onClick={() => setShowImagePortal(true)}>
+            <img
+              src={imageSrcs[displayImgIdx]}
+              className="mx-auto h-full w-16 shrink-0 object-contain"
+            />
+          </button>
         ) : (
-          imageIds.map((_, i) => <Skeleton key={i} className="h-full w-full" />)
+          <Skeleton className="mx-auto h-full w-16 shrink-0" />
         )
       ) : null}
       <button
@@ -54,6 +65,14 @@ export function ImagesContainer({ imageIds }: { imageIds: string[] }) {
       >
         ▶
       </button>
+      {showImagePortal &&
+        createPortal(
+          <ImagePortalContainer
+            src={imageSrcs[displayImgIdx]}
+            onClose={() => setShowImagePortal(false)}
+          />,
+          document.querySelector("#image-root")!,
+        )}
     </div>
   );
 }

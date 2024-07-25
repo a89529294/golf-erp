@@ -1,14 +1,39 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 import { ImagesContainer } from "@/components/repair-images-container";
-import { SimulatorRepairRequest } from "@/types-and-schemas/repair-request";
+import {
+  RepairStatus,
+  SimulatorRepairRequest,
+} from "@/types-and-schemas/repair-request";
 import {
   ColumnDef,
   createColumnHelper,
   flexRender,
 } from "@tanstack/react-table";
+import { privateFetch } from "@/utils/utils";
+import { toast } from "sonner";
+import { queryClient } from "@/utils/query-client";
 
 const columnHelper = createColumnHelper<SimulatorRepairRequest>();
+
+async function patchStatus(requestId: string, status: RepairStatus) {
+  try {
+    await privateFetch(`/repair-request/${requestId}`, {
+      method: "PATCH",
+      body: JSON.stringify({
+        status,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    toast.success("更新狀態成功");
+    queryClient.invalidateQueries({ queryKey: ["repair-requests"] });
+  } catch (e) {
+    console.log(e);
+    toast.error("更新狀態失敗");
+  }
+}
 
 export const columns = [
   columnHelper.display({
@@ -96,36 +121,46 @@ export const columns = [
   columnHelper.display({
     id: "status-toggle",
     header: "修改狀態",
-    cell: (prop) => (
-      <div className="flex gap-4 text-sm text-word-darker-gray">
-        <div
-          className={cn(
-            "w-20 rounded-full border border-word-darker-gray text-center",
-            prop.getValue() === "pending" &&
-              "border-orange bg-orange text-white",
-          )}
-        >
-          進行中
+    cell: (prop) => {
+      const currentStatus = prop.row.original.status;
+      const requestId = prop.row.original.id;
+      return (
+        <div className="flex gap-4 text-sm text-word-darker-gray">
+          <button
+            className={cn(
+              "w-20 rounded-full border  border-orange bg-orange text-center text-white disabled:cursor-not-allowed",
+              currentStatus === "pending" &&
+                "border-word-darker-gray bg-transparent text-word-darker-gray ",
+            )}
+            disabled={currentStatus === "pending"}
+            onClick={() => patchStatus(requestId, "pending")}
+          >
+            進行中
+          </button>
+          <button
+            className={cn(
+              "w-20 rounded-full border border-line-green bg-line-green text-center text-white",
+              currentStatus === "complete" &&
+                "border-word-darker-gray bg-transparent text-word-darker-gray ",
+            )}
+            disabled={currentStatus === "complete"}
+            onClick={() => patchStatus(requestId, "complete")}
+          >
+            已完成
+          </button>
+          <button
+            className={cn(
+              "w-20 rounded-full border bg-word-darker-gray  text-center text-white",
+              currentStatus === "no-problem" &&
+                "border-word-darker-gray bg-transparent text-word-darker-gray",
+            )}
+            disabled={currentStatus === "no-problem"}
+            onClick={() => patchStatus(requestId, "no-problem")}
+          >
+            無須處理
+          </button>
         </div>
-        <div
-          className={cn(
-            "w-20 rounded-full border border-word-darker-gray text-center",
-            prop.getValue() === "complete" &&
-              "border-line-green bg-line-green text-white",
-          )}
-        >
-          已完成
-        </div>
-        <div
-          className={cn(
-            "w-20 rounded-full border border-word-darker-gray text-center",
-            prop.getValue() === "no-problem" &&
-              "border-word-darker-gray bg-word-darker-gray text-white",
-          )}
-        >
-          無須處理
-        </div>
-      </div>
-    ),
+      );
+    },
   }),
 ] as ColumnDef<SimulatorRepairRequest>[];

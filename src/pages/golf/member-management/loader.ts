@@ -4,6 +4,10 @@ import { queryClient } from "@/utils/query-client";
 
 export async function loader() {
   return await queryClient.ensureQueryData(
-    getStoresQuery(await getAllowedStores("golf"), "golf"),
+    getStoresQuery(
+      await getAllowedStores("golf"),
+      "golf",
+      JSON.parse(localStorage.getItem("golf-erp-user")!).account,
+    ),
   );
 }

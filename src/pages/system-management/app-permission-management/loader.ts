@@ -73,27 +73,41 @@ export const erpFeaturesWithUsersQuery = {
         formattedFeature = strings[0] + " / " + strings[1];
       }
 
+      const x = formattedFeature.split("/")[0].trim();
+
       erpFeaturesWithUsers.push({
         featureId: feature.id,
         featureName: formattedFeature,
-        users: filteredUsers.map((user) => ({
-          id: user.id,
-          idNumber: user.account,
-          chName: user.username,
-          telphone: user.employee?.telphone ?? "",
-          storeCategory:
-            storeCategoryMap[
-              user.employee?.stores?.[0]
-                ?.category as keyof typeof storeCategoryMap
-            ] ?? "",
-          store: user.employee?.stores?.[0]
-            ? {
-                name: user.employee.stores[0].name,
-                id: user.employee.stores[0].id,
-              }
-            : null,
-          employeeId: user.employee?.id ?? "",
-        })),
+        users: filteredUsers.map((user) => {
+          let stores = user.employee?.stores ?? [];
+          if (x === "模擬器") {
+            console.log(stores);
+            stores = stores.filter((s) => s.category === "simulator");
+            console.log(stores);
+          } else if (x === "高爾夫") {
+            stores = stores.filter((s) => s.category === "golf");
+          } else if (x === "練習場") {
+            stores = stores.filter((s) => s.category === "ground");
+          }
+
+          return {
+            id: user.id,
+            idNumber: user.account,
+            chName: user.username,
+            telphone: user.employee?.telphone ?? "",
+            storeCategory:
+              storeCategoryMap[
+                stores[0]?.category as keyof typeof storeCategoryMap
+              ] ?? "",
+            store: stores[0]
+              ? {
+                  name: stores[0].name,
+                  id: stores[0].id,
+                }
+              : null,
+            employeeId: user.employee?.id ?? "",
+          };
+        }),
       });
     });
 

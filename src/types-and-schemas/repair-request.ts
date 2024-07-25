@@ -73,6 +73,8 @@ type GroundRepairRequest = z.infer<
   typeof groundRepairRequestsSchema
 >["data"][number];
 
+type RepairStatus = z.infer<typeof repairRequestBaseSchema>["status"];
+
 export {
   golfRepairRequestsSchema,
   simulatorRepairRequestsSchema,
@@ -80,4 +82,5 @@ export {
   type SimulatorRepairRequest,
   type GolfRepairRequest,
   type GroundRepairRequest,
+  type RepairStatus,
 };
