@@ -14,9 +14,8 @@ import {
 } from "@/components/ui/menubar";
 import { cn } from "@/lib/utils";
 import { Member } from "@/pages/member-management/loader";
-import { linksKV } from "@/utils/links";
 import { FieldValues, UseFormReturn } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export function MobileMenubar<T extends FieldValues>({
   disabled,
@@ -37,6 +36,7 @@ export function MobileMenubar<T extends FieldValues>({
   form: UseFormReturn<T>;
   onSubmit: () => void;
 }) {
+  const navigate = useNavigate();
   return (
     <Menubar className="h-auto border-none bg-transparent">
       <MenubarMenu>
@@ -50,7 +50,11 @@ export function MobileMenubar<T extends FieldValues>({
                     "flex gap-1",
                     isUpdatingMemberStatus && "pointer-events-none opacity-50",
                   )}
-                  to={linksKV["member-management"].paths["index"]}
+                  to={".."}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigate(-1);
+                  }}
                 >
                   <img src={backIcon} />
                   返回

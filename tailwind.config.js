@@ -105,12 +105,21 @@ export const theme = {
         "50%": { opacity: 0 },
         "100%": { opacity: 0 },
       },
+      spin: {
+        "0%": {
+          transform: "rotate(0deg)",
+        },
+        "100%": {
+          transform: "rotate(360deg)",
+        },
+      },
     },
     animation: {
       "accordion-down": "accordion-down .3s ease-out",
       "accordion-up": "accordion-up .3s ease-out",
       "fade-half-in": "fade-half-in 10ms ease-out 100ms",
       blink: "blink 1000ms linear infinite",
+      spin: "spin 1s linear infinite",
     },
   },
 };

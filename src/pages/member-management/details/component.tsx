@@ -165,7 +165,10 @@ export function Component() {
           form={form}
           disabled={disabled || isPending}
           onSubmit={onSubmit}
-          coin={data.coin}
+          coin={(data.storeAppUsers ?? []).reduce(
+            (acc, val) => acc + val.coin,
+            0,
+          )}
         />
         <button className="self-center rounded-full bg-secondary-dark px-5 py-3 text-white">
           儲值紀錄

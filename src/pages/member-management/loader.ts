@@ -1,8 +1,8 @@
 import { fromDateToDateTimeString } from "@/utils";
 import { queryClient } from "@/utils/query-client";
 import { privateFetch } from "@/utils/utils";
-import { z } from "zod";
 import qs from "query-string";
+import { z } from "zod";
 
 export const memberTypeSchema = z.union([
   z.literal("guest"),
@@ -25,7 +25,7 @@ export const memberSchema = z.object({
   phone: z.string(),
   gender: genderSchema,
   birthday: z.string().nullable(),
-  coin: z.number(),
+  storeAppUsers: z.array(z.object({ id: z.string(), coin: z.number() })),
   appChargeHistories: z.array(
     z.object({
       id: z.string(),
@@ -68,7 +68,7 @@ export const membersQuery = {
       pageSize: 999,
       sort: "updatedAt",
       order: "DESC",
-      populate: "store",
+      populate: ["store", "storeAppUsers"],
     });
     const response = await privateFetch(`/app-users?${queryString}`);
 

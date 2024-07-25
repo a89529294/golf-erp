@@ -7,7 +7,7 @@ export const genMemberDetailsQuery = (id: string) => ({
   queryKey: ["members", id],
   queryFn: async () => {
     const response = await privateFetch(
-      `/app-users/${id}?populate=appChargeHistories`,
+      `/app-users/${id}?populate=appChargeHistories&populate=storeAppUsers`,
     );
 
     const data = await response.json();

@@ -1,8 +1,7 @@
 import backIcon from "@/assets/back.svg";
 import { IconButton, IconWarningButton } from "@/components/ui/button";
 import { button } from "@/components/ui/button-cn";
-import { linksKV } from "@/utils/links";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { cn } from "@/lib/utils";
 import { Member } from "@/pages/member-management/loader";
@@ -28,6 +27,7 @@ export function DesktopMenubar({
   isPending: boolean;
   form: UseFormReturn<z.infer<typeof memberFormSchema>>;
 }) {
+  const navigate = useNavigate();
   return (
     <>
       {disabled === true ? (
@@ -37,7 +37,11 @@ export function DesktopMenubar({
               button(),
               isUpdatingMemberStatus && "pointer-events-none opacity-50",
             )}
-            to={linksKV["member-management"].paths["index"]}
+            to={".."}
+            onClick={(e) => {
+              e.preventDefault();
+              navigate(-1);
+            }}
           >
             <img src={backIcon} />
             返回

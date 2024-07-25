@@ -2,6 +2,7 @@ import { TextButton, TextWarningButton } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -93,6 +94,7 @@ export function Modal({
           </DialogFooter>
         </form>
       </DialogContent>
+      <DialogDescription />
     </Dialog>
   );
 }

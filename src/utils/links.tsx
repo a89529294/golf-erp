@@ -61,9 +61,15 @@ export const linksKV = {
       },
       "member-management": {
         label: "會員管理",
-        path: `${DRIVING_RANGE_BASE_PATH}/member-management`,
-        lazy: () => import("@/pages/driving-range/member-management"),
-        type: "flat" as const,
+        type: "multiple" as const,
+        paths: {
+          index: `${DRIVING_RANGE_BASE_PATH}/member-management`,
+          details: `${DRIVING_RANGE_BASE_PATH}/member-management/details/:id`,
+        },
+        lazy: {
+          index: () => import("@/pages/driving-range/member-management"),
+          details: () => import("@/pages/member-management/details"),
+        },
         allowedPermissions: ["練習場-基本操作"],
       },
       "appointment-management": {
@@ -125,9 +131,15 @@ export const linksKV = {
       },
       "member-management": {
         label: "會員管理",
-        path: `${GOLF_BASE_PATH}/member-management`,
-        lazy: () => import("@/pages/golf/member-management"),
-        type: "flat" as const,
+        type: "multiple" as const,
+        paths: {
+          index: `${GOLF_BASE_PATH}/member-management`,
+          details: `${GOLF_BASE_PATH}/member-management/details/:id`,
+        },
+        lazy: {
+          index: () => import("@/pages/golf/member-management"),
+          details: () => import("@/pages/member-management/details"),
+        },
         allowedPermissions: ["高爾夫球-基本操作"],
       },
       "invitation-management": {
@@ -190,9 +202,17 @@ export const linksKV = {
       },
       "member-management": {
         label: "會員管理",
-        path: `${INDOOR_SIMULATOR_BASE_PATH}/member-management`,
-        lazy: () => import("@/pages/indoor-simulator/member-management"),
-        type: "flat" as const,
+        type: "multiple" as const,
+        paths: {
+          index: `${INDOOR_SIMULATOR_BASE_PATH}/member-management`,
+          // new: `${INDOOR_SIMULATOR_BASE_PATH}/member-management/new`,
+          details: `${INDOOR_SIMULATOR_BASE_PATH}/member-management/details/:id`,
+        },
+        lazy: {
+          index: () => import("@/pages/indoor-simulator/member-management"),
+          // new: () => import("@/pages/member-management/new"),
+          details: () => import("@/pages/member-management/details"),
+        },
         allowedPermissions: ["模擬器-基本操作"],
       },
       "appointment-management": {

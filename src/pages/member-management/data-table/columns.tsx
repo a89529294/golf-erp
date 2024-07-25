@@ -1,9 +1,8 @@
 import fileIcon from "@/assets/black-file-icon.svg";
-import { Tablet, TabletSendPoints } from "@/components/tablet";
+import { Tablet } from "@/components/tablet";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { Link } from "react-router-dom";
 import { SimpleMember, genderEnChMap, memberTypeEnChMap } from "../loader";
-import { Modal } from "@/components/modal";
 
 const columnHelper = createColumnHelper<SimpleMember>();
 
@@ -20,21 +19,21 @@ export const columns = [
     },
     size: 7.2,
   }),
-  columnHelper.display({
-    id: "send_points",
-    header: "",
-    cell: () => {
-      return (
-        <Modal dialogTriggerChildren={<TabletSendPoints />} onSubmit={() => {}}>
-          <div>
-            <h1 className="mb-1 text-center">數入點數</h1>
-            <input className="text-center" type="number" />
-          </div>
-        </Modal>
-      );
-    },
-    size: 11.2,
-  }),
+  // columnHelper.display({
+  //   id: "send_points",
+  //   header: "",
+  //   cell: () => {
+  //     return (
+  //       <Modal dialogTriggerChildren={<TabletSendPoints />} onSubmit={() => {}}>
+  //         <div>
+  //           <h1 className="mb-1 text-center">數入點數</h1>
+  //           <input className="text-center" type="number" />
+  //         </div>
+  //       </Modal>
+  //     );
+  //   },
+  //   size: 11.2,
+  // }),
   columnHelper.accessor("account", {
     header: "帳號",
     cell: (props) => props.getValue(),
@@ -68,7 +67,12 @@ export const columns = [
     size: 11.5,
   }),
   columnHelper.accessor(
-    (row) => new Intl.NumberFormat().format(row.coin).toString(),
+    (row) =>
+      new Intl.NumberFormat()
+        .format(
+          (row.storeAppUsers ?? []).reduce((acc, val) => acc + val.coin, 0),
+        )
+        .toString(),
     {
       id: "coin",
       header: "累積儲值金額",
@@ -102,21 +106,21 @@ export const columns = [
 ] as ColumnDef<SimpleMember>[];
 
 export const mobileColumns = [
-  columnHelper.display({
-    id: "send_points",
-    header: "",
-    cell: () => {
-      return (
-        <Modal dialogTriggerChildren={<TabletSendPoints />} onSubmit={() => {}}>
-          <div className="">
-            <h1 className="mb-1 text-center">數入點數</h1>
-            <input className="text-center" type="number" />
-          </div>
-        </Modal>
-      );
-    },
-    size: 40,
-  }),
+  // columnHelper.display({
+  //   id: "send_points",
+  //   header: "",
+  //   cell: () => {
+  //     return (
+  //       <Modal dialogTriggerChildren={<TabletSendPoints />} onSubmit={() => {}}>
+  //         <div className="">
+  //           <h1 className="mb-1 text-center">數入點數</h1>
+  //           <input className="text-center" type="number" />
+  //         </div>
+  //       </Modal>
+  //     );
+  //   },
+  //   size: 40,
+  // }),
   columnHelper.accessor("account", {
     header: "帳號",
     cell: (props) => props.getValue(),
