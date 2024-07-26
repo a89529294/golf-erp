@@ -141,12 +141,7 @@ export function Component() {
                 ))}
               </ul>
               <div className="hidden pb-1 sm:block">
-                <Select
-                  // open={mobileCategorySelectOpen}
-                  // onOpenChange={setMobileCategorySelectOpen}
-                  value={category ?? ""}
-                  onValueChange={setCategory}
-                >
+                <Select value={category ?? ""} onValueChange={setCategory}>
                   <SelectTrigger className="grid h-9 place-items-center rounded-full border border-line-gray bg-secondary-dark px-5 text-white">
                     <SelectValue />
                   </SelectTrigger>
@@ -174,7 +169,7 @@ export function Component() {
               >
                 <DataTable
                   columns={mobileColumns}
-                  data={[...filteredData, ...filteredData]}
+                  data={filteredData}
                   rowSelection={rowSelection}
                   setRowSelection={setRowSelection}
                   globalFilter={globalFilter}
