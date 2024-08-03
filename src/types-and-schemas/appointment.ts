@@ -7,10 +7,16 @@ export const baseAppointmentSchema = z.object({
   startTime: z.coerce.date().transform((v) => fromDateToDateTimeString(v)),
   endTime: z.coerce.date().transform((v) => fromDateToDateTimeString(v)),
   status: z
-    .union([z.literal("pending"), z.literal("complete"), z.literal("cancel")])
+    .union([
+      z.literal("pending"),
+      z.literal("complete"),
+      z.literal("cancel"),
+      z.literal("overtime"),
+    ])
     .transform((v) => {
       if (v === "pending") return "進行中";
       if (v === "complete") return "完成";
+      if (v === "overtime") return "過期";
       return "取消";
     }),
   order: z

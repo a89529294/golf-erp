@@ -1,17 +1,14 @@
 import fileIcon from "@/assets/black-file-icon.svg";
-import { Tablet, TabletSendPoints } from "@/components/tablet";
-import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
-import { Link } from "react-router-dom";
+import { AddCoinModal } from "@/components/category/add-coin-modal";
+import { Tablet } from "@/components/tablet";
 import {
   SimpleMember,
   genderEnChMap,
   memberTypeEnChMap,
 } from "@/pages/member-management/loader";
-import { Modal } from "@/components/modal";
-import { privateFetch } from "@/utils/utils";
-import { toast } from "sonner";
-import { Input } from "@/components/ui/input";
+import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const columnHelper = createColumnHelper<SimpleMember>();
 
@@ -43,37 +40,7 @@ export const columns = (
       header: "",
       cell: (props) => {
         const appUserId = props.row.original.id;
-        return (
-          <Modal
-            dialogTriggerChildren={<TabletSendPoints />}
-            onSubmit={async () => {
-              try {
-                await privateFetch(`/app-users/${appUserId}/add-coin`, {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                  body: JSON.stringify({
-                    coin: 50,
-                    storeId: storeId,
-                  }),
-                });
-                toast.success("贈送點數成功");
-              } catch (e) {
-                console.log(e);
-                toast.error("贈送點數失敗");
-              }
-            }}
-          >
-            <div>
-              <h1 className="mb-1 text-center">數入點數</h1>
-              <Input
-                className="rounded-none border-0 border-b border-b-secondary-dark text-center"
-                type="number"
-              />
-            </div>
-          </Modal>
-        );
+        return <AddCoinModal appUserId={appUserId} storeId={storeId} />;
       },
       size: 11.2,
     }),
@@ -218,37 +185,7 @@ export const mobileColumns = (
       header: "",
       cell: (props) => {
         const appUserId = props.row.original.id;
-        return (
-          <Modal
-            dialogTriggerChildren={<TabletSendPoints />}
-            onSubmit={async () => {
-              try {
-                await privateFetch(`/app-users/${appUserId}/add-coin`, {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                  body: JSON.stringify({
-                    coin: 50,
-                    storeId: storeId,
-                  }),
-                });
-                toast.success("贈送點數成功");
-              } catch (e) {
-                console.log(e);
-                toast.error("贈送點數失敗");
-              }
-            }}
-          >
-            <div>
-              <h1 className="mb-1 text-center">數入點數</h1>
-              <Input
-                className="rounded-none border-0 border-b border-b-secondary-dark text-center"
-                type="number"
-              />
-            </div>
-          </Modal>
-        );
+        return <AddCoinModal appUserId={appUserId} storeId={storeId} />;
       },
       size: 40,
     }),
