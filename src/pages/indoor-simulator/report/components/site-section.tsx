@@ -198,6 +198,7 @@ export function SiteSection({
             phone: v.appUser.phone,
             startDateTime: v.startTime,
             endDateTime: v.endTime,
+            paymentType: v.order ? "信用卡" : "點數",
             amount: v.amount,
           }))}
         />

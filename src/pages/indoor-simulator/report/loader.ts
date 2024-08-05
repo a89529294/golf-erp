@@ -72,7 +72,6 @@ export const genDataQuery = (storeId: string, startAt: Date, endAt: Date) => ({
     });
 
     const updateStartAndEnd = differenceInDays(startAt, endAt) === 0;
-    console.log(updateStartAndEnd);
 
     const qs = queryString.stringify({
       startAt: formatDateAsString(

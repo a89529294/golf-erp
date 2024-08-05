@@ -6,6 +6,7 @@ type Order = {
   phone: string;
   startDateTime: string;
   endDateTime: string;
+  paymentType: string;
   amount: number;
 };
 
@@ -33,10 +34,14 @@ export const columns = [
     header: "結束時間",
     cell: (prop) => <div className="whitespace-nowrap">{prop.getValue()}</div>,
   }),
+  columnHelper.accessor("paymentType", {
+    header: "付款方式",
+    cell: (prop) => <div className="whitespace-nowrap ">{prop.getValue()}</div>,
+  }),
   columnHelper.accessor("amount", {
     header: "訂單金額",
     cell: (prop) => (
-      <div className="whitespace-nowrap font-bold text-secondary-purple">
+      <div className="font-bold whitespace-nowrap text-secondary-purple">
         {prop.getValue()}
       </div>
     ),

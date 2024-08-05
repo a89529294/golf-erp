@@ -46,6 +46,8 @@ export function Component() {
     enabled: false,
   });
 
+  console.log(data);
+
   const onStoreValueChange = useCallback(
     (storeId: string, replace: boolean) => {
       const range = encodeURIComponent("2024-01-01:2024-12-31");
@@ -92,14 +94,14 @@ export function Component() {
       {isMobile ? (
         ({ height }) => (
           <ScrollArea style={{ height }}>
-            <div className="w-full border border-line-gray bg-light-gray p-5">
+            <div className="w-full p-5 border border-line-gray bg-light-gray">
               {data && <ReportContainer data={data} stores={stores} />}
             </div>
             <Scrollbar orientation="horizontal" />
           </ScrollArea>
         )
       ) : (
-        <div className="w-full border border-line-gray bg-light-gray p-5">
+        <div className="w-full p-5 border border-line-gray bg-light-gray">
           {data && <ReportContainer data={data} stores={stores} />}
         </div>
       )}
