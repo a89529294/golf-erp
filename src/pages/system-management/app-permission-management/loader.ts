@@ -31,6 +31,20 @@ export type AppPermissionUser = {
   employeeId: string;
 };
 
+const featureOrder: Record<string, number> = {
+  "模擬器 / 基本操作": 0,
+  "模擬器 / 報表": 1,
+  "模擬器 / 贈送點數": 2,
+  "高爾夫球 / 基本操作": 3,
+  "高爾夫球 / 報表": 4,
+  "高爾夫球 / 贈送點數": 5,
+  "練習場 / 基本操作": 6,
+  "練習場 / 報表": 7,
+  "練習場 / 贈送點數": 8,
+  廠商管理: 9,
+  系統管理: 10,
+};
+
 export const erpFeaturesWithUsersQuery = {
   queryKey: ["erp-features-with-users"],
   queryFn: async () => {
@@ -60,6 +74,7 @@ export const erpFeaturesWithUsersQuery = {
       featureId: string;
       featureName: string;
       users: AppPermissionUser[];
+      order: number;
     }[] = [];
 
     erpFeatures.forEach((feature) => {
@@ -81,9 +96,7 @@ export const erpFeaturesWithUsersQuery = {
         users: filteredUsers.map((user) => {
           let stores = user.employee?.stores ?? [];
           if (x === "模擬器") {
-            console.log(stores);
             stores = stores.filter((s) => s.category === "simulator");
-            console.log(stores);
           } else if (x === "高爾夫") {
             stores = stores.filter((s) => s.category === "golf");
           } else if (x === "練習場") {
@@ -108,6 +121,7 @@ export const erpFeaturesWithUsersQuery = {
             employeeId: user.employee?.id ?? "",
           };
         }),
+        order: featureOrder[formattedFeature],
       });
     });
 
@@ -130,7 +144,9 @@ export const erpFeaturesWithUsersQuery = {
     }));
 
     return {
-      erpFeaturesWithUsers,
+      erpFeaturesWithUsers: erpFeaturesWithUsers.sort(
+        (a, b) => a.order - b.order,
+      ),
       allUsers,
     };
   },

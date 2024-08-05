@@ -36,10 +36,23 @@ export const linksKV = {
     label: "練習場",
     type: "nested" as const,
     basePath: DRIVING_RANGE_BASE_PATH,
-    path: `${DRIVING_RANGE_BASE_PATH}/site-management`,
-    allowedPermissions: ["練習場-基本操作", "練習場-報表"],
+    path: `${DRIVING_RANGE_BASE_PATH}/member-management`,
+    allowedPermissions: ["練習場-基本操作", "練習場-報表", "練習場-贈送點數"],
     allowedStoreCategory: "ground" as const,
     subLinks: {
+      "member-management": {
+        label: "會員管理",
+        type: "multiple" as const,
+        paths: {
+          index: `${DRIVING_RANGE_BASE_PATH}/member-management`,
+          details: `${DRIVING_RANGE_BASE_PATH}/member-management/details/:id`,
+        },
+        lazy: {
+          index: () => import("@/pages/driving-range/member-management"),
+          details: () => import("@/pages/member-management/details"),
+        },
+        allowedPermissions: ["練習場-基本操作"],
+      },
       "site-management": {
         label: "場地管理",
         paths: {
@@ -59,25 +72,19 @@ export const linksKV = {
         type: "multiple" as const,
         allowedPermissions: ["練習場-基本操作"],
       },
-      "member-management": {
-        label: "會員管理",
-        type: "multiple" as const,
-        paths: {
-          index: `${DRIVING_RANGE_BASE_PATH}/member-management`,
-          details: `${DRIVING_RANGE_BASE_PATH}/member-management/details/:id`,
-        },
-        lazy: {
-          index: () => import("@/pages/driving-range/member-management"),
-          details: () => import("@/pages/member-management/details"),
-        },
-        allowedPermissions: ["練習場-基本操作"],
-      },
       "appointment-management": {
         label: "預約管理",
         path: `${DRIVING_RANGE_BASE_PATH}/appointment-management`,
         lazy: () => import("@/pages/driving-range/appointment-management"),
         type: "flat" as const,
         allowedPermissions: ["練習場-基本操作"],
+      },
+      "coupon-management": {
+        label: "優惠券管理",
+        path: `${DRIVING_RANGE_BASE_PATH}/coupon-management`,
+        lazy: () => import("@/pages/driving-range/coupon-management"),
+        type: "flat" as const,
+        allowedPermissions: ["練習場-贈送點數"],
       },
       "repair-report": {
         label: "報修回報",
@@ -177,10 +184,25 @@ export const linksKV = {
     label: "室內模擬器",
     type: "nested" as const,
     basePath: INDOOR_SIMULATOR_BASE_PATH,
-    path: `${INDOOR_SIMULATOR_BASE_PATH}/site-management`,
+    path: `${INDOOR_SIMULATOR_BASE_PATH}/member-management`,
     allowedPermissions: ["模擬器-基本操作", "模擬器-報表"],
     allowedStoreCategory: "simulator" as const,
     subLinks: {
+      "member-management": {
+        label: "會員管理",
+        type: "multiple" as const,
+        paths: {
+          index: `${INDOOR_SIMULATOR_BASE_PATH}/member-management`,
+          // new: `${INDOOR_SIMULATOR_BASE_PATH}/member-management/new`,
+          details: `${INDOOR_SIMULATOR_BASE_PATH}/member-management/details/:id`,
+        },
+        lazy: {
+          index: () => import("@/pages/indoor-simulator/member-management"),
+          // new: () => import("@/pages/member-management/new"),
+          details: () => import("@/pages/member-management/details"),
+        },
+        allowedPermissions: ["模擬器-基本操作"],
+      },
       "site-management": {
         label: "場地管理",
         paths: {
@@ -198,21 +220,6 @@ export const linksKV = {
             import("@/pages/indoor-simulator/site-management/details"),
         },
         type: "multiple" as const,
-        allowedPermissions: ["模擬器-基本操作"],
-      },
-      "member-management": {
-        label: "會員管理",
-        type: "multiple" as const,
-        paths: {
-          index: `${INDOOR_SIMULATOR_BASE_PATH}/member-management`,
-          // new: `${INDOOR_SIMULATOR_BASE_PATH}/member-management/new`,
-          details: `${INDOOR_SIMULATOR_BASE_PATH}/member-management/details/:id`,
-        },
-        lazy: {
-          index: () => import("@/pages/indoor-simulator/member-management"),
-          // new: () => import("@/pages/member-management/new"),
-          details: () => import("@/pages/member-management/details"),
-        },
         allowedPermissions: ["模擬器-基本操作"],
       },
       "appointment-management": {

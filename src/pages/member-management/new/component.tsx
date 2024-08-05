@@ -89,7 +89,8 @@ export function Component() {
     >
       <div className="mb-2.5 flex w-full flex-col gap-5 border border-line-gray bg-light-gray p-5">
         <MemberForm
-          coin={0}
+          topUpAmount={0}
+          spentAmount={0}
           form={form}
           disabled={isPending}
           onSubmit={onSubmit}

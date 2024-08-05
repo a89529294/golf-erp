@@ -13,6 +13,7 @@ import { useLoaderData, useSearchParams } from "react-router-dom";
 import { columns, mobileColumns } from "./data-table/columns";
 import { DataTable } from "./data-table/data-table";
 import { StoreSelect } from "@/components/category/store-select";
+import { useAuth } from "@/hooks/use-auth";
 
 const navigateMap = {
   ground: "/driving-range/member-management",
@@ -38,12 +39,13 @@ export function MemberManagementPage({
   const [rowSelection, setRowSelection] = useState({});
   const [globalFilter, setGlobalFilter] = useState("");
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
+  const auth = useAuth();
 
   const { data: members, isLoading: isLoadingMembers } = useQuery({
     queryKey: [category, "members", storeId],
     queryFn: async () => {
       const response = await privateFetch(
-        `/app-users/${category}/${storeId}?populate=storeAppUsers&pageSize=999`,
+        `/app-users/${category}/${storeId}?populate=storeAppUsers&pageSize=999&populate=appChargeHistories.store`,
       );
       const data = await response.json();
       return data.data;
@@ -55,14 +57,6 @@ export function MemberManagementPage({
     <MainLayout
       headerChildren={
         <>
-          {/* <Link
-            className={button()}
-            to={linksKV["member-management"].paths["new"]}
-          >
-            <img src={plusIcon} />
-            新增會員
-          </Link> */}
-
           <StoreSelect
             category={category}
             initialData={initialData}
@@ -78,11 +72,15 @@ export function MemberManagementPage({
     >
       {isMobile ? (
         ({ height }) => (
-          <ScrollArea style={{ height }}>
-            <div className="w-full border border-line-gray bg-light-gray p-1 pt-0">
+          <ScrollArea style={{ height }} className="w-full">
+            <div className="w-full p-1 pt-0 border border-line-gray bg-light-gray">
               {members && (
                 <DataTable
-                  columns={mobileColumns(storeId ?? "", category)}
+                  columns={mobileColumns(
+                    storeId ?? "",
+                    category,
+                    auth.user?.permissions ?? [],
+                  )}
                   data={members}
                   rowSelection={rowSelection}
                   setRowSelection={setRowSelection}
@@ -105,7 +103,11 @@ export function MemberManagementPage({
             <Spinner />
           ) : members ? (
             <DataTable
-              columns={columns(storeId ?? "", category)}
+              columns={columns(
+                storeId ?? "",
+                category,
+                auth.user?.permissions ?? [],
+              )}
               data={members}
               rowSelection={rowSelection}
               setRowSelection={setRowSelection}

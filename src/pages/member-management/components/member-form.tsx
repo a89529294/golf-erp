@@ -10,13 +10,15 @@ export function MemberForm({
   form,
   onSubmit,
   disabled,
-  coin,
+  topUpAmount,
+  spentAmount,
   newMemberForm,
 }: {
   form: UseFormReturn<z.infer<typeof memberFormSchema>>;
   onSubmit: (values: z.infer<typeof memberFormSchema>) => void;
   disabled: boolean;
-  coin: number;
+  topUpAmount: number;
+  spentAmount: number;
   newMemberForm?: boolean;
 }) {
   const memberTypeRef = useRef<HTMLButtonElement>(null);
@@ -27,7 +29,7 @@ export function MemberForm({
       <form
         onSubmit={form.handleSubmit(onSubmit, (e) => console.log(e))}
         id="member-form"
-        className="space-y-4 border border-line-gray p-1"
+        className="p-1 space-y-4 border border-line-gray"
       >
         <div className="grid grid-cols-[152fr_110fr_110fr_110fr_110fr_80fr_140fr_152fr] gap-x-10 pt-2.5 sm:flex sm:flex-col">
           <DesktopFields
@@ -43,11 +45,14 @@ export function MemberForm({
         </div>
 
         {!newMemberForm && (
-          <div className="flex justify-center bg-secondary-dark py-3">
+          <div className="flex justify-center py-3 bg-secondary-dark">
             <div className="flex gap-36 sm:flex-col sm:gap-4">
-              <AmountCell label="累積消費金額" amount={coin} />
-              <AmountCell label="消費儲值金額" amount={0} />
-              <AmountCell label="剩餘消費金額" amount={0} />
+              <AmountCell label="累積消費金額" amount={spentAmount} />
+              <AmountCell label="消費儲值金額" amount={topUpAmount} />
+              <AmountCell
+                label="剩餘消費金額"
+                amount={topUpAmount - spentAmount}
+              />
             </div>
           </div>
         )}

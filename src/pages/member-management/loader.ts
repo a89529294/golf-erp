@@ -31,8 +31,28 @@ export const memberSchema = z.object({
       id: z.string(),
       createdAt: z.coerce.date().transform((v) => fromDateToDateTimeString(v)),
       amount: z.number(),
+      store: z.object({
+        id: z.string(),
+        name: z.string(),
+      }),
     }),
   ),
+  simulatorAppointmens: z
+    .array(
+      z.object({
+        id: z.string(),
+        amount: z.number(),
+        startTime: z.coerce
+          .date()
+          .transform((v) => fromDateToDateTimeString(v)),
+        endTime: z.coerce.date().transform((v) => fromDateToDateTimeString(v)),
+        status: z.string(),
+        storeSimulator: z.object({
+          store: z.object({ id: z.string() }),
+        }),
+      }),
+    )
+    .optional(),
 });
 
 export const simpleMemberSchema = memberSchema.omit({
@@ -47,6 +67,8 @@ export type Member = z.infer<typeof memberSchema>;
 export type SimpleMember = z.infer<typeof simpleMemberSchema>;
 export type MemberType = Member["appUserType"];
 export type MemberAppChargeHistory = Member["appChargeHistories"][number];
+export type MemberSpendingHistory =
+  Required<Member>["simulatorAppointmens"][number];
 export type Gender = Member["gender"];
 
 export const memberTypeEnChMap: Record<MemberType, string> = {

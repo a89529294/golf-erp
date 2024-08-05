@@ -33,7 +33,7 @@ export function Component() {
             style={{ height: `${height - 10}px` }}
             className="mb-2.5 w-full border border-line-gray bg-light-gray px-5 py-12"
           >
-            <div className="flex h-full flex-col gap-5">
+            <div className="flex flex-col h-full gap-5">
               {data.erpFeaturesWithUsers.map((feature) => (
                 <Section
                   key={feature.featureId}
@@ -68,7 +68,6 @@ function Section({
   allUsers: AppPermissionUser[];
   featureId: string;
 }) {
-  // console.log(title, users);
   const [rowSelection, setRowSelection] = useState(new Set());
   const selectedEmployeeIds = Array.from(rowSelection);
   const queryClient = useQueryClient();
@@ -99,7 +98,7 @@ function Section({
         <label className="px-6 py-5">
           <input
             type="checkbox"
-            className="peer hidden"
+            className="hidden peer"
             checked={users.length === rowSelection.size && users.length > 0}
             onChange={(e) => {
               if (e.target.checked)
@@ -147,7 +146,7 @@ function Section({
               <label className="block px-6 py-5">
                 <input
                   type="checkbox"
-                  className="peer hidden"
+                  className="hidden peer"
                   checked={rowSelection.has(user.employeeId)}
                   onChange={(e) => {
                     if (e.target.checked) {

@@ -2,7 +2,7 @@ import fileIcon from "@/assets/black-file-icon.svg";
 import { AddCoinModal } from "@/components/category/add-coin-modal";
 import { Tablet } from "@/components/tablet";
 import {
-  SimpleMember,
+  Member,
   genderEnChMap,
   memberTypeEnChMap,
 } from "@/pages/member-management/loader";
@@ -10,7 +10,7 @@ import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { Link } from "react-router-dom";
 
-const columnHelper = createColumnHelper<SimpleMember>();
+const columnHelper = createColumnHelper<Member>();
 
 const categoryToLink = {
   ground: "driving-range",
@@ -18,11 +18,25 @@ const categoryToLink = {
   simulator: "indoor-simulator",
 };
 
+const showSendPoints = (category: string, userPermissions: string[]) => {
+  if (category === "ground" && userPermissions.includes("練習場-贈送點數"))
+    return true;
+
+  if (category === "simulator" && userPermissions.includes("模擬器-贈送點數"))
+    return true;
+
+  if (category === "golf" && userPermissions.includes("高爾夫球-贈送點數"))
+    return true;
+
+  return false;
+};
+
 export const columns = (
   storeId: string,
   category: "ground" | "simulator" | "golf",
-) =>
-  [
+  userPermissions: string[],
+) => {
+  return [
     columnHelper.accessor((row) => (row.isActive ? "恢復" : "停權"), {
       id: "isActive",
       header: "",
@@ -35,15 +49,20 @@ export const columns = (
       },
       size: 7.2,
     }),
-    columnHelper.display({
-      id: "send_points",
-      header: "",
-      cell: (props) => {
-        const appUserId = props.row.original.id;
-        return <AddCoinModal appUserId={appUserId} storeId={storeId} />;
-      },
-      size: 11.2,
-    }),
+
+    ...(showSendPoints(category, userPermissions)
+      ? [
+          columnHelper.display({
+            id: "send_points",
+            header: "",
+            cell: (props) => {
+              const appUserId = props.row.original.id;
+              return <AddCoinModal appUserId={appUserId} storeId={storeId} />;
+            },
+            size: 11.2,
+          }),
+        ]
+      : []),
     columnHelper.accessor("account", {
       header: ({ column }) => {
         return (
@@ -52,7 +71,7 @@ export const columns = (
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             帳號
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            <ArrowUpDown className="w-4 h-4 ml-2" />
           </button>
         );
       },
@@ -68,7 +87,7 @@ export const columns = (
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             會員類別
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            <ArrowUpDown className="w-4 h-4 ml-2" />
           </button>
         );
       },
@@ -82,7 +101,7 @@ export const columns = (
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             姓名
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            <ArrowUpDown className="w-4 h-4 ml-2" />
           </button>
         );
       },
@@ -105,7 +124,7 @@ export const columns = (
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             性別
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            <ArrowUpDown className="w-4 h-4 ml-2" />
           </button>
         );
       },
@@ -119,7 +138,7 @@ export const columns = (
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             生日
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            <ArrowUpDown className="w-4 h-4 ml-2" />
           </button>
         );
       },
@@ -127,10 +146,16 @@ export const columns = (
       size: 11.5,
     }),
     columnHelper.accessor(
-      (row) =>
-        new Intl.NumberFormat()
-          .format(row.storeAppUsers.reduce((acc, val) => acc + val.coin, 0))
-          .toString(),
+      (row) => {
+        return new Intl.NumberFormat()
+          .format(
+            row.appChargeHistories.reduce(
+              (acc, val) => (val.store.id === storeId ? acc + val.amount : acc),
+              0,
+            ),
+          )
+          .toString();
+      },
       {
         id: "coin",
         header: ({ column }) => {
@@ -142,7 +167,7 @@ export const columns = (
               }
             >
               累積儲值金額
-              <ArrowUpDown className="ml-2 h-4 w-4" />
+              <ArrowUpDown className="w-4 h-4 ml-2" />
             </button>
           );
         },
@@ -164,7 +189,7 @@ export const columns = (
       cell: (props) => {
         return (
           <Link
-            to={`/${categoryToLink[category]}/member-management/details/${props.row.original.id}`}
+            to={`/${categoryToLink[category]}/member-management/details/${props.row.original.id}?storeId=${storeId}`}
             className="hidden group-hover:block"
           >
             <img src={fileIcon} />
@@ -173,22 +198,28 @@ export const columns = (
       },
       size: 4,
     }),
-  ] as ColumnDef<SimpleMember>[];
+  ] as ColumnDef<Member>[];
+};
 
 export const mobileColumns = (
   storeId: string,
   category: "ground" | "simulator" | "golf",
+  userPermissions: string[],
 ) =>
   [
-    columnHelper.display({
-      id: "send_points",
-      header: "",
-      cell: (props) => {
-        const appUserId = props.row.original.id;
-        return <AddCoinModal appUserId={appUserId} storeId={storeId} />;
-      },
-      size: 40,
-    }),
+    ...(showSendPoints(category, userPermissions)
+      ? [
+          columnHelper.display({
+            id: "send_points",
+            header: "",
+            cell: (props) => {
+              const appUserId = props.row.original.id;
+              return <AddCoinModal appUserId={appUserId} storeId={storeId} />;
+            },
+            size: 40,
+          }),
+        ]
+      : []),
     columnHelper.accessor("account", {
       header: ({ column }) => {
         return (
@@ -197,32 +228,32 @@ export const mobileColumns = (
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             帳號
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            <ArrowUpDown className="w-4 h-4 ml-2" />
           </button>
         );
       },
       cell: (props) => props.getValue(),
-      size: 20,
+      size: showSendPoints(category, userPermissions) ? 20 : 30,
     }),
     columnHelper.accessor("chName", {
       header: "姓名",
       cell: (props) => (
         <span className="whitespace-nowrap">{props.getValue()}</span>
       ),
-      size: 30,
+      size: showSendPoints(category, userPermissions) ? 30 : 50,
     }),
     columnHelper.display({
       id: "detail-link",
       cell: (props) => {
         return (
           <Link
-            to={`/${categoryToLink[category]}/member-management/details/${props.row.original.id}`}
+            to={`/${categoryToLink[category]}/member-management/details/${props.row.original.id}?storeId=${storeId}`}
             className="flex justify-center"
           >
             <img src={fileIcon} className="" />
           </Link>
         );
       },
-      size: 10,
+      size: showSendPoints(category, userPermissions) ? 10 : 20,
     }),
-  ] as ColumnDef<SimpleMember>[];
+  ] as ColumnDef<Member>[];
