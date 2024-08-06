@@ -191,7 +191,7 @@ export function Component() {
           <button
             className={cn(
               "rounded-full px-5 py-3",
-              memberHistory === "spending-history"
+              memberHistory === "coupon-history"
                 ? "bg-secondary-dark text-white "
                 : "border border-line-gray bg-white",
             )}
