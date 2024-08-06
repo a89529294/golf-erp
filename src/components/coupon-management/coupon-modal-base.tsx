@@ -5,18 +5,16 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { ReactElement, ReactNode, useState } from "react";
 
-export function Modal({
+export function CouponModalBase({
   dialogTriggerChildren,
   children,
   onSubmit,
-  title,
   onModalClose,
   onClickSubmit,
   className,
@@ -25,7 +23,7 @@ export function Modal({
     | ReactElement
     | (({ setOpen }: { setOpen: (arg: boolean) => void }) => ReactNode);
   children?: ReactNode;
-  onSubmit: () => void | Promise<void>;
+  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void | Promise<void>;
   title?: string;
   onModalClose?: () => void;
   onClickSubmit?: () => void;
@@ -40,7 +38,6 @@ export function Modal({
       open={open}
       onOpenChange={(open) => {
         setOpen(open);
-
         onModalClose && !open && onModalClose();
       }}
     >
@@ -58,7 +55,7 @@ export function Modal({
             setDisabled(true);
             e.preventDefault();
             try {
-              await onSubmit();
+              await onSubmit(e);
             } catch (e) {
               console.log(e);
             } finally {
@@ -70,14 +67,12 @@ export function Modal({
             e.stopPropagation();
           }}
           className={cn(
-            `flex h-[190px] w-[400px] flex-col items-center pb-5 sm:w-72`,
+            `flex w-[620px] flex-col items-center pb-5 sm:w-72`,
             className,
           )}
         >
-          <DialogHeader className="">
-            <DialogTitle>{title}</DialogTitle>
-            {children}
-          </DialogHeader>
+          <DialogPrimitive.DialogTitle />
+          <DialogHeader className="w-full">{children}</DialogHeader>
           <DialogFooter className="">
             <TextButton
               type="submit"

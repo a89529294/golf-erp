@@ -115,7 +115,11 @@ export const linksKV = {
     type: "nested" as const,
     basePath: GOLF_BASE_PATH,
     path: `${GOLF_BASE_PATH}/site-management`,
-    allowedPermissions: ["高爾夫球-基本操作", "高爾夫球-報表"],
+    allowedPermissions: [
+      "高爾夫球-基本操作",
+      "高爾夫球-報表",
+      "高爾夫球-贈送點數",
+    ],
     allowedStoreCategory: "golf" as const,
     subLinks: {
       "site-management": {
@@ -164,6 +168,13 @@ export const linksKV = {
         type: "multiple" as const,
         allowedPermissions: ["高爾夫球-基本操作"],
       },
+      "coupon-management": {
+        label: "優惠券管理",
+        path: `${GOLF_BASE_PATH}/coupon-management`,
+        lazy: () => import("@/pages/golf/coupon-management"),
+        type: "flat" as const,
+        allowedPermissions: ["高爾夫球-贈送點數"],
+      },
       "repair-report": {
         label: "報修回報",
         path: `${GOLF_BASE_PATH}/repair-report`,
@@ -185,7 +196,7 @@ export const linksKV = {
     type: "nested" as const,
     basePath: INDOOR_SIMULATOR_BASE_PATH,
     path: `${INDOOR_SIMULATOR_BASE_PATH}/member-management`,
-    allowedPermissions: ["模擬器-基本操作", "模擬器-報表"],
+    allowedPermissions: ["模擬器-基本操作", "模擬器-報表", "模擬器-贈送點數"],
     allowedStoreCategory: "simulator" as const,
     subLinks: {
       "member-management": {
@@ -228,6 +239,13 @@ export const linksKV = {
         lazy: () => import("@/pages/indoor-simulator/appointment-management"),
         type: "flat" as const,
         allowedPermissions: ["模擬器-基本操作"],
+      },
+      "coupon-management": {
+        label: "優惠券管理",
+        path: `${INDOOR_SIMULATOR_BASE_PATH}/coupon-management`,
+        lazy: () => import("@/pages/indoor-simulator/coupon-management"),
+        type: "flat" as const,
+        allowedPermissions: ["模擬器-贈送點數"],
       },
       "repair-report": {
         label: "報修回報",

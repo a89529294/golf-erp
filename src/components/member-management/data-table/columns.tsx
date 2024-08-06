@@ -43,7 +43,10 @@ export const columns = (
       cell: (props) => {
         return (
           <div className="flex justify-center">
-            <Tablet active={props.cell.row.original.isActive} />
+            <Tablet
+              active={props.cell.row.original.isActive}
+              value={props.getValue()}
+            />
           </div>
         );
       },

@@ -48,7 +48,7 @@ export const memberSchema = z.object({
         endTime: z.coerce.date().transform((v) => fromDateToDateTimeString(v)),
         status: z.string(),
         storeSimulator: z.object({
-          store: z.object({ id: z.string() }),
+          store: z.object({ id: z.string(), name: z.string() }),
         }),
       }),
     )

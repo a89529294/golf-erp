@@ -14,7 +14,10 @@ export const columns = [
     cell: (props) => {
       return (
         <div className="flex justify-center">
-          <Tablet active={props.cell.row.original.isActive} />
+          <Tablet
+            active={props.cell.row.original.isActive}
+            value={props.getValue()}
+          />
         </div>
       );
     },
@@ -43,7 +46,7 @@ export const columns = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           帳號
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          <ArrowUpDown className="w-4 h-4 ml-2" />
         </button>
       );
     },
@@ -59,7 +62,7 @@ export const columns = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           會員類別
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          <ArrowUpDown className="w-4 h-4 ml-2" />
         </button>
       );
     },
@@ -73,7 +76,7 @@ export const columns = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           姓名
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          <ArrowUpDown className="w-4 h-4 ml-2" />
         </button>
       );
     },
@@ -96,7 +99,7 @@ export const columns = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           性別
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          <ArrowUpDown className="w-4 h-4 ml-2" />
         </button>
       );
     },
@@ -110,7 +113,7 @@ export const columns = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           生日
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          <ArrowUpDown className="w-4 h-4 ml-2" />
         </button>
       );
     },
@@ -133,7 +136,7 @@ export const columns = [
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             累積儲值金額
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            <ArrowUpDown className="w-4 h-4 ml-2" />
           </button>
         );
       },

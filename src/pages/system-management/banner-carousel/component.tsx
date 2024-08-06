@@ -2,13 +2,14 @@ import plusIcon from "@/assets/plus-icon.svg";
 import { button } from "@/components/ui/button-cn";
 import { MainLayout } from "@/layouts/main-layout";
 import { cn } from "@/lib/utils";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import redXIcon from "@/assets/red-x-icon.svg";
 import { useLoaderData } from "react-router-dom";
 import { bannerQuery, loader } from "./loader";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { privateFetch } from "@/utils/utils";
 import { toast } from "sonner";
+import { fromImageIdsToSrc } from "@/utils";
 
 type TData = Awaited<ReturnType<typeof loader>>;
 export function Component() {
@@ -18,6 +19,7 @@ export function Component() {
     ...bannerQuery,
     initialData,
   });
+  const [imageSrcs, setImageSrcs] = useState<string[]>([]);
   const { mutate: addBanners, isPending: isAdding } = useMutation<
     unknown,
     Error,
@@ -70,6 +72,14 @@ export function Component() {
     deleteBanner(name);
   };
 
+  useEffect(() => {
+    if (data) {
+      fromImageIdsToSrc(data.map((d) => d.id)).then((srcArray) =>
+        setImageSrcs(srcArray),
+      );
+    }
+  }, [data]);
+
   const isPending = isAdding || isDeleting;
   return (
     <MainLayout>
@@ -98,17 +108,17 @@ export function Component() {
           </header>
 
           <ul className="relative grid auto-rows-[160px] grid-cols-[repeat(auto-fill,minmax(340px,1fr))] gap-5 border-t border-line-gray bg-white p-5">
-            {data.map((img) => (
+            {data.map((img, idx) => (
               <li
                 className={cn("relative", isPending && "opacity-50")}
                 key={img.id}
               >
                 <img
-                  src={img.uri}
-                  className="h-full w-full border border-line-gray object-contain"
+                  src={imageSrcs[idx]}
+                  className="object-contain w-full h-full border border-line-gray"
                 />
                 <button
-                  className="absolute right-0 top-0 -translate-y-1/2 translate-x-1/2 rounded-full border border-line-red bg-white"
+                  className="absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 bg-white border rounded-full border-line-red"
                   onClick={() => onRemoveBanner(img.name)}
                 >
                   <img src={redXIcon} />
@@ -116,7 +126,7 @@ export function Component() {
               </li>
             ))}
             {data.length === 0 && (
-              <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-word-gray">
+              <div className="absolute -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2 text-word-gray">
                 尚未新增圖片
               </div>
             )}

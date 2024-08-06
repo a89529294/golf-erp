@@ -5,8 +5,8 @@ export function Component() {
   return (
     <CouponBaseComponent
       loader={loader}
-      category="ground"
-      navigateTo="/driving-range/coupon-management"
+      category="golf"
+      navigateTo="/golf/coupon-management"
     />
   );
 }

@@ -5,12 +5,23 @@ export const bannerQuery = {
   queryKey: ["banners"],
   queryFn: async () => {
     const response = await privateFetch("/erp-features/banner");
-    const data = (await response.json()) as {
+    const response2 = response.clone();
+    const plainTextData = await response.text();
+
+    let data: {
       id: string;
       name: string;
       createdAt: string;
       uri: string;
     }[];
+    if (plainTextData === "") data = [];
+    else
+      data = (await response2.json()) as {
+        id: string;
+        name: string;
+        createdAt: string;
+        uri: string;
+      }[];
     data.sort(
       (a, b) =>
         new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
