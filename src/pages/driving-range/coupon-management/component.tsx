@@ -49,7 +49,7 @@ export function Component() {
         ({ height }) => (
           <ScrollArea style={{ height }} className="w-full">
             <div className="w-full p-1 pt-0 border border-line-gray bg-light-gray">
-              {coupons && (
+              {/* {coupons && (
                 <DataTable
                   columns={[]}
                   data={coupons}
@@ -58,7 +58,7 @@ export function Component() {
                   globalFilter={globalFilter}
                   setGlobalFilter={setGlobalFilter}
                 />
-              )}
+              )} */}
             </div>
             <Scrollbar orientation="horizontal" />
           </ScrollArea>
@@ -75,7 +75,8 @@ export function Component() {
           ) : coupons ? (
             <DataTable
               columns={[]}
-              data={coupons}
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              data={coupons as any}
               rowSelection={rowSelection}
               setRowSelection={setRowSelection}
               globalFilter={globalFilter}

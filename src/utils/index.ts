@@ -12,8 +12,7 @@ import {
 import { SetURLSearchParams } from "react-router-dom";
 import { privateFetch } from "./utils";
 
-export const base_url =
-  "https://shinjhu-golf-reservation-system-be.caprover.credot-web.com";
+export const base_url = process.env.NEXT_PUBLIC_BASE_URL;
 
 export const localStorageUserKey = "golf-erp-user";
 
