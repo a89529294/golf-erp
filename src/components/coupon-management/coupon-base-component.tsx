@@ -41,7 +41,7 @@ export function CouponBaseComponent({
     queryFn: async () => {
       // filter by storeId
       const data = await privateFetch(
-        `/coupon?populate=store&pageSize=999`,
+        `/coupon?populate=store&pageSize=999&filter[store.id]=${storeId}`,
       ).then((r) => r.json());
       const parsedData = couponsSchema.parse(data);
       return parsedData.data;

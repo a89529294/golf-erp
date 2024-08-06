@@ -33,6 +33,7 @@ interface DataTableProps<TData, TValue> {
   setRowSelection: Dispatch<SetStateAction<Record<string, boolean>>>;
   globalFilter: string;
   setGlobalFilter: Dispatch<SetStateAction<string>>;
+  rmTheadMarginTop?: boolean;
 }
 
 const fuzzyFilter: FilterFn<unknown> = (row, columnId, value) => {
@@ -52,6 +53,7 @@ export function DataTable<TData extends { id: string }, TValue>({
   setRowSelection,
   globalFilter,
   setGlobalFilter,
+  rmTheadMarginTop,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
 
@@ -89,6 +91,7 @@ export function DataTable<TData extends { id: string }, TValue>({
                     // height of header 80 plus gap 10
                     className={cn(
                       "sticky top-[90px] bg-light-gray hover:bg-light-gray sm:top-0",
+                      rmTheadMarginTop && "top-0",
                     )}
                     style={{
                       width: header.column.columnDef.size

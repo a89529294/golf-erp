@@ -23,11 +23,6 @@ import { useIsMobile } from "@/hooks/use-is-mobile";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Scrollbar } from "@radix-ui/react-scroll-area";
 
-// const newERPUserReturnSchema = z.object({
-//   user: userSchema,
-//   password: z.string(),
-// });
-
 export function AddPermissionModal({
   dialogTriggerChildren,
   allUsers,
