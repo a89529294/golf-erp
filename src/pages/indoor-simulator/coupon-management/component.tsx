@@ -5,8 +5,8 @@ export function Component() {
   return (
     <CouponBaseComponent
       loader={loader}
-      category="ground"
-      navigateTo="/driving-range/coupon-management"
+      category="simulator"
+      navigateTo="/indoor-simulator/coupon-management"
     />
   );
 }

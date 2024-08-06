@@ -40,6 +40,10 @@ export const topUpHistorycolumns = [
 ] as ColumnDef<MemberAppChargeHistory>[];
 
 export const spendingHistoryColumns = [
+  spendingHistoryColumnHelper.accessor("storeSimulator.store.name", {
+    id: "storeSimulator.store.name",
+    header: () => <div className="sm:w-24">包廂</div>,
+  }),
   spendingHistoryColumnHelper.accessor("startTime", {
     id: "startTime",
     header: () => <div className="sm:w-24">開始時間</div>,

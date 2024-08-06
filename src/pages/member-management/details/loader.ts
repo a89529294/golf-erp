@@ -6,14 +6,6 @@ import { memberSchema } from "../loader";
 export const genMemberDetailsQuery = (id: string, storeId?: string) => ({
   queryKey: ["members", id, storeId],
   queryFn: async () => {
-    // if (storeId) {
-    // const response = await privateFetch(
-    //   `/appointment/simulator?page=1&pageSize=10&populate=storeSimulator&populate=storeSimulator.store&populate=appUser&filter[storeSimulator.store.id]=${storeId}&filter[appUser.id]=${id}`,
-    // );
-    // const data = await response.json();
-    // console.log(data);
-    // return [] as any;
-    // } else {
     const response = await privateFetch(
       `/app-users/${id}?populate=appChargeHistories&populate=storeAppUsers&populate=simulatorAppointmens&populate=groundAppointmens&populate=simulatorAppointments.order&populate=appChargeHistories.store&populate=simulatorAppointmens.storeSimulator.store`,
     );
@@ -33,7 +25,6 @@ export const genMemberDetailsQuery = (id: string, storeId?: string) => ({
         ),
       };
 
-    console.log(storeId, id);
     return parsedData;
     // }
   },

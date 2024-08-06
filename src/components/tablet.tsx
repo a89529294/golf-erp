@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import React from "react";
 
-export function Tablet({ active }: { active: boolean }) {
+export function Tablet({ active, value }: { active: boolean; value: string }) {
   return (
     <div
       className={cn(
@@ -11,7 +11,7 @@ export function Tablet({ active }: { active: boolean }) {
           : "border-line-red text-word-red",
       )}
     >
-      {active ? "恢復" : "停權"}
+      {value}
     </div>
   );
 }
