@@ -24,7 +24,7 @@ ENV NODE_ENV production
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-ARG BASE_URL
+ARG VITE_BASE_URL
 
 RUN npm run build
 
