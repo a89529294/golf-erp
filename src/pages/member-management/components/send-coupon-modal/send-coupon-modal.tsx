@@ -44,7 +44,7 @@ export function SendCouponModal({ storeId }: { storeId: string }) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: [""],
+        queryKey: ["members"],
       });
 
       setOpen(false);

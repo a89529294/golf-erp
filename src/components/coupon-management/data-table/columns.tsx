@@ -72,7 +72,7 @@ export const columns = [
       );
     },
     cell: (props) => (
-      <span className="whitespace-nowrap">{props.getValue()}</span>
+      <span className="whitespace-nowrap">{props.getValue() + " 天"} </span>
     ),
     size: undefined,
   }),
@@ -88,7 +88,12 @@ export const columns = [
         </button>
       );
     },
-    cell: (props) => props.getValue(),
+    cell: (props) => (
+      <div className="text-line-green">
+        {props.getValue()}
+        <span className="ml-1 text-secondary-dark">元</span>
+      </div>
+    ),
     size: undefined,
   }),
   columnHelper.display({

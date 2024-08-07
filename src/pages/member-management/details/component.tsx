@@ -17,7 +17,11 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { MemberForm } from "../components/member-form";
 import { memberFormSchema } from "../schemas";
-import { spendingHistoryColumns, topUpHistorycolumns } from "./columns";
+import {
+  spendingHistoryColumns,
+  topUpHistorycolumns,
+  couponHistorycolumns,
+} from "./columns";
 import { genMemberDetailsQuery, loader } from "./loader";
 
 type MemberHistory = "top-up-history" | "spending-history" | "coupon-history";
@@ -210,15 +214,15 @@ export function Component() {
                     : memberHistory === "spending-history"
                       ? spendingHistoryColumns
                       : // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                        ([] as any)
+                        (couponHistorycolumns as any)
                 }
                 data={
                   memberHistory === "top-up-history"
                     ? data.appChargeHistories
                     : memberHistory === "spending-history"
-                      ? data.simulatorAppointmens
-                      : // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                        ([] as any)
+                      ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        data.simulatorAppointmens ?? ([] as any)
+                      : data.appUserCoupons
                 }
               />
               <ScrollBar className="hidden sm:block" orientation="horizontal" />

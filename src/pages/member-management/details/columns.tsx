@@ -1,9 +1,14 @@
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
-import { MemberAppChargeHistory, MemberSpendingHistory } from "../loader";
+import {
+  MemberAppChargeHistory,
+  MemberAppUserCoupon,
+  MemberSpendingHistory,
+} from "../loader";
 import { ArrowUpDown } from "lucide-react";
 
 const topUpHistoryColumnHelper = createColumnHelper<MemberAppChargeHistory>();
 const spendingHistoryColumnHelper = createColumnHelper<MemberSpendingHistory>();
+const couponHistoryColumnHelper = createColumnHelper<MemberAppUserCoupon>();
 
 export const topUpHistorycolumns = [
   topUpHistoryColumnHelper.accessor("store.name", {
@@ -29,6 +34,7 @@ export const topUpHistorycolumns = [
         <ArrowUpDown className="w-4 h-4 ml-2" />
       </button>
     ),
+    cell: (props) => <div className="text-orange">{props.getValue()}</div>,
   }),
   topUpHistoryColumnHelper.display({
     id: "payment-method",
@@ -54,6 +60,12 @@ export const topUpHistorycolumns = [
       </button>
     ),
     id: "amount",
+    cell: (props) => (
+      <div className="text-line-green">
+        {props.getValue()}
+        <span className="ml-1 text-secondary-dark">元</span>
+      </div>
+    ),
   }),
   // topUpHistoryColumnHelper.display({
   //   id: "serial-number",
@@ -96,6 +108,7 @@ export const spendingHistoryColumns = [
         <ArrowUpDown className="w-4 h-4 ml-2" />
       </button>
     ),
+    cell: (props) => <div className="text-orange">{props.getValue()}</div>,
   }),
   spendingHistoryColumnHelper.accessor("endTime", {
     id: "endTime",
@@ -108,6 +121,7 @@ export const spendingHistoryColumns = [
         <ArrowUpDown className="w-4 h-4 ml-2" />
       </button>
     ),
+    cell: (props) => <div className="text-orange">{props.getValue()}</div>,
   }),
   spendingHistoryColumnHelper.display({
     id: "payment-method",
@@ -125,6 +139,12 @@ export const spendingHistoryColumns = [
       </button>
     ),
     id: "amount",
+    cell: (props) => (
+      <div className="text-line-green">
+        {props.getValue()}
+        <span className="ml-1 text-secondary-dark">元</span>
+      </div>
+    ),
   }),
   spendingHistoryColumnHelper.accessor("status", {
     header: ({ column }) => (
@@ -139,3 +159,63 @@ export const spendingHistoryColumns = [
     id: "status",
   }),
 ] as ColumnDef<MemberSpendingHistory>[];
+
+export const couponHistorycolumns = [
+  couponHistoryColumnHelper.accessor("name", {
+    id: "name",
+    header: ({ column }) => (
+      <button
+        className="flex items-center gap-1 sm:w-24"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        標題
+        <ArrowUpDown className="w-4 h-4 ml-2" />
+      </button>
+    ),
+    size: 600,
+  }),
+  couponHistoryColumnHelper.accessor("expiration", {
+    id: "expiration",
+    header: ({ column }) => (
+      <button
+        className="flex items-center gap-1 sm:w-24"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        使用期限
+        <ArrowUpDown className="w-4 h-4 ml-2" />
+      </button>
+    ),
+    cell: (props) => <div>{props.getValue() + " 天"}</div>,
+  }),
+  couponHistoryColumnHelper.accessor("usedDate", {
+    id: "usedDate",
+    header: ({ column }) => (
+      <button
+        className="flex items-center gap-1 sm:w-20"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        使用時間
+        <ArrowUpDown className="w-4 h-4 ml-2" />
+      </button>
+    ),
+    cell: (props) => <div className="text-orange">{props.getValue()}</div>,
+  }),
+  couponHistoryColumnHelper.accessor("amount", {
+    header: ({ column }) => (
+      <button
+        className="flex items-center gap-1"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        金額
+        <ArrowUpDown className="w-4 h-4 ml-2" />
+      </button>
+    ),
+    id: "amount",
+    cell: (props) => (
+      <div className="text-line-green">
+        {props.getValue()}
+        <span className="ml-1 text-secondary-dark">元</span>
+      </div>
+    ),
+  }),
+] as ColumnDef<MemberAppUserCoupon>[];
