@@ -182,13 +182,13 @@ export const linksKV = {
         type: "flat" as const,
         allowedPermissions: ["高爾夫球-基本操作"],
       },
-      report: {
-        label: "報表",
-        path: `${GOLF_BASE_PATH}/report`,
-        lazy: () => import("@/pages/golf/report"),
-        type: "flat" as const,
-        allowedPermissions: ["高爾夫球-報表"],
-      },
+      // report: {
+      //   label: "報表",
+      //   path: `${GOLF_BASE_PATH}/report`,
+      //   lazy: () => import("@/pages/golf/report"),
+      //   type: "flat" as const,
+      //   allowedPermissions: ["高爾夫球-報表"],
+      // },
     },
   },
   "indoor-simulator": {

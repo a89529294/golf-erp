@@ -33,6 +33,7 @@ interface DataTableProps<TData, TValue> {
   setRowSelection: Dispatch<SetStateAction<Record<string, boolean>>>;
   globalFilter: string;
   setGlobalFilter: Dispatch<SetStateAction<string>>;
+  headerRowRef?: React.RefObject<HTMLTableRowElement>;
 }
 
 // Tip: If you find yourself using <DataTable /> in multiple places,
@@ -53,6 +54,7 @@ export function DataTable<TData extends { id: string }, TValue>({
   setRowSelection,
   globalFilter,
   setGlobalFilter,
+  headerRowRef,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
 
@@ -78,13 +80,16 @@ export function DataTable<TData extends { id: string }, TValue>({
   });
 
   return (
-    <div className="mb-2.5 w-full border border-line-gray ">
-      <Table className="relative isolate sm:table-fixed">
-        <TableHeader className="relative z-10">
+    <div className="m-1 mb-2.5 mt-0 w-fit">
+      <Table className="relative isolate table-fixed ">
+        <TableHeader className="relative z-10 [&_tr]:border-b-0">
           {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id} className="">
+            <TableRow
+              key={headerGroup.id}
+              className=""
+              ref={headerRowRef ? headerRowRef : undefined}
+            >
               {headerGroup.headers.map((header) => {
-                console.log(header.getSize());
                 return (
                   <TableHead
                     key={header.id}
@@ -94,7 +99,9 @@ export function DataTable<TData extends { id: string }, TValue>({
                     )}
                     style={{
                       width:
-                        header.getSize() !== 150 ? header.getSize() : "auto",
+                        header.column.columnDef.size !== 150
+                          ? `${header.column.columnDef.size}%`
+                          : "auto",
                     }}
                   >
                     {header.isPlaceholder
@@ -116,7 +123,7 @@ export function DataTable<TData extends { id: string }, TValue>({
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
-                className="group"
+                className="group bg-white"
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>

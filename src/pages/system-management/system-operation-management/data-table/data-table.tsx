@@ -72,9 +72,9 @@ export function DataTable<TData extends { id: string }, TValue>({
   });
 
   return (
-    <div className="w-full border border-line-gray">
-      <Table className="relative isolate sm:table-fixed">
-        <TableHeader className="relative z-10">
+    <div className="m-1 mt-0 w-fit ">
+      <Table className="relative isolate table-fixed">
+        <TableHeader className="relative z-10 [&_tr]:border-b-0">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id} className="">
               {headerGroup.headers.map((header) => {
@@ -85,7 +85,9 @@ export function DataTable<TData extends { id: string }, TValue>({
                     className="sticky top-[90px] bg-light-gray hover:bg-light-gray sm:top-0"
                     style={{
                       width:
-                        header.getSize() !== 150 ? header.getSize() : "auto",
+                        header.column.columnDef.size !== 150
+                          ? `${header.column.columnDef.size}%`
+                          : "auto",
                     }}
                   >
                     {header.isPlaceholder
@@ -107,6 +109,7 @@ export function DataTable<TData extends { id: string }, TValue>({
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
+                className="bg-white"
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>

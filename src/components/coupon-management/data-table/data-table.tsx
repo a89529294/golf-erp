@@ -79,9 +79,9 @@ export function DataTable<TData extends { id: string }, TValue>({
   });
 
   return (
-    <div className="mb-2.5 w-fit border-y border-t-0 border-line-gray sm:w-max">
-      <Table className="relative table-fixed isolate sm:w-max">
-        <TableHeader className="relative z-10">
+    <div className="m-1 mt-0 w-fit sm:w-max">
+      <Table className="relative isolate table-fixed sm:w-max">
+        <TableHeader className="relative z-10 [&_tr]:border-b-0">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id} className="border-b-line-gray">
               {headerGroup.headers.map((header) => {
