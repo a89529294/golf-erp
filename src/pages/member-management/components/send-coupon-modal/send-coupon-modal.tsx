@@ -88,23 +88,29 @@ export function SendCouponModal({ storeId }: { storeId: string }) {
         >
           {/* <DialogHeader className="relative block mb-5 overflow-auto isolate px-14 sm:px-4"> */}
 
-          <ScrollArea className="h-[500px] overflow-auto sm:h-[417px] sm:w-72">
+          <ScrollArea className="h-[500px] overflow-auto border-t border-line-gray sm:h-[417px] sm:w-72">
             {coupons && (
-              <DataTable
-                columns={columns}
-                data={coupons}
-                rowSelection={rowSelection}
-                setRowSelection={setRowSelection}
-                globalFilter={globalFilter}
-                setGlobalFilter={setGlobalFilter}
-                rmTheadMarginTop
-              />
+              <div className="border-x border-b border-line-gray before:fixed before:h-12 before:w-1 before:bg-light-gray">
+                <div className="fixed right-[57px] h-12 w-1 bg-light-gray" />
+                <div className="sticky top-12 z-10 w-full border-b border-line-gray" />
+                <DataTable
+                  columns={columns}
+                  data={Array(10)
+                    .fill(coupons)
+                    .flatMap((v) => v)}
+                  rowSelection={rowSelection}
+                  setRowSelection={setRowSelection}
+                  globalFilter={globalFilter}
+                  setGlobalFilter={setGlobalFilter}
+                  rmTheadMarginTop
+                />
+              </div>
             )}
             <Scrollbar orientation="horizontal" />
           </ScrollArea>
 
           {/* </DialogHeader> */}
-          <DialogFooter className="justify-center ">
+          <DialogFooter className="mt-6 justify-center">
             <TextButton
               type="submit"
               form="xx"
