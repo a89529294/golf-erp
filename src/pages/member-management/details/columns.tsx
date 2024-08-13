@@ -5,6 +5,7 @@ import {
   MemberSpendingHistory,
 } from "../loader";
 import { ArrowUpDown } from "lucide-react";
+import { addDays, format } from "date-fns";
 
 const topUpHistoryColumnHelper = createColumnHelper<MemberAppChargeHistory>();
 const spendingHistoryColumnHelper = createColumnHelper<MemberSpendingHistory>();
@@ -198,7 +199,20 @@ export const couponHistorycolumns = [
         <ArrowUpDown className="w-4 h-4 ml-2" />
       </button>
     ),
-    cell: (props) => <div className="text-orange">{props.getValue()}</div>,
+    cell: (props) => {
+      console.log(props.row.original);
+      return (
+        <div className="text-orange">
+          {format(
+            addDays(
+              new Date(props.row.original.createdAt),
+              props.row.original.expiration,
+            ),
+            "yyyy-MM-dd",
+          )}
+        </div>
+      );
+    },
   }),
   couponHistoryColumnHelper.accessor("amount", {
     header: ({ column }) => (

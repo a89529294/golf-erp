@@ -60,6 +60,7 @@ export const memberSchema = z.object({
         name: z.string(),
         expiration: z.number(),
         usedDate: z.coerce.date().transform(fromDateToDateTimeString),
+        createdAt: z.string(),
         amount: z.number(),
         store: z.object({
           id: z.string(),
