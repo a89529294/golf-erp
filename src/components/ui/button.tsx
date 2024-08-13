@@ -11,6 +11,7 @@ import pencilIcon from "@/assets/pencil.svg";
 import xIcon from "@/assets/x.svg";
 import redXIcon from "@/assets/red-x-icon.svg";
 import checkIcon from "@/assets/check.svg";
+import couponIcon from "@/assets/coupon.svg";
 import { ComponentProps, ReactNode, forwardRef } from "react";
 import { twMerge } from "tailwind-merge";
 
@@ -30,6 +31,7 @@ const iconMap = {
   x: xIcon,
   redX: redXIcon,
   check: checkIcon,
+  coupon: couponIcon,
 };
 
 type IconButtonType = ComponentProps<"button"> & {
@@ -130,7 +132,7 @@ export const TextButton = forwardRef<
       onClick={onClick}
       {...props}
     >
-      {loading && <img src={circleIcon} className="h-5 w-5 animate-spin" />}
+      {loading && <img src={circleIcon} className="w-5 h-5 animate-spin" />}
       {children}
     </button>
   );

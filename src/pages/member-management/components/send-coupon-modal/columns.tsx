@@ -1,16 +1,26 @@
-import { EditCouponModal } from "@/components/coupon-management/edit-coupon-modal";
 import { Tablet } from "@/components/tablet";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Coupon } from "@/pages/driving-range/coupon-management/loader";
-import {
-  ColumnDef,
-  createColumnHelper,
-  flexRender,
-} from "@tanstack/react-table";
+import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 
 const columnHelper = createColumnHelper<Coupon>();
 
 export const columns = [
+  {
+    id: "select",
+    cell: ({ row }) => (
+      <div className="grid h-full place-items-center">
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+          disabled={!row.original.isActive}
+        />
+      </div>
+    ),
+    size: undefined,
+  },
   columnHelper.accessor((row) => (row.isActive ? "有效" : "無效"), {
     id: "isActive",
     header: "",
@@ -56,7 +66,7 @@ export const columns = [
       );
     },
     cell: (props) => props.getValue(),
-    size: 40,
+    size: 30,
   }),
 
   columnHelper.accessor("expiration", {
@@ -72,7 +82,7 @@ export const columns = [
       );
     },
     cell: (props) => (
-      <span className="whitespace-nowrap">{props.getValue() + " 天"} </span>
+      <span className="whitespace-nowrap">{props.getValue()}</span>
     ),
     size: undefined,
   }),
@@ -88,26 +98,7 @@ export const columns = [
         </button>
       );
     },
-    cell: (props) => (
-      <div className="text-line-green">
-        {props.getValue()}
-        <span className="ml-1 text-secondary-dark">元</span>
-      </div>
-    ),
-    size: undefined,
-  }),
-  columnHelper.display({
-    id: "edit-modal",
-    cell: (props) => {
-      return flexRender(EditCouponModal, {
-        id: props.row.original.id,
-        name: props.row.original.name,
-        expiration: props.row.original.expiration,
-        amount: props.row.original.amount,
-        number: props.row.original.number,
-        isActive: props.row.original.isActive,
-      });
-    },
+    cell: (props) => props.getValue(),
     size: undefined,
   }),
 ] as ColumnDef<Coupon>[];

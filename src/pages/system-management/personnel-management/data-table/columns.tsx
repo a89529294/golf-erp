@@ -33,6 +33,7 @@ export const columns = [
         />
       </div>
     ),
+    size: 10,
   }),
   columnHelper.accessor("idNumber", {
     header: ({ column }) => {
@@ -46,6 +47,7 @@ export const columns = [
         </button>
       );
     },
+    size: 12,
   }),
   columnHelper.accessor("chName", {
     header: ({ column }) => {
@@ -59,9 +61,11 @@ export const columns = [
         </button>
       );
     },
+    size: 12,
   }),
   columnHelper.accessor("telphone", {
     header: "電話",
+    size: 15,
   }),
   columnHelper.accessor(
     (row) =>
@@ -81,6 +85,7 @@ export const columns = [
           </button>
         );
       },
+      size: 15,
     },
   ),
   columnHelper.accessor(

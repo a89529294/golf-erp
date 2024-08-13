@@ -8,12 +8,13 @@ import { cn } from "@/lib/utils";
 import { privateFetch } from "@/utils/utils";
 import { Scrollbar } from "@radix-ui/react-scroll-area";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useLoaderData, useSearchParams } from "react-router-dom";
 import { columns, mobileColumns } from "./data-table/columns";
 import { DataTable } from "./data-table/data-table";
 import { StoreSelect } from "@/components/category/store-select";
 import { useAuth } from "@/hooks/use-auth";
+import { useWindowSizeChange } from "@/hooks/use-window-size-change";
 
 const navigateMap = {
   ground: "/driving-range/member-management",
@@ -33,6 +34,8 @@ export function MemberManagementPage({
     }[]
   >;
 }) {
+  const headerRowRef = useRef<HTMLTableRowElement>(null);
+  const [headerRowHeight, setHeaderRowHeight] = useState(48);
   const [searchParams] = useSearchParams();
   const storeId = searchParams.get("storeId");
   const isMobile = useMediaQuery("(max-width: 639px)");
@@ -40,7 +43,10 @@ export function MemberManagementPage({
   const [globalFilter, setGlobalFilter] = useState("");
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
   const auth = useAuth();
-
+  useWindowSizeChange(() => {
+    if (headerRowRef.current)
+      setHeaderRowHeight(headerRowRef.current.clientHeight);
+  });
   const { data: members, isLoading: isLoadingMembers } = useQuery({
     queryKey: [category, "members", storeId],
     queryFn: async () => {
@@ -73,7 +79,7 @@ export function MemberManagementPage({
       {isMobile ? (
         ({ height }) => (
           <ScrollArea style={{ height }} className="w-full">
-            <div className="w-full p-1 pt-0 border border-line-gray bg-light-gray">
+            <div className="w-full border border-line-gray bg-light-gray p-1 pt-0">
               {members && (
                 <DataTable
                   columns={mobileColumns(
@@ -95,25 +101,35 @@ export function MemberManagementPage({
       ) : (
         <div
           className={cn(
-            "w-full border border-line-gray bg-light-gray p-1 pt-0",
+            "w-full ",
             isLoadingMembers && "grid place-items-center",
           )}
         >
           {isLoadingMembers ? (
             <Spinner />
           ) : members ? (
-            <DataTable
-              columns={columns(
-                storeId ?? "",
-                category,
-                auth.user?.permissions ?? [],
-              )}
-              data={members}
-              rowSelection={rowSelection}
-              setRowSelection={setRowSelection}
-              globalFilter={globalFilter}
-              setGlobalFilter={setGlobalFilter}
-            />
+            <div className="w-full border border-t-0 border-line-gray bg-light-gray pt-0">
+              <div className="sticky top-[90px] z-10 w-full border-b border-line-gray" />
+              <div
+                className="sticky z-10 w-full border-b border-line-gray"
+                style={{
+                  top: `calc(90px + ${headerRowHeight}px)`,
+                }}
+              />
+              <DataTable
+                columns={columns(
+                  storeId ?? "",
+                  category,
+                  auth.user?.permissions ?? [],
+                )}
+                data={members}
+                rowSelection={rowSelection}
+                setRowSelection={setRowSelection}
+                globalFilter={globalFilter}
+                setGlobalFilter={setGlobalFilter}
+                headerRowRef={headerRowRef}
+              />
+            </div>
           ) : null}
         </div>
       )}

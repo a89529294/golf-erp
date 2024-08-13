@@ -77,7 +77,7 @@ export function GenericDataTable<TData extends { id: string }, TValue>({
 
   // const extraClasses = "table-fixed w-auto ";
   return (
-    <div className="w-full border-x border-b border-line-gray px-1">
+    <div className="relative w-full border-x border-b border-line-gray px-1 ">
       <Table
         className={cn(
           `relative isolate border-separate border-spacing-0 `,
@@ -92,7 +92,7 @@ export function GenericDataTable<TData extends { id: string }, TValue>({
                   <TableHead
                     key={header.id}
                     className={cn(
-                      "sticky top-0 whitespace-nowrap border-y border-line-gray bg-light-gray hover:bg-light-gray",
+                      "sticky top-0 whitespace-nowrap border-y border-line-gray bg-light-gray before:absolute before:-left-1 before:-top-px before:h-px before:w-1 after:absolute after:-right-1 after:-top-px after:h-px after:w-1 first-of-type:before:bg-line-gray last-of-type:after:bg-line-gray hover:bg-light-gray ",
                     )}
                     style={{
                       width:

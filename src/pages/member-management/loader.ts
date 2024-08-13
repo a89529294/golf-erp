@@ -53,6 +53,21 @@ export const memberSchema = z.object({
       }),
     )
     .optional(),
+  appUserCoupons: z
+    .array(
+      z.object({
+        id: z.string(),
+        name: z.string(),
+        expiration: z.number(),
+        usedDate: z.coerce.date().transform(fromDateToDateTimeString),
+        createdAt: z.string(),
+        amount: z.number(),
+        store: z.object({
+          id: z.string(),
+        }),
+      }),
+    )
+    .optional(),
 });
 
 export const simpleMemberSchema = memberSchema.omit({
@@ -67,6 +82,7 @@ export type Member = z.infer<typeof memberSchema>;
 export type SimpleMember = z.infer<typeof simpleMemberSchema>;
 export type MemberType = Member["appUserType"];
 export type MemberAppChargeHistory = Member["appChargeHistories"][number];
+export type MemberAppUserCoupon = Required<Member>["appUserCoupons"][number];
 export type MemberSpendingHistory =
   Required<Member>["simulatorAppointmens"][number];
 export type Gender = Member["gender"];

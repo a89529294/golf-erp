@@ -33,6 +33,7 @@ interface DataTableProps<TData, TValue> {
   setRowSelection: Dispatch<SetStateAction<Record<string, boolean>>>;
   globalFilter: string;
   setGlobalFilter: Dispatch<SetStateAction<string>>;
+  headerRowRef?: React.RefObject<HTMLTableRowElement>;
 }
 
 const fuzzyFilter: FilterFn<unknown> = (row, columnId, value) => {
@@ -50,6 +51,7 @@ export function DataTable<TData extends { id: string }, TValue>({
   setRowSelection,
   globalFilter,
   setGlobalFilter,
+  headerRowRef,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
 
@@ -75,11 +77,11 @@ export function DataTable<TData extends { id: string }, TValue>({
   });
 
   return (
-    <div className="mb-2.5 w-fit border-y border-t-0 border-line-gray sm:w-max">
-      <Table className="relative table-fixed isolate sm:w-max">
-        <TableHeader className="relative z-10">
+    <div className="m-1 mt-0 w-fit sm:w-max">
+      <Table className="relative isolate table-fixed sm:w-max">
+        <TableHeader className="relative z-10 [&_tr]:border-b-0">
           {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id} className="border-b-line-gray">
+            <TableRow key={headerGroup.id} className="" ref={headerRowRef}>
               {headerGroup.headers.map((header) => {
                 return (
                   <TableHead

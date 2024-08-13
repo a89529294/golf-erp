@@ -88,14 +88,23 @@ export function AddEmployeeAsERPUserModal({
   }, [numberOfNewUsers]);
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog
+      open={open}
+      onOpenChange={(v) => {
+        setOpen(v);
+        if (!v) setPassword("");
+      }}
+    >
       <DialogTrigger asChild>{dialogTriggerChildren}</DialogTrigger>
       <DialogContent>
         {password ? (
           <PasswordModalContent
             chName={newERPUserChName}
             password={password}
-            onConfirm={() => setOpen(false)}
+            onConfirm={() => {
+              setOpen(false);
+              requestIdleCallback(() => setPassword(""));
+            }}
           />
         ) : (
           <form
@@ -106,7 +115,7 @@ export function AddEmployeeAsERPUserModal({
             }}
             className={cn(`flex h-[610px] w-[790px] flex-col pb-5 sm:w-80`)}
           >
-            <DialogHeader className="relative block mb-5 overflow-auto isolate px-14 sm:overflow-hidden sm:px-4">
+            <DialogHeader className="relative isolate mb-5 block overflow-auto px-14 sm:overflow-hidden sm:px-4">
               <EmployeesModalSearchHeader
                 globalFilter={globalFilter}
                 setGlobalFilter={setGlobalFilter}

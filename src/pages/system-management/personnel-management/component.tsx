@@ -5,6 +5,7 @@ import { IconWarningButton } from "@/components/ui/button";
 import { button } from "@/components/ui/button-cn";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useIsMobile } from "@/hooks/use-is-mobile";
+import { useWindowSizeChange } from "@/hooks/use-window-size-change";
 import { MainLayout } from "@/layouts/main-layout";
 import { cn } from "@/lib/utils";
 import {
@@ -20,11 +21,13 @@ import { linksKV } from "@/utils/links";
 import { privateFetch } from "@/utils/utils";
 import { Scrollbar } from "@radix-ui/react-scroll-area";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Link, useLoaderData } from "react-router-dom";
 import { toast } from "sonner";
 
 export function Component() {
+  const headerRowRef = useRef<HTMLTableRowElement>(null);
+  const [headerRowHeight, setHeaderRowHeight] = useState(48);
   const isMobile = useIsMobile();
   const [rowSelection, setRowSelection] = useState({});
   const [globalFilter, setGlobalFilter] = useState("");
@@ -52,6 +55,11 @@ export function Component() {
       toast.success("成功刪除員工");
     },
     onError: () => toast.error("刪除員工失敗"),
+  });
+
+  useWindowSizeChange(() => {
+    if (headerRowRef.current)
+      setHeaderRowHeight(headerRowRef.current.clientHeight);
   });
 
   return (
@@ -105,14 +113,24 @@ export function Component() {
             <Scrollbar className="hidden sm:block" orientation="horizontal" />
           </ScrollArea>
         ) : (
-          <DataTable
-            columns={columns}
-            data={data}
-            rowSelection={rowSelection}
-            setRowSelection={setRowSelection}
-            globalFilter={globalFilter}
-            setGlobalFilter={setGlobalFilter}
-          />
+          <div className="w-full border border-t-0 border-line-gray bg-light-gray pt-0">
+            <div className="sticky top-[90px] z-10 w-full border-b border-line-gray" />
+            <div
+              className="sticky z-10 w-full border-b border-line-gray"
+              style={{
+                top: `calc(90px + ${headerRowHeight}px)`,
+              }}
+            />
+            <DataTable
+              columns={columns}
+              data={data}
+              rowSelection={rowSelection}
+              setRowSelection={setRowSelection}
+              globalFilter={globalFilter}
+              setGlobalFilter={setGlobalFilter}
+              headerRowRef={headerRowRef}
+            />
+          </div>
         );
       }}
     </MainLayout>

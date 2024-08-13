@@ -1,7 +1,7 @@
 import backIcon from "@/assets/back.svg";
 import { IconButton, IconWarningButton } from "@/components/ui/button";
 import { button } from "@/components/ui/button-cn";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 
 import { cn } from "@/lib/utils";
 import { Member } from "@/pages/member-management/loader";
@@ -9,6 +9,7 @@ import { memberFormSchema } from "@/pages/member-management/schemas";
 import React from "react";
 import { UseFormReturn } from "react-hook-form";
 import { z } from "zod";
+import { SendCouponModal } from "@/pages/member-management/components/send-coupon-modal/send-coupon-modal";
 
 export function DesktopMenubar({
   disabled,
@@ -28,6 +29,8 @@ export function DesktopMenubar({
   form: UseFormReturn<z.infer<typeof memberFormSchema>>;
 }) {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const storeId = searchParams.get("storeId");
   return (
     <>
       {disabled === true ? (
@@ -75,6 +78,7 @@ export function DesktopMenubar({
           >
             編輯
           </IconButton>
+          {storeId && <SendCouponModal storeId={storeId} />}
         </>
       ) : (
         <>
