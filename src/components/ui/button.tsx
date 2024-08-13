@@ -1,5 +1,6 @@
 import backIcon from "@/assets/back.svg";
 import leaveIcon from "@/assets/leave-icon.svg";
+import lockIcon from "@/assets/lock.svg";
 import magnifyingGlassIcon from "@/assets/magnifying-glass-icon.svg";
 import pfpIcon from "@/assets/pfp-icon.svg";
 import plusIcon from "@/assets/plus-icon.svg";
@@ -32,6 +33,7 @@ const iconMap = {
   redX: redXIcon,
   check: checkIcon,
   coupon: couponIcon,
+  lock: lockIcon,
 };
 
 type IconButtonType = ComponentProps<"button"> & {
@@ -101,25 +103,27 @@ export const IconWarningButton = forwardRef<HTMLButtonElement, IconButtonType>(
   },
 );
 
-export const IconButtonBorderLess = ({
-  children,
-  icon,
-  onClick,
-}: {
-  children?: ReactNode;
-  icon: keyof typeof iconMap;
-  onClick?: () => void;
-}) => {
+const IconButtonBorderLess = forwardRef<
+  HTMLButtonElement,
+  {
+    children?: ReactNode;
+    icon: keyof typeof iconMap;
+    onClick?: () => void;
+  }
+>(({ children, icon, onClick }, ref) => {
   return (
     <button
+      ref={ref}
       className={twMerge(button({ borderLess: true, class: "h-full" }))}
       onClick={onClick}
     >
-      <img src={iconMap[icon]} />
+      <img className="w-5 h-5" src={iconMap[icon]} />
       {children}
     </button>
   );
-};
+});
+
+export { IconButtonBorderLess };
 
 export const TextButton = forwardRef<
   HTMLButtonElement,

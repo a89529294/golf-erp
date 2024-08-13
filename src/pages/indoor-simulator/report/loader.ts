@@ -79,6 +79,7 @@ export const genDataQuery = (storeId: string, startAt: Date, endAt: Date) => ({
       ),
       endAt: formatDateAsString(updateStartAndEnd ? addDays(endAt, 1) : endAt),
       storeId,
+      populate: "*",
     });
 
     const promises = [
