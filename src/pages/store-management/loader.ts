@@ -32,7 +32,7 @@ export const golfStoresWithSitesSchema = z.object({
 export const groundStoresWithSitesSchema = z.object({
   data: z.array(
     storeSchema
-      .pick({ id: true, name: true })
+      .pick({ id: true, name: true, merchantId: true })
       .extend({
         grounds: groundSitesSchema.pick({ data: true }).shape.data,
       })
@@ -48,7 +48,7 @@ export const groundStoresWithSitesSchema = z.object({
 export const simulatorStoresWithSitesSchema = z.object({
   data: z.array(
     storeSchema
-      .pick({ id: true, name: true })
+      .pick({ id: true, name: true, merchantId: true })
       .extend({
         simulators: simulatorSitesSchema.pick({ data: true }).shape.data,
       })

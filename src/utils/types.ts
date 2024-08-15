@@ -11,6 +11,7 @@ export type ValueOf<T> = T[keyof T];
 export type SimpleStore = {
   id: string;
   name: string;
+  merchantId: string;
   county: string;
   district: string;
   address: string;

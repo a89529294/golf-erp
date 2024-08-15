@@ -1,5 +1,5 @@
 import { GenericDataTable } from "@/components/generic-data-table";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { CircularProgressWithDesc } from "@/pages/indoor-simulator/report/components/circular-progress-with-desc";
 import { TextButton } from "@/pages/indoor-simulator/report/components/text-button";
 import { ReportData } from "@/pages/indoor-simulator/report/loader";
@@ -22,11 +22,13 @@ export function SiteSection({
   title,
   appointments,
   data,
+  merchantId,
 }: {
   id: string;
   title: string;
   appointments: Appointment[];
   data: ReportData;
+  merchantId?: string;
 }) {
   const [searchParams] = useSearchParams();
   const range = searchParams.get("range")! as reportTimeRange;
@@ -200,8 +202,10 @@ export function SiteSection({
             endDateTime: v.endTime,
             paymentType: v.order ? "信用卡" : "點數",
             amount: v.amount,
+            merchantId,
           }))}
         />
+        <ScrollBar orientation="horizontal" />
       </ScrollArea>
     </section>
   );

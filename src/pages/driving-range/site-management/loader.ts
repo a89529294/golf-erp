@@ -21,7 +21,7 @@ export const genGroundStoresWithSitesQuery = (
     queryFn: async () => {
       if (allowedStores === "all") {
         const response = await privateFetch(
-          "/store?pageSize=99&filter[category]=ground&populate=simulators&populate=grounds&populate=golfs&populate=grounds.openTimes&populate=grounds.equipment&populate=grounds.openDays",
+          "/store?pageSize=99&filter[category]=ground&populate=simulators&populate=grounds&populate=golfs&populate=grounds.openTimes&populate=grounds.equipment&populate=grounds.openDays&populate=merchantId",
         );
 
         const x = await response.json();
@@ -43,6 +43,7 @@ export const genGroundStoresWithSitesQuery = (
         return parsedData.map((pd, i) => ({
           id: allowedStores[i].id,
           name: allowedStores[i].name,
+          merchantId: allowedStores[i].merchantId,
           sites: pd.data,
         }));
 

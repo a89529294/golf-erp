@@ -22,8 +22,6 @@ export function SitesList({
         siteAppointments.push(...appointments);
       });
 
-      console.log(siteAppointments);
-
       return (
         <SiteSection
           key={site.id}
@@ -31,6 +29,9 @@ export function SitesList({
           appointments={siteAppointments}
           title={site.name}
           data={data}
+          merchantId={
+            stores.find((s) => s.id === storeId)?.merchantId ?? undefined
+          }
         />
       );
     });
