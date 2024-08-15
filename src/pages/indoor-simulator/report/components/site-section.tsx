@@ -158,7 +158,7 @@ export function SiteSection({
   })();
 
   return (
-    <section className="col-span-2 px-5 py-4 bg-white rounded-md">
+    <section className="col-span-2 rounded-md bg-white px-5 py-4">
       <h2 className="text-lg font-bold">{title}</h2>
       <ul className="mb-4 mt-2.5 flex gap-4">
         <CircularProgressWithDesc
@@ -184,7 +184,7 @@ export function SiteSection({
           type="secondary"
         />
 
-        <TextButton className="self-end ml-auto" onClick={() => setOpen(!open)}>
+        <TextButton className="ml-auto self-end" onClick={() => setOpen(!open)}>
           展開訂單
         </TextButton>
       </ul>
@@ -194,8 +194,8 @@ export function SiteSection({
           columns={columns}
           data={appointments.map((v) => ({
             id: v.id,
-            name: v.appUser.chName,
-            phone: v.appUser.phone,
+            name: v.appUser?.chName,
+            phone: v.appUser?.phone,
             startDateTime: v.startTime,
             endDateTime: v.endTime,
             paymentType: v.order ? "信用卡" : "點數",

@@ -2,8 +2,8 @@ import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 
 type Order = {
   id: string;
-  name: string;
-  phone: string;
+  name?: string;
+  phone?: string;
   startDateTime: string;
   endDateTime: string;
   amount: number;

@@ -2,8 +2,8 @@ import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 
 type Order = {
   id: string;
-  name: string;
-  phone: string;
+  name?: string;
+  phone?: string;
   startDateTime: string;
   endDateTime: string;
   paymentType: string;
@@ -41,7 +41,7 @@ export const columns = [
   columnHelper.accessor("amount", {
     header: "訂單金額",
     cell: (prop) => (
-      <div className="font-bold whitespace-nowrap text-secondary-purple">
+      <div className="whitespace-nowrap font-bold text-secondary-purple">
         {prop.getValue()}
       </div>
     ),
