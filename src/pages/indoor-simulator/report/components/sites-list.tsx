@@ -29,6 +29,9 @@ export function SitesList({
           appointments={siteAppointments}
           title={site.name}
           data={data}
+          merchantId={
+            stores.find((s) => s.id === storeId)?.merchantId ?? undefined
+          }
         />
       );
     });

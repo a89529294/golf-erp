@@ -83,6 +83,7 @@ export const AuthProvider = ({
             county: string;
             district: string;
             address: string;
+            merchantId: string;
           },
         ) => {
           acc[store.category].push({
@@ -91,6 +92,7 @@ export const AuthProvider = ({
             county: store.county,
             district: store.district,
             address: store.address,
+            merchantId: store.merchantId,
           });
           return acc;
         },

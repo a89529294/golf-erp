@@ -24,11 +24,13 @@ export const baseAppointmentSchema = z.object({
       id: z.string(),
     })
     .optional(),
-  appUser: z.object({
-    id: z.string(),
-    chName: z.string(),
-    phone: z.string(),
-  }),
+  appUser: z
+    .object({
+      id: z.string(),
+      chName: z.string(),
+      phone: z.string(),
+    })
+    .optional(),
 });
 
 export const simulatorAppoitmentsSchema = z.object({
