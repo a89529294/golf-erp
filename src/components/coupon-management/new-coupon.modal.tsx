@@ -78,13 +78,16 @@ export function NewCouponModal() {
             </Label>
             <Label className="flex items-center gap-5 ">
               <h2 className="w-16">使用期限</h2>
-              <UnderscoredInput
-                className="w-80"
-                name={"expiration"}
-                disabled={false}
-                type="number"
-                required
-              />
+              <div className="flex flex-row items-baseline">
+                <UnderscoredInput
+                  className="w-80"
+                  name={"expiration"}
+                  disabled={false}
+                  type="number"
+                  required
+                />
+                天
+              </div>
             </Label>
             <Label className="flex items-center gap-5 ">
               <h2 className="w-16">金額</h2>
