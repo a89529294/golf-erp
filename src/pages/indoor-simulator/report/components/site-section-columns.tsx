@@ -14,29 +14,24 @@ type Order = {
 const columnHelper = createColumnHelper<Order>();
 
 export const columns = [
-  columnHelper.accessor("id", {
-    header: "訂單編號",
-    cell: (prop) => <div className="whitespace-nowrap">{prop.getValue()}</div>,
-  }),
-  columnHelper.accessor("merchantId", {
-    header: "merchantId",
-    cell: (prop) => <div className="whitespace-nowrap">{prop.getValue()}</div>,
-  }),
-  columnHelper.accessor("name", {
-    header: "名稱",
-    cell: (prop) => <div className="whitespace-nowrap">{prop.getValue()}</div>,
-  }),
-
-  columnHelper.accessor("phone", {
-    header: "電話",
-    cell: (prop) => <div className="whitespace-nowrap">{prop.getValue()}</div>,
-  }),
   columnHelper.accessor("startDateTime", {
     header: "開始時間",
     cell: (prop) => <div className="whitespace-nowrap">{prop.getValue()}</div>,
   }),
   columnHelper.accessor("endDateTime", {
     header: "結束時間",
+    cell: (prop) => <div className="whitespace-nowrap">{prop.getValue()}</div>,
+  }),
+  columnHelper.accessor("name", {
+    header: "名稱",
+    cell: (prop) => <div className="whitespace-nowrap">{prop.getValue()}</div>,
+  }),
+  columnHelper.accessor("phone", {
+    header: "電話",
+    cell: (prop) => <div className="whitespace-nowrap">{prop.getValue()}</div>,
+  }),
+  columnHelper.accessor("merchantId", {
+    header: "merchantId",
     cell: (prop) => <div className="whitespace-nowrap">{prop.getValue()}</div>,
   }),
   columnHelper.accessor("paymentType", {
