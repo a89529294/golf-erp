@@ -13,7 +13,7 @@ import {
   MenubarTrigger,
 } from "@/components/ui/menubar";
 import { cn } from "@/lib/utils";
-import { Member } from "@/pages/member-management/loader";
+import { Member } from "@/pages/member-management/members/loader";
 import { FieldValues, UseFormReturn } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 

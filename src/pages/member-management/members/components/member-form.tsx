@@ -1,10 +1,10 @@
 import { Form } from "@/components/ui/form";
-import { DesktopFields } from "@/pages/member-management/components/desktop-fields";
+import { DesktopFields } from "@/pages/member-management/members/components/desktop-fields";
 import { useRef } from "react";
 import { type UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 import { memberFormSchema } from "../schemas";
-import { MobileFields } from "@/pages/member-management/components/mobile-fields";
+import { MobileFields } from "@/pages/member-management/members/components/mobile-fields";
 
 export function MemberForm({
   form,
@@ -29,7 +29,7 @@ export function MemberForm({
       <form
         onSubmit={form.handleSubmit(onSubmit, (e) => console.log(e))}
         id="member-form"
-        className="p-1 space-y-4 border border-line-gray"
+        className="space-y-4 border border-line-gray p-1"
       >
         <div className="grid grid-cols-[152fr_110fr_110fr_110fr_110fr_80fr_140fr_152fr] gap-x-10 pt-2.5 sm:flex sm:flex-col">
           <DesktopFields
@@ -45,7 +45,7 @@ export function MemberForm({
         </div>
 
         {!newMemberForm && (
-          <div className="flex justify-center py-3 bg-secondary-dark">
+          <div className="flex justify-center bg-secondary-dark py-3">
             <div className="flex gap-36 sm:flex-col sm:gap-4">
               <AmountCell label="累積消費金額" amount={spentAmount} />
               <AmountCell label="消費儲值金額" amount={topUpAmount} />

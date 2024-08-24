@@ -36,7 +36,9 @@ export function NewFormMobileMenubar({
               to={
                 isPending
                   ? window.location.pathname
-                  : linksKV["member-management"].paths["index"]
+                  : linksKV["member-management"].subLinks["members"].paths[
+                      "index"
+                    ]
               }
             >
               <img src={backIcon} />

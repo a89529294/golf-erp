@@ -1,4 +1,4 @@
-import { simpleMemberSchema } from "@/pages/member-management/loader";
+import { simpleMemberSchema } from "@/pages/member-management/members/loader";
 import { storeSchema } from "@/utils/category/schemas";
 import { queryClient } from "@/utils/query-client";
 import { privateFetch } from "@/utils/utils";

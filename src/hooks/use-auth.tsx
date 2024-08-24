@@ -116,7 +116,7 @@ export const AuthProvider = ({
         expiresAt: new Date(user.expires).getTime() + 1000 * 60 * 60,
       });
 
-      navigate("/member-management", { replace: true });
+      navigate("/member-management/members", { replace: true });
     } catch (e) {
       console.log(e);
 

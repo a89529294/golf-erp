@@ -3,7 +3,7 @@ import {
   MemberType,
   SimpleMember,
   memberTypeEnChMap,
-} from "@/pages/member-management/loader";
+} from "@/pages/member-management/members/loader";
 import { ColumnDef } from "@tanstack/react-table";
 
 export const inviteHostcolumns: ColumnDef<SimpleMember>[] = [

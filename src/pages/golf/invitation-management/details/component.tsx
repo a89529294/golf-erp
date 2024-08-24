@@ -13,7 +13,7 @@ import { InvitationForm } from "../components/invitation-form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { storesWithoutEmployeesQuery } from "../new/loader";
 import { genInvitationDetailsQuery, loader } from "./loader";
-import { membersQuery } from "@/pages/member-management/loader";
+import { membersQuery } from "@/pages/member-management/members/loader";
 import { filterObject, fromDateAndTimeToDateTimeString } from "@/utils";
 import { InvitationPATCH } from "../loader";
 import { privateFetch } from "@/utils/utils";

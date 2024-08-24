@@ -3,7 +3,7 @@ import pfp from "@/assets/pfp-outline.svg";
 import redMinusIcon from "@/assets/red-minus-icon.svg";
 import { Form } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
-import { SimpleMember } from "@/pages/member-management/loader";
+import { SimpleMember } from "@/pages/member-management/members/loader";
 import { SimpleStore } from "@/utils/types";
 import { useEffect } from "react";
 import { SubmitHandler, UseFormReturn } from "react-hook-form";

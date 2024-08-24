@@ -205,28 +205,40 @@ const router = createBrowserRouter(
                 />
               </Route>
             ))}
-            {(
-              Object.entries(linksKV["member-management"].paths) as [
-                keyof (typeof linksKV)["member-management"]["paths"],
-                string,
-              ][]
-            ).map(([key, path]) => (
-              <Route
-                element={
-                  <PermissionGuard
-                    routePermissions={
-                      linksKV["member-management"].allowedPermissions
+            {Object.values(linksKV["member-management"].subLinks).flatMap(
+              (subLink) => {
+                return subLink.type === "multiple" ? (
+                  Object.values(subLink.paths).map((path, idx) => {
+                    return (
+                      <Route
+                        element={
+                          <PermissionGuard
+                            routePermissions={subLink.allowedPermissions}
+                          />
+                        }
+                        key={path}
+                      >
+                        <Route
+                          path={path}
+                          lazy={Object.values(subLink.lazy)[idx]}
+                        />
+                      </Route>
+                    );
+                  })
+                ) : (
+                  <Route
+                    element={
+                      <PermissionGuard
+                        routePermissions={subLink.allowedPermissions}
+                      />
                     }
-                  />
-                }
-                key={key}
-              >
-                <Route
-                  path={path}
-                  lazy={linksKV["member-management"].lazy[key]}
-                />
-              </Route>
-            ))}
+                    key={subLink.path}
+                  >
+                    <Route path={subLink.path} lazy={subLink.lazy} />
+                  </Route>
+                );
+              },
+            )}
           </Route>
         </Route>
       </Route>

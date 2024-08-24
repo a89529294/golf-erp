@@ -1,4 +1,4 @@
-import { MemberType } from "@/pages/member-management/loader";
+import { MemberType } from "@/pages/member-management/members/loader";
 import { z } from "zod";
 import { employeeSchema } from "@/pages/system-management/personnel-management/loader";
 import { storeCategories } from "@/utils";

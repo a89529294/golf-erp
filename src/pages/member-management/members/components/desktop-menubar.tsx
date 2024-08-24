@@ -4,12 +4,12 @@ import { button } from "@/components/ui/button-cn";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 
 import { cn } from "@/lib/utils";
-import { Member } from "@/pages/member-management/loader";
-import { memberFormSchema } from "@/pages/member-management/schemas";
+import { Member } from "@/pages/member-management/members/loader";
+import { memberFormSchema } from "@/pages/member-management/members/schemas";
 import React from "react";
 import { UseFormReturn } from "react-hook-form";
 import { z } from "zod";
-import { SendCouponModal } from "@/pages/member-management/components/send-coupon-modal/send-coupon-modal";
+import { SendCouponModal } from "@/pages/member-management/members/components/send-coupon-modal/send-coupon-modal";
 
 export function DesktopMenubar({
   disabled,

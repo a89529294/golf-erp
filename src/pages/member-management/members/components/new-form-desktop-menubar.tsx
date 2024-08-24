@@ -16,7 +16,7 @@ export function NewFormDesktopMenubar({ isPending }: { isPending: boolean }) {
         to={
           isPending
             ? window.location.pathname
-            : linksKV["member-management"].paths["index"]
+            : linksKV["member-management"].subLinks["members"].paths["index"]
         }
       >
         <img src={backIcon} />

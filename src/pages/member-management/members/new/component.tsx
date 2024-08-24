@@ -1,6 +1,6 @@
 import { useIsMobile } from "@/hooks/use-is-mobile";
 import { MainLayout } from "@/layouts/main-layout";
-import { NewFormDesktopMenubar } from "@/pages/member-management/components/new-form-desktop-menubar";
+import { NewFormDesktopMenubar } from "@/pages/member-management/members/components/new-form-desktop-menubar";
 import { linksKV } from "@/utils/links";
 import { privateFetch } from "@/utils/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { MemberForm } from "../components/member-form";
 import { memberFormSchema } from "../schemas";
-import { NewFormMobileMenubar } from "@/pages/member-management/components/new-form-mobile-menubar";
+import { NewFormMobileMenubar } from "@/pages/member-management/members/components/new-form-mobile-menubar";
 
 export function Component() {
   const isMobile = useIsMobile();
@@ -54,7 +54,7 @@ export function Component() {
     },
     onSuccess() {
       queryClient.invalidateQueries({ queryKey: ["members"] });
-      navigate(linksKV["member-management"].paths.index);
+      navigate(linksKV["member-management"].subLinks["members"].paths.index);
       toast.success("新增會員成功");
     },
     onError() {

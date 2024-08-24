@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { Component } from "./component";
 import { ErrorBoundary } from "@/components/error-boundary";
-import { simpleMemberSchema } from "@/pages/member-management/loader";
+import { simpleMemberSchema } from "@/pages/member-management/members/loader";
 export { Component, ErrorBoundary };
 export { loader } from "./loader";
 

@@ -5,7 +5,7 @@ import { ScrollArea } from "@/components/ui/scroll-area.tsx";
 import useMediaQuery from "@/hooks/use-media-query.ts";
 import { useWindowSizeChange } from "@/hooks/use-window-size-change.ts";
 import { MainLayout } from "@/layouts/main-layout";
-import { loader, membersQuery } from "@/pages/member-management/loader";
+import { loader, membersQuery } from "@/pages/member-management/members/loader";
 import { linksKV } from "@/utils/links";
 import { Scrollbar } from "@radix-ui/react-scroll-area";
 import { useQuery } from "@tanstack/react-query";
@@ -36,7 +36,7 @@ export function Component() {
         <>
           <Link
             className={button()}
-            to={linksKV["member-management"].paths["new"]}
+            to={linksKV["member-management"].subLinks["members"].paths["new"]}
           >
             <img src={plusIcon} />
             新增會員

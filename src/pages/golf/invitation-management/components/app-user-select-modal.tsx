@@ -9,7 +9,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
-import { SimpleMember } from "@/pages/member-management/loader";
+import { SimpleMember } from "@/pages/member-management/members/loader";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { ColumnDef } from "@tanstack/react-table";
 import { ReactElement, useState } from "react";

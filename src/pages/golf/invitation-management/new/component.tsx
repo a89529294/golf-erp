@@ -11,7 +11,7 @@ import { z } from "zod";
 import { formSchema } from "..";
 import { InvitationForm } from "../components/invitation-form";
 import { loader, storesWithoutEmployeesQuery } from "./loader";
-import { membersQuery } from "@/pages/member-management/loader";
+import { membersQuery } from "@/pages/member-management/members/loader";
 import { privateFetch } from "@/utils/utils";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";

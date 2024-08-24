@@ -1,11 +1,11 @@
 import { cn } from "@/lib/utils";
-import { BirthDayDatePicker } from "@/pages/member-management/components/birthday-date-picker";
-import { FormSelect } from "@/pages/member-management/components/form-select";
-import { UnderScoredFormInput } from "@/pages/member-management/components/underscored-form-input";
+import { BirthDayDatePicker } from "@/pages/member-management/members/components/birthday-date-picker";
+import { FormSelect } from "@/pages/member-management/members/components/form-select";
+import { UnderScoredFormInput } from "@/pages/member-management/members/components/underscored-form-input";
 import {
   genderEnChMap,
   memberTypeEnChMap,
-} from "@/pages/member-management/loader";
+} from "@/pages/member-management/members/loader";
 
 export function DesktopFields({
   memberTypeRef,

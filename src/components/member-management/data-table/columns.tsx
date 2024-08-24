@@ -5,7 +5,7 @@ import {
   Member,
   genderEnChMap,
   memberTypeEnChMap,
-} from "@/pages/member-management/loader";
+} from "@/pages/member-management/members/loader";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -74,7 +74,7 @@ export const columns = (
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             帳號
-            <ArrowUpDown className="w-4 h-4 ml-2" />
+            <ArrowUpDown className="ml-2 h-4 w-4" />
           </button>
         );
       },
@@ -90,7 +90,7 @@ export const columns = (
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             會員類別
-            <ArrowUpDown className="w-4 h-4 ml-2" />
+            <ArrowUpDown className="ml-2 h-4 w-4" />
           </button>
         );
       },
@@ -104,7 +104,7 @@ export const columns = (
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             姓名
-            <ArrowUpDown className="w-4 h-4 ml-2" />
+            <ArrowUpDown className="ml-2 h-4 w-4" />
           </button>
         );
       },
@@ -127,7 +127,7 @@ export const columns = (
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             性別
-            <ArrowUpDown className="w-4 h-4 ml-2" />
+            <ArrowUpDown className="ml-2 h-4 w-4" />
           </button>
         );
       },
@@ -141,7 +141,7 @@ export const columns = (
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             生日
-            <ArrowUpDown className="w-4 h-4 ml-2" />
+            <ArrowUpDown className="ml-2 h-4 w-4" />
           </button>
         );
       },
@@ -170,7 +170,7 @@ export const columns = (
               }
             >
               累積儲值金額
-              <ArrowUpDown className="w-4 h-4 ml-2" />
+              <ArrowUpDown className="ml-2 h-4 w-4" />
             </button>
           );
         },
@@ -231,7 +231,7 @@ export const mobileColumns = (
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             帳號
-            <ArrowUpDown className="w-4 h-4 ml-2" />
+            <ArrowUpDown className="ml-2 h-4 w-4" />
           </button>
         );
       },

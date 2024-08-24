@@ -15,6 +15,7 @@ export type NestedLink = {
   type: "nested";
   subLinks: Record<string, FlatLink | MultipleLink>;
   allowedPermissions: string[];
+  allowedStoreCategory?: string;
 };
 export type MultipleLink = {
   label: string;
@@ -28,6 +29,7 @@ const INDOOR_SIMULATOR_BASE_PATH = "/indoor-simulator";
 const GOLF_BASE_PATH = "/golf";
 const DRIVING_RANGE_BASE_PATH = "/driving-range";
 const SYSTEM_MANAGEMENT_BASE_PATH = "/system-management";
+const MEMBERS_BASE_PATH = "/member-management";
 
 // if you add/remove new nested links you must also modify
 // src/index.tsx and sidebar.tsx
@@ -49,7 +51,7 @@ export const linksKV = {
         },
         lazy: {
           index: () => import("@/pages/driving-range/member-management"),
-          details: () => import("@/pages/member-management/details"),
+          details: () => import("@/pages/member-management/members/details"),
         },
         allowedPermissions: ["練習場-基本操作"],
       },
@@ -210,7 +212,7 @@ export const linksKV = {
         lazy: {
           index: () => import("@/pages/indoor-simulator/member-management"),
           // new: () => import("@/pages/member-management/new"),
-          details: () => import("@/pages/member-management/details"),
+          details: () => import("@/pages/member-management/members/details"),
         },
         allowedPermissions: ["模擬器-基本操作"],
       },
@@ -345,16 +347,40 @@ export const linksKV = {
   },
   "member-management": {
     label: "會員管理",
-    type: "multiple" as const,
-    paths: {
-      index: "/member-management",
-      new: "/member-management/new",
-      details: "/member-management/details/:id",
-    },
-    lazy: {
-      index: () => import("@/pages/member-management"),
-      new: () => import("@/pages/member-management/new"),
-      details: () => import("@/pages/member-management/details"),
+    type: "nested" as const,
+    basePath: MEMBERS_BASE_PATH,
+    path: `${MEMBERS_BASE_PATH}/members`,
+    subLinks: {
+      members: {
+        label: "會員管理",
+        type: "multiple" as const,
+        paths: {
+          index: `${MEMBERS_BASE_PATH}/members`,
+          new: `${MEMBERS_BASE_PATH}/members/new`,
+          details: `${MEMBERS_BASE_PATH}/members/details/:id`,
+        },
+        lazy: {
+          index: () => import("@/pages/member-management/members"),
+          new: () => import("@/pages/member-management/members/new"),
+          details: () => import("@/pages/member-management/members/details"),
+        },
+        allowedPermissions: [
+          "模擬器-基本操作",
+          "高爾夫球-基本操作",
+          "練習場-基本操作",
+        ],
+      },
+      "discount-management": {
+        label: "會員身分折扣管理",
+        type: "flat" as const,
+        path: `${MEMBERS_BASE_PATH}/discount-management`,
+        lazy: () => import("@/pages/member-management/discount-management"),
+        allowedPermissions: [
+          "模擬器-基本操作",
+          "高爾夫球-基本操作",
+          "練習場-基本操作",
+        ],
+      },
     },
     allowedPermissions: [
       "模擬器-基本操作",

@@ -3,7 +3,7 @@ import { privateFetch } from "@/utils/utils";
 import { LoaderFunctionArgs } from "react-router-dom";
 import { invitationDetailsSchema } from "../loader";
 import { storesWithoutEmployeesQuery } from "../new/loader";
-import { membersQuery } from "@/pages/member-management/loader";
+import { membersQuery } from "@/pages/member-management/members/loader";
 
 export const genInvitationDetailsQuery = (id: string) => ({
   queryKey: ["invitations", id],

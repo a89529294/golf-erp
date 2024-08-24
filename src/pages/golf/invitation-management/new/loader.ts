@@ -1,4 +1,4 @@
-import { membersQuery } from "@/pages/member-management/loader";
+import { membersQuery } from "@/pages/member-management/members/loader";
 import { storesWithoutEmployeesSchema } from "@/pages/store-management/loader";
 import { getAllowedStores } from "@/utils";
 import { queryClient } from "@/utils/query-client";
