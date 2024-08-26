@@ -18,7 +18,10 @@ export const storeSchema = z.object({
   district: z.string(),
   address: z.string(),
   employees: z.array(employeeSchema).optional(),
-  merchantId: z.string().nullable(),
+  merchantId: z
+    .string()
+    .nullable()
+    .transform((v) => v ?? ""),
   hashKey: z.string().nullable(),
   hashIV: z.string().nullable(),
 });

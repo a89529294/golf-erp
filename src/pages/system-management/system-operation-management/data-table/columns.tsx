@@ -31,6 +31,7 @@ export const columns: ColumnDef<UserWithEmployee>[] = [
         />
       </div>
     ),
+    size: 10,
   },
   columnHelper.display({
     id: "password",
@@ -38,6 +39,7 @@ export const columns: ColumnDef<UserWithEmployee>[] = [
     cell: ({ row }) => {
       return <PasswordModal id={row.id} chName={row.original.username} />;
     },
+    size: 10,
   }),
   {
     accessorKey: "idNumber",
@@ -54,6 +56,7 @@ export const columns: ColumnDef<UserWithEmployee>[] = [
       );
     },
     accessorFn: (user) => user.employee.idNumber,
+    size: 12,
   },
   {
     accessorKey: "chName",
@@ -70,12 +73,14 @@ export const columns: ColumnDef<UserWithEmployee>[] = [
       );
     },
     accessorFn: (user) => user.employee.chName,
+    size: 12,
   },
   {
     accessorKey: "telphone",
     id: "telphone",
     header: "電話",
     accessorFn: (user) => user.employee.telphone,
+    size: 15,
   },
   {
     accessorKey: "storeCategory",
@@ -97,6 +102,7 @@ export const columns: ColumnDef<UserWithEmployee>[] = [
         user.employee.stores?.[0].category as StoreCategory
       ];
     },
+    size: 12,
   },
   {
     id: "storeName",

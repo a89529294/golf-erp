@@ -77,7 +77,7 @@ export function DataTable<TData extends { id: string }, TValue>({
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
-                className="group"
+                className="group bg-white"
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>

@@ -2,12 +2,13 @@ import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 
 type Order = {
   id: string;
-  name: string;
-  phone: string;
+  name?: string;
+  phone?: string;
   startDateTime: string;
   endDateTime: string;
   paymentType: string;
   amount: number;
+  merchantId?: string;
 };
 
 const columnHelper = createColumnHelper<Order>();
@@ -15,6 +16,10 @@ const columnHelper = createColumnHelper<Order>();
 export const columns = [
   columnHelper.accessor("id", {
     header: "訂單編號",
+    cell: (prop) => <div className="whitespace-nowrap">{prop.getValue()}</div>,
+  }),
+  columnHelper.accessor("merchantId", {
+    header: "merchantId",
     cell: (prop) => <div className="whitespace-nowrap">{prop.getValue()}</div>,
   }),
   columnHelper.accessor("name", {
@@ -41,7 +46,7 @@ export const columns = [
   columnHelper.accessor("amount", {
     header: "訂單金額",
     cell: (prop) => (
-      <div className="font-bold whitespace-nowrap text-secondary-purple">
+      <div className="whitespace-nowrap font-bold text-secondary-purple">
         {prop.getValue()}
       </div>
     ),

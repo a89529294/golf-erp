@@ -1,5 +1,6 @@
 import backIcon from "@/assets/back.svg";
 import leaveIcon from "@/assets/leave-icon.svg";
+import lockIcon from "@/assets/lock.svg";
 import magnifyingGlassIcon from "@/assets/magnifying-glass-icon.svg";
 import pfpIcon from "@/assets/pfp-icon.svg";
 import plusIcon from "@/assets/plus-icon.svg";
@@ -11,6 +12,7 @@ import pencilIcon from "@/assets/pencil.svg";
 import xIcon from "@/assets/x.svg";
 import redXIcon from "@/assets/red-x-icon.svg";
 import checkIcon from "@/assets/check.svg";
+import couponIcon from "@/assets/coupon.svg";
 import { ComponentProps, ReactNode, forwardRef } from "react";
 import { twMerge } from "tailwind-merge";
 
@@ -30,6 +32,8 @@ const iconMap = {
   x: xIcon,
   redX: redXIcon,
   check: checkIcon,
+  coupon: couponIcon,
+  lock: lockIcon,
 };
 
 type IconButtonType = ComponentProps<"button"> & {
@@ -99,25 +103,27 @@ export const IconWarningButton = forwardRef<HTMLButtonElement, IconButtonType>(
   },
 );
 
-export const IconButtonBorderLess = ({
-  children,
-  icon,
-  onClick,
-}: {
-  children?: ReactNode;
-  icon: keyof typeof iconMap;
-  onClick?: () => void;
-}) => {
+const IconButtonBorderLess = forwardRef<
+  HTMLButtonElement,
+  {
+    children?: ReactNode;
+    icon: keyof typeof iconMap;
+    onClick?: () => void;
+  }
+>(({ children, icon, onClick }, ref) => {
   return (
     <button
+      ref={ref}
       className={twMerge(button({ borderLess: true, class: "h-full" }))}
       onClick={onClick}
     >
-      <img src={iconMap[icon]} />
+      <img className="w-5 h-5" src={iconMap[icon]} />
       {children}
     </button>
   );
-};
+});
+
+export { IconButtonBorderLess };
 
 export const TextButton = forwardRef<
   HTMLButtonElement,
@@ -130,7 +136,7 @@ export const TextButton = forwardRef<
       onClick={onClick}
       {...props}
     >
-      {loading && <img src={circleIcon} className="h-5 w-5 animate-spin" />}
+      {loading && <img src={circleIcon} className="w-5 h-5 animate-spin" />}
       {children}
     </button>
   );

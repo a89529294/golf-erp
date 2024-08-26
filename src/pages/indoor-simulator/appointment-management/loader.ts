@@ -30,11 +30,13 @@ export const appointmentsQuery = {
         id: appointment.id,
         startTime: appointment.startTime,
         endTime: appointment.endTime,
-        appUser: {
-          id: appointment.appUser.id,
-          chName: appointment.appUser.chName,
-          phone: appointment.appUser.phone,
-        },
+        appUser: appointment.appUser
+          ? {
+              id: appointment.appUser.id,
+              chName: appointment.appUser.chName,
+              phone: appointment.appUser.phone,
+            }
+          : undefined,
         status: appointment.status,
         amount: appointment.amount,
       };

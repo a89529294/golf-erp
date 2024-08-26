@@ -1,14 +1,28 @@
 import { cn } from "@/lib/utils";
 import React from "react";
 
-export function Tablet({ active, value }: { active: boolean; value: string }) {
+export function Tablet({
+  active,
+  value,
+  activeCn,
+  inactiveCn,
+}: {
+  active: boolean;
+  value: string;
+  activeCn?: string;
+  inactiveCn?: string;
+}) {
   return (
     <div
       className={cn(
         "flex h-5 w-10 items-center justify-center rounded-full border text-sm font-medium",
         active
-          ? "border-secondary-purple text-secondary-purple"
-          : "border-line-red text-word-red",
+          ? activeCn
+            ? activeCn
+            : "border-secondary-purple text-secondary-purple"
+          : inactiveCn
+            ? inactiveCn
+            : "border-line-red text-word-red",
       )}
     >
       {value}

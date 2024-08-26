@@ -14,13 +14,13 @@ export const sitesSchema = z.object({
 });
 
 export const genIndoorSimulatorStoresWithSitesQuery = (
-  allowedStores: { id: string; name: string }[] | "all",
+  allowedStores: { id: string; name: string; merchantId: string }[] | "all",
 ) => ({
   queryKey: ["sites-for-store", "simulator"],
   queryFn: async () => {
     if (allowedStores === "all") {
       const response = await privateFetch(
-        "/store?pageSize=99&filter[category]=simulator&populate=simulators&populate=grounds&populate=golfs&populate=simulators.openTimes&populate=simulators.equipment&populate=simulators.openDays",
+        "/store?pageSize=99&filter[category]=simulator&populate=simulators&populate=grounds&populate=golfs&populate=simulators.openTimes&populate=simulators.equipment&populate=simulators.openDays&populate=store",
       );
       const data = await response.json();
 
@@ -39,6 +39,7 @@ export const genIndoorSimulatorStoresWithSitesQuery = (
       return parsedData.map((pd, i) => ({
         id: allowedStores[i].id,
         name: allowedStores[i].name,
+        merchantId: allowedStores[i].merchantId,
         sites: pd.data,
       }));
 

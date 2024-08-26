@@ -7,7 +7,7 @@ export const genMemberDetailsQuery = (id: string, storeId?: string) => ({
   queryKey: ["members", id, storeId],
   queryFn: async () => {
     const response = await privateFetch(
-      `/app-users/${id}?populate=appChargeHistories&populate=storeAppUsers&populate=simulatorAppointmens&populate=groundAppointmens&populate=simulatorAppointments.order&populate=appChargeHistories.store&populate=simulatorAppointmens.storeSimulator.store`,
+      `/app-users/${id}?populate=appChargeHistories&populate=storeAppUsers&populate=simulatorAppointmens&populate=groundAppointmens&populate=simulatorAppointments.order&populate=appChargeHistories.store&populate=simulatorAppointmens.storeSimulator.store&populate=appUserCoupons&populate=appUserCoupons.store`,
     );
 
     const data = await response.json();
@@ -17,12 +17,16 @@ export const genMemberDetailsQuery = (id: string, storeId?: string) => ({
     if (storeId)
       parsedData = {
         ...parsedData,
-        simulatorAppointmens: parsedData.simulatorAppointmens?.filter(
-          (v) => v.storeSimulator.store.id === storeId,
-        ),
+        simulatorAppointmens:
+          parsedData.simulatorAppointmens?.filter(
+            (v) => v.storeSimulator.store.id === storeId,
+          ) ?? [],
         appChargeHistories: parsedData.appChargeHistories.filter(
           (v) => v.store.id === storeId,
         ),
+        appUserCoupons:
+          parsedData.appUserCoupons?.filter((v) => v.store.id === storeId) ??
+          [],
       };
 
     return parsedData;

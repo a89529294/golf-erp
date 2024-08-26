@@ -59,6 +59,8 @@ export function Component() {
     onError: () => toast.error("刪除員工系統權限失敗"),
   });
 
+  const headerRowHeight = 48;
+
   return (
     <MainLayout
       headerChildren={
@@ -107,14 +109,23 @@ export function Component() {
           );
         }
       ) : (
-        <DataTable
-          columns={columns}
-          data={users}
-          rowSelection={rowSelection}
-          setRowSelection={setRowSelection}
-          globalFilter={globalFilter}
-          setGlobalFilter={setGlobalFilter}
-        />
+        <div className="w-full border border-t-0 border-line-gray bg-light-gray pt-0">
+          <div className="sticky top-[90px] z-10 w-full border-b border-line-gray" />
+          <div
+            className="sticky z-10 w-full border-b border-line-gray"
+            style={{
+              top: `calc(90px + ${headerRowHeight}px)`,
+            }}
+          />
+          <DataTable
+            columns={columns}
+            data={users}
+            rowSelection={rowSelection}
+            setRowSelection={setRowSelection}
+            globalFilter={globalFilter}
+            setGlobalFilter={setGlobalFilter}
+          />
+        </div>
       )}
     </MainLayout>
   );

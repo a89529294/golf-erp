@@ -41,13 +41,14 @@ export function CouponBaseComponent({
     queryFn: async () => {
       // filter by storeId
       const data = await privateFetch(
-        `/coupon?populate=store&pageSize=999`,
+        `/coupon?populate=store&pageSize=999&filter[store.id]=${storeId}`,
       ).then((r) => r.json());
       const parsedData = couponsSchema.parse(data);
       return parsedData.data;
     },
     enabled: !!storeId,
   });
+  const headerRowHeight = 48;
 
   return (
     <MainLayout
@@ -70,7 +71,7 @@ export function CouponBaseComponent({
       {isMobile ? (
         ({ height }) => (
           <ScrollArea style={{ height }} className="w-full">
-            <div className="w-full p-1 pt-0 border border-line-gray bg-light-gray">
+            <div className="w-full border border-line-gray bg-light-gray p-1 pt-0">
               {coupons && (
                 <DataTable
                   columns={columns}
@@ -86,23 +87,27 @@ export function CouponBaseComponent({
           </ScrollArea>
         )
       ) : (
-        <div
-          className={cn(
-            "w-full border border-line-gray bg-light-gray p-1 pt-0",
-            isLoading && "grid place-items-center",
-          )}
-        >
+        <div className={cn("w-full ", isLoading && "grid place-items-center")}>
           {isLoading ? (
             <Spinner />
           ) : coupons ? (
-            <DataTable
-              columns={columns}
-              data={coupons}
-              rowSelection={rowSelection}
-              setRowSelection={setRowSelection}
-              globalFilter={globalFilter}
-              setGlobalFilter={setGlobalFilter}
-            />
+            <div className="w-full border border-t-0 border-line-gray bg-light-gray pt-0">
+              <div className="sticky top-[90px] z-10 w-full border-b border-line-gray" />
+              <div
+                className="sticky z-10 w-full border-b border-line-gray"
+                style={{
+                  top: `calc(90px + ${headerRowHeight}px)`,
+                }}
+              />
+              <DataTable
+                columns={columns}
+                data={coupons}
+                rowSelection={rowSelection}
+                setRowSelection={setRowSelection}
+                globalFilter={globalFilter}
+                setGlobalFilter={setGlobalFilter}
+              />
+            </div>
           ) : null}
         </div>
       )}
