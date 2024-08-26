@@ -12,6 +12,7 @@ export const couponSchema = z.object({
   endDate: z.coerce.date().transform(fromDateToDateString).optional(),
   expiration: z.number(),
   isActive: z.boolean(),
+  isCustomerView: z.boolean(),
   store: z.object({
     id: z.string(),
   }),

@@ -249,6 +249,13 @@ export const linksKV = {
         type: "flat" as const,
         allowedPermissions: ["模擬器-贈送點數"],
       },
+      "reward-settings": {
+        label: "累積點數設定",
+        path: `${INDOOR_SIMULATOR_BASE_PATH}/reward-settings`,
+        lazy: () => import("@/pages/indoor-simulator/reward-settings"),
+        type: "flat" as const,
+        allowedPermissions: ["模擬器-贈送點數"],
+      },
       "repair-report": {
         label: "報修回報",
         path: `${INDOOR_SIMULATOR_BASE_PATH}/repair-report`,
