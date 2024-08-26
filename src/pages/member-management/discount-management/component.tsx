@@ -121,7 +121,7 @@ export function Component(): React.ReactElement {
         }),
       );
 
-      await Promise.allSettled(responsePromises);
+      await Promise.all(responsePromises);
     },
     onSuccess() {
       toast.success("折扣更新成功");
