@@ -1,6 +1,6 @@
-import backIcon from "@/assets/back.svg";
 import saveIcon from "@/assets/save.svg";
 import pencilIcon from "@/assets/pencil.svg";
+import redXIcon from "@/assets/red-x-icon.svg";
 import { button } from "@/components/ui/button-cn";
 import {
   Menubar,
@@ -41,8 +41,8 @@ export function MobileMenubar({
                   form="discount-form"
                   onClick={cancelEdit}
                 >
-                  <img src={backIcon} />
-                  返回
+                  <img src={redXIcon} />
+                  取消編輯
                 </button>
               </MenubarItem>
               <MenubarSeparator />

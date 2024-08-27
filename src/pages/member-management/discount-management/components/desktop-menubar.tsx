@@ -1,4 +1,4 @@
-import { IconButton } from "@/components/ui/button";
+import { IconButton, IconWarningButton } from "@/components/ui/button";
 
 export function DesktopMenubar({
   isPending,
@@ -13,15 +13,15 @@ export function DesktopMenubar({
 }) {
   return isEditing ? (
     <>
-      <IconButton
-        icon="save"
+      <IconWarningButton
+        icon="redX"
         type="button"
         onClick={cancelEdit}
         form="discount-form"
         disabled={isPending}
       >
-        返回
-      </IconButton>
+        取消編輯
+      </IconWarningButton>
 
       <IconButton
         icon="save"

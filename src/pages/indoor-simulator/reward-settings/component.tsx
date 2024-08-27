@@ -18,7 +18,7 @@ import { UnderscoredInput } from "@/components/underscored-input.tsx";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { queryClient } from "@/utils/query-client.ts";
-import { IconButton } from "@/components/ui/button.tsx";
+import { IconButton, IconWarningButton } from "@/components/ui/button.tsx";
 import { DataTable } from "@/components/coupon-management/data-table/data-table.tsx";
 import { Scrollbar } from "@radix-ui/react-scroll-area";
 import { ScrollArea } from "@/components/ui/scroll-area.tsx";
@@ -315,15 +315,15 @@ export function Component() {
           />
           {isEditing ? (
             <>
-              <IconButton
-                icon="save"
+              <IconWarningButton
+                icon="redX"
                 type="button"
                 onClick={cancelEdit}
                 form="discount-form"
                 disabled={isPending}
               >
-                返回
-              </IconButton>
+                取消編輯
+              </IconWarningButton>
 
               <IconButton
                 icon="save"
