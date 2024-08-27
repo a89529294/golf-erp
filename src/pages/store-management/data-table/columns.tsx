@@ -32,6 +32,13 @@ export const columns: ColumnDef<Store>[] = [
     size: 80,
   },
   {
+    accessorKey: "code",
+    id: "code",
+    header: "編號",
+    accessorFn: (row) => row.code ?? "",
+    size: 180,
+  },
+  {
     id: "name-address",
     header: ({ column }) => {
       return (
