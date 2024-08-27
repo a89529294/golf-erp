@@ -140,10 +140,10 @@ export function Site({
             openingTimesRef.current?.scrollIntoView();
         },
       )}
-      className="px-20 space-y-10 sm:px-4"
+      className="space-y-10 px-20 sm:px-4"
       id="site-details"
     >
-      <section className="px-12 py-10 space-y-6 bg-white border border-line-gray sm:px-2 sm:py-4">
+      <section className="space-y-6 border border-line-gray bg-white px-12 py-10 sm:px-2 sm:py-4">
         {type === "existing-indoor-simulator" && (
           <IconShortButton
             onClick={onOpenGate}
@@ -167,7 +167,7 @@ export function Site({
             render={({ field }) => (
               <FormItem className="flex flex-row items-start space-x-3 space-y-0 ">
                 <div className="space-y-1 leading-none">
-                  <FormLabel>使用中</FormLabel>
+                  <FormLabel>開放使用</FormLabel>
                 </div>
                 <FormControl>
                   <Checkbox
@@ -211,7 +211,7 @@ export function Site({
                 <FormControl>
                   <SelectTrigger
                     disabled={!isNewSite || isPending}
-                    className="pl-0 border-0 border-b rounded-none h-7 border-secondary-dark"
+                    className="h-7 rounded-none border-0 border-b border-secondary-dark pl-0"
                   >
                     <SelectValue placeholder="選擇廠商" />
                   </SelectTrigger>
@@ -518,7 +518,7 @@ export function Site({
                     <FormControl>
                       <UnderscoredInput
                         placeholder={`價錢`}
-                        className="p-0 pb-1 text-center h-7 w-28 text-secondary-dark"
+                        className="h-7 w-28 p-0 pb-1 text-center text-secondary-dark"
                         disabled={formDisabled}
                         {...field}
                         onChange={(e) => {
