@@ -19,9 +19,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { queryClient } from "@/utils/query-client.ts";
 import { IconButton, IconWarningButton } from "@/components/ui/button.tsx";
-import { DataTable } from "@/components/coupon-management/data-table/data-table.tsx";
-import { Scrollbar } from "@radix-ui/react-scroll-area";
-import { ScrollArea } from "@/components/ui/scroll-area.tsx";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area.tsx";
 import {
   Coupon,
   couponsSchema,
@@ -31,6 +29,9 @@ import { Checkbox } from "@/components/ui/checkbox.tsx";
 import { Tablet } from "@/components/tablet.tsx";
 import { ArrowUpDown } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner.tsx";
+import { SearchInput } from "@/components/search-input.tsx";
+import useMediaQuery from "@/hooks/use-media-query.ts";
+import { GenericDataTable } from "@/components/generic-data-table.tsx";
 
 const category = "simulator";
 const navigateTo = "/indoor-simulator/reward-settings";
@@ -143,6 +144,7 @@ function genColumns(isSelecting: boolean) {
 export function Component() {
   const [searchParams] = useSearchParams();
   const storeId = searchParams.get("storeId");
+  const isMobile = useMediaQuery("(max-width: 639px)");
 
   const form = useForm();
   const [isEditing, setIsEditing] = useState(false);
@@ -356,7 +358,7 @@ export function Component() {
           <form
             id="discount-form"
             onSubmit={form.handleSubmit(onSubmit)}
-            className="w-2/3 space-y-10 self-center px-20 sm:px-4"
+            className={`${isMobile ? "w-full" : "w-2/3"} space-y-10 self-center px-20 sm:px-4`}
           >
             <section className="space-y-6 border border-line-gray bg-white px-12 py-6 sm:px-2 sm:py-4">
               <div className="flex w-full flex-col gap-10 bg-white p-4">
@@ -392,33 +394,38 @@ export function Component() {
             </section>
 
             <section>
-              <header className="flex items-center py-2.5 pl-5 ">
+              <header className="flex items-center gap-4 py-2.5 pl-5 ">
                 <span className="font-semibold">選擇可兌換的優惠券</span>
+                <SearchInput
+                  className="sm:hidden"
+                  value={globalFilter}
+                  setValue={setGlobalFilter}
+                />
               </header>
 
               <div className="border-y border-line-gray bg-white text-center">
                 <div className="flex w-full flex-col gap-10 bg-white p-4">
-                  <ScrollArea className="h-[500px] overflow-auto border-t border-line-gray sm:h-[417px] sm:w-72">
+                  <ScrollArea className="h-full ">
                     {couponsData && (
                       <div className="border-x border-b border-line-gray before:fixed before:h-12 before:w-1 before:bg-light-gray">
-                        <div className="fixed right-[57px] h-12 w-1 bg-light-gray" />
-                        <div className="sticky top-12 z-10 w-full border-b border-line-gray" />
                         {isLoading ? (
                           <Spinner />
                         ) : (
-                          <DataTable
+                          <GenericDataTable
                             columns={columns}
                             data={couponsData}
                             rowSelection={rowSelection}
                             setRowSelection={setRowSelection}
                             globalFilter={globalFilter}
                             setGlobalFilter={setGlobalFilter}
-                            rmTheadMarginTop
                           />
                         )}
                       </div>
                     )}
-                    <Scrollbar orientation="horizontal" />
+                    <ScrollBar
+                      className="hidden sm:block"
+                      orientation="horizontal"
+                    />
                   </ScrollArea>
                 </div>
               </div>
