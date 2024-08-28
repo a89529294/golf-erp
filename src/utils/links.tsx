@@ -242,6 +242,13 @@ export const linksKV = {
         type: "flat" as const,
         allowedPermissions: ["模擬器-基本操作"],
       },
+      "cashback-settings": {
+        label: "儲值優惠設定",
+        path: `${INDOOR_SIMULATOR_BASE_PATH}/cashback-settings`,
+        lazy: () => import("@/pages/indoor-simulator/cashback-settings"),
+        type: "flat" as const,
+        allowedPermissions: ["模擬器-贈送點數"],
+      },
       "coupon-management": {
         label: "優惠券管理",
         path: `${INDOOR_SIMULATOR_BASE_PATH}/coupon-management`,
