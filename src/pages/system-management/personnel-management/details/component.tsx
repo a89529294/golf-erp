@@ -210,35 +210,35 @@ export function Component() {
                 disabled={disabled || isMutating}
               />
             </section>
-            <section className="flex w-fit flex-col gap-6 border border-line-gray px-16 pb-10">
-              <div className="-mx-16 bg-light-gray py-1.5 text-center text-black">
-                綁定廠商
-              </div>
-              <EmployeeFormSelectField
-                form={form}
-                name="category"
-                label="類別"
-                options={storeCategoryMap}
-                disabled={isMutating || disabled}
-                onChange={(newCategory: string) => {
-                  setStoreOptions(
-                    toValueLabelArray(stores[newCategory as StoreCategory]),
-                  );
-                  form.setValue("storeId", "", { shouldDirty: true });
-                }}
-              />
-              <EmployeeFormSelectField
-                form={form}
-                name="storeId"
-                label="店名"
-                options={{
-                  reset: "清空",
-                  ...storeOptions,
-                }}
-                key={categorySelected}
-                disabled={isMutating || disabled}
-              />
-            </section>
+            {/*<section className="flex w-fit flex-col gap-6 border border-line-gray px-16 pb-10">*/}
+            {/*  <div className="-mx-16 bg-light-gray py-1.5 text-center text-black">*/}
+            {/*    綁定廠商*/}
+            {/*  </div>*/}
+            {/*  <EmployeeFormSelectField*/}
+            {/*    form={form}*/}
+            {/*    name="category"*/}
+            {/*    label="類別"*/}
+            {/*    options={storeCategoryMap}*/}
+            {/*    disabled={isMutating || disabled}*/}
+            {/*    onChange={(newCategory: string) => {*/}
+            {/*      setStoreOptions(*/}
+            {/*        toValueLabelArray(stores[newCategory as StoreCategory]),*/}
+            {/*      );*/}
+            {/*      form.setValue("storeId", "", { shouldDirty: true });*/}
+            {/*    }}*/}
+            {/*  />*/}
+            {/*  <EmployeeFormSelectField*/}
+            {/*    form={form}*/}
+            {/*    name="storeId"*/}
+            {/*    label="店名"*/}
+            {/*    options={{*/}
+            {/*      reset: "清空",*/}
+            {/*      ...storeOptions,*/}
+            {/*    }}*/}
+            {/*    key={categorySelected}*/}
+            {/*    disabled={isMutating || disabled}*/}
+            {/*  />*/}
+            {/*</section>*/}
           </form>
         </Form>
       </div>
