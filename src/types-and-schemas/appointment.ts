@@ -39,9 +39,11 @@ export const simulatorAppoitmentsSchema = z.object({
       storeSimulator: z.object({
         id: z.string(), // site id,
         name: z.string(),
-        store: z.object({
-          id: z.string(), // store id
-        }),
+        store: z.optional(
+          z.object({
+            id: z.string(), // store id
+          }),
+        ),
       }),
     }),
   ),
@@ -53,9 +55,11 @@ export const groundAppoitmentsSchema = z.object({
       storeGround: z.object({
         id: z.string(), // site id,
         name: z.string(),
-        store: z.object({
-          id: z.string(), // store id
-        }),
+        store: z.optional(
+          z.object({
+            id: z.string(), // store id
+          }),
+        ),
       }),
     }),
   ),

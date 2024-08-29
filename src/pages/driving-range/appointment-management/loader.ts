@@ -21,7 +21,12 @@ export const appointmentsQuery = {
     const storesWithSiteAppointments = [] as StoreWithSiteAppointments[];
 
     parsedData.data.forEach((appointment) => {
-      const storeId = appointment.storeGround.store.id;
+      const storeId = appointment.storeGround.store?.id;
+
+      if (!storeId) {
+        return;
+      }
+
       const siteId = appointment.storeGround.id;
       const foundStore = storesWithSiteAppointments.find(
         (v) => v.id === storeId,
@@ -57,7 +62,7 @@ export const appointmentsQuery = {
         }
       } else {
         storesWithSiteAppointments.push({
-          id: appointment.storeGround.store.id,
+          id: storeId,
           sites: [
             {
               id: appointment.storeGround.id,

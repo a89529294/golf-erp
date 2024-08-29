@@ -1,7 +1,7 @@
 import { indoorSimulatorStoresQuery } from "@/pages/indoor-simulator/site-management/loader";
 import {
-  StoreWithSiteAppointments,
   simulatorAppoitmentsSchema,
+  StoreWithSiteAppointments,
 } from "@/types-and-schemas/appointment";
 import { getAllowedStores } from "@/utils";
 import { queryClient } from "@/utils/query-client";
@@ -21,7 +21,12 @@ export const appointmentsQuery = {
     const storesWithSiteAppointments = [] as StoreWithSiteAppointments[];
 
     parsedData.data.forEach((appointment) => {
-      const storeId = appointment.storeSimulator.store.id;
+      const storeId = appointment.storeSimulator.store?.id;
+
+      if (!storeId) {
+        return;
+      }
+
       const siteId = appointment.storeSimulator.id;
       const foundStore = storesWithSiteAppointments.find(
         (v) => v.id === storeId,
@@ -57,7 +62,7 @@ export const appointmentsQuery = {
         }
       } else {
         storesWithSiteAppointments.push({
-          id: appointment.storeSimulator.store.id,
+          id: storeId,
           sites: [
             {
               id: appointment.storeSimulator.id,
