@@ -100,6 +100,8 @@ export function CashbackDetailModal({
     extraAmount: number;
   }) {
     console.log({ formData });
+    setLoading(true);
+    setDisabled(true);
     try {
       await (mode === "new"
         ? createChargeDiscount(formData)
