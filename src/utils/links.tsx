@@ -417,11 +417,7 @@ export const linksKV = {
         type: "flat" as const,
         path: `${MEMBERS_BASE_PATH}/discount-management`,
         lazy: () => import("@/pages/member-management/discount-management"),
-        allowedPermissions: [
-          "模擬器-基本操作",
-          "高爾夫球-基本操作",
-          "練習場-基本操作",
-        ],
+        allowedPermissions: ["會員身分折扣管理"],
       },
     },
     allowedPermissions: [
