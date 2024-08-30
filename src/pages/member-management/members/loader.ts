@@ -8,6 +8,8 @@ export const memberTypeSchema = z.union([
   z.literal("guest"),
   z.literal("group_user"),
   z.literal("common_user"),
+  z.literal("coach"),
+  z.literal("collaboration"),
 ]);
 
 export const genderSchema = z.union([
@@ -91,6 +93,8 @@ export const memberTypeEnChMap: Record<MemberType, string> = {
   guest: "來賓",
   common_user: "一般會員",
   group_user: "團體會員",
+  coach: "教練",
+  collaboration: "協力廠商",
 };
 
 export const genderEnChMap: Record<Gender, string> = {
