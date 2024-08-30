@@ -121,6 +121,8 @@ const weekdaySchema = z.array(
           z.literal("guest"),
           z.literal("group_user"),
           z.literal("common_user"),
+          z.literal("coach"),
+          z.literal("collaboration"),
         ]),
         partyOf1Fee: z.union([z.number(), z.literal("")]),
         partyOf2Fee: z.union([z.number(), z.literal("")]),
