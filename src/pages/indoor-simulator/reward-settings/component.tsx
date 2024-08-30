@@ -220,13 +220,9 @@ export function Component() {
   >({
     mutationKey: ["update-appuser-discounts"],
     mutationFn: async () => {
-      if (!couponsData?.length) {
-        throw new Error("Not coupons data exists");
-      }
-
       // find out changed coupons
       const changedCoupons: Array<{ id: string; selected: boolean }> = [];
-      couponsData.forEach((coupon) => {
+      couponsData?.forEach((coupon) => {
         if (coupon.isCustomerView && !(coupon.id in rowSelection)) {
           changedCoupons.push({ id: coupon.id, selected: false });
         } else if (!coupon.isCustomerView && coupon.id in rowSelection) {
