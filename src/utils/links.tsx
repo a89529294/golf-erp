@@ -247,7 +247,7 @@ export const linksKV = {
         path: `${INDOOR_SIMULATOR_BASE_PATH}/cashback-settings`,
         lazy: () => import("@/pages/indoor-simulator/cashback-settings"),
         type: "flat" as const,
-        allowedPermissions: ["模擬器-贈送點數"],
+        allowedPermissions: ["模擬器-基本操作"],
       },
       "coupon-management": {
         label: "優惠券管理",
@@ -261,7 +261,7 @@ export const linksKV = {
         path: `${INDOOR_SIMULATOR_BASE_PATH}/reward-settings`,
         lazy: () => import("@/pages/indoor-simulator/reward-settings"),
         type: "flat" as const,
-        allowedPermissions: ["模擬器-贈送點數"],
+        allowedPermissions: ["模擬器-累積點數設定"],
       },
       "repair-report": {
         label: "報修回報",
