@@ -81,12 +81,26 @@ export const linksKV = {
         type: "flat" as const,
         allowedPermissions: ["練習場-基本操作"],
       },
+      "cashback-settings": {
+        label: "儲值優惠設定",
+        path: `${DRIVING_RANGE_BASE_PATH}/cashback-settings`,
+        lazy: () => import("@/pages/driving-range/cashback-settings"),
+        type: "flat" as const,
+        allowedPermissions: ["練習場-基本操作"],
+      },
       "coupon-management": {
         label: "優惠券管理",
         path: `${DRIVING_RANGE_BASE_PATH}/coupon-management`,
         lazy: () => import("@/pages/driving-range/coupon-management"),
         type: "flat" as const,
         allowedPermissions: ["練習場-贈送點數"],
+      },
+      "reward-settings": {
+        label: "累積點數設定",
+        path: `${DRIVING_RANGE_BASE_PATH}/reward-settings`,
+        lazy: () => import("@/pages/driving-range/reward-settings"),
+        type: "flat" as const,
+        allowedPermissions: ["練習場-累積點數設定"],
       },
       "repair-report": {
         label: "報修回報",
@@ -170,12 +184,26 @@ export const linksKV = {
         type: "multiple" as const,
         allowedPermissions: ["高爾夫球-基本操作"],
       },
+      "cashback-settings": {
+        label: "儲值優惠設定",
+        path: `${GOLF_BASE_PATH}/cashback-settings`,
+        lazy: () => import("@/pages/golf/cashback-settings"),
+        type: "flat" as const,
+        allowedPermissions: ["高爾夫球-基本操作"],
+      },
       "coupon-management": {
         label: "優惠券管理",
         path: `${GOLF_BASE_PATH}/coupon-management`,
         lazy: () => import("@/pages/golf/coupon-management"),
         type: "flat" as const,
         allowedPermissions: ["高爾夫球-贈送點數"],
+      },
+      "reward-settings": {
+        label: "累積點數設定",
+        path: `${GOLF_BASE_PATH}/reward-settings`,
+        lazy: () => import("@/pages/golf/reward-settings"),
+        type: "flat" as const,
+        allowedPermissions: ["高爾夫球-累積點數設定"],
       },
       "repair-report": {
         label: "報修回報",
