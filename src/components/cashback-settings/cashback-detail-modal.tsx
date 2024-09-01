@@ -160,7 +160,7 @@ export function CashbackDetailModal({
             <DialogHeader className="w-full">
               <div className="flex w-full flex-col">
                 <header className="bg-light-gray py-2 text-center">
-                  編輯優惠券
+                  {mode === "new" ? "新增" : "編輯"}儲值優惠
                 </header>
 
                 <div className="flex flex-1 flex-col items-center justify-center gap-6 pb-10">
