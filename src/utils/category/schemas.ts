@@ -65,13 +65,7 @@ export const equipmentSchema = z.object({
 });
 
 const equipmentsSchema = {
-  equipments: z.array(
-    z.object({
-      id: z.string(),
-      label: z.string(),
-      selected: z.boolean(),
-    }),
-  ),
+  equipments: z.array(equipmentSchema),
 };
 const newImagesSchema = { imageFiles: z.array(fileWithIdSchema) };
 const existingImagesSchema = {
@@ -238,7 +232,7 @@ const genericSitesSchema = z.object({
   isActive: z.boolean(),
   coverImages: z.array(z.string()),
   introduce: z.string(),
-  equipment: z.string().nullable(),
+  equipments: z.array(equipmentSchema),
   store: storeSchema,
   openDays: z
     .array(

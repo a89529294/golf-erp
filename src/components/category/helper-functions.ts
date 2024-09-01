@@ -15,6 +15,7 @@ import {
   WeekdayContent,
 } from "@/utils/category/schemas";
 import { UseFormReturn } from "react-hook-form";
+import { Equipment } from "@/pages/equipment-management/loader.ts";
 
 // export function onSubmit<
 //   T extends NewGolfCourse | NewIndoorSimulator | NewDrivingRange | ExistingGolfCourse | ExistingDrivingRange | ExistingIndoorSimulator,
@@ -405,7 +406,7 @@ export function onSaveWeekdayTimeRange(
 }
 
 export function onSelectEquipment(
-  id: string,
+  equipment: Equipment,
   form: UseFormReturn<
     | NewGolfCourse
     | NewIndoorSimulator
@@ -415,15 +416,33 @@ export function onSelectEquipment(
     | ExistingIndoorSimulator
   >,
 ) {
-  form.setValue(
-    "equipments",
-    form
-      .getValues("equipments")
-      .map((v) => (v.id === id ? { ...v, selected: !v.selected } : v)),
-    {
-      shouldDirty: true,
-    },
-  );
+  const newEquipments = form.getValues("equipments") ?? [];
+
+  const idx = newEquipments.findIndex((e) => e.title === equipment.title);
+  if (idx !== -1) {
+    newEquipments.splice(idx, 1);
+  } else {
+    newEquipments.push(equipment);
+  }
+
+  form.setValue("equipments", newEquipments, {
+    shouldDirty: true,
+  });
+}
+
+export function findRealEquipments(
+  availableEquipments: Equipment[],
+  ...findTitles: string[]
+): Equipment[] {
+  const result: Equipment[] = [];
+  for (const title of findTitles) {
+    const eq = availableEquipments.find((e) => e.title === title);
+    if (eq) {
+      result.push(eq);
+    }
+  }
+
+  return result;
 }
 
 export function onAddNewVenueSettingsRow(

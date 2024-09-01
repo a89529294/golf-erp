@@ -1,7 +1,10 @@
 import { indoorSimulatorStoresQuery } from "@/pages/indoor-simulator/site-management/loader";
 import { getAllowedStores } from "@/utils";
-import { equipments } from "@/utils/category/equipment";
-import { ExistingIndoorSimulator, plansSchema } from "@/utils/category/schemas";
+import {
+  equipmentSchema,
+  ExistingIndoorSimulator,
+  plansSchema,
+} from "@/utils/category/schemas";
 import { queryClient } from "@/utils/query-client";
 import { privateFetch } from "@/utils/utils";
 import { LoaderFunctionArgs } from "react-router-dom";
@@ -23,7 +26,7 @@ const baseSimulatorSchema = z.object({
   id: z.string(),
   name: z.string(),
   introduce: z.string(),
-  equipment: z.string().nullable(),
+  equipments: z.array(equipmentSchema),
   plans: plansSchema.plans.optional(),
   isActive: z.boolean(),
 });
@@ -40,6 +43,7 @@ export const simulatorGETSchema = z.object({
 });
 
 export const simulatorPATCHSchema = baseSimulatorSchema
+  .extend({ equipmentIds: z.array(z.string()) })
   .extend({
     openDays: z.array(baseOpenDay.extend({ id: z.string().optional() })),
   })
@@ -66,29 +70,13 @@ export const genSimulatorDetailsQuery = (storeId: string, siteId: string) => ({
 
     if (!parsed) throw new Error("driving range not found");
 
-    const transformedEquipments = (() => {
-      const parsedEquipments = parsed.equipment;
-      if (parsedEquipments) {
-        console.log(parsedEquipments);
-        const x = JSON.parse(parsedEquipments) as {
-          name: string;
-          isActive: boolean;
-        }[];
-        return equipments.map((e) => ({
-          ...e,
-          selected: x.find((de) => de.name === e.label)?.isActive ?? false,
-        }));
-      }
-      return equipments;
-    })();
-
     return {
       name: parsed.name,
       code: parsed.code,
       isActive: parsed.isActive,
       description: parsed.introduce,
       storeId: parsed.store.id,
-      equipments: transformedEquipments,
+      equipments: parsed.equipments,
       openingDates: parsed.openDays.map((v) => ({
         id: v.id,
         saved: true,

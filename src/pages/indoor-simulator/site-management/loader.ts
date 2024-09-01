@@ -20,7 +20,7 @@ export const genIndoorSimulatorStoresWithSitesQuery = (
   queryFn: async () => {
     if (allowedStores === "all") {
       const response = await privateFetch(
-        "/store?pageSize=99&filter[category]=simulator&populate=simulators&populate=grounds&populate=golfs&populate=simulators.openTimes&populate=simulators.equipment&populate=simulators.openDays&populate=store",
+        "/store?pageSize=99&filter[category]=simulator&populate=simulators&populate=grounds&populate=golfs&populate=simulators.openTimes&populate=simulators.equipments&populate=simulators.openDays&populate=store",
       );
       const data = await response.json();
 

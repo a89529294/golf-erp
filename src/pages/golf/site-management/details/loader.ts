@@ -2,7 +2,7 @@ import { queryClient } from "@/utils/query-client";
 import { LoaderFunctionArgs } from "react-router-dom";
 import { golfStoresQuery } from "../loader";
 import { privateFetch } from "@/utils/utils";
-import { Equipment, golfSitesSchema } from "@/utils/category/schemas";
+import { golfSitesSchema } from "@/utils/category/schemas";
 import { getAllowedStores } from "@/utils";
 
 export const genGolfSiteDetailsQuery = (storeId: string, siteId: string) => ({
@@ -29,13 +29,7 @@ export const genGolfSiteDetailsQuery = (storeId: string, siteId: string) => ({
         id: img,
         src: img,
       })),
-      equipments: (JSON.parse(site.equipment ?? "[]") as Equipment[]).map(
-        (e) => ({
-          id: crypto.randomUUID(),
-          label: e.name,
-          selected: e.isActive,
-        }),
-      ),
+      equipments: site.equipments,
       openTimes: (site.openTimes ?? []).map((ot) => ({
         id: ot.id,
         day: ot.day,

@@ -57,7 +57,7 @@ export function Component() {
         isActive: boolean;
         introduce: string;
         storeId: string;
-        equipment: string;
+        equipmentIds: string[];
         openDays: { startDay: string; endDay: string; sequence: number }[];
         openTimes: {
           startTime: string;
@@ -79,12 +79,7 @@ export function Component() {
       if (changedValues.description) x.introduce = changedValues.description;
       if (changedValues.storeId) x.storeId = changedValues.storeId;
       if (changedValues.equipments)
-        x.equipment = JSON.stringify(
-          changedValues.equipments.map((e) => ({
-            name: e.label,
-            isActive: e.selected,
-          })),
-        );
+        x.equipmentIds = changedValues.equipments.map((e) => e.id);
       if (changedValues.openingDates)
         x.openDays = changedValues.openingDates.map((od, i) => ({
           startDay: fromDateToDateTimeString(new Date(od.start!)),

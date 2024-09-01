@@ -5,7 +5,6 @@ import { Form } from "@/components/ui/form";
 import { useAuth } from "@/hooks/use-auth";
 import { useIsMobile } from "@/hooks/use-is-mobile";
 import { MainLayout } from "@/layouts/main-layout";
-import { equipments } from "@/utils/category/equipment";
 import { newIndoorSimulatorSchema } from "@/utils/category/schemas";
 import { linksKV } from "@/utils/links";
 import { privateFetch } from "@/utils/utils";
@@ -35,7 +34,7 @@ export function Component() {
       name: "",
       isActive: false,
       description: "",
-      equipments: equipments,
+      equipments: [],
       imageFiles: [],
       openingDates: [],
       openingHours: [],
@@ -52,11 +51,7 @@ export function Component() {
           isActive: form.getValues("isActive"),
           introduce: form.getValues("description"),
           storeId: form.getValues("storeId"),
-          equipment: JSON.stringify(
-            form
-              .getValues("equipments")
-              .map((e) => ({ name: e.label, isActive: e.selected })),
-          ),
+          equipmentIds: form.getValues("equipments").map((e) => e.id),
           openDays: form.getValues("openingDates").map((v, i) => ({
             startDay: v.start,
             endDay: v.end,
@@ -126,7 +121,7 @@ export function Component() {
         )
       }
     >
-      <div className="flex flex-col w-full gap-10 p-1 border border-line-gray bg-light-gray">
+      <div className="flex w-full flex-col gap-10 border border-line-gray bg-light-gray p-1">
         <h1 className="bg-mid-gray py-2.5 text-center text-black">
           建立場地資料
         </h1>

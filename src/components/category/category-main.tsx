@@ -191,14 +191,7 @@ export function CategoryMain({
                     imgId={section.coverImages[0]}
                     name={section.name}
                     desc={section.introduce}
-                    equipments={(
-                      JSON.parse(section.equipment ?? "[]") as {
-                        name: string;
-                        isActive: boolean;
-                      }[]
-                    )
-                      .filter((e) => e.isActive)
-                      .map((e) => e.name)}
+                    equipments={section.equipments.map((e) => e.title)}
                     openingDates={openingDates}
                     openingHours={openingHours}
                     openingWeekDays={openingWeekDays}
@@ -291,7 +284,8 @@ function Section({
       <MiddleSection
         header="場地設備"
         list={equipments}
-        liContentRenderer={(e) => <>{e}</>}
+        className="lg:hidden"
+        liContentRenderer={(e) => <> {e} </>}
         useOrderedList
       />
 

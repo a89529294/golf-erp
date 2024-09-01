@@ -15,9 +15,9 @@ import { useLoaderData, useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { z } from "zod";
 import {
+  type DrivingRangePATCH,
   genDrivingRangeDetailsQuery,
   loader,
-  type DrivingRangePATCH,
 } from "./loader";
 
 export function Component() {
@@ -71,12 +71,8 @@ export function Component() {
       if ("storeId" in changedFields) x.storeId = changedFields.storeId;
       if ("costPerBox" in changedFields) x.ballPrice = changedFields.costPerBox;
       if ("equipments" in changedFields)
-        x.equipment = JSON.stringify(
-          changedFields.equipments?.map((e) => ({
-            name: e.label,
-            isActive: e.selected,
-          })),
-        );
+        x.equipmentIds =
+          changedFields.equipments?.map((e) => e.id) ?? undefined;
       if (changedFields["plans"]) {
         x.plans = changedFields["plans"];
       }
@@ -225,7 +221,7 @@ export function Component() {
         )
       }
     >
-      <div className="flex flex-col w-full gap-10 p-1 border border-line-gray bg-light-gray">
+      <div className="flex w-full flex-col gap-10 border border-line-gray bg-light-gray p-1">
         <h1 className="bg-mid-gray py-2.5 text-center text-black">
           編輯場地資料
         </h1>

@@ -20,7 +20,7 @@ export const genGolfStoresWithSitesQuery = (
   queryFn: async () => {
     if (allowedStores === "all") {
       const response = await privateFetch(
-        "/store?pageSize=99&filter[category]=golf&populate=simulators&populate=grounds&populate=golfs&populate=golfs.openTimes&populate=golfs.equipment&populate=golfs.openDays",
+        "/store?pageSize=99&filter[category]=golf&populate=simulators&populate=grounds&populate=golfs&populate=golfs.openTimes&populate=golfs.equipments&populate=golfs.openDays",
       );
 
       const data = await response.json();

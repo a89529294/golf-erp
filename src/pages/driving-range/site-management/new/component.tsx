@@ -5,7 +5,6 @@ import { Form } from "@/components/ui/form";
 import { useAuth } from "@/hooks/use-auth";
 import { useIsMobile } from "@/hooks/use-is-mobile";
 import { MainLayout } from "@/layouts/main-layout";
-import { equipments } from "@/utils/category/equipment";
 import { newDrivingRangeSchema } from "@/utils/category/schemas";
 import { linksKV } from "@/utils/links";
 import { SimpleStore } from "@/utils/types";
@@ -35,7 +34,7 @@ export function Component() {
       isActive: false,
       description: "",
       storeId: "",
-      equipments: equipments,
+      equipments: [],
       imageFiles: [],
       openingDates: [],
       venueSettings: [],
@@ -55,12 +54,7 @@ export function Component() {
           introduce: v.description,
           ballPrice: v.costPerBox,
           storeId: v.storeId,
-          equipment: JSON.stringify(
-            v.equipments.map((e) => ({
-              name: e.label,
-              isActive: e.selected,
-            })),
-          ),
+          equipmentIds: form.getValues("equipments").map((e) => e.id),
           openDays: v.openingDates.map((od, idx) => ({
             sequence: idx + 1,
             startDay: od.start?.toISOString(),
@@ -120,7 +114,7 @@ export function Component() {
         )
       }
     >
-      <div className="flex flex-col w-full gap-10 p-1 border border-line-gray bg-light-gray">
+      <div className="flex w-full flex-col gap-10 border border-line-gray bg-light-gray p-1">
         <h1 className="bg-mid-gray py-2.5 text-center text-black">
           建立場地資料
         </h1>

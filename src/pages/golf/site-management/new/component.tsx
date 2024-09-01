@@ -1,7 +1,6 @@
 import { Site } from "@/components/category/site";
 import { Form } from "@/components/ui/form";
 import { MainLayout } from "@/layouts/main-layout";
-import { equipments } from "@/utils/category/equipment";
 import { NewGolfCourse, newGolfCourseSchema } from "@/utils/category/schemas";
 
 import { useAuth } from "@/hooks/use-auth";
@@ -33,7 +32,7 @@ export function Component() {
       name: "",
       isActive: false,
       description: "",
-      equipments: equipments,
+      equipments: [],
       imageFiles: [],
       openingDates: [],
       monday: [],
@@ -53,12 +52,7 @@ export function Component() {
         name: v.name,
         isActive: v.isActive,
         introduce: v.description,
-        equipment: JSON.stringify(
-          v.equipments.map((e) => ({
-            name: e.label,
-            isActive: e.selected,
-          })),
-        ),
+        equipmentIds: form.getValues("equipments").map((e) => e.id),
         storeId: v.storeId,
         openDays: v.openingDates.map((od, idx) => ({
           sequence: idx + 1,
@@ -146,7 +140,7 @@ export function Component() {
         )
       }
     >
-      <div className="flex flex-col w-full gap-10 p-1 border border-line-gray bg-light-gray">
+      <div className="flex w-full flex-col gap-10 border border-line-gray bg-light-gray p-1">
         <h1 className="bg-mid-gray py-2.5 text-center text-black">
           建立場地資料
         </h1>

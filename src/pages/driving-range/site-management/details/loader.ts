@@ -1,5 +1,5 @@
-import { equipments } from "@/utils/category/equipment";
 import {
+  equipmentSchema,
   ExistingDrivingRange,
   plansSchema,
   storeSchema,
@@ -27,7 +27,7 @@ const baseDrivingRangeSchema = z.object({
   introduce: z.string(),
   ballPrice: z.number(),
   plans: plansSchema.plans.optional(),
-  equipment: z.string().nullable(),
+  equipments: z.array(equipmentSchema),
   isActive: z.boolean(),
 });
 
@@ -42,6 +42,7 @@ export const drivingRangeGETSchema = z.object({
 });
 
 export const drivingRangePATCHSchema = baseDrivingRangeSchema
+  .extend({ equipmentIds: z.array(z.string()) })
   .extend({
     openDays: z.array(baseOpenDay.extend({ id: z.string().optional() })),
   })
@@ -71,20 +72,6 @@ export const genDrivingRangeDetailsQuery = (
 
     if (!parsed) throw new Error("driving range not found");
 
-    const transformedEquipments = (() => {
-      const parsedEquipments = parsed.equipment;
-      if (parsedEquipments) {
-        const x = JSON.parse(parsedEquipments) as {
-          name: string;
-          isActive: boolean;
-        }[];
-        return equipments.map((e) => ({
-          ...e,
-          selected: x.find((de) => de.name === e.label)?.isActive ?? false,
-        }));
-      }
-      return equipments;
-    })();
     return {
       name: parsed.name,
       isActive: parsed.isActive,
@@ -97,7 +84,7 @@ export const genDrivingRangeDetailsQuery = (
         end: v.endDay,
       })),
       costPerBox: parsed.ballPrice,
-      equipments: transformedEquipments,
+      equipments: parsed.equipments,
       imageFiles: parsed.coverImages.map((src) => ({
         id: src,
         src,

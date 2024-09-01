@@ -6,7 +6,6 @@ import { useAuth } from "@/hooks/use-auth";
 import { DetailsDesktopMenubar } from "@/pages/driving-range/site-management/components/details-desktop-menubar";
 import { DetailsMobileMenubar } from "@/pages/driving-range/site-management/components/details-mobile-menubar";
 import { filterObject } from "@/utils";
-import { equipments } from "@/utils/category/equipment";
 import { existingIndoorSimulatorSchema } from "@/utils/category/schemas";
 import { privateFetch } from "@/utils/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,7 +16,7 @@ import { useLoaderData, useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { z } from "zod";
 import { indoorSimulatorStoresQuery } from "../loader";
-import { SimulatorPATCH, genSimulatorDetailsQuery, loader } from "./loader";
+import { genSimulatorDetailsQuery, loader, SimulatorPATCH } from "./loader";
 import { useIsMobile } from "@/hooks/use-is-mobile";
 
 export function Component() {
@@ -50,7 +49,7 @@ export function Component() {
       code: data.code,
       isActive: data.isActive,
       description: data.description,
-      equipments: equipments,
+      equipments: data.equipments,
       storeId: data.storeId,
       imageFiles: data.imageFiles,
       openingDates: data.openingDates,
@@ -126,17 +125,13 @@ export function Component() {
         imgIds.push(...imgData.coverImages);
       }
       if (changedValues["equipments"]) {
-        x.equipment = JSON.stringify(
-          changedValues.equipments.map((e) => ({
-            name: e.label,
-            isActive: e.selected,
-          })),
-        );
+        x.equipmentIds = changedValues.equipments.map((e) => e.id);
       }
       if (changedValues["plans"]) {
         x.plans = changedValues["plans"];
       }
       if (changedValues["isActive"]) x.isActive = changedValues["isActive"];
+
       await privateFetch(`/store/simulator/${siteId}`, {
         method: "PATCH",
         body: JSON.stringify(x),

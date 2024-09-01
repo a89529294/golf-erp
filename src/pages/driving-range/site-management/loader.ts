@@ -21,7 +21,7 @@ export const genGroundStoresWithSitesQuery = (
     queryFn: async () => {
       if (allowedStores === "all") {
         const response = await privateFetch(
-          "/store?pageSize=99&filter[category]=ground&populate=simulators&populate=grounds&populate=golfs&populate=grounds.openTimes&populate=grounds.equipment&populate=grounds.openDays&populate=merchantId",
+          "/store?pageSize=99&filter[category]=ground&populate=simulators&populate=grounds&populate=golfs&populate=grounds.openTimes&populate=grounds.equipments&populate=grounds.openDays&populate=merchantId",
         );
 
         const x = await response.json();

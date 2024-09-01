@@ -38,6 +38,7 @@ import { SimpleStore } from "@/utils/types";
 import React, { useRef } from "react";
 import { useFormContext } from "react-hook-form";
 import {
+  findRealEquipments,
   onAddNewImages,
   onAddNewOpeningDateRange,
   onAddNewOpeningHoursRange,
@@ -66,6 +67,9 @@ import { IconShortButton } from "@/components/ui/button";
 import { privateFetch } from "@/utils/utils";
 import { useParams } from "react-router-dom";
 import { toast } from "sonner";
+import { useQuery } from "@tanstack/react-query";
+import { equipmentsQuery } from "@/pages/equipment-management/loader.ts";
+import { Spinner } from "@/components/ui/spinner.tsx";
 
 type S = {
   golf: NewGolfCourse;
@@ -101,6 +105,13 @@ export function Site({
   const { siteId } = useParams();
   const [isOpeningGate, setIsOpeningGate] = React.useState(false);
 
+  const { data: availableEquipments, isLoading: isEquipmentsLoading } =
+    useQuery({
+      ...equipmentsQuery,
+    });
+
+  const selectedEquipments = form.getValues("equipments");
+
   async function onOpenGate() {
     try {
       setIsOpeningGate(true);
@@ -120,6 +131,23 @@ export function Site({
     <form
       onSubmit={form.handleSubmit(
         (v) => {
+          // re-map the equipments' id to read id
+          if (form.formState.dirtyFields.equipments) {
+            if (!availableEquipments) {
+              throw new Error("No available equipments found");
+            }
+
+            const equipments = form.getValues("equipments");
+
+            form.setValue(
+              "equipments",
+              findRealEquipments(
+                availableEquipments,
+                ...equipments.map((e) => e.title),
+              ),
+            );
+          }
+
           onSubmit(v);
         },
         (e) => {
@@ -237,23 +265,28 @@ export function Site({
         <div
           className={cn("flex flex-wrap gap-3 p-5 text-secondary-dark sm:p-2")}
         >
-          {form.watch("equipments").map((e) => {
-            return (
-              <button
-                type="button"
-                className={cn(
-                  "rounded-full border border-line-gray px-5 py-3 disabled:cursor-not-allowed disabled:opacity-50",
-                  e.selected &&
-                    "border-secondary-dark bg-secondary-dark text-white",
-                )}
-                key={e.id}
-                onClick={() => onSelectEquipment(e.id, form)}
-                disabled={formDisabled}
-              >
-                {e.label}
-              </button>
-            );
-          })}
+          {isEquipmentsLoading || !availableEquipments ? (
+            <Spinner />
+          ) : (
+            (form.watch("equipments") || true) &&
+            availableEquipments.map((e) => {
+              return (
+                <button
+                  type="button"
+                  className={cn(
+                    "rounded-full border border-line-gray px-5 py-3 disabled:cursor-not-allowed disabled:opacity-50",
+                    selectedEquipments.some((se) => se.title === e.title) &&
+                      "border-secondary-dark bg-secondary-dark text-white",
+                  )}
+                  key={e.id}
+                  onClick={() => onSelectEquipment(e, form)}
+                  disabled={formDisabled}
+                >
+                  {e.title}
+                </button>
+              );
+            })
+          )}
         </div>
       </Section>
       <Section
