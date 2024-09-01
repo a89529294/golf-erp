@@ -53,7 +53,7 @@ export function Component() {
   });
 
   const { mutateAsync: deleteChargeDiscount } = useMutation({
-    mutationKey: ["update-charge-discount"],
+    mutationKey: ["delete-charge-discount"],
     mutationFn: async (id: string) => {
       if (!id) {
         throw new Error("ChargeDiscount Id not found");
@@ -69,7 +69,9 @@ export function Component() {
     },
     onSuccess() {
       toast.success("刪除儲值優惠成功");
-      queryClient.invalidateQueries({ queryKey: ["charge-discount", storeId] });
+      return queryClient.invalidateQueries({
+        queryKey: ["charge-discount", storeId],
+      });
     },
   });
 

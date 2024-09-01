@@ -62,7 +62,7 @@ export function CashbackDetailModal({
     },
     onSuccess() {
       toast.success("新增儲值優惠成功");
-      queryClient.invalidateQueries({
+      return queryClient.invalidateQueries({
         queryKey: ["charge-discount", storeId],
       });
     },
@@ -90,7 +90,9 @@ export function CashbackDetailModal({
     },
     onSuccess() {
       toast.success("修改儲值優惠成功");
-      queryClient.invalidateQueries({ queryKey: ["charge-discount", storeId] });
+      return queryClient.invalidateQueries({
+        queryKey: ["charge-discount", storeId],
+      });
     },
   });
 
