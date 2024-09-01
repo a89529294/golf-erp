@@ -119,6 +119,17 @@ export function Sidebar({
           onLinkClick={onLinkClick}
         />
       )}
+      {isLinkAllowed(linksKV["equipment-management"]) && (
+        <AccordionItemWrapper
+          link={linksKV["equipment-management"]}
+          prevLink={prevLink}
+          nestedLinksClosed={nestedLinksClosed}
+          setNestedLinksClosed={setNestedLinksClosed}
+          nextLinkPath={nextLinkPath}
+          setNextLinkPath={setNextLinkPath}
+          onLinkClick={onLinkClick}
+        />
+      )}
       {isLinkAllowed(linksKV["indoor-simulator"]) && (
         <AccordionItemWrapper
           link={linksKV["indoor-simulator"]}

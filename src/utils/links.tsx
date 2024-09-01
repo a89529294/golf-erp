@@ -387,6 +387,17 @@ export const linksKV = {
     },
     allowedPermissions: ["廠商管理"],
   },
+  "equipment-management": {
+    label: "標籤管理",
+    type: "multiple" as const,
+    paths: {
+      index: "/equipment-management",
+    },
+    lazy: {
+      index: () => import("@/pages/equipment-management"),
+    },
+    allowedPermissions: ["廠商管理"],
+  },
   "member-management": {
     label: "會員管理",
     type: "nested" as const,

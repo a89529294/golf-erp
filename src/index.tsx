@@ -205,6 +205,28 @@ const router = createBrowserRouter(
                 />
               </Route>
             ))}
+            {(
+              Object.entries(linksKV["equipment-management"].paths) as [
+                keyof (typeof linksKV)["equipment-management"]["paths"],
+                string,
+              ][]
+            ).map(([key, path]) => (
+              <Route
+                element={
+                  <PermissionGuard
+                    routePermissions={
+                      linksKV["equipment-management"].allowedPermissions
+                    }
+                  />
+                }
+                key={key}
+              >
+                <Route
+                  path={path}
+                  lazy={linksKV["equipment-management"].lazy[key]}
+                />
+              </Route>
+            ))}
             {Object.values(linksKV["member-management"].subLinks).flatMap(
               (subLink) => {
                 return subLink.type === "multiple" ? (

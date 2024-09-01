@@ -59,6 +59,11 @@ const baseSchema = z
   .extend(storeIdSchema)
   .extend(openingDatesSchema);
 
+export const equipmentSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+});
+
 const equipmentsSchema = {
   equipments: z.array(
     z.object({
