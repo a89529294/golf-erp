@@ -86,7 +86,7 @@ export const linksKV = {
         path: `${DRIVING_RANGE_BASE_PATH}/cashback-settings`,
         lazy: () => import("@/pages/driving-range/cashback-settings"),
         type: "flat" as const,
-        allowedPermissions: ["練習場-基本操作"],
+        allowedPermissions: ["練習場-儲值優惠設定"],
       },
       "coupon-management": {
         label: "優惠券管理",
@@ -189,7 +189,7 @@ export const linksKV = {
         path: `${GOLF_BASE_PATH}/cashback-settings`,
         lazy: () => import("@/pages/golf/cashback-settings"),
         type: "flat" as const,
-        allowedPermissions: ["高爾夫球-基本操作"],
+        allowedPermissions: ["高爾夫球-儲值優惠設定"],
       },
       "coupon-management": {
         label: "優惠券管理",
@@ -275,7 +275,7 @@ export const linksKV = {
         path: `${INDOOR_SIMULATOR_BASE_PATH}/cashback-settings`,
         lazy: () => import("@/pages/indoor-simulator/cashback-settings"),
         type: "flat" as const,
-        allowedPermissions: ["模擬器-基本操作"],
+        allowedPermissions: ["模擬器-儲值優惠設定"],
       },
       "coupon-management": {
         label: "優惠券管理",

@@ -15,10 +15,12 @@ import { cn } from "@/lib/utils.ts";
 const columnHelper = createColumnHelper<ChargeDiscount>();
 
 function ActionButtons({
+  category,
   rowData,
   storeId,
   deleteChargeDiscount,
 }: {
+  category: "ground" | "golf" | "simulator";
   rowData: ChargeDiscount;
   storeId: string;
   deleteChargeDiscount: (id: string) => Promise<void>;
@@ -31,6 +33,7 @@ function ActionButtons({
             <img alt="pencil" src={pencil} />
           </button>
         }
+        category={category}
         mode="edit"
         chargeDiscount={rowData}
         storeId={storeId}
@@ -52,6 +55,7 @@ function ActionButtons({
 }
 
 export function genColumns(
+  category: "ground" | "golf" | "simulator",
   storeId: string,
   deleteChargeDiscount: (id: string) => Promise<void>,
 ) {
@@ -108,6 +112,7 @@ export function genColumns(
       id: "edit-modal",
       cell: (props) => {
         return flexRender(ActionButtons, {
+          category,
           storeId,
           rowData: props.row.original,
           deleteChargeDiscount,

@@ -18,6 +18,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 interface CashbackDetailModalProps {
+  category: "ground" | "golf" | "simulator";
   isInTableRow?: boolean;
   dialogTriggerChildren:
     | ReactElement
@@ -30,6 +31,7 @@ interface CashbackDetailModalProps {
 }
 
 export function CashbackDetailModal({
+  category,
   isInTableRow,
   dialogTriggerChildren,
   mode,
@@ -51,7 +53,7 @@ export function CashbackDetailModal({
       chargeAmount: number;
       extraAmount: number;
     }) => {
-      await privateFetch(`/charge-discount`, {
+      await privateFetch(`/charge-discount/${category}`, {
         method: "POST",
         credentials: "include",
         body: JSON.stringify({ storeId, ...prop }),
@@ -79,7 +81,7 @@ export function CashbackDetailModal({
         throw new Error("ChargeDiscount Id not found");
       }
 
-      await privateFetch(`/charge-discount/${chargeDiscount.id}`, {
+      await privateFetch(`/charge-discount/${category}/${chargeDiscount.id}`, {
         method: "PATCH",
         credentials: "include",
         body: JSON.stringify(prop),

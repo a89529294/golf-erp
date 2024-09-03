@@ -45,7 +45,7 @@ export function Component() {
     queryFn: async () => {
       // filter by storeId
       const data = await privateFetch(
-        `/charge-discount?storeId=${storeId}`,
+        `/charge-discount/golf?storeId=${storeId}`,
       ).then((r) => r.json());
       return chargeDiscountsSchema.parse(data);
     },
@@ -59,7 +59,7 @@ export function Component() {
         throw new Error("ChargeDiscount Id not found");
       }
 
-      await privateFetch(`/charge-discount/${id}`, {
+      await privateFetch(`/charge-discount/golf/${id}`, {
         method: "DELETE",
         credentials: "include",
         headers: {
@@ -76,7 +76,7 @@ export function Component() {
   });
 
   const columns = useMemo(
-    () => genColumns(storeId!, deleteChargeDiscount),
+    () => genColumns(category, storeId!, deleteChargeDiscount),
     [storeId, deleteChargeDiscount],
   );
 
@@ -90,6 +90,7 @@ export function Component() {
             navigateTo={navigateTo}
           />
           <CashbackDetailModal
+            category={category}
             dialogTriggerChildren={
               <IconButton icon="plus">新增儲值優惠</IconButton>
             }
