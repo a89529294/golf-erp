@@ -10,6 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 
 export function EditCouponModal({
   id,
+  category,
   name,
   expiration,
   amount,
@@ -17,6 +18,7 @@ export function EditCouponModal({
   isActive,
 }: {
   id: string;
+  category: "ground" | "golf" | "simulator";
   name: string;
   expiration: number;
   amount: number;
@@ -33,7 +35,7 @@ export function EditCouponModal({
       number: string;
       isActive: boolean;
     }) => {
-      await privateFetch(`/coupon/${id}`, {
+      await privateFetch(`/coupon/${category}/${id}`, {
         method: "PATCH",
         credentials: "include",
         body: JSON.stringify(prop),

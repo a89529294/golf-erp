@@ -12,7 +12,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { useQuery } from "@tanstack/react-query";
 import { privateFetch } from "@/utils/utils";
 import { couponsSchema } from "@/pages/driving-range/coupon-management/loader";
-import { columns } from "./data-table/columns";
+import { genColumns } from "./data-table/columns";
 import { NewCouponModal } from "@/components/coupon-management/new-coupon.modal";
 
 export function CouponBaseComponent({
@@ -41,7 +41,7 @@ export function CouponBaseComponent({
     queryFn: async () => {
       // filter by storeId
       const data = await privateFetch(
-        `/coupon?populate=store&pageSize=999&filter[store.id]=${storeId}`,
+        `/coupon/${category}?populate=store&pageSize=999&filter[store.id]=${storeId}`,
       ).then((r) => r.json());
       const parsedData = couponsSchema.parse(data);
       return parsedData.data;
@@ -59,7 +59,7 @@ export function CouponBaseComponent({
             initialData={initialData}
             navigateTo={navigateTo}
           />
-          <NewCouponModal />
+          <NewCouponModal category={category} />
           <SearchInput
             className="sm:hidden"
             value={globalFilter}
@@ -74,7 +74,7 @@ export function CouponBaseComponent({
             <div className="w-full border border-line-gray bg-light-gray p-1 pt-0">
               {coupons && (
                 <DataTable
-                  columns={columns}
+                  columns={genColumns(category)}
                   data={coupons}
                   rowSelection={rowSelection}
                   setRowSelection={setRowSelection}
@@ -100,7 +100,7 @@ export function CouponBaseComponent({
                 }}
               />
               <DataTable
-                columns={columns}
+                columns={genColumns(category)}
                 data={coupons}
                 rowSelection={rowSelection}
                 setRowSelection={setRowSelection}

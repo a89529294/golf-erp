@@ -32,7 +32,9 @@ export function Component() {
         "filter[storeSimulator][$notNull]": "",
         "filter[storeSimulator.store.id]": storeId,
       });
-      const response = await privateFetch(`/repair-request?${queryString}`);
+      const response = await privateFetch(
+        `/repair-request/simulator?${queryString}`,
+      );
       const data = await response.json();
 
       const parsed = simulatorRepairRequestsSchema.parse(data).data;
@@ -45,7 +47,7 @@ export function Component() {
     mutationKey: ["delete-repair-reports"],
     mutationFn: async () => {
       const promises = Object.keys(rowSelection).map((id) =>
-        privateFetch(`/repair-request/${id}`, {
+        privateFetch(`/repair-request/simulator/${id}`, {
           method: "DELETE",
         }),
       );

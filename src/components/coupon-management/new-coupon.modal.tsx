@@ -8,7 +8,11 @@ import { CouponModalBase } from "./coupon-modal-base";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useSearchParams } from "react-router-dom";
 
-export function NewCouponModal() {
+export function NewCouponModal({
+  category,
+}: {
+  category: "ground" | "golf" | "simulator";
+}) {
   const [searchParams] = useSearchParams();
   const queryClient = useQueryClient();
   const { mutateAsync } = useMutation({
@@ -20,7 +24,7 @@ export function NewCouponModal() {
       number: string;
       isActive: boolean;
     }) => {
-      await privateFetch(`/coupon`, {
+      await privateFetch(`/coupon/${category}`, {
         method: "POST",
         credentials: "include",
         body: JSON.stringify({

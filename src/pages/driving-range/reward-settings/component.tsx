@@ -172,7 +172,7 @@ export function Component() {
     queryFn: async () => {
       // filter by storeId
       const data = await privateFetch(
-        `/coupon?populate=store&pageSize=999&filter[store.id]=${storeId}`,
+        `/coupon/${category}?populate=store&pageSize=999&filter[store.id]=${storeId}`,
       ).then((r) => r.json());
       const parsedData = couponsSchema.parse(data);
       return parsedData.data;
@@ -265,7 +265,7 @@ export function Component() {
       // edit coupons if needed
       changedCoupons.forEach((change) => {
         responsePromises.push(
-          privateFetch(`/coupon/${change.id}`, {
+          privateFetch(`/coupon/${category}/${change.id}`, {
             method: "PATCH",
             body: JSON.stringify({ isCustomerView: change.selected }),
             headers: {

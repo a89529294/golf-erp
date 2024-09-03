@@ -19,7 +19,7 @@ const columnHelper = createColumnHelper<SimulatorRepairRequest>();
 
 async function patchStatus(requestId: string, status: RepairStatus) {
   try {
-    await privateFetch(`/repair-request/${requestId}`, {
+    await privateFetch(`/repair-request/simulator/${requestId}`, {
       method: "PATCH",
       body: JSON.stringify({
         status,

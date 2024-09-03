@@ -31,7 +31,9 @@ export function Component() {
         "filter[storeGround][$notNull]": "",
         "filter[storeGround.store.id]": storeId,
       });
-      const response = await privateFetch(`/repair-request?${queryString}`);
+      const response = await privateFetch(
+        `/repair-request/ground?${queryString}`,
+      );
       const data = await response.json();
 
       const parsed = groundRepairRequestsSchema.parse(data).data;
@@ -44,7 +46,7 @@ export function Component() {
     mutationKey: ["delete-repair-reports"],
     mutationFn: async () => {
       const promises = Object.keys(rowSelection).map((id) =>
-        privateFetch(`/repair-request/${id}`, {
+        privateFetch(`/repair-request/ground/${id}`, {
           method: "DELETE",
         }),
       );

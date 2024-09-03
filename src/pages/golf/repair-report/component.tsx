@@ -32,7 +32,9 @@ export function Component() {
         "filter[storeGolf][$notNull]": "",
         "filter[storeGolf.store.id]": storeId,
       });
-      const response = await privateFetch(`/repair-request?${queryString}`);
+      const response = await privateFetch(
+        `/repair-request/golf?${queryString}`,
+      );
       const data = await response.json();
 
       const parsed = golfRepairRequestsSchema.parse(data).data;
@@ -45,7 +47,7 @@ export function Component() {
     mutationKey: ["delete-repair-reports"],
     mutationFn: async () => {
       const promises = Object.keys(rowSelection).map((id) =>
-        privateFetch(`/repair-request/${id}`, {
+        privateFetch(`/repair-request/golf/${id}`, {
           method: "DELETE",
         }),
       );
