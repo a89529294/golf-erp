@@ -13,9 +13,15 @@ import {
   startOfMonth,
   startOfYear,
 } from "date-fns";
-import React from "react";
+import React, { useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { columns } from "./site-section-columns";
+
+function getOrderPaymentMethod(order: Appointment["order"]) {
+  const pm = order?.paymentMethod;
+
+  return pm === "credit" || !pm ? "信用卡" : pm;
+}
 
 export function SiteSection({
   id,
@@ -159,6 +165,19 @@ export function SiteSection({
     return `指定範圍訂單數`;
   })();
 
+  const tableData = useMemo(() => {
+    return appointments.map((v) => ({
+      id: v.id,
+      name: v.appUser?.chName,
+      phone: v.appUser?.phone,
+      startDateTime: v.startTime,
+      endDateTime: v.endTime,
+      amount: v.amount,
+      merchantId,
+      paymentType: v.order ? getOrderPaymentMethod(v.order) : "點數",
+    }));
+  }, [merchantId, appointments]);
+
   return (
     <section className="col-span-2 rounded-md bg-white px-5 py-4">
       <h2 className="text-lg font-bold">{title}</h2>
@@ -192,19 +211,7 @@ export function SiteSection({
       </ul>
 
       <ScrollArea className={open ? "max-h-[390px]" : "max-h-0"}>
-        <GenericDataTable
-          columns={columns}
-          data={appointments.map((v) => ({
-            id: v.id,
-            name: v.appUser?.chName,
-            phone: v.appUser?.phone,
-            startDateTime: v.startTime,
-            endDateTime: v.endTime,
-            paymentType: v.order ? "信用卡" : "點數",
-            amount: v.amount,
-            merchantId,
-          }))}
-        />
+        <GenericDataTable columns={columns} data={tableData} />
         <ScrollBar orientation="horizontal" />
       </ScrollArea>
     </section>
