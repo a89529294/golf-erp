@@ -97,6 +97,17 @@ export function Sidebar({
           onLinkClick={onLinkClick}
         />
       )}
+      {isLinkAllowed(linksKV["coach-management"]) && (
+        <AccordionItemWrapper
+          link={linksKV["coach-management"]}
+          prevLink={prevLink}
+          nestedLinksClosed={nestedLinksClosed}
+          setNestedLinksClosed={setNestedLinksClosed}
+          nextLinkPath={nextLinkPath}
+          setNextLinkPath={setNextLinkPath}
+          onLinkClick={onLinkClick}
+        />
+      )}
       {isLinkAllowed(linksKV["system-management"]) && (
         <AccordionItemWrapper
           link={linksKV["system-management"]}

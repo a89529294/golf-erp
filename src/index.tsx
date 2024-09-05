@@ -261,6 +261,28 @@ const router = createBrowserRouter(
                 );
               },
             )}
+            {(
+              Object.entries(linksKV["coach-management"].paths) as [
+                keyof (typeof linksKV)["coach-management"]["paths"],
+                string,
+              ][]
+            ).map(([key, path]) => (
+              <Route
+                element={
+                  <PermissionGuard
+                    routePermissions={
+                      linksKV["coach-management"].allowedPermissions
+                    }
+                  />
+                }
+                key={key}
+              >
+                <Route
+                  path={path}
+                  lazy={linksKV["coach-management"].lazy[key]}
+                />
+              </Route>
+            ))}
           </Route>
         </Route>
       </Route>

@@ -315,7 +315,6 @@ export const linksKV = {
       },
     },
   },
-
   "system-management": {
     label: "系統管理",
     type: "nested" as const,
@@ -436,6 +435,19 @@ export const linksKV = {
       "高爾夫球-基本操作",
       "練習場-基本操作",
     ],
+  },
+  "coach-management": {
+    label: "教練管理",
+    type: "multiple" as const,
+    paths: {
+      index: "/coach-management",
+      details: "/coach-management/details/:coachId",
+    },
+    lazy: {
+      index: () => import("@/pages/coach-management"),
+      details: () => import("@/pages/coach-management/details"),
+    },
+    allowedPermissions: [], // TODO: add permission
   },
 };
 // } satisfies Record<string, FlatLink | NestedLink>;
