@@ -24,7 +24,7 @@ export const memberSchema = z.object({
   account: z.string(),
   appUserType: memberTypeSchema,
   chName: z.string(),
-  phone: z.string(),
+  phone: z.string().nullable(),
   gender: genderSchema,
   birthday: z.string().nullable(),
   storeAppUsers: z.array(z.object({ id: z.string(), coin: z.number() })),

@@ -447,7 +447,7 @@ export const linksKV = {
       index: () => import("@/pages/coach-management"),
       details: () => import("@/pages/coach-management/details"),
     },
-    allowedPermissions: [], // TODO: add permission
+    allowedPermissions: ["教練管理"], // TODO: add permission
   },
 };
 // } satisfies Record<string, FlatLink | NestedLink>;
