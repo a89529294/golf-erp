@@ -9,6 +9,7 @@ import minusIcon from "@/assets/minus-icon.svg";
 import circleIcon from "@/assets/circle.svg";
 import trashCanIcon from "@/assets/trash-can-icon.svg";
 import pencilIcon from "@/assets/pencil.svg";
+import resetIcon from "@/assets/reset.svg";
 import xIcon from "@/assets/x.svg";
 import redXIcon from "@/assets/red-x-icon.svg";
 import checkIcon from "@/assets/check.svg";
@@ -34,6 +35,7 @@ const iconMap = {
   check: checkIcon,
   coupon: couponIcon,
   lock: lockIcon,
+  reset: resetIcon,
 };
 
 type IconButtonType = ComponentProps<"button"> & {
@@ -117,7 +119,7 @@ const IconButtonBorderLess = forwardRef<
       className={twMerge(button({ borderLess: true, class: "h-full" }))}
       onClick={onClick}
     >
-      <img className="w-5 h-5" src={iconMap[icon]} />
+      <img className="h-5 w-5" src={iconMap[icon]} />
       {children}
     </button>
   );
@@ -136,7 +138,7 @@ export const TextButton = forwardRef<
       onClick={onClick}
       {...props}
     >
-      {loading && <img src={circleIcon} className="w-5 h-5 animate-spin" />}
+      {loading && <img src={circleIcon} className="h-5 w-5 animate-spin" />}
       {children}
     </button>
   );

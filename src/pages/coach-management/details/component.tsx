@@ -12,29 +12,34 @@ import { toast } from "sonner";
 import { genCoachDetailsQuery, loader } from "./loader";
 
 import { ImageDialog } from "@/pages/coach-management/details/components/image-dialog";
+import { useRef } from "react";
 
 export function Component() {
+  const statusRef = useRef<"審核中" | "審核成功" | "審核失敗">("審核中");
   const navigate = useNavigate();
-  const { id } = useParams();
+  const { coachId } = useParams();
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
-  const { storeId } = useParams();
-  const { data: coach } = useQuery({
-    ...genCoachDetailsQuery(storeId!),
+  const { data: coach, isFetching: isFetchingCoachStatus } = useQuery({
+    ...genCoachDetailsQuery(coachId!),
     initialData,
   });
 
   const queryClient = useQueryClient();
 
-  const { mutate: toggleCoachStatus, isPending: isUpdatingMemberStatus } =
+  const { mutate: updateCoachStatus, isPending: isUpdatingCoachStatus } =
     useMutation({
       mutationKey: ["update-coach-status"],
-      mutationFn: async () => {
-        const response = await privateFetch(`/app-users/${id}`, {
+      mutationFn: async (status: "pending" | "pass" | "decline") => {
+        const statusObj = {
+          pass: "審核成功",
+          decline: "審核失敗",
+          pending: "審核中",
+        } as const;
+        statusRef.current = statusObj[status];
+        const response = await privateFetch(`/coach/${coachId}`, {
           method: "PATCH",
           body: JSON.stringify({
-            isVerified:
-              coach.verificationStatus === "pending" ||
-              coach.verificationStatus === "rejected",
+            status,
           }),
           headers: {
             "Content-Type": "application/json",
@@ -46,8 +51,14 @@ export function Component() {
       onSuccess() {
         toast.success("更新狀態成功");
         queryClient.invalidateQueries({ queryKey: ["coaches"] });
+        queryClient.invalidateQueries({ queryKey: ["coach", coachId] });
       },
     });
+
+  const coachStatus =
+    isUpdatingCoachStatus || isFetchingCoachStatus
+      ? statusRef.current
+      : coach.status;
 
   return (
     <MainLayout
@@ -56,7 +67,7 @@ export function Component() {
           <Link
             className={cn(
               button(),
-              isUpdatingMemberStatus && "pointer-events-none opacity-50",
+              isUpdatingCoachStatus && "pointer-events-none opacity-50",
             )}
             to={".."}
             onClick={(e) => {
@@ -67,23 +78,60 @@ export function Component() {
             <img src={backIcon} />
             返回
           </Link>
-          {coach.verificationStatus === "verified" ? (
-            <IconWarningButton
-              disabled={isUpdatingMemberStatus}
-              onClick={() => toggleCoachStatus()}
-              icon="redX"
-            >
-              審核失敗
-            </IconWarningButton>
+          {coachStatus === "審核成功" ? (
+            <>
+              <IconWarningButton
+                disabled={isUpdatingCoachStatus}
+                onClick={() => updateCoachStatus("decline")}
+                icon="redX"
+              >
+                審核失敗
+              </IconWarningButton>
+              <IconButton
+                disabled={isUpdatingCoachStatus}
+                onClick={() => updateCoachStatus("pending")}
+                icon="reset"
+              >
+                審核中
+              </IconButton>
+            </>
+          ) : coachStatus === "審核中" ? (
+            <>
+              <IconButton
+                className="bg-secondary-purple/10 text-secondary-purple outline-secondary-purple"
+                icon="check"
+                onClick={() => updateCoachStatus("pass")}
+                disabled={isUpdatingCoachStatus}
+              >
+                審核成功
+              </IconButton>
+              <IconButton
+                className="bg-red-500/10 text-red-500 outline-red-500"
+                icon="redX"
+                onClick={() => updateCoachStatus("decline")}
+                disabled={isUpdatingCoachStatus}
+              >
+                審核失敗
+              </IconButton>
+            </>
           ) : (
-            <IconButton
-              className="bg-secondary-purple/10 text-secondary-purple outline-secondary-purple"
-              icon="check"
-              onClick={() => toggleCoachStatus()}
-              disabled={isUpdatingMemberStatus}
-            >
-              審核成功
-            </IconButton>
+            <>
+              <IconButton
+                className="bg-secondary-purple/10 text-secondary-purple outline-secondary-purple"
+                icon="check"
+                onClick={() => updateCoachStatus("pass")}
+                disabled={isUpdatingCoachStatus}
+              >
+                審核成功
+              </IconButton>
+              <IconButton
+                disabled={isUpdatingCoachStatus}
+                onClick={() => updateCoachStatus("pending")}
+                icon="reset"
+              >
+                審核中
+              </IconButton>
+            </>
           )}
         </>
       }
@@ -98,11 +146,15 @@ export function Component() {
                 </div>
                 <Row label="姓名" value={coach.name} />
                 <Row label="電話" value={coach.phone} />
-                <Row label="審核狀態" value={coach.verificationStatus} />
+                <Row label="審核狀態" value={coachStatus} />
                 <div className="grid grid-cols-[auto_1fr] items-center gap-y-1 sm:grid-cols-1">
                   <div className="w-28">大頭照</div>
                   <div className="h-10 w-10">
-                    <img className="object-contain" alt="" src={coach.pfp} />
+                    <img
+                      className="object-contain"
+                      alt=""
+                      src={coach.avatarSrc}
+                    />
                   </div>
                 </div>
               </section>
@@ -114,7 +166,7 @@ export function Component() {
 
                 <ScrollArea className="w-full ">
                   <div className="flex gap-5">
-                    {coach.qualifications.map((q, idx) => {
+                    {coach.resumesSrc.map((q, idx) => {
                       return <ImageDialog key={idx} imgSrc={q} />;
                     })}
                   </div>
@@ -129,7 +181,7 @@ export function Component() {
 
                 <ScrollArea className="w-full ">
                   <div className="flex gap-5">
-                    {coach.certificates.map((q, idx) => {
+                    {coach.certificatesSrc.map((q, idx) => {
                       return <ImageDialog key={idx} imgSrc={q} />;
                     })}
                   </div>
@@ -142,15 +194,14 @@ export function Component() {
                   教學計劃
                 </div>
 
-                {coach.lessonPlans.map((lessonPlan, idx) => {
+                {coach.educatePlan.map((lessonPlan, idx) => {
                   return (
                     <div key={idx}>
-                      <h2 className="text-lg ">{lessonPlan.title}</h2>
+                      <h2 className="text-lg ">{lessonPlan.subtitle}</h2>
                       <div className="flex flex-col gap-2">
-                        {lessonPlan.details.map((details, idx) => {
+                        {lessonPlan.class.map((details, idx) => {
                           return (
                             <div key={idx} className="flex gap-2">
-                              <div>{details.orderName}</div>
                               <div>{details.title}</div>
                               <div>{details.content}</div>
                             </div>
@@ -167,19 +218,21 @@ export function Component() {
                   時間
                 </div>
 
-                {Object.entries(coach.availability).map(
-                  ([day, { start, end }], idx) => {
-                    return (
-                      <div key={idx} className="flex gap-5">
-                        <h2 className="w-28 text-lg">{day}</h2>
-                        <div className="flex gap-2">
-                          <div>{start}</div>
-                          <div>{end}</div>
-                        </div>
+                {coach.openTimes?.map((details, idx) => {
+                  return (
+                    <div key={idx} className="flex gap-5">
+                      <h2 className="w-28 text-lg">{details.day}</h2>
+                      <div className="flex gap-2">
+                        {details.times.map((time, idx) => (
+                          <div className="flex gap-1" key={idx}>
+                            <span>{time.startTime}</span>
+                            <span>{time.endTime}</span>
+                          </div>
+                        ))}
                       </div>
-                    );
-                  },
-                )}
+                    </div>
+                  );
+                })}
               </section>
             </div>
           </ScrollArea>

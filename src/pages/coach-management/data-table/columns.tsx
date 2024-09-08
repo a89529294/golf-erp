@@ -4,12 +4,12 @@ import { ArrowUpDown } from "lucide-react";
 
 export const columns: ColumnDef<Coach>[] = [
   {
-    accessorKey: "pfp",
-    id: "pfp",
+    accessorKey: "avatarFileId",
+    id: "avatar",
     header: "大頭照",
     cell: ({ row }) => (
       <div className="h-10 w-10">
-        <img className="object-contain " alt="" src={row.original.pfp} />
+        <img className="object-contain " alt="" src={row.original.avatarSrc} />
       </div>
     ),
   },
@@ -51,6 +51,6 @@ export const columns: ColumnDef<Coach>[] = [
     accessorKey: "verificationStatus",
     id: "verificationStatus",
     header: "審核狀態",
-    cell: ({ row }) => row.original.verificationStatus ?? "",
+    cell: ({ row }) => row.original.status ?? "",
   },
 ] as ColumnDef<Coach>[];
