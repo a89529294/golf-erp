@@ -47,19 +47,28 @@ export const getDifferenceInHoursAndMinutes = (start: number, end: number) => {
   return `${hours}小時${minutes}分鐘`;
 };
 
-export const fromImageIdsToSrc = async (ids: string[]) => {
-  const promises: Promise<Response>[] = [];
+export const fromImageIdsToSrc = async (
+  ids: string[],
+  alternativeURL?: string,
+  placeholderImg = "",
+) => {
+  const promises: Promise<Response>[] = ids.map((id) =>
+    privateFetch(`${alternativeURL || "/file/download/"}${id}`),
+  );
 
-  ids.forEach((id) => promises.push(privateFetch(`/file/download/${id}`)));
+  const responses = await Promise.allSettled(promises);
 
-  const preImages = await Promise.all(promises);
+  const blobs = await Promise.all(
+    responses.map((response) =>
+      response.status === "fulfilled"
+        ? response.value.blob()
+        : Promise.resolve(new Blob()),
+    ),
+  );
 
-  const promises2: Promise<Blob>[] = [];
-  preImages.forEach((response) => promises2.push(response.blob()));
-
-  const images = await Promise.all(promises2);
-
-  return images.map((blob) => URL.createObjectURL(blob));
+  return blobs.map((blob) =>
+    blob.size === 0 ? placeholderImg : URL.createObjectURL(blob),
+  );
 };
 
 export function filterObject<T extends object>(obj: T, predicate: (keyof T)[]) {

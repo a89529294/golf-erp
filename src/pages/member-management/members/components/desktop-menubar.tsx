@@ -90,7 +90,7 @@ export function DesktopMenubar({
                 account: data.account,
                 memberType: data.appUserType,
                 chName: data.chName,
-                phone: data.phone,
+                phone: data.phone ?? "",
                 gender: data.gender,
                 birthday: data.birthday ? new Date(data.birthday) : "",
                 isActive: data.isActive,
