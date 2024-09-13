@@ -196,14 +196,25 @@ export function Component() {
 
                 {coach.educatePlan.map((lessonPlan, idx) => {
                   return (
-                    <div key={idx}>
-                      <h2 className="text-lg ">{lessonPlan.subtitle}</h2>
-                      <div className="flex flex-col gap-2">
+                    <div key={idx} className="space-y-2">
+                      <h2 className="text-lg font-bold">
+                        課程名稱:
+                        <span className="pl-1 font-normal">
+                          {lessonPlan.subtitle}
+                        </span>
+                      </h2>
+                      <div className="flex flex-col gap-1">
                         {lessonPlan.class.map((details, idx) => {
                           return (
-                            <div key={idx} className="flex gap-2">
-                              <div>{details.title}</div>
-                              <div>{details.content}</div>
+                            <div key={idx} className="">
+                              <div className="flex gap-1">
+                                <div className="font-medium">課堂標題:</div>
+                                <div>{details.title}</div>
+                              </div>
+                              <div className="flex gap-1">
+                                <div className="font-medium">課堂內容:</div>
+                                <div>{details.content}</div>
+                              </div>
                             </div>
                           );
                         })}
@@ -219,14 +230,26 @@ export function Component() {
                 </div>
 
                 {coach.openTimes?.map((details, idx) => {
+                  const dayToWeekday: Record<number, string> = {
+                    1: "星期一",
+                    2: "星期二",
+                    3: "星期三",
+                    4: "星期四",
+                    5: "星期五",
+                    6: "星期六",
+                    7: "星期日",
+                  };
+
                   return (
                     <div key={idx} className="flex gap-5">
-                      <h2 className="w-28 text-lg">{details.day}</h2>
+                      <h2 className="w-28 text-lg">
+                        {dayToWeekday[details.day]}
+                      </h2>
                       <div className="flex gap-2">
                         {details.times.map((time, idx) => (
                           <div className="flex gap-1" key={idx}>
-                            <span>{time.startTime}</span>
-                            <span>{time.endTime}</span>
+                            <span className="w-14">{time.startTime}</span>至
+                            <span className="w-14">{time.endTime}</span>
                           </div>
                         ))}
                       </div>
