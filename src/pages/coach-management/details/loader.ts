@@ -18,28 +18,17 @@ const coachDetailsSchema = coachSchema
       }[];
     }),
     openTimes: z
-      .string()
-      .transform((v) => {
-        z.array(
-          z.object({
-            day: z.number(),
-            times: z.array(
-              z.object({
-                startTime: z.string(),
-                endTime: z.string(),
-              }),
-            ),
-          }),
-        );
-
-        return JSON.parse(v) as {
-          day: number;
-          times: {
-            startTime: string;
-            endTime: string;
-          }[];
-        }[];
-      })
+      .array(
+        z.object({
+          day: z.number(),
+          times: z.array(
+            z.object({
+              startTime: z.string().nullable(),
+              endTime: z.string().nullable(),
+            }),
+          ),
+        }),
+      )
       .nullable(),
   })
   .transform(async (coach) => {

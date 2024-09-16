@@ -74,7 +74,7 @@ export function Sidebar({
     <Accordion
       type="single"
       collapsible
-      className={cn("w-full", className)}
+      className={cn("w-full overflow-y-auto", className)}
       defaultValue={(() => {
         const linkOnMount = findLinkFromPathname(pathname);
         if (!linkOnMount) return undefined;
