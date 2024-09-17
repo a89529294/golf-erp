@@ -14,6 +14,8 @@ import { genCoachDetailsQuery, loader } from "./loader";
 import { ImageDialog } from "@/pages/coach-management/details/components/image-dialog";
 import { useRef } from "react";
 import { Row } from "@/pages/coach-management/details/components/row";
+import star from "@/assets/star.svg";
+import emptyStar from "@/assets/empty-star.svg";
 
 export function Component() {
   const statusRef = useRef<"審核中" | "審核成功" | "審核失敗">("審核中");
@@ -195,41 +197,6 @@ export function Component() {
                 </div>
               </section>
 
-              <section className="flex w-[613px] flex-col gap-6 border border-line-gray px-12 pb-10 sm:w-80">
-                <div className="-mx-12 mb-4 bg-light-gray py-1.5 text-center text-black">
-                  教學計劃
-                </div>
-
-                {coach.educatePlan.map((lessonPlan, idx) => {
-                  return (
-                    <div key={idx} className="space-y-2">
-                      <h2 className="text-lg font-bold">
-                        課程名稱:
-                        <span className="pl-1 font-normal">
-                          {lessonPlan.subtitle}
-                        </span>
-                      </h2>
-                      <div className="flex flex-col gap-1">
-                        {lessonPlan.class.map((details, idx) => {
-                          return (
-                            <div key={idx} className="">
-                              <div className="flex gap-1">
-                                <div className="font-medium">課堂標題:</div>
-                                <div>{details.title}</div>
-                              </div>
-                              <div className="flex gap-1">
-                                <div className="font-medium">課堂內容:</div>
-                                <div>{details.content}</div>
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  );
-                })}
-              </section>
-
               <section className="space-y-4">
                 <h2 className="font-medium">開放時間</h2>
 
@@ -250,11 +217,11 @@ export function Component() {
                           {dayToWeekday[q.day]}
                         </span>
                         <div className="flex gap-1.5 rounded-md bg-light-gray px-4 pb-1.5 pt-2.5">
-                          <div className="w-16 border-b border-secondary-dark">
+                          <div className="w-16 text-center border-b border-secondary-dark">
                             {q.times[0].startTime}
                           </div>
                           ～
-                          <div className="w-16 border-b border-secondary-dark">
+                          <div className="w-16 text-center border-b border-secondary-dark">
                             {q.times[0].endTime}
                           </div>
                         </div>
@@ -310,6 +277,43 @@ export function Component() {
                     </div>
                   );
                 })}
+              </section>
+
+              <section className="space-y-4">
+                <h2 className="flex gap-2 font-medium">
+                  評價
+                  {typeof coach.reviewStars === "string" && (
+                    <div className="font-normal text-word-gray-dark">
+                      ({coach.reviewStars})
+                    </div>
+                  )}
+                  {typeof coach.reviewStars === "number" && (
+                    <div className="flex">
+                      {Array(coach.reviewStars)
+                        .fill("")
+                        .map((_, idx) => (
+                          <img key={idx} src={star} />
+                        ))}
+                      {Array(5 - coach.reviewStars)
+                        .fill("")
+                        .map((_, idx) => (
+                          <img key={idx} src={emptyStar} />
+                        ))}
+                    </div>
+                  )}
+                </h2>
+
+                <div className="flex w-[613px] flex-col items-center gap-10 border-y border-line-gray bg-white px-5 py-7 ">
+                  {coach.coachComments.map((comment, idx) => {
+                    return (
+                      <div key={idx} className="px-4 py-3 bg-light-gray">
+                        {comment}
+                      </div>
+                    );
+                  })}
+
+                  {coach.coachComments.length === 0 && "暫無資料"}
+                </div>
               </section>
             </div>
           </ScrollArea>

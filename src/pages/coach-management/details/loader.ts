@@ -1,6 +1,5 @@
-import pfp from "@/assets/sample-pfp.jpeg";
 import { coachSchema } from "@/pages/coach-management/loader";
-import { fromImageIdsToSrc } from "@/utils";
+import { base_url, fromImageIdsToSrc } from "@/utils";
 import { queryClient } from "@/utils/query-client";
 import { privateFetch } from "@/utils/utils";
 import { LoaderFunctionArgs } from "react-router-dom";
@@ -30,13 +29,11 @@ const coachDetailsSchema = coachSchema
         }),
       )
       .nullable(),
+    coachComments: z.array(z.string()),
+    reviewStars: z.union([z.string(), z.number()]),
   })
   .transform(async (coach) => {
-    const avatarSrc = await fromImageIdsToSrc(
-      [coach.avatarFileId ?? ""],
-      "/coach/image/",
-      pfp,
-    );
+    const avatarSrc = `${base_url}/coach/image/${coach.avatarFileId}`;
 
     const resumesSrc = await fromImageIdsToSrc(coach.resumes, "/coach/image/");
     const certificatesSrc = await fromImageIdsToSrc(
