@@ -179,7 +179,7 @@ export function SiteSection({
   }, [merchantId, appointments]);
 
   return (
-    <section className="col-span-2 rounded-md bg-white px-5 py-4">
+    <section className="col-span-2 px-5 py-4 bg-white rounded-md">
       <h2 className="text-lg font-bold">{title}</h2>
       <ul className="mb-4 mt-2.5 flex gap-4">
         <CircularProgressWithDesc
@@ -205,7 +205,7 @@ export function SiteSection({
           type="secondary"
         />
 
-        <TextButton className="ml-auto self-end" onClick={() => setOpen(!open)}>
+        <TextButton className="self-end ml-auto" onClick={() => setOpen(!open)}>
           展開訂單
         </TextButton>
       </ul>
