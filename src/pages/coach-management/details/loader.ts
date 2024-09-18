@@ -43,7 +43,7 @@ const coachDetailsSchema = coachSchema
 
     return {
       ...coach,
-      avatarSrc: avatarSrc[0],
+      avatarSrc: avatarSrc,
       resumesSrc,
       certificatesSrc,
     };

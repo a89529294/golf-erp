@@ -234,14 +234,14 @@ export function Component() {
                 </div>
               </section>
 
-              <section className="space-y-4">
-                <h2 className="font-medium">教學計劃</h2>
+              <section className="">
+                <h2 className="mb-4 font-medium">教學計劃</h2>
 
-                {coach.educatePlan.map((plan, idx) => {
+                {coach.educatePlan.map((plan, outerIdx) => {
                   return (
                     <div
                       className="w-[613px] space-y-7 border-t border-line-gray bg-white px-5 py-7"
-                      key={idx}
+                      key={outerIdx}
                     >
                       <div className="flex gap-5">
                         <div className="w-16 font-medium">課程名稱</div>
@@ -254,7 +254,7 @@ export function Component() {
                             <div className="w-[84px] " />
                             <div className="relative flex-1 px-5 py-6 rounded-md bg-light-gray">
                               <h3 className="absolute top-0 -translate-y-1/2 text-word-gray-dark">
-                                第{idx + 1}堂
+                                第{outerIdx + 1}堂
                               </h3>
 
                               <div className="flex gap-5 mb-5">
@@ -288,16 +288,16 @@ export function Component() {
                     </div>
                   )}
                   {typeof coach.reviewStars === "number" && (
-                    <div className="flex">
-                      {Array(coach.reviewStars)
+                    <div className="flex items-center">
+                      {Array(Math.floor(coach.reviewStars))
                         .fill("")
                         .map((_, idx) => (
-                          <img key={idx} src={star} />
+                          <img className="size-4" key={idx} src={star} />
                         ))}
-                      {Array(5 - coach.reviewStars)
+                      {Array(5 - Math.floor(coach.reviewStars))
                         .fill("")
                         .map((_, idx) => (
-                          <img key={idx} src={emptyStar} />
+                          <img className="size-4" key={idx} src={emptyStar} />
                         ))}
                     </div>
                   )}
