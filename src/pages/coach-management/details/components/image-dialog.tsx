@@ -10,13 +10,13 @@ export function ImageDialog({ imgSrc }: { imgSrc: string }) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <img className="h-20 w-20 object-contain" src={imgSrc} />
+        <img className="h-[120px] w-[120px] object-contain" src={imgSrc} />
       </DialogTrigger>
-      <DialogContent className="h-4/6 w-4/6 border-none bg-transparent">
+      <DialogContent className="w-4/6 bg-transparent border-none h-4/6">
         <DialogHeader>
           <DialogDescription />
         </DialogHeader>
-        <img className="h-full w-full object-contain" src={imgSrc} />
+        <img className="object-contain w-full h-full" src={imgSrc} />
       </DialogContent>
     </Dialog>
   );

@@ -90,7 +90,13 @@ export function SendCouponModal({ storeId }: { storeId: string }) {
   const [globalFilter, setGlobalFilter] = useState("");
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog
+      open={open}
+      onOpenChange={(s) => {
+        setOpen(s);
+        if (!s) setRowSelection({});
+      }}
+    >
       <DialogTrigger asChild>
         <IconButton icon="coupon" type="button">
           發送優惠券
@@ -111,9 +117,9 @@ export function SendCouponModal({ storeId }: { storeId: string }) {
 
           <ScrollArea className="h-[500px] overflow-auto border-t border-line-gray sm:h-[417px] sm:w-72">
             {coupons && (
-              <div className="border-x border-b border-line-gray before:fixed before:h-12 before:w-1 before:bg-light-gray">
+              <div className="border-b border-x border-line-gray before:fixed before:h-12 before:w-1 before:bg-light-gray">
                 <div className="fixed right-[57px] h-12 w-1 bg-light-gray" />
-                <div className="sticky top-12 z-10 w-full border-b border-line-gray" />
+                <div className="sticky z-10 w-full border-b top-12 border-line-gray" />
                 <DataTable
                   columns={columns}
                   data={coupons}
@@ -129,7 +135,7 @@ export function SendCouponModal({ storeId }: { storeId: string }) {
           </ScrollArea>
 
           {/* </DialogHeader> */}
-          <DialogFooter className="mt-6 justify-center">
+          <DialogFooter className="justify-center mt-6">
             <TextButton
               type="submit"
               form="xx"

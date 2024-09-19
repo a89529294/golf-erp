@@ -50,6 +50,7 @@ export type InvitationPATCH = Partial<{
   introduce: string;
   hostId: string;
   memberIds: string[];
+  storeId: string;
 }>;
 
 export const invitationsQuery = {

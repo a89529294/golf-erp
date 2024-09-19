@@ -58,57 +58,59 @@ export function NewCouponModal({
           });
         }}
       >
-        <div className="flex w-full flex-col">
-          <header className="bg-light-gray py-2 text-center">新增優惠券</header>
+        <div className="flex flex-col w-full">
+          <header className="py-2 text-center bg-light-gray">新增優惠券</header>
 
-          <div className="flex flex-1 flex-col items-center justify-center gap-6 pb-10">
-            <Label className="mt-10 flex items-center gap-5">
-              <h2 className="w-16">標題</h2>
-              <UnderscoredInput
-                className="w-80"
-                name={"name"}
-                disabled={false}
-                required
-              />
-            </Label>
-            <Label className="flex items-center gap-5 ">
-              <h2 className="w-16">編號</h2>
-              <UnderscoredInput
-                className="w-80"
-                name={"number"}
-                disabled={false}
-                required
-              />
-            </Label>
-            <Label className="flex items-center gap-5 ">
-              <h2 className="w-16">使用期限</h2>
-              <div className="flex flex-row items-baseline">
+          <div className="flex items-center justify-center flex-1 pb-10">
+            <div className="flex w-[400px] flex-col gap-6">
+              <Label className="flex items-center gap-5 mt-10">
+                <h2 className="w-16">標題</h2>
                 <UnderscoredInput
                   className="w-80"
-                  name={"expiration"}
+                  name={"name"}
+                  disabled={false}
+                  required
+                />
+              </Label>
+              <Label className="flex items-center gap-5 ">
+                <h2 className="w-16">編號</h2>
+                <UnderscoredInput
+                  className="w-80"
+                  name={"number"}
+                  disabled={false}
+                  required
+                />
+              </Label>
+              <Label className="flex items-center gap-5 ">
+                <h2 className="w-16 ">使用期限</h2>
+                <div className="flex flex-row items-baseline flex-1">
+                  <UnderscoredInput
+                    className="w-full"
+                    name={"expiration"}
+                    disabled={false}
+                    type="number"
+                    required
+                  />
+                  天
+                </div>
+              </Label>
+              <Label className="flex items-center gap-5 ">
+                <h2 className="w-16">金額</h2>
+                <UnderscoredInput
+                  className="w-80"
+                  name={"amount"}
                   disabled={false}
                   type="number"
                   required
                 />
-                天
-              </div>
-            </Label>
-            <Label className="flex items-center gap-5 ">
-              <h2 className="w-16">金額</h2>
-              <UnderscoredInput
-                className="w-80"
-                name={"amount"}
-                disabled={false}
-                type="number"
-                required
-              />
-            </Label>
-            <Label className="flex items-center gap-5">
-              <h2 className="w-16">有效</h2>
-              <div className="h-4 w-80">
-                <Checkbox name="isActive" />
-              </div>
-            </Label>
+              </Label>
+              <Label className="flex items-center gap-5">
+                <h2 className="w-16">有效</h2>
+                <div className="h-4 w-80">
+                  <Checkbox name="isActive" />
+                </div>
+              </Label>
+            </div>
           </div>
         </div>
       </CouponModalBase>

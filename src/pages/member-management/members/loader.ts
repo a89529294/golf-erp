@@ -27,7 +27,10 @@ export const memberSchema = z.object({
   phone: z.string().nullable(),
   gender: genderSchema,
   birthday: z.string().nullable(),
-  storeAppUsers: z.array(z.object({ id: z.string(), coin: z.number() })),
+  storeAppUsers: z
+    .array(z.object({ id: z.string(), coin: z.number() }))
+    .nullable()
+    .optional(),
   appChargeHistories: z.array(
     z.object({
       id: z.string(),

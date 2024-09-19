@@ -17,12 +17,14 @@ export function StoreFormField({
   label,
   disabled,
   asNumber,
+  labelClassName,
 }: {
   form: UseFormReturn<z.infer<typeof formSchema>, unknown, undefined>;
   name: Exclude<keyof z.infer<typeof formSchema>, "employees">;
   label: string;
   disabled: boolean;
   asNumber?: boolean;
+  labelClassName?: string;
 }) {
   return (
     <FormField
@@ -31,7 +33,9 @@ export function StoreFormField({
       render={({ field }) => {
         return (
           <FormItem className="grid grid-cols-[auto_1fr] items-baseline gap-y-1 sm:grid-cols-1">
-            <FormLabel className="w-28">{label}</FormLabel>
+            <FormLabel className={cn("w-28", labelClassName)}>
+              {label}
+            </FormLabel>
             <FormControl>
               <Input
                 className={cn(

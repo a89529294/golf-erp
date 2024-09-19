@@ -104,9 +104,7 @@ export function EquipmentDetailModal({
   return (
     <div
       className={
-        isInTableRow
-          ? cn("hidden pr-6 text-right group-hover:block")
-          : undefined
+        isInTableRow ? cn("hidden text-right group-hover:block") : undefined
       }
     >
       <Dialog
@@ -140,13 +138,13 @@ export function EquipmentDetailModal({
           >
             <DialogPrimitive.DialogTitle />
             <DialogHeader className="w-full">
-              <div className="flex w-full flex-col">
-                <header className="bg-light-gray py-2 text-center">
+              <div className="flex flex-col w-full">
+                <header className="py-2 text-center bg-light-gray">
                   {mode === "new" ? "新增" : "編輯"}標籤
                 </header>
 
-                <div className="flex flex-1 flex-col items-center justify-center gap-6 pb-10">
-                  <Label className="mt-10 flex items-center gap-5">
+                <div className="flex flex-col items-center justify-center flex-1 gap-6 pb-10">
+                  <Label className="flex items-center gap-5 mt-10">
                     <h2 className="w-28">名稱</h2>
                     <UnderscoredInput
                       className="w-80"

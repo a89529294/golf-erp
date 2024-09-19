@@ -87,6 +87,9 @@ export function Component() {
       merchantId: store.merchantId ?? "",
       hashKey: store.hashKey ?? "",
       hashIV: store.hashIV ?? "",
+      invoiceMerchantId: store.invoiceMerchantId ?? "",
+      invoiceHashIV: store.invoiceHashIV ?? "",
+      invoiceHashKey: store.invoiceHashKey ?? "",
     },
   });
 
@@ -134,6 +137,9 @@ export function Component() {
       merchantId: values.merchantId,
       hashIV: values.hashIV,
       hashKey: values.hashKey,
+      invoiceMerchantId: values.invoiceMerchantId,
+      invoiceHashIV: values.invoiceHashIV,
+      invoiceHashKey: values.invoiceHashKey,
     };
 
     const changedFields: Partial<typeof transformedValues> = {};
@@ -162,6 +168,12 @@ export function Component() {
       changedFields.merchantId = transformedValues.merchantId;
     if (dirtyFields.hashIV) changedFields.hashIV = transformedValues.hashIV;
     if (dirtyFields.hashKey) changedFields.hashKey = transformedValues.hashKey;
+    if (dirtyFields.invoiceMerchantId)
+      changedFields.invoiceMerchantId = transformedValues.invoiceMerchantId;
+    if (dirtyFields.invoiceHashIV)
+      changedFields.invoiceHashIV = transformedValues.invoiceHashIV;
+    if (dirtyFields.invoiceHashKey)
+      changedFields.invoiceHashKey = transformedValues.invoiceHashKey;
 
     setIsMutating(true);
     submit(
@@ -202,8 +214,11 @@ export function Component() {
         address: form.getValues("address"),
         employees: form.getValues("employees"),
         merchantId: form.getValues("merchantId"),
-        hashIV: form.getValues("hashIV"),
         hashKey: form.getValues("hashKey"),
+        hashIV: form.getValues("hashIV"),
+        invoiceMerchantId: form.getValues("invoiceMerchantId"),
+        invoiceHashKey: form.getValues("invoiceHashKey"),
+        invoiceHashIV: form.getValues("invoiceHashIV"),
       });
     }
   }, [searchParams, setSearchParams, form, oldCountyCode]);

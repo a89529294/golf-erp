@@ -24,6 +24,12 @@ export const storeSchema = z.object({
     .transform((v) => v ?? ""),
   hashKey: z.string().nullable(),
   hashIV: z.string().nullable(),
+  invoiceMerchantId: z
+    .string()
+    .nullable()
+    .transform((v) => v ?? ""),
+  invoiceHashKey: z.string().nullable(),
+  invoiceHashIV: z.string().nullable(),
 });
 
 const fileWithIdSchema = z.object({

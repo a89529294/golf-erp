@@ -1,5 +1,5 @@
-import pfp from "@/assets/sample-pfp.jpeg";
-import { fromImageIdsToSrc } from "@/utils";
+import pfp from "@/assets/pfp-icon.svg";
+import { base_url } from "@/utils";
 import { queryClient } from "@/utils/query-client";
 import { privateFetch } from "@/utils/utils";
 import { z } from "zod";
@@ -18,20 +18,31 @@ export const coachSchema = z.object({
   avatarFileId: z.string().nullable(),
 });
 
+// const coachesSchema = z.object({
+//   data: z.array(
+//     coachSchema.transform(async (coach) => {
+//       const avatarSrc = await fromImageIdsToSrc(
+//         [coach.avatarFileId ?? ""],
+//         "/coach/image/",
+//         pfp,
+//       );
+
+//       return {
+//         ...coach,
+//         avatarSrc: avatarSrc[0],
+//       };
+//     }),
+//   ),
+// });
+
 const coachesSchema = z.object({
   data: z.array(
-    coachSchema.transform(async (coach) => {
-      const avatarSrc = await fromImageIdsToSrc(
-        [coach.avatarFileId ?? ""],
-        "/coach/image/",
-        pfp,
-      );
-
-      return {
-        ...coach,
-        avatarSrc: avatarSrc[0],
-      };
-    }),
+    coachSchema.transform((v) => ({
+      ...v,
+      avatarURI: v.avatarFileId
+        ? `${base_url}/coach/image/${v.avatarFileId}`
+        : pfp,
+    })),
   ),
 });
 

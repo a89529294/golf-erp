@@ -26,7 +26,7 @@ function ActionButtons({
   deleteChargeDiscount: (id: string) => Promise<void>;
 }) {
   return (
-    <>
+    <div className="flex justify-end gap-2 pr-6">
       <CashbackDetailModal
         dialogTriggerChildren={
           <button className="">
@@ -39,7 +39,7 @@ function ActionButtons({
         storeId={storeId}
         isInTableRow
       />
-      <div className={cn("hidden pr-6 text-right group-hover:block")}>
+      <div className={cn("hidden text-right group-hover:block")}>
         <Modal
           dialogTriggerChildren={
             <button>
@@ -50,7 +50,7 @@ function ActionButtons({
           onSubmit={() => deleteChargeDiscount(rowData.id)}
         />
       </div>
-    </>
+    </div>
   );
 }
 
@@ -68,7 +68,7 @@ export function genColumns(
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             標題
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            <ArrowUpDown className="w-4 h-4 ml-2" />
           </button>
         );
       },
@@ -83,7 +83,7 @@ export function genColumns(
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             儲值金額
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            <ArrowUpDown className="w-4 h-4 ml-2" />
           </button>
         );
       },
@@ -99,7 +99,7 @@ export function genColumns(
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             贈送金額
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            <ArrowUpDown className="w-4 h-4 ml-2" />
           </button>
         );
       },
@@ -118,7 +118,7 @@ export function genColumns(
           deleteChargeDiscount,
         });
       },
-      size: undefined,
+      size: 10,
     }),
   ] as ColumnDef<ChargeDiscount>[];
 }

@@ -59,6 +59,9 @@ export function Component() {
       merchantId: "",
       hashKey: "",
       hashIV: "",
+      invoiceMerchantId: "",
+      invoiceHashKey: "",
+      invoiceHashIV: "",
     },
   });
   const currentCounty = form.watch("county");
@@ -88,6 +91,13 @@ export function Component() {
       ...(values.merchantId ? { merchantId: values.merchantId } : {}),
       ...(values.hashKey ? { hashKey: values.hashKey } : {}),
       ...(values.hashIV ? { hashIV: values.hashIV } : {}),
+      ...(values.invoiceMerchantId
+        ? { invoiceMerchantId: values.invoiceMerchantId }
+        : {}),
+      ...(values.invoiceHashKey
+        ? { invoiceHashKey: values.invoiceHashKey }
+        : {}),
+      ...(values.invoiceHashIV ? { invoiceHashIV: values.invoiceHashIV } : {}),
     };
 
     setIsMutating(true);

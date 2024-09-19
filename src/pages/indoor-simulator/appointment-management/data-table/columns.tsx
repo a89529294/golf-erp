@@ -3,6 +3,7 @@ import { IconShortButton } from "@/components/ui/button";
 import { Appointment } from "@/types-and-schemas/appointment";
 import { privateFetch } from "@/utils/utils";
 import { ColumnDef } from "@tanstack/react-table";
+import { format, subHours } from "date-fns";
 import { ArrowUpDown } from "lucide-react";
 import { toast } from "sonner";
 
@@ -16,7 +17,7 @@ export const columns: ColumnDef<Appointment>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           訂單編號
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          <ArrowUpDown className="w-4 h-4 ml-2" />
         </button>
       );
     },
@@ -30,7 +31,7 @@ export const columns: ColumnDef<Appointment>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           名稱
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          <ArrowUpDown className="w-4 h-4 ml-2" />
         </button>
       );
     },
@@ -54,13 +55,16 @@ export const columns: ColumnDef<Appointment>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           開始時間
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          <ArrowUpDown className="w-4 h-4 ml-2" />
         </button>
       );
     },
-    cell: (prop) => (
-      <div className="whitespace-nowrap">{prop.getValue() as string}</div>
-    ),
+    cell: (prop) => {
+      const d = subHours(new Date(prop.getValue() as string), 8);
+      return (
+        <div className="whitespace-nowrap">{format(d, "yyyy-MM-dd HH:mm")}</div>
+      );
+    },
   },
   {
     accessorKey: "endTime",
@@ -71,7 +75,7 @@ export const columns: ColumnDef<Appointment>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           結束時間
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          <ArrowUpDown className="w-4 h-4 ml-2" />
         </button>
       );
     },
@@ -88,7 +92,7 @@ export const columns: ColumnDef<Appointment>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           狀態
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          <ArrowUpDown className="w-4 h-4 ml-2" />
         </button>
       );
     },

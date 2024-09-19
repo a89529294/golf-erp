@@ -9,7 +9,11 @@ export const columns: ColumnDef<Coach>[] = [
     header: "大頭照",
     cell: ({ row }) => (
       <div className="h-10 w-10">
-        <img className="object-contain " alt="" src={row.original.avatarSrc} />
+        <img
+          className="h-full w-full object-contain"
+          alt=""
+          src={row.original.avatarURI}
+        />
       </div>
     ),
   },

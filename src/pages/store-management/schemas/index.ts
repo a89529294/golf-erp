@@ -30,6 +30,18 @@ export const formSchema = z
       .string()
       .nullable()
       .transform((v) => v ?? ""),
+    invoiceMerchantId: z
+      .string()
+      .nullable()
+      .transform((v) => v ?? ""),
+    invoiceHashKey: z
+      .string()
+      .nullable()
+      .transform((v) => v ?? ""),
+    invoiceHashIV: z
+      .string()
+      .nullable()
+      .transform((v) => v ?? ""),
   })
   .refine(
     (schema) => {
