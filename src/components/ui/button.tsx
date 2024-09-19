@@ -90,10 +90,10 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonType>(
 );
 
 export const IconWarningButton = forwardRef<HTMLButtonElement, IconButtonType>(
-  ({ children, icon, onClick, ...props }, ref) => {
+  ({ children, icon, onClick, className, ...props }, ref) => {
     return (
       <button
-        className={button({ color: "warning" })}
+        className={cn(button({ color: "warning" }), className)}
         onClick={onClick}
         {...props}
         ref={ref}
@@ -119,7 +119,7 @@ const IconButtonBorderLess = forwardRef<
       className={twMerge(button({ borderLess: true, class: "h-full" }))}
       onClick={onClick}
     >
-      <img className="h-5 w-5" src={iconMap[icon]} />
+      <img className="w-5 h-5" src={iconMap[icon]} />
       {children}
     </button>
   );
@@ -138,7 +138,7 @@ export const TextButton = forwardRef<
       onClick={onClick}
       {...props}
     >
-      {loading && <img src={circleIcon} className="h-5 w-5 animate-spin" />}
+      {loading && <img src={circleIcon} className="w-5 h-5 animate-spin" />}
       {children}
     </button>
   );

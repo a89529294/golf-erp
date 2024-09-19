@@ -165,7 +165,7 @@ export function Component(): React.ReactElement {
         )
       }
     >
-      <div className="flex w-full flex-col gap-10 border border-line-gray bg-light-gray p-1">
+      <div className="flex flex-col w-full gap-10 p-1 border border-line-gray bg-light-gray">
         <h1 className="bg-mid-gray py-2.5 text-center text-black">
           會員身份折扣管理
         </h1>
@@ -173,24 +173,24 @@ export function Component(): React.ReactElement {
           <form
             id="discount-form"
             onSubmit={form.handleSubmit(onSubmit)}
-            className="w-1/2 space-y-10 self-center px-20 sm:px-4"
+            className="self-center w-1/2 px-20 space-y-10 sm:px-4"
           >
-            <section className="space-y-6 border border-line-gray bg-white px-12 py-10 sm:px-2 sm:py-4">
-              <div className="flex w-full flex-col gap-10 bg-white p-4">
+            <section className="px-12 py-10 space-y-6 bg-white border border-line-gray sm:px-2 sm:py-4">
+              <div className="flex flex-col w-full gap-10 p-4 bg-white">
                 {data?.map((appUser) => (
                   <div key={appUser.id} className="flex flex-col gap-4">
                     <FormField
                       control={form.control}
                       name={appUser.appUserType}
                       render={({ field }) => (
-                        <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                          <FormLabel className="w-1/6">
+                        <FormItem className="flex items-baseline space-x-3 space-y-0">
+                          <FormLabel className="w-16">
                             {appUserTypeNameOf(appUser.appUserType)}
                           </FormLabel>
                           <FormControl>
                             <UnderscoredInput
                               placeholder={`請輸入折數`}
-                              className="h-7 w-1/5 p-0 pb-1"
+                              className="w-1/5 p-0 pb-1 h-7"
                               disabled={!isEditing}
                               {...field}
                               type="number"

@@ -33,6 +33,7 @@ interface DataTableProps<TData, TValue> {
   setRowSelection?: Dispatch<SetStateAction<Record<string, boolean>>>;
   globalFilter?: string;
   setGlobalFilter?: Dispatch<SetStateAction<string>>;
+  removeLastTrBorder?: boolean;
 }
 
 const fuzzyFilter: FilterFn<unknown> = (row, columnId, value) => {
@@ -50,6 +51,7 @@ export function GenericDataTable<TData extends { id: string }, TValue>({
   setRowSelection,
   globalFilter,
   setGlobalFilter,
+  removeLastTrBorder,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
 
@@ -77,7 +79,7 @@ export function GenericDataTable<TData extends { id: string }, TValue>({
 
   // const extraClasses = "table-fixed w-auto ";
   return (
-    <div className="relative w-full border-x border-b border-line-gray px-1 ">
+    <div className="relative w-full px-1 border-b border-x border-line-gray ">
       <Table
         className={cn(
           `relative isolate border-separate border-spacing-0 `,
@@ -114,7 +116,7 @@ export function GenericDataTable<TData extends { id: string }, TValue>({
 
         <TableBody className="relative ">
           {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
+            table.getRowModel().rows.map((row, index) => (
               <TableRow
                 key={row.id}
                 data-state={
@@ -127,7 +129,9 @@ export function GenericDataTable<TData extends { id: string }, TValue>({
                     key={cell.id}
                     className={cn(
                       "border-b border-b-line-gray",
-                      // table.getRowCount() === index + 1 && "border-b-0",
+                      table.getRowCount() === index + 1 &&
+                        removeLastTrBorder &&
+                        "border-b-0",
                     )}
                   >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}

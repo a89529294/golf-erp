@@ -83,7 +83,7 @@ function genColumns(isSelecting: boolean) {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             編號
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            <ArrowUpDown className="w-4 h-4 ml-2" />
           </button>
         );
       },
@@ -98,7 +98,7 @@ function genColumns(isSelecting: boolean) {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             標題
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            <ArrowUpDown className="w-4 h-4 ml-2" />
           </button>
         );
       },
@@ -114,7 +114,7 @@ function genColumns(isSelecting: boolean) {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             使用期限
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            <ArrowUpDown className="w-4 h-4 ml-2" />
           </button>
         );
       },
@@ -131,7 +131,7 @@ function genColumns(isSelecting: boolean) {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             金額
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            <ArrowUpDown className="w-4 h-4 ml-2" />
           </button>
         );
       },
@@ -346,7 +346,7 @@ export function Component() {
         </>
       }
     >
-      <div className="flex w-full flex-col gap-10 border border-line-gray bg-light-gray p-1">
+      <div className="flex flex-col w-full gap-10 p-1 border border-line-gray bg-light-gray">
         <h1 className="bg-mid-gray py-2.5 text-center text-black">
           累積點數設定
         </h1>
@@ -356,20 +356,20 @@ export function Component() {
             onSubmit={form.handleSubmit(onSubmit)}
             className={`${isMobile ? "w-full" : "w-2/3"} space-y-10 self-center px-20 sm:px-4`}
           >
-            <section className="space-y-6 border border-line-gray bg-white px-12 py-6 sm:px-2 sm:py-4">
-              <div className="flex w-full flex-col gap-10 bg-white p-4">
+            <section className="px-12 py-6 space-y-6 bg-white border border-line-gray sm:px-2 sm:py-4">
+              <div className="flex flex-col w-full gap-10 p-4 bg-white">
                 <div className="flex flex-col gap-4">
                   <FormField
                     control={form.control}
                     name="amoutToPointNeed"
                     defaultValue={0}
                     render={({ field }) => (
-                      <FormItem className="flex flex-row items-center space-x-3 space-y-0">
+                      <FormItem className="flex flex-row items-baseline space-x-3 space-y-0">
                         <FormLabel className="w-1/8">單一消費滿</FormLabel>
                         <FormControl>
                           <UnderscoredInput
                             placeholder={`請輸入金額`}
-                            className="h-7 w-1/5 p-0 pb-1"
+                            className="w-1/5 p-0 pb-1 h-7"
                             disabled={!isEditing}
                             {...field}
                             type="number"
@@ -399,11 +399,11 @@ export function Component() {
                 />
               </header>
 
-              <div className="border-y border-line-gray bg-white text-center">
-                <div className="flex w-full flex-col gap-10 bg-white p-4">
+              <div className="text-center bg-white border-y border-line-gray">
+                <div className="flex flex-col w-full gap-10 p-4 bg-white">
                   <ScrollArea className="h-full ">
                     {couponsData && (
-                      <div className="border-x border-b border-line-gray before:fixed before:h-12 before:w-1 before:bg-light-gray">
+                      <div className="before:fixed before:h-12 before:w-1 before:bg-light-gray">
                         {isLoading ? (
                           <Spinner />
                         ) : (

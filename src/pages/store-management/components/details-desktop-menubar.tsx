@@ -32,7 +32,11 @@ export function DetailsDesktopMenubar<T extends FieldValues>({
       ) : Object.keys(form.formState.dirtyFields).length !== 0 ? (
         <Modal
           dialogTriggerChildren={
-            <IconWarningButton disabled={isMutating} icon="redX">
+            <IconWarningButton
+              className="-mr-2.5"
+              disabled={isMutating}
+              icon="redX"
+            >
               取消編輯
             </IconWarningButton>
           }

@@ -22,7 +22,7 @@ function ActionButtons({
   deleteEquipment: (id: string) => Promise<void>;
 }) {
   return (
-    <>
+    <div className="flex gap-2">
       <EquipmentDetailModal
         dialogTriggerChildren={
           <button className="">
@@ -33,7 +33,7 @@ function ActionButtons({
         equipment={rowData}
         isInTableRow
       />
-      <div className={cn("hidden pr-6 text-right group-hover:block")}>
+      <div className={cn("hidden text-right group-hover:block")}>
         <Modal
           dialogTriggerChildren={
             <button>
@@ -44,7 +44,7 @@ function ActionButtons({
           onSubmit={() => deleteEquipment(rowData.id)}
         />
       </div>
-    </>
+    </div>
   );
 }
 
@@ -58,7 +58,7 @@ export function genColumns(deleteEquipment: (id: string) => Promise<void>) {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             標題
-            <ArrowUpDown className="ml-2 h-4 w-4" />
+            <ArrowUpDown className="w-4 h-4 ml-2" />
           </button>
         );
       },
@@ -73,7 +73,7 @@ export function genColumns(deleteEquipment: (id: string) => Promise<void>) {
           deleteEquipment: deleteEquipment,
         });
       },
-      size: undefined,
+      size: 10,
     }),
   ] as ColumnDef<Equipment>[];
 }

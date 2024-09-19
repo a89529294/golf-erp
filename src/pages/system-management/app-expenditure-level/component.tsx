@@ -272,7 +272,7 @@ function Section({
           icon="plus"
           className={cn(
             "mr-px",
-            selectedLevels.length === 0 && "ml-6",
+            selectedLevels.length === 0 ? "ml-auto" : "ml-1",
             deletingLevels && "opacity-50",
           )}
           disabled={isSomeLevelBeingEdited || deletingLevels}

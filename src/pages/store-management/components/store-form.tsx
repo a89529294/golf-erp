@@ -51,23 +51,18 @@ export function StoreForm({
   employees: Employee[];
   disabled?: boolean;
 }) {
-  const [checked, setChecked] = useState<boolean | "indeterminate">(false);
-  // const { storeId } = useParams();
-  // const [isOpeningGate, setIsOpeningGate] = useState(false);
-  // async function onOpenGate() {
-  //   try {
-  //     setIsOpeningGate(true);
-  //     await privateFetch(`/store/simulator/open-main-gate/${storeId}`, {
-  //       method: "POST",
-  //     });
-  //     toast.success("開啟大門成功");
-  //   } catch (e) {
-  //     console.log(e);
-  //     toast.error("無法開啟大門");
-  //   } finally {
-  //     setIsOpeningGate(false);
-  //   }
-  // }
+  const [fullHoursChecked, setFullHoursChecked] = useState<
+    boolean | "indeterminate"
+  >(false);
+  const [eInvoiceChecked, setEInvoiceChecked] = useState<
+    boolean | "indeterminate"
+  >(
+    !!(
+      form.getValues("invoiceMerchantId") ||
+      form.getValues("invoiceHashIV") ||
+      form.getValues("invoiceHashKey")
+    ),
+  );
 
   const isInputDisabled = !!(isMutating || disabled);
   return (
@@ -83,19 +78,7 @@ export function StoreForm({
           <div className="-mx-12 mb-4 bg-light-gray py-1.5 text-center text-black">
             基本資料
           </div>
-          {/* {isSimulatorDetails && (
-            <div className="grid grid-cols-[auto_1fr] items-center">
-              <span className="w-28">開啟大門</span>
-              <IconShortButton
-                className="flex justify-center"
-                icon="plus"
-                onClick={onOpenGate}
-                disabled={isOpeningGate}
-              >
-                開啟
-              </IconShortButton>
-            </div>
-          )} */}
+
           <StoreFormField
             disabled={isInputDisabled}
             form={form}
@@ -120,7 +103,7 @@ export function StoreForm({
               control={form.control}
               name="openingHoursStart"
               render={({ field }) => (
-                <FormItem className="flex flex-1 flex-col gap-1">
+                <FormItem className="flex flex-col flex-1 gap-1">
                   <FormControl>
                     <Input
                       className={cn(
@@ -130,7 +113,7 @@ export function StoreForm({
                       placeholder={`請輸入起始營業時間`}
                       type="time"
                       {...field}
-                      disabled={isInputDisabled || !!checked}
+                      disabled={isInputDisabled || !!fullHoursChecked}
                       onClick={(e) => e.currentTarget.showPicker()}
                       onChange={(e) => {
                         field.onChange(e);
@@ -138,8 +121,8 @@ export function StoreForm({
                           form.getValues("openingHoursEnd") === "23:59" &&
                           e.target.value === "00:00"
                         )
-                          setChecked(true);
-                        else setChecked(false);
+                          setFullHoursChecked(true);
+                        else setFullHoursChecked(false);
                         form.clearErrors("openingHoursStart");
                       }}
                     />
@@ -153,7 +136,7 @@ export function StoreForm({
               control={form.control}
               name="openingHoursEnd"
               render={({ field }) => (
-                <FormItem className="flex flex-1 flex-col gap-1">
+                <FormItem className="flex flex-col flex-1 gap-1">
                   <FormControl>
                     <Input
                       className={cn(
@@ -163,7 +146,7 @@ export function StoreForm({
                       placeholder={`請輸入結束營業時間`}
                       type="time"
                       {...field}
-                      disabled={isInputDisabled || !!checked}
+                      disabled={isInputDisabled || !!fullHoursChecked}
                       onClick={(e) => e.currentTarget.showPicker()}
                       onChange={(e) => {
                         field.onChange(e);
@@ -171,8 +154,8 @@ export function StoreForm({
                           form.getValues("openingHoursStart") === "00:00" &&
                           e.target.value === "23:59"
                         )
-                          setChecked(true);
-                        else setChecked(false);
+                          setFullHoursChecked(true);
+                        else setFullHoursChecked(false);
                         form.clearErrors("openingHoursEnd");
                       }}
                     />
@@ -186,13 +169,13 @@ export function StoreForm({
               24小時營業
               <Checkbox
                 className="disabled:opacity-25"
-                checked={checked}
+                checked={fullHoursChecked}
                 onCheckedChange={(e) => {
                   if (e === true) {
                     form.setValue("openingHoursStart", "00:00");
                     form.setValue("openingHoursEnd", "23:59");
                   }
-                  setChecked(e);
+                  setFullHoursChecked(e);
                 }}
                 disabled={isInputDisabled}
               />
@@ -230,7 +213,7 @@ export function StoreForm({
               control={form.control}
               name="phone"
               render={({ field }) => (
-                <FormItem className="ml-4 flex flex-col gap-1">
+                <FormItem className="flex flex-col gap-1 ml-4">
                   <FormControl>
                     <Input
                       className={cn(
@@ -287,7 +270,7 @@ export function StoreForm({
             districts={districts}
             disabled={isInputDisabled}
           />
-
+          <div>藍新金流設定</div>
           <StoreFormField
             disabled={isInputDisabled}
             form={form}
@@ -306,6 +289,51 @@ export function StoreForm({
             name={"hashIV"}
             label="HashIV"
           />
+          <Label className="flex items-center">
+            <div className="space-y-1">
+              <div className="w-28">電子發票</div>
+              <div className="w-28">多加三個</div>
+            </div>
+
+            <Checkbox
+              className="disabled:opacity-25"
+              checked={eInvoiceChecked}
+              onCheckedChange={(s) => {
+                setEInvoiceChecked(s);
+                if (!s) {
+                  form.setValue("invoiceMerchantId", "", { shouldDirty: true });
+                  form.setValue("invoiceHashKey", "", { shouldDirty: true });
+                  form.setValue("invoiceHashIV", "", { shouldDirty: true });
+                }
+              }}
+              disabled={isInputDisabled}
+            />
+          </Label>
+          {eInvoiceChecked && (
+            <>
+              <StoreFormField
+                labelClassName="w-40"
+                disabled={isInputDisabled}
+                form={form}
+                name={"invoiceMerchantId"}
+                label="InvoiceMerchantId"
+              />
+              <StoreFormField
+                labelClassName="w-40"
+                disabled={isInputDisabled}
+                form={form}
+                name={"invoiceHashKey"}
+                label="InvoiceHashKey"
+              />
+              <StoreFormField
+                labelClassName="w-40"
+                disabled={isInputDisabled}
+                form={form}
+                name={"invoiceHashIV"}
+                label="invoiceHashIV"
+              />
+            </>
+          )}
         </section>
         <section className="flex w-[613px] flex-col gap-6 border border-line-gray px-12 pb-10 sm:w-80">
           <div className="-mx-12 mb-4 bg-light-gray py-1.5 text-center text-black">

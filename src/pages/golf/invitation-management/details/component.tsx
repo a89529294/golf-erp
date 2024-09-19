@@ -78,7 +78,9 @@ export function Component() {
   function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    const x: InvitationPATCH = {};
+    const x: InvitationPATCH = {
+      storeId: invitation.store.id,
+    };
 
     const changedValues = filterObject(
       values,

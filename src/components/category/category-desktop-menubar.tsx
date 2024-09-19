@@ -1,5 +1,5 @@
 import plusIcon from "@/assets/plus-icon.svg";
-import { SearchInput } from "@/components/search-input";
+// import { SearchInput } from "@/components/search-input";
 import { button } from "@/components/ui/button-cn";
 import {
   Select,
@@ -41,7 +41,7 @@ export function CategoryDesktopMenubar({
         <img src={plusIcon} />
         新增場地
       </Link>
-      <SearchInput value={globalFilter} setValue={setGlobalFilter} />
+      {/* <SearchInput value={globalFilter} setValue={setGlobalFilter} /> */}
       <Select
         value={storeId}
         onValueChange={(v) => onStoreValueChange(v, false)}
