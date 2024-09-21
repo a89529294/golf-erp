@@ -16,19 +16,26 @@ const coachDetailsSchema = coachSchema
         class: { title: string; content: string }[];
       }[];
     }),
-    openTimes: z
-      .array(
-        z.object({
-          day: z.number(),
-          times: z.array(
-            z.object({
-              startTime: z.string().nullable(),
-              endTime: z.string().nullable(),
-            }),
-          ),
-        }),
-      )
-      .nullable(),
+    openTimes: z.string().transform((v) => {
+      return JSON.parse(v) as {
+        day: number;
+        times: { startTime: string; endTime: string }[];
+      }[];
+    }),
+
+    // openTimes: z
+    //   .array(
+    //     z.object({
+    //       day: z.number(),
+    //       times: z.array(
+    //         z.object({
+    //           startTime: z.string().nullable(),
+    //           endTime: z.string().nullable(),
+    //         }),
+    //       ),
+    //     }),
+    //   )
+    //   .nullish(),
     coachComments: z.array(z.string()),
     reviewStars: z.union([z.string(), z.number()]),
   })
