@@ -103,7 +103,7 @@ export function StoreForm({
               control={form.control}
               name="openingHoursStart"
               render={({ field }) => (
-                <FormItem className="flex flex-col flex-1 gap-1">
+                <FormItem className="flex flex-1 flex-col gap-1">
                   <FormControl>
                     <Input
                       className={cn(
@@ -136,7 +136,7 @@ export function StoreForm({
               control={form.control}
               name="openingHoursEnd"
               render={({ field }) => (
-                <FormItem className="flex flex-col flex-1 gap-1">
+                <FormItem className="flex flex-1 flex-col gap-1">
                   <FormControl>
                     <Input
                       className={cn(
@@ -213,7 +213,7 @@ export function StoreForm({
               control={form.control}
               name="phone"
               render={({ field }) => (
-                <FormItem className="flex flex-col gap-1 ml-4">
+                <FormItem className="ml-4 flex flex-col gap-1">
                   <FormControl>
                     <Input
                       className={cn(
@@ -288,6 +288,19 @@ export function StoreForm({
             form={form}
             name={"hashIV"}
             label="HashIV"
+          />
+          <div>LinePay 設定</div>
+          <StoreFormField
+            disabled={isInputDisabled}
+            form={form}
+            name={"linepayChannelId"}
+            label="ChannelId"
+          />
+          <StoreFormField
+            disabled={isInputDisabled}
+            form={form}
+            name={"linepayChannelSecret"}
+            label="Secret"
           />
           <Label className="flex items-center">
             <div className="space-y-1">

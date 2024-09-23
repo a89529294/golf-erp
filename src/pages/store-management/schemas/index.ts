@@ -30,6 +30,14 @@ export const formSchema = z
       .string()
       .nullable()
       .transform((v) => v ?? ""),
+    linepayChannelId: z
+      .string()
+      .nullable()
+      .transform((v) => v ?? ""),
+    linepayChannelSecret: z
+      .string()
+      .nullable()
+      .transform((v) => v ?? ""),
     invoiceMerchantId: z
       .string()
       .nullable()

@@ -23,6 +23,8 @@ export const storeSchema = z.object({
     .nullable()
     .transform((v) => v ?? ""),
   hashKey: z.string().nullable(),
+  linepayChannelId: z.string().nullable(),
+  linepayChannelSecret: z.string().nullable(),
   hashIV: z.string().nullable(),
   invoiceMerchantId: z
     .string()
