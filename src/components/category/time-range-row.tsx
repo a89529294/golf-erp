@@ -1,7 +1,9 @@
 // import greenFileIcon from "@/assets/green-file-icon.svg";
 import redXIcon from "@/assets/red-x-icon.svg";
 import trashCanIcon from "@/assets/trash-can-icon.svg";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { TimeRange } from "@/utils/category/schemas";
 import { useRef, useState } from "react";
@@ -112,7 +114,27 @@ export function TimeRangeRow({
         disabled={disabled}
       />
 
-      <div className="ml-auto flex gap-4">
+      <Label className="ml-2.5 flex items-center gap-2 ">
+        <Checkbox
+          className="disabled:opacity-25"
+          checked={start === "00:00:00" && end === "23:59:00"}
+          onCheckedChange={(e) => {
+            if (e === true) {
+              setStart("00:00:00");
+              setEnd("23:59:00");
+              onSaveTimeRange("00:00:00", "23:59:00");
+            } else {
+              setStart("");
+              setEnd("");
+            }
+            // setFullHoursChecked(e);
+          }}
+          // disabled={isInputDisabled}
+        />
+        24小時營業
+      </Label>
+
+      <div className="ml-auto flex gap-4 ">
         <span className="text-red-500">{errorMessage}</span>
         {data[0].saved ? (
           <>

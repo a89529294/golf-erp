@@ -16,12 +16,17 @@ const coachDetailsSchema = coachSchema
         class: { title: string; content: string }[];
       }[];
     }),
-    openTimes: z.string().transform((v) => {
-      return JSON.parse(v) as {
-        day: number;
-        times: { startTime: string; endTime: string }[];
-      }[];
-    }),
+    openTimes: z
+      .string()
+      .nullable()
+      .transform((v) => {
+        return v
+          ? (JSON.parse(v) as {
+              day: number;
+              times: { startTime: string; endTime: string }[];
+            }[])
+          : null;
+      }),
 
     // openTimes: z
     //   .array(
