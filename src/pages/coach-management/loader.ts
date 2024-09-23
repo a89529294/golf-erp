@@ -15,7 +15,7 @@ export const coachSchema = z.object({
     .transform((v) =>
       v === "pending" ? "審核中" : v === "pass" ? "審核成功" : "審核失敗",
     ),
-  avatarFileId: z.string().nullable(),
+  avatarFileId: z.string().nullish(),
 });
 
 // const coachesSchema = z.object({

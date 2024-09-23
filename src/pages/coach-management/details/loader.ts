@@ -17,18 +17,30 @@ const coachDetailsSchema = coachSchema
       }[];
     }),
     openTimes: z
-      .array(
-        z.object({
-          day: z.number(),
-          times: z.array(
-            z.object({
-              startTime: z.string().nullable(),
-              endTime: z.string().nullable(),
-            }),
-          ),
-        }),
-      )
-      .nullable(),
+      .string()
+      .nullable()
+      .transform((v) => {
+        return v
+          ? (JSON.parse(v) as {
+              day: number;
+              times: { startTime: string; endTime: string }[];
+            }[])
+          : null;
+      }),
+
+    // openTimes: z
+    //   .array(
+    //     z.object({
+    //       day: z.number(),
+    //       times: z.array(
+    //         z.object({
+    //           startTime: z.string().nullable(),
+    //           endTime: z.string().nullable(),
+    //         }),
+    //       ),
+    //     }),
+    //   )
+    //   .nullish(),
     coachComments: z.array(z.string()),
     reviewStars: z.union([z.string(), z.number()]),
   })

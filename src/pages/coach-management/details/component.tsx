@@ -109,7 +109,7 @@ export function Component() {
                 審核成功
               </IconButton>
               <IconButton
-                className="text-red-500 bg-red-500/10 outline-red-500"
+                className="bg-red-500/10 text-red-500 outline-red-500"
                 icon="redX"
                 onClick={() => updateCoachStatus("decline")}
                 disabled={isUpdatingCoachStatus}
@@ -139,10 +139,10 @@ export function Component() {
         </>
       }
     >
-      <div className="relative w-full h-full">
+      <div className="relative h-full w-full">
         <div className="absolute inset-0 mb-2.5 border border-line-gray bg-light-gray">
           <ScrollArea className="h-full ">
-            <div className="flex flex-col items-center pt-12 gap-7">
+            <div className="flex flex-col items-center gap-7 pt-12">
               <section className="flex w-[613px] flex-col gap-6 border border-line-gray bg-white px-16 pb-10 sm:w-80">
                 <div className="-mx-16 mb-10 bg-light-gray py-1.5 text-center text-black ">
                   基本資料
@@ -151,13 +151,13 @@ export function Component() {
                 <div className="flex items-center gap-7">
                   <div className="h-[180px] w-[150px]">
                     <img
-                      className="object-cover h-full"
+                      className="h-full object-cover"
                       alt=""
                       src={coach.avatarSrc}
                     />
                   </div>
 
-                  <div className="flex flex-col flex-1 gap-7">
+                  <div className="flex flex-1 flex-col gap-7">
                     <Row label="姓名" value={coach.name} />
                     <Row label="電話" value={coach.phone} />
                     <Row label="審核狀態" value={coach.status} />
@@ -169,7 +169,7 @@ export function Component() {
                 <h2 className="font-medium">資歷</h2>
 
                 <div className="w-[613px] border-y border-line-gray">
-                  <ScrollArea className="w-full p-5 bg-white">
+                  <ScrollArea className="w-full bg-white p-5">
                     <div className="flex gap-5">
                       {coach.resumesSrc.map((q, idx) => {
                         return <ImageDialog key={idx} imgSrc={q} />;
@@ -185,7 +185,7 @@ export function Component() {
                 <h2 className="font-medium">證書</h2>
 
                 <div className="w-[613px] border-y border-line-gray">
-                  <ScrollArea className="w-full p-5 bg-white">
+                  <ScrollArea className="w-full bg-white p-5">
                     <div className="flex gap-5">
                       {coach.certificatesSrc.map((q, idx) => {
                         return <ImageDialog key={idx} imgSrc={q} />;
@@ -217,11 +217,11 @@ export function Component() {
                           {dayToWeekday[q.day]}
                         </span>
                         <div className="flex gap-1.5 rounded-md bg-light-gray px-4 pb-1.5 pt-2.5">
-                          <div className="w-16 text-center border-b border-secondary-dark">
+                          <div className="w-16 border-b border-secondary-dark text-center">
                             {q.times[0].startTime}
                           </div>
                           ～
-                          <div className="w-16 text-center border-b border-secondary-dark">
+                          <div className="w-16 border-b border-secondary-dark text-center">
                             {q.times[0].endTime}
                           </div>
                         </div>
@@ -252,12 +252,12 @@ export function Component() {
                         return (
                           <div key={idx} className="flex ">
                             <div className="w-[84px] " />
-                            <div className="relative flex-1 px-5 py-6 rounded-md bg-light-gray">
+                            <div className="relative flex-1 rounded-md bg-light-gray px-5 py-6">
                               <h3 className="absolute top-0 -translate-y-1/2 text-word-gray-dark">
                                 第{outerIdx + 1}堂
                               </h3>
 
-                              <div className="flex gap-5 mb-5">
+                              <div className="mb-5 flex gap-5">
                                 <div className="font-medium">課堂標題</div>
                                 <div className="flex-1 border-b border-secondary-dark">
                                   {c.title}
@@ -277,6 +277,12 @@ export function Component() {
                     </div>
                   );
                 })}
+
+                {coach.educatePlan.length === 0 && (
+                  <div className="flex w-[613px] flex-col items-center gap-10 border-y border-line-gray bg-white px-5 py-7 ">
+                    暫無資料
+                  </div>
+                )}
               </section>
 
               <section className="space-y-4">
@@ -306,7 +312,7 @@ export function Component() {
                 <div className="flex w-[613px] flex-col items-center gap-10 border-y border-line-gray bg-white px-5 py-7 ">
                   {coach.coachComments.map((comment, idx) => {
                     return (
-                      <div key={idx} className="px-4 py-3 bg-light-gray">
+                      <div key={idx} className="bg-light-gray px-4 py-3">
                         {comment}
                       </div>
                     );
