@@ -58,6 +58,8 @@ export function Component() {
       employees: [],
       merchantId: "",
       hashKey: "",
+      linepayChannelId: "",
+      linepayChannelSecret: "",
       hashIV: "",
       invoiceMerchantId: "",
       invoiceHashKey: "",
@@ -91,6 +93,12 @@ export function Component() {
       ...(values.merchantId ? { merchantId: values.merchantId } : {}),
       ...(values.hashKey ? { hashKey: values.hashKey } : {}),
       ...(values.hashIV ? { hashIV: values.hashIV } : {}),
+      ...(values.linepayChannelId
+        ? { linepayChannelId: values.linepayChannelId }
+        : {}),
+      ...(values.linepayChannelSecret
+        ? { linepayChannelSecret: values.linepayChannelSecret }
+        : {}),
       ...(values.invoiceMerchantId
         ? { invoiceMerchantId: values.invoiceMerchantId }
         : {}),

@@ -87,6 +87,8 @@ export function Component() {
       merchantId: store.merchantId ?? "",
       hashKey: store.hashKey ?? "",
       hashIV: store.hashIV ?? "",
+      linepayChannelId: store.linepayChannelId ?? "",
+      linepayChannelSecret: store.linepayChannelSecret ?? "",
       invoiceMerchantId: store.invoiceMerchantId ?? "",
       invoiceHashIV: store.invoiceHashIV ?? "",
       invoiceHashKey: store.invoiceHashKey ?? "",
@@ -137,6 +139,8 @@ export function Component() {
       merchantId: values.merchantId,
       hashIV: values.hashIV,
       hashKey: values.hashKey,
+      linepayChannelId: values.linepayChannelId,
+      linepayChannelSecret: values.linepayChannelSecret,
       invoiceMerchantId: values.invoiceMerchantId,
       invoiceHashIV: values.invoiceHashIV,
       invoiceHashKey: values.invoiceHashKey,
@@ -168,6 +172,13 @@ export function Component() {
       changedFields.merchantId = transformedValues.merchantId;
     if (dirtyFields.hashIV) changedFields.hashIV = transformedValues.hashIV;
     if (dirtyFields.hashKey) changedFields.hashKey = transformedValues.hashKey;
+
+    if (dirtyFields.linepayChannelId)
+      changedFields.linepayChannelId = transformedValues.linepayChannelId;
+    if (dirtyFields.linepayChannelSecret)
+      changedFields.linepayChannelSecret =
+        transformedValues.linepayChannelSecret;
+
     if (dirtyFields.invoiceMerchantId)
       changedFields.invoiceMerchantId = transformedValues.invoiceMerchantId;
     if (dirtyFields.invoiceHashIV)
@@ -216,6 +227,8 @@ export function Component() {
         merchantId: form.getValues("merchantId"),
         hashKey: form.getValues("hashKey"),
         hashIV: form.getValues("hashIV"),
+        linepayChannelId: form.getValues("linepayChannelId"),
+        linepayChannelSecret: form.getValues("linepayChannelSecret"),
         invoiceMerchantId: form.getValues("invoiceMerchantId"),
         invoiceHashKey: form.getValues("invoiceHashKey"),
         invoiceHashIV: form.getValues("invoiceHashIV"),
