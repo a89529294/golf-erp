@@ -64,8 +64,8 @@ function Calendar({
       }}
       onDayClick={onDaySelect}
       captionLayout="dropdown"
-      fromYear={1900}
-      toYear={2030}
+      fromYear={2024}
+      toYear={2099}
       disabled={
         fromDate ? { before: fromDate } : toDate ? { after: toDate } : false
       }
