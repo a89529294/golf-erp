@@ -219,7 +219,7 @@ export function Site({
           )}
         </div>
         <FormTextField
-          name="description"
+          name="introduce"
           label="場地簡介"
           disabled={formDisabled}
         />

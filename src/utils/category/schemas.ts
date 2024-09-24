@@ -65,7 +65,7 @@ type ExistingImg = z.infer<typeof existingImgSchema>;
 
 const nameSchema = { name: z.string().min(1, { message: "請填入場地名" }) };
 const descriptionSchema = {
-  description: z.string().min(1, { message: "請填入場地簡介" }),
+  introduce: z.string().min(1, { message: "請填入場地簡介" }),
 };
 const storeIdSchema = { storeId: z.string().min(1, { message: "請綁定廠商" }) };
 const openingDatesSchema = {

@@ -15,7 +15,7 @@ export function FormTextField({
   disabled,
   className,
 }: {
-  name: "name" | "description" | "code";
+  name: "name" | "introduce" | "code";
   label: string;
   disabled?: boolean;
   className?: string;
@@ -36,7 +36,7 @@ export function FormTextField({
           <FormControl>
             <UnderscoredInput
               placeholder={`請輸入${label}`}
-              className="p-0 pb-1 h-7"
+              className="h-7 p-0 pb-1"
               disabled={disabled}
               {...field}
               onChange={(e) => {
