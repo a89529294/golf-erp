@@ -11,7 +11,7 @@ export const getStoresQuery = (
   queryFn: async () => {
     if (allowedStores === "all") {
       const response = await privateFetch(
-        `/store?pageSize=99&filter[category]=${category}&populate=${category + "s"}`,
+        `/store?pageSize=999&filter[category]=${category}&populate=${category + "s"}`,
       );
 
       const data = await response.json();

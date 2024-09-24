@@ -20,7 +20,7 @@ export const genGolfStoresWithSitesQuery = (
   queryFn: async () => {
     if (allowedStores === "all") {
       const response = await privateFetch(
-        "/store?pageSize=99&filter[category]=golf&populate=simulators&populate=grounds&populate=golfs&populate=golfs.openTimes&populate=golfs.equipments&populate=golfs.openDays",
+        "/store?pageSize=999&filter[category]=golf&populate=simulators&populate=grounds&populate=golfs&populate=golfs.openTimes&populate=golfs.equipments&populate=golfs.openDays",
       );
 
       const data = await response.json();
@@ -29,7 +29,7 @@ export const genGolfStoresWithSitesQuery = (
     } else {
       if (!allowedStores[0]) return [];
       const promises = allowedStores.map((as) =>
-        privateFetch(`/store/${as.id}/golf?pageSize=99&populate=*`),
+        privateFetch(`/store/${as.id}/golf?pageSize=999&populate=*`),
       );
 
       const responses = await Promise.all(promises);
@@ -41,22 +41,6 @@ export const genGolfStoresWithSitesQuery = (
         name: allowedStores[i].name,
         sites: pd.data,
       }));
-
-      // const response = await privateFetch(
-      //   `/store/${allowedStores[0].id}/golf?pageSize=99&populate=*`,
-      // );
-
-      // const data = sitesSchema.parse(await response.json());
-
-      // return [
-      //   {
-      //     ...(data.data[0]?.store ?? {
-      //       id: allowedStores[0].id,
-      //       name: allowedStores[0].name,
-      //     }),
-      //     sites: data.data,
-      //   },
-      // ];
     }
   },
 });
@@ -66,7 +50,7 @@ export const golfStoresQuery = (allowedStores: SimpleStore[] | "all") => ({
   queryFn: async () => {
     if (allowedStores === "all") {
       const response = await privateFetch(
-        "/store?pageSize=99&filter[category]=golf",
+        "/store?pageSize=999&filter[category]=golf",
       );
 
       const data = await response.json();

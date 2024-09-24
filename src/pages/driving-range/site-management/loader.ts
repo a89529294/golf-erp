@@ -21,7 +21,7 @@ export const genGroundStoresWithSitesQuery = (
     queryFn: async () => {
       if (allowedStores === "all") {
         const response = await privateFetch(
-          "/store?pageSize=99&filter[category]=ground&populate=simulators&populate=grounds&populate=golfs&populate=grounds.openTimes&populate=grounds.equipments&populate=grounds.openDays&populate=merchantId",
+          "/store?pageSize=999&filter[category]=ground&populate=simulators&populate=grounds&populate=golfs&populate=grounds.openTimes&populate=grounds.equipments&populate=grounds.openDays&populate=merchantId",
         );
 
         const x = await response.json();
@@ -33,7 +33,7 @@ export const genGroundStoresWithSitesQuery = (
         if (!allowedStores[0]) return [];
 
         const promises = allowedStores.map((as) =>
-          privateFetch(`/store/${as.id}/ground?pageSize=99&populate=*`),
+          privateFetch(`/store/${as.id}/ground?pageSize=999&populate=*`),
         );
 
         const responses = await Promise.all(promises);
@@ -46,20 +46,6 @@ export const genGroundStoresWithSitesQuery = (
           merchantId: allowedStores[i].merchantId,
           sites: pd.data,
         }));
-
-        // const response = await privateFetch(
-        //   `/store/${allowedStores[0].id}/ground?pageSize=99&populate=*`,
-        // );
-
-        // const data = sitesSchema.parse(await response.json());
-
-        // return [
-        //   {
-        //     id: allowedStores[0].id,
-        //     name: allowedStores[0].name,
-        //     sites: data.data,
-        //   },
-        // ];
       }
     },
   };
@@ -70,7 +56,7 @@ export const groundStoresQuery = (allowedStores: SimpleStore[] | "all") => ({
   queryFn: async () => {
     if (allowedStores === "all") {
       const response = await privateFetch(
-        "/store?pageSize=99&filter[category]=ground",
+        "/store?pageSize=999&filter[category]=ground",
       );
 
       const data = storesWithoutEmployeesSchema.parse(

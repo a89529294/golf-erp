@@ -20,7 +20,7 @@ export const genIndoorSimulatorStoresWithSitesQuery = (
   queryFn: async () => {
     if (allowedStores === "all") {
       const response = await privateFetch(
-        "/store?pageSize=99&filter[category]=simulator&populate=simulators&populate=grounds&populate=golfs&populate=simulators.openTimes&populate=simulators.equipments&populate=simulators.openDays&populate=store",
+        "/store?pageSize=999&filter[category]=simulator&populate=simulators&populate=grounds&populate=golfs&populate=simulators.openTimes&populate=simulators.equipments&populate=simulators.openDays&populate=store",
       );
       const data = await response.json();
 
@@ -29,7 +29,7 @@ export const genIndoorSimulatorStoresWithSitesQuery = (
       if (!allowedStores[0]) return [];
 
       const promises = allowedStores.map((as) =>
-        privateFetch(`/store/${as.id}/simulator?pageSize=99&populate=*`),
+        privateFetch(`/store/${as.id}/simulator?pageSize=999&populate=*`),
       );
 
       const responses = await Promise.all(promises);
@@ -42,24 +42,6 @@ export const genIndoorSimulatorStoresWithSitesQuery = (
         merchantId: allowedStores[i].merchantId,
         sites: pd.data,
       }));
-
-      // const response = await privateFetch(
-      //   `/store/${allowedStores[0].id}/simulator?pageSize=99&populate=*`,
-      // );
-
-      // const data = await response.json();
-
-      // const parsed = sitesSchema.parse(data);
-
-      // return [
-      //   {
-      //     ...(parsed.data[0]?.store ?? {
-      //       id: allowedStores[0].id,
-      //       name: allowedStores[0].name,
-      //     }),
-      //     sites: parsed.data,
-      //   },
-      // ];
     }
   },
 });
@@ -71,7 +53,7 @@ export const indoorSimulatorStoresQuery = (
   queryFn: async () => {
     if (allowedStores === "all") {
       const response = await privateFetch(
-        "/store?pageSize=99&filter[category]=simulator",
+        "/store?pageSize=999&filter[category]=simulator",
       );
       const data = await response.json();
 
