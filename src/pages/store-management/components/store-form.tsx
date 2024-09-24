@@ -35,6 +35,7 @@ export function StoreForm({
   districts,
   employees,
   disabled,
+  disableCode,
 }: {
   form: UseFormReturn<z.infer<typeof formSchema>>;
   onSubmit: (values: z.infer<typeof formSchema>) => void;
@@ -50,6 +51,7 @@ export function StoreForm({
     | undefined;
   employees: Employee[];
   disabled?: boolean;
+  disableCode?: boolean;
 }) {
   const [fullHoursChecked, setFullHoursChecked] = useState<
     boolean | "indeterminate"
@@ -80,7 +82,7 @@ export function StoreForm({
           </div>
 
           <StoreFormField
-            disabled={isInputDisabled}
+            disabled={isInputDisabled || !!disableCode}
             form={form}
             name={"code"}
             label="廠商編號"

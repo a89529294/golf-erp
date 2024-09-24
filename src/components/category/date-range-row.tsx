@@ -1,11 +1,13 @@
 import { DatePicker } from "@/components/date-picker";
-import { addDays } from "date-fns";
+import { addDays, addYears } from "date-fns";
 import { useState } from "react";
 // import greenFileIcon from "@/assets/green-file-icon.svg";
 import trashCanIcon from "@/assets/trash-can-icon.svg";
 import redXIcon from "@/assets/red-x-icon.svg";
 import { cn } from "@/lib/utils";
 import { DateRange } from "@/utils/category/schemas";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 
 export function DateRangeRow({
   onRemove,
@@ -33,7 +35,7 @@ export function DateRangeRow({
 
   // console.log(data);
 
-  function onSaveDateRange(start: Date, end: Date) {
+  function onSaveDateRange(start: Date | undefined, end: Date | undefined) {
     // if (!start)
     //   setErrorFields((errorFields) => ({ ...errorFields, start: true }));
     // if (!end) setErrorFields((errorFields) => ({ ...errorFields, end: true }));
@@ -43,6 +45,13 @@ export function DateRangeRow({
         id: data.id,
         start,
         end,
+        saved: true,
+      });
+    } else {
+      onSave({
+        id: data.id,
+        start: undefined,
+        end: undefined,
         saved: true,
       });
     }
@@ -92,6 +101,28 @@ export function DateRangeRow({
         onEdit={onEdit}
         disabled={disabled}
       />
+
+      <Label className="ml-2.5 flex items-center gap-2 text-secondary-dark">
+        <Checkbox
+          className="disabled:opacity-25"
+          // checked={start === "00:00:00" && end === "23:59:00"}
+          onCheckedChange={
+            (e) => {
+              setStart(new Date());
+              setEnd(addYears(new Date(), 100));
+              if (e) onSaveDateRange(new Date(), addYears(new Date(), 100));
+              else {
+                setStart(undefined);
+                setEnd(undefined);
+                onSaveDateRange(undefined, undefined);
+              }
+            }
+            // setFullHoursChecked(e);
+          }
+          // disabled={isInputDisabled}
+        />
+        無期限
+      </Label>
 
       <div className="ml-auto flex gap-4">
         {/* {errorMsg && <span className="text-red-500">{errorMsg}</span>} */}

@@ -31,10 +31,6 @@ export function NumberInput({
         // }}
         {...props}
       />
-      {/* <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        {new Intl.NumberFormat().format(value ? +value : 0)}
-        {focused && <span className="animate-blink">│</span>}
-      </div> */}
     </div>
   );
 }

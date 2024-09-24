@@ -153,7 +153,8 @@ export const columns = (
         return new Intl.NumberFormat()
           .format(
             row.appChargeHistories.reduce(
-              (acc, val) => (val.store.id === storeId ? acc + val.amount : acc),
+              (acc, val) =>
+                val.store?.id === storeId ? acc + val.amount : acc,
               0,
             ),
           )
