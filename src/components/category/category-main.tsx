@@ -124,7 +124,7 @@ export function CategoryMain({
       {({ height }) => {
         return (
           <ScrollArea
-            className="w-full p-5 overflow-auto border border-line-gray bg-light-gray"
+            className="w-full overflow-auto border border-line-gray bg-light-gray p-5"
             style={{ height: height }}
           >
             <div className="relative flex h-full flex-col gap-2.5">
@@ -335,7 +335,7 @@ function Section({
         />
       )}
 
-      <div className="flex flex-col self-start gap-4">
+      <div className="flex flex-col gap-4 self-start">
         <Link to={`${siteDetailsHref}/${id}`}>
           <img src={pencilIcon} />
         </Link>
@@ -389,7 +389,7 @@ function MiddleSection<T>({
           return (
             <li key={i} className="overflow-hidden">
               {/* this wrapper is necessary if you set li to flex, the list marker disappears */}
-              <div className="inline-flex justify-between font-mono truncate">
+              <div className="inline-flex justify-between truncate font-mono">
                 {liContentRenderer(h)}
               </div>
             </li>

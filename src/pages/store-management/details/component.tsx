@@ -275,6 +275,7 @@ export function Component() {
       <div className="mb-2.5 w-full border border-line-gray p-1 ">
         <div className="bg-light-gray py-2.5  text-center">編輯廠商資料</div>
         <StoreForm
+          disableCode
           counties={counties}
           districts={districts}
           employees={employees}
