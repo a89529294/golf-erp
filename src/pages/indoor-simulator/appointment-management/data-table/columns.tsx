@@ -87,6 +87,26 @@ export const columns: ColumnDef<Appointment>[] = [
     },
   },
   {
+    accessorKey: "order.paymentMethod",
+    header: ({ column }) => {
+      return (
+        <button
+          className="flex items-center gap-1 whitespace-nowrap"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          付款方式
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </button>
+      );
+    },
+    cell: (prop) => {
+      prop.getValue() && console.log(prop.getValue());
+      return (
+        <div className="whitespace-nowrap">{prop.getValue() as string}</div>
+      );
+    },
+  },
+  {
     accessorKey: "status",
     header: ({ column }) => {
       return (
