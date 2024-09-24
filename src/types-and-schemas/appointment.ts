@@ -1,9 +1,7 @@
 import { fromDateToDateTimeString } from "@/utils";
 import { z } from "zod";
 
-const paymentMethodSchema = z.nullable(
-  z.union([z.literal("credit"), z.literal("ApplePay"), z.literal("line-pay")]),
-);
+const paymentMethodSchema = z.nullable(z.string());
 
 export const baseAppointmentSchema = z.object({
   id: z.string(), // appointmentId
