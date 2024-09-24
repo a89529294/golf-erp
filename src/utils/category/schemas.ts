@@ -20,18 +20,36 @@ export const storeSchema = z.object({
   employees: z.array(employeeSchema).optional(),
   merchantId: z
     .string()
-    .nullable()
+    .nullish()
     .transform((v) => v ?? ""),
-  hashKey: z.string().nullable(),
-  linepayChannelId: z.string().nullable(),
-  linepayChannelSecret: z.string().nullable(),
-  hashIV: z.string().nullable(),
+  hashKey: z
+    .string()
+    .nullish()
+    .transform((v) => v ?? ""),
+  linepayChannelId: z
+    .string()
+    .nullish()
+    .transform((v) => v ?? ""),
+  linepayChannelSecret: z
+    .string()
+    .nullish()
+    .transform((v) => v ?? ""),
+  hashIV: z
+    .string()
+    .nullish()
+    .transform((v) => v ?? ""),
   invoiceMerchantId: z
     .string()
-    .nullable()
+    .nullish()
     .transform((v) => v ?? ""),
-  invoiceHashKey: z.string().nullable(),
-  invoiceHashIV: z.string().nullable(),
+  invoiceHashKey: z
+    .string()
+    .nullish()
+    .transform((v) => v ?? ""),
+  invoiceHashIV: z
+    .string()
+    .nullish()
+    .transform((v) => v ?? ""),
 });
 
 const fileWithIdSchema = z.object({

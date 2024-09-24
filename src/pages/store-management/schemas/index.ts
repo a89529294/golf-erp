@@ -20,35 +20,35 @@ export const formSchema = z
     employees: z.array(employeeSchema),
     merchantId: z
       .string()
-      .nullable()
+      .nullish()
       .transform((v) => v ?? ""),
     hashKey: z
       .string()
-      .nullable()
+      .nullish()
       .transform((v) => v ?? ""),
     hashIV: z
       .string()
-      .nullable()
+      .nullish()
       .transform((v) => v ?? ""),
     linepayChannelId: z
       .string()
-      .nullable()
+      .nullish()
       .transform((v) => v ?? ""),
     linepayChannelSecret: z
       .string()
-      .nullable()
+      .nullish()
       .transform((v) => v ?? ""),
     invoiceMerchantId: z
       .string()
-      .nullable()
+      .nullish()
       .transform((v) => v ?? ""),
     invoiceHashKey: z
       .string()
-      .nullable()
+      .nullish()
       .transform((v) => v ?? ""),
     invoiceHashIV: z
       .string()
-      .nullable()
+      .nullish()
       .transform((v) => v ?? ""),
   })
   .refine(
