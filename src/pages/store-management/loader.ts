@@ -81,7 +81,7 @@ export const storesQuery = {
   queryKey: ["stores"],
   queryFn: async () => {
     const response = await privateFetch(
-      "/store?pageSize=99&populate=employees",
+      "/store?pageSize=999&populate=employees",
     );
 
     const data = await response.json();
