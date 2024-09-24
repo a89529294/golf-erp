@@ -48,7 +48,7 @@ export function Component() {
       name: data.name,
       code: data.code,
       isActive: data.isActive,
-      description: data.description,
+      introduce: data.introduce,
       equipments: data.equipments,
       storeId: data.storeId,
       imageFiles: data.imageFiles,
@@ -68,7 +68,7 @@ export function Component() {
 
       const x = {} as Partial<SimulatorPATCH>;
       if (changedValues["name"]) x.name = changedValues["name"];
-      if (changedValues["description"]) x.introduce = changedValues.description;
+      if (changedValues["introduce"]) x.introduce = changedValues.introduce;
       if (changedValues["storeId"]) x.storeId = changedValues.storeId;
       if (changedValues["openingDates"]) {
         x.openDays = [];

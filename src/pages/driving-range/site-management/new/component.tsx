@@ -32,7 +32,7 @@ export function Component() {
     defaultValues: {
       name: "",
       isActive: false,
-      description: "",
+      introduce: "",
       storeId: "",
       equipments: [],
       imageFiles: [],
@@ -51,7 +51,7 @@ export function Component() {
         body: JSON.stringify({
           name: v.name,
           isActive: v.isActive,
-          introduce: v.description,
+          introduce: v.introduce,
           ballPrice: v.costPerBox,
           storeId: v.storeId,
           equipmentIds: form.getValues("equipments").map((e) => e.id),

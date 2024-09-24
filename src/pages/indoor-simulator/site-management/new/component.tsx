@@ -33,7 +33,7 @@ export function Component() {
     defaultValues: {
       name: "",
       isActive: false,
-      description: "",
+      introduce: "",
       equipments: [],
       imageFiles: [],
       openingDates: [],
@@ -49,7 +49,7 @@ export function Component() {
         body: JSON.stringify({
           name: form.getValues("name"),
           isActive: form.getValues("isActive"),
-          introduce: form.getValues("description"),
+          introduce: form.getValues("introduce"),
           storeId: form.getValues("storeId"),
           equipmentIds: form.getValues("equipments").map((e) => e.id),
           openDays: form.getValues("openingDates").map((v, i) => ({

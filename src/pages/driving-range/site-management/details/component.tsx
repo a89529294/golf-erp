@@ -43,7 +43,7 @@ export function Component() {
     defaultValues: {
       name: data.name,
       isActive: data.isActive,
-      description: data.description,
+      introduce: data.introduce,
       storeId: data.storeId,
       equipments: data.equipments,
       imageFiles: data.imageFiles,
@@ -66,8 +66,7 @@ export function Component() {
 
       const x = {} as Partial<DrivingRangePATCH>;
       if ("name" in changedFields) x.name = changedFields.name;
-      if ("description" in changedFields)
-        x.introduce = changedFields.description;
+      if ("introduce" in changedFields) x.introduce = changedFields.introduce;
       if ("storeId" in changedFields) x.storeId = changedFields.storeId;
       if ("costPerBox" in changedFields) x.ballPrice = changedFields.costPerBox;
       if ("equipments" in changedFields)

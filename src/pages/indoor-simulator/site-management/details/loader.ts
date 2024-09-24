@@ -74,7 +74,7 @@ export const genSimulatorDetailsQuery = (storeId: string, siteId: string) => ({
       name: parsed.name,
       code: parsed.code,
       isActive: parsed.isActive,
-      description: parsed.introduce,
+      introduce: parsed.introduce,
       storeId: parsed.store.id,
       equipments: parsed.equipments,
       openingDates: parsed.openDays.map((v) => ({

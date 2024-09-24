@@ -34,7 +34,7 @@ export function Component() {
     defaultValues: {
       name: data.name,
       isActive: data.isActive,
-      description: data.introduce,
+      introduce: data.introduce,
       equipments: data.equipments,
       imageFiles: data.imageFiles,
       openingDates: data.openingDates,
@@ -76,7 +76,7 @@ export function Component() {
       );
 
       if (changedValues["name"]) x.name = changedValues.name;
-      if (changedValues.description) x.introduce = changedValues.description;
+      if (changedValues.introduce) x.introduce = changedValues.introduce;
       if (changedValues.storeId) x.storeId = changedValues.storeId;
       if (changedValues.equipments)
         x.equipmentIds = changedValues.equipments.map((e) => e.id);
@@ -193,7 +193,7 @@ export function Component() {
     form.reset({
       name: data.name,
       isActive: data.isActive,
-      description: data.introduce,
+      introduce: data.introduce,
       equipments: data.equipments,
       imageFiles: data.imageFiles,
       openingDates: data.openingDates,
@@ -214,7 +214,7 @@ export function Component() {
     form.reset({
       name: data.name,
       isActive: data.isActive,
-      description: data.introduce,
+      introduce: data.introduce,
       equipments: data.equipments,
       imageFiles: data.imageFiles,
       openingDates: data.openingDates,

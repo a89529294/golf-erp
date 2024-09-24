@@ -75,7 +75,7 @@ export const genDrivingRangeDetailsQuery = (
     return {
       name: parsed.name,
       isActive: parsed.isActive,
-      description: parsed.introduce,
+      introduce: parsed.introduce,
       storeId: parsed.store.id,
       openingDates: parsed.openDays.map((v) => ({
         id: v.id,
