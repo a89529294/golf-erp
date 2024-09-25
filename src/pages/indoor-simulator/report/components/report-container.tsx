@@ -6,7 +6,6 @@ import { RightPanel } from "@/pages/indoor-simulator/report/components/right-pan
 import { SitesList } from "@/pages/indoor-simulator/report/components/sites-list";
 import { SwitchButton } from "@/pages/indoor-simulator/report/components/switch-button";
 import { ReportData } from "@/pages/indoor-simulator/report/loader";
-import { SimulatorStoreWithSites } from "@/pages/store-management/loader";
 import { DataType } from "@/types-and-schemas/report";
 import { formatDateAsString, updateSearchParams } from "@/utils";
 import { lastDayOfMonth } from "date-fns";
@@ -18,7 +17,7 @@ export function ReportContainer({
   stores,
 }: {
   data: ReportData;
-  stores: SimulatorStoreWithSites[];
+  stores: { id: string; name: string; merchantId: string }[];
 }) {
   const [activeDataType, setActiveDataType] =
     React.useState<DataType>("revenue");

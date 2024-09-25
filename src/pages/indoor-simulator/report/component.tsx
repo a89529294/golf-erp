@@ -1,14 +1,4 @@
-import { useAuth } from "@/hooks/use-auth";
-import { MainLayout } from "@/layouts/main-layout";
-import {
-  useLoaderData,
-  useParams,
-  useNavigate,
-  useSearchParams,
-} from "react-router-dom";
-import { genDataQuery, loader } from "./loader";
-import { useQuery } from "@tanstack/react-query";
-import { genIndoorSimulatorStoresWithSitesQuery } from "@/pages/indoor-simulator/site-management/loader";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Select,
   SelectContent,
@@ -16,11 +6,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useCallback, useEffect } from "react";
-import { ReportContainer } from "@/pages/indoor-simulator/report/components/report-container";
+import { useAuth } from "@/hooks/use-auth";
 import { useIsMobile } from "@/hooks/use-is-mobile";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { MainLayout } from "@/layouts/main-layout";
+import { ReportContainer } from "@/pages/indoor-simulator/report/components/report-container";
 import { Scrollbar } from "@radix-ui/react-scroll-area";
+import { useQuery } from "@tanstack/react-query";
+import { useCallback, useEffect } from "react";
+import {
+  useLoaderData,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
+import { genDataQuery, genIndoorSimulatorStoresQuery, loader } from "./loader";
 
 export function Component() {
   const isMobile = useIsMobile();
@@ -29,13 +28,16 @@ export function Component() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { storeId } = useParams();
+
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
+
   const { data: stores } = useQuery({
-    ...genIndoorSimulatorStoresWithSitesQuery(
-      user!.isAdmin ? "all" : user!.allowedStores.simulator,
+    ...genIndoorSimulatorStoresQuery(
+      user?.isAdmin ? "all" : user?.allowedStores.simulator ?? [],
     ),
     initialData: initialData.simulators,
   });
+
   const { data } = useQuery({
     ...genDataQuery(
       storeId!,
@@ -46,7 +48,9 @@ export function Component() {
     enabled: false,
   });
 
-  console.log(data);
+  // const stores = Object.values(data?.total.storeSimulatorAppointments ?? {}).map(v=>({
+  //   ...v.storeSimulator
+  // }))
 
   const onStoreValueChange = useCallback(
     (storeId: string, replace: boolean) => {
@@ -94,14 +98,14 @@ export function Component() {
       {isMobile ? (
         ({ height }) => (
           <ScrollArea style={{ height }}>
-            <div className="w-full p-5 border border-line-gray bg-light-gray">
+            <div className="w-full border border-line-gray bg-light-gray p-5">
               {data && <ReportContainer data={data} stores={stores} />}
             </div>
             <Scrollbar orientation="horizontal" />
           </ScrollArea>
         )
       ) : (
-        <div className="w-full p-5 border border-line-gray bg-light-gray">
+        <div className="w-full border border-line-gray bg-light-gray p-5">
           {data && <ReportContainer data={data} stores={stores} />}
         </div>
       )}

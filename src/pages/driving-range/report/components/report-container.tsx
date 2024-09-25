@@ -6,7 +6,6 @@ import { RightPanel } from "@/pages/driving-range/report/components/right-panel"
 import { SitesList } from "@/pages/driving-range/report/components/sites-list";
 import { SwitchButton } from "@/pages/driving-range/report/components/switch-button";
 import { ReportData } from "@/pages/driving-range/report/loader";
-import { GroundStoreWithSites } from "@/pages/store-management/loader";
 import { DataType } from "@/types-and-schemas/report";
 import { formatDateAsString, updateSearchParams } from "@/utils";
 import { lastDayOfMonth } from "date-fns";
@@ -18,7 +17,7 @@ export function ReportContainer({
   stores,
 }: {
   data: ReportData;
-  stores: GroundStoreWithSites[];
+  stores: { id: string; name: string; merchantId: string }[];
 }) {
   const [activeDataType, setActiveDataType] =
     React.useState<DataType>("revenue");

@@ -1,3 +1,4 @@
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Select,
   SelectContent,
@@ -6,9 +7,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useAuth } from "@/hooks/use-auth";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 import { MainLayout } from "@/layouts/main-layout";
 import { ReportContainer } from "@/pages/driving-range/report/components/report-container";
-import { genGroundStoresWithSitesQuery } from "@/pages/driving-range/site-management/loader";
+import { Scrollbar } from "@radix-ui/react-scroll-area";
 import { useQuery } from "@tanstack/react-query";
 import { useCallback, useEffect } from "react";
 import {
@@ -17,10 +19,7 @@ import {
   useParams,
   useSearchParams,
 } from "react-router-dom";
-import { genDataQuery, loader } from "./loader";
-import { useIsMobile } from "@/hooks/use-is-mobile";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Scrollbar } from "@radix-ui/react-scroll-area";
+import { genDataQuery, genGroundStoresQuery, loader } from "./loader";
 
 export function Component() {
   const isMobile = useIsMobile();
@@ -30,12 +29,12 @@ export function Component() {
   const { user } = useAuth();
   const { storeId } = useParams();
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
+
   const { data: stores } = useQuery({
-    ...genGroundStoresWithSitesQuery(
-      user!.isAdmin ? "all" : user!.allowedStores.ground,
-    ),
+    ...genGroundStoresQuery(user!.isAdmin ? "all" : user!.allowedStores.ground),
     initialData: initialData.ground,
   });
+
   const { data } = useQuery({
     ...genDataQuery(
       storeId!,
@@ -92,14 +91,14 @@ export function Component() {
       {isMobile ? (
         ({ height }) => (
           <ScrollArea style={{ height }}>
-            <div className="w-full p-5 border border-line-gray bg-light-gray">
+            <div className="w-full border border-line-gray bg-light-gray p-5">
               {data && <ReportContainer data={data} stores={stores} />}
             </div>
             <Scrollbar orientation="horizontal" />
           </ScrollArea>
         )
       ) : (
-        <div className="w-full p-5 border border-line-gray bg-light-gray">
+        <div className="w-full border border-line-gray bg-light-gray p-5">
           {data && <ReportContainer data={data} stores={stores} />}
         </div>
       )}
