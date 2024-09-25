@@ -1,4 +1,4 @@
-import { base_url, localStorageUserKey } from "@/utils";
+import { base_url, localStorageUserKey, navigateUponLogin } from "@/utils";
 import {
   ReactNode,
   createContext,
@@ -107,16 +107,21 @@ export const AuthProvider = ({
         simulator: [],
       };
 
+      const permissionsStringArr = permissions.map(
+        (p: { name: string }) => p.name,
+      );
+
       setUser({
         account: user.account,
         username: user.username,
         isAdmin,
-        permissions: permissions.map((p: { name: string }) => p.name),
+        permissions: permissionsStringArr,
         allowedStores,
         expiresAt: new Date(user.expires).getTime() + 1000 * 60 * 60,
       });
 
-      navigate("/member-management/members", { replace: true });
+      navigateUponLogin(permissionsStringArr, navigate);
+      // navigate("/", { replace: true });
     } catch (e) {
       console.log(e);
 
@@ -140,7 +145,9 @@ export const AuthProvider = ({
 
   useEffect(() => {
     if (!isAuthenticated) clearUser();
-  }, [isAuthenticated, clearUser]);
+
+    // logout();
+  }, [isAuthenticated, clearUser, logout]);
 
   return (
     <AuthContext.Provider

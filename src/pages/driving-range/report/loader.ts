@@ -1,4 +1,4 @@
-import { genGroundStoresWithSitesQuery } from "@/pages/driving-range/site-management/loader";
+import { groundStoresWithSitesSchema } from "@/pages/store-management/loader";
 import { baseAppointmentSchema } from "@/types-and-schemas/appointment";
 import { formatDateAsString, getAllowedStores } from "@/utils";
 import { queryClient } from "@/utils/query-client";
@@ -19,6 +19,10 @@ const totalSchema = z.object({
     z.object({
       totalAmount: z.number(),
       totalCount: z.number(),
+      storeGround: z.object({
+        id: z.string(),
+        name: z.string(),
+      }),
     }),
   ),
 });
@@ -62,6 +66,24 @@ export type YearData = Omit<z.infer<typeof yearSchema>, "all">;
 
 export const detailedSchema = z.record(z.string(), objectSchema);
 export type DetailedData = Omit<z.infer<typeof detailedSchema>, "all">;
+
+export const genGroundStoresQuery = (
+  allowedStores: { id: string; name: string; merchantId: string }[] | "all",
+) => ({
+  queryKey: ["sites-for-store", "simulator"],
+  queryFn: async () => {
+    if (allowedStores === "all") {
+      const response = await privateFetch(
+        "/store?pageSize=999&filter[category]=ground&populate=simulators&populate=grounds&populate=golfs&populate=grounds.openTimes&populate=grounds.equipments&populate=grounds.openDays&populate=merchantId",
+      );
+      const data = await response.json();
+
+      return groundStoresWithSitesSchema.parse(data).data;
+    } else {
+      return allowedStores;
+    }
+  },
+});
 
 export const genDataQuery = (storeId: string, startAt: Date, endAt: Date) => ({
   queryKey: ["ground", storeId, "report-data", startAt, endAt],
@@ -127,12 +149,11 @@ export type ReportData = Awaited<
 >;
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
-  // export async function loader() {
   const url = new URL(request.url);
   const range = url.searchParams.get("range")!;
 
   const ground = await queryClient.ensureQueryData(
-    genGroundStoresWithSitesQuery(await getAllowedStores("ground")),
+    genGroundStoresQuery(await getAllowedStores("ground")),
   );
 
   if (!params.storeId)

@@ -1,12 +1,15 @@
-import { Navigate, Outlet } from "react-router-dom";
+import { navigateUponLogin } from "@/utils";
+import { useEffect } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/use-auth";
 
 export default function RedirectToIndex() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
+  const navigate = useNavigate();
 
-  if (isAuthenticated) return <Navigate to="/member-management/members" />;
-
-  // if (isAuthenticated) return <Navigate to="/" />;
+  useEffect(() => {
+    if (isAuthenticated) navigateUponLogin(user?.permissions ?? [], navigate);
+  }, [isAuthenticated, navigate, user?.permissions]);
 
   return <Outlet />;
 }

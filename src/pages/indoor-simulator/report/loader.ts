@@ -1,4 +1,3 @@
-import { genIndoorSimulatorStoresWithSitesQuery } from "@/pages/indoor-simulator/site-management/loader";
 import { baseAppointmentSchema } from "@/types-and-schemas/appointment";
 import { formatDateAsString, getAllowedStores } from "@/utils";
 import { queryClient } from "@/utils/query-client";
@@ -7,6 +6,31 @@ import { addDays, differenceInDays, subDays } from "date-fns";
 import queryString from "query-string";
 import { LoaderFunctionArgs } from "react-router-dom";
 import { z } from "zod";
+
+import { simulatorStoresWithSitesSchema } from "@/pages/store-management/loader";
+import { simulatorSitesSchema } from "@/utils/category/schemas";
+
+export const sitesSchema = z.object({
+  data: simulatorSitesSchema.pick({ data: true }).shape.data,
+});
+
+export const genIndoorSimulatorStoresQuery = (
+  allowedStores: { id: string; name: string; merchantId: string }[] | "all",
+) => ({
+  queryKey: ["sites-for-store", "simulator"],
+  queryFn: async () => {
+    if (allowedStores === "all") {
+      const response = await privateFetch(
+        "/store?pageSize=999&filter[category]=simulator&populate=simulators&populate=grounds&populate=golfs&populate=simulators.openTimes&populate=simulators.equipments&populate=simulators.openDays&populate=store",
+      );
+      const data = await response.json();
+
+      return simulatorStoresWithSitesSchema.parse(data).data;
+    } else {
+      return allowedStores;
+    }
+  },
+});
 
 const totalSchema = z.object({
   totalAmount: z
@@ -19,6 +43,10 @@ const totalSchema = z.object({
     z.object({
       totalAmount: z.number(),
       totalCount: z.number(),
+      storeSimulator: z.object({
+        id: z.string(),
+        name: z.string(),
+      }),
     }),
   ),
 });
@@ -128,12 +156,11 @@ export type ReportData = Awaited<
 >;
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
-  // export async function loader() {
   const url = new URL(request.url);
   const range = url.searchParams.get("range")!;
 
   const simulators = await queryClient.ensureQueryData(
-    genIndoorSimulatorStoresWithSitesQuery(await getAllowedStores("simulator")),
+    genIndoorSimulatorStoresQuery(await getAllowedStores("simulator")),
   );
 
   if (!params.storeId)

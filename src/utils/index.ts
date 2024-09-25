@@ -9,7 +9,7 @@ import {
   startOfMonth,
   startOfYear,
 } from "date-fns";
-import { SetURLSearchParams } from "react-router-dom";
+import { NavigateFunction, SetURLSearchParams } from "react-router-dom";
 import { privateFetch } from "./utils";
 
 export const base_url = import.meta.env.VITE_BASE_URL;
@@ -163,6 +163,7 @@ export const getAllowedStores = async (
   ) as Exclude<User, null>;
   if (userFromLocalStorage.isAdmin) allowedStores = "all";
   else allowedStores = userFromLocalStorage.allowedStores[type];
+  console.log(allowedStores);
 
   // const permissionsResponse = await privateFetch("/auth/permissions");
   // const permissions = await permissionsResponse.json();
@@ -241,4 +242,22 @@ export const toValueLabelArray = (obj: { name: string; id: string }[]) => {
   const options: Record<string, string> = {};
   obj.forEach((s) => (options[s.id] = s.name));
   return options;
+};
+
+export const navigateUponLogin = (
+  permissions: string[],
+  navigate: NavigateFunction,
+) => {
+  if (permissions.length === 1 && permissions.includes("模擬器-報表")) {
+    navigate("/indoor-simulator/report");
+  } else if (
+    permissions.length === 1 &&
+    permissions.includes("高爾夫球-報表")
+  ) {
+    navigate("/golf/report");
+  } else if (permissions.length === 1 && permissions.includes("練習場-報表")) {
+    navigate("/driving-range/report");
+  } else {
+    navigate("/member-management/members", { replace: true });
+  }
 };
