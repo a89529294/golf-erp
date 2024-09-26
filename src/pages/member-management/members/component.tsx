@@ -13,6 +13,7 @@ import { useRef, useState } from "react";
 import { Link, useLoaderData } from "react-router-dom";
 import { columns, mobileColumns } from "./data-table/columns.tsx";
 import { DataTable } from "./data-table/data-table.tsx";
+import { useDebouncedValue } from "@/hooks/use-debounced-value.ts";
 
 export function Component() {
   const headerRowRef = useRef<HTMLTableRowElement>(null);
@@ -20,6 +21,8 @@ export function Component() {
   const isMobile = useMediaQuery("(max-width: 639px)");
   const [rowSelection, setRowSelection] = useState({});
   const [globalFilter, setGlobalFilter] = useState("");
+  const debouncedGlobalFilter = useDebouncedValue(globalFilter, 500);
+
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
   const { data } = useQuery({
     ...membersQuery,
@@ -60,7 +63,7 @@ export function Component() {
                   data={data}
                   rowSelection={rowSelection}
                   setRowSelection={setRowSelection}
-                  globalFilter={globalFilter}
+                  globalFilter={debouncedGlobalFilter}
                   setGlobalFilter={setGlobalFilter}
                 />
               )}
@@ -84,7 +87,7 @@ export function Component() {
               data={data}
               rowSelection={rowSelection}
               setRowSelection={setRowSelection}
-              globalFilter={globalFilter}
+              globalFilter={debouncedGlobalFilter}
               setGlobalFilter={setGlobalFilter}
               headerRowRef={headerRowRef}
             />
