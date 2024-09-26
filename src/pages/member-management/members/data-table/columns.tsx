@@ -86,8 +86,9 @@ export const columns = [
     size: 13,
   }),
   columnHelper.accessor("phone", {
-    header: "電話",
-    cell: (props) => props.getValue(),
+    id: "phone",
+    header: () => <div>電話</div>,
+    cell: (props) => props.getValue() as string,
     size: 11.7,
   }),
   columnHelper.accessor((row) => genderEnChMap[row.gender], {
