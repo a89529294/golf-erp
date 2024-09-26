@@ -18,7 +18,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, ReactNode, SetStateAction, useState } from "react";
+import React from "react";
 
 declare module "@tanstack/react-table" {
   interface FilterFns {
@@ -49,7 +50,7 @@ const fuzzyFilter: FilterFn<unknown> = (row, columnId, value) => {
   );
 };
 
-export function DataTable<TData extends { id: string }, TValue>({
+const DataTable: <TData extends { id: string }, TValue>({
   columns,
   data,
   rowSelection,
@@ -57,7 +58,15 @@ export function DataTable<TData extends { id: string }, TValue>({
   globalFilter,
   setGlobalFilter,
   headerRowRef,
-}: DataTableProps<TData, TValue>) {
+}: DataTableProps<TData, TValue>) => ReactNode = React.memo(function ({
+  columns,
+  data,
+  rowSelection,
+  setRowSelection,
+  globalFilter,
+  setGlobalFilter,
+  headerRowRef,
+}) {
   const [sorting, setSorting] = useState<SortingState>([]);
 
   const table = useReactTable({
@@ -144,4 +153,6 @@ export function DataTable<TData extends { id: string }, TValue>({
       </Table>
     </div>
   );
-}
+});
+
+export { DataTable };
