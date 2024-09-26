@@ -416,11 +416,7 @@ export const linksKV = {
           new: () => import("@/pages/member-management/members/new"),
           details: () => import("@/pages/member-management/members/details"),
         },
-        allowedPermissions: [
-          "模擬器-基本操作",
-          "高爾夫球-基本操作",
-          "練習場-基本操作",
-        ],
+        allowedPermissions: ["系統管理"],
       },
       "discount-management": {
         label: "會員身分折扣管理",
