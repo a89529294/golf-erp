@@ -29,7 +29,10 @@ export const baseAppointmentSchema = z.object({
     .object({
       id: z.string(),
       chName: z.string(),
-      phone: z.string().nullish(),
+      phone: z
+        .string()
+        .nullish()
+        .transform((v) => v ?? undefined),
     })
     .optional(),
 });
