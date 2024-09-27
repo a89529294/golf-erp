@@ -248,16 +248,45 @@ export const navigateUponLogin = (
   permissions: string[],
   navigate: NavigateFunction,
 ) => {
-  if (permissions.length === 1 && permissions.includes("模擬器-報表")) {
-    navigate("/indoor-simulator/report");
-  } else if (
-    permissions.length === 1 &&
-    permissions.includes("高爾夫球-報表")
-  ) {
-    navigate("/golf/report");
-  } else if (permissions.length === 1 && permissions.includes("練習場-報表")) {
-    navigate("/driving-range/report");
-  } else {
+  if (permissions.includes("系統管理")) {
     navigate("/member-management/members", { replace: true });
+  } else if (permissions.includes("模擬器-基本操作")) {
+    navigate("/indoor-simulator/member-management");
+  } else if (permissions.includes("高爾夫球-基本操作")) {
+    navigate("/golf/member-management");
+  } else if (permissions.includes("練習場-基本操作")) {
+    navigate("/driving-range/member-management");
+  } else if (permissions.includes("會員身分折扣管理")) {
+    navigate("/member-management/discount-management");
+  } else if (permissions.includes("教練管理")) {
+    navigate("/coach-management", { replace: true });
+  } else if (permissions.includes("廠商管理")) {
+    navigate("/store-management", { replace: true });
+  } else if (permissions.includes("模擬器-報表")) {
+    navigate("/indoor-simulator/report", { replace: true });
+  } else if (permissions.includes("高爾夫球-報表")) {
+    navigate("/golf/report", { replace: true });
+  } else if (permissions.includes("練習場-報表")) {
+    navigate("/driving-range/report", { replace: true });
+  } else if (permissions.includes("模擬器-贈送點數")) {
+    navigate("/indoor-simulator/coupon-management", { replace: true });
+  } else if (permissions.includes("高爾夫球-贈送點數")) {
+    navigate("/golf/coupon-management", { replace: true });
+  } else if (permissions.includes("練習場-贈送點數")) {
+    navigate("/driving-range/coupon-management", { replace: true });
+  } else if (permissions.includes("模擬器-累積點數設定")) {
+    navigate("/indoor-simulator/reward-settings", { replace: true });
+  } else if (permissions.includes("高爾夫球-累積點數設定")) {
+    navigate("/golf/reward-settings", { replace: true });
+  } else if (permissions.includes("練習場-累積點數設定")) {
+    navigate("/driving-range/reward-settings", { replace: true });
+  } else if (permissions.includes("模擬器-儲值優惠設定")) {
+    navigate("/indoor-simulator/cashback-settings", { replace: true });
+  } else if (permissions.includes("高爾夫球-儲值優惠設定")) {
+    navigate("/golf/cashback-settings", { replace: true });
+  } else if (permissions.includes("練習場-儲值優惠設定")) {
+    navigate("/driving-range/cashback-settings", { replace: true });
+  } else {
+    navigate("/", { replace: true });
   }
 };

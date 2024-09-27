@@ -36,7 +36,7 @@ const featureOrder: Record<string, number> = {
   "模擬器 / 報表": 1,
   "模擬器 / 贈送點數": 2,
   "高爾夫球 / 基本操作": 3,
-  "高爾夫球 / 報表": 4,
+  // "高爾夫球 / 報表": 4,
   "高爾夫球 / 贈送點數": 5,
   "練習場 / 基本操作": 6,
   "練習場 / 報表": 7,
@@ -68,7 +68,8 @@ export const erpFeaturesWithUsersQuery = {
       .map((v) => ({
         name: v.name,
         id: v.id,
-      }));
+      }))
+      .filter((v) => v.name !== "高爾夫球-報表");
 
     const erpFeaturesWithUsers: {
       featureId: string;

@@ -39,7 +39,13 @@ export const linksKV = {
     type: "nested" as const,
     basePath: DRIVING_RANGE_BASE_PATH,
     path: `${DRIVING_RANGE_BASE_PATH}/member-management`,
-    allowedPermissions: ["練習場-基本操作", "練習場-報表", "練習場-贈送點數"],
+    allowedPermissions: [
+      "練習場-基本操作",
+      "練習場-報表",
+      "練習場-贈送點數",
+      "練習場-儲值優惠設定",
+      "練習場-累積點數設定",
+    ],
     allowedStoreCategory: "ground" as const,
     subLinks: {
       "member-management": {
@@ -135,6 +141,8 @@ export const linksKV = {
       "高爾夫球-基本操作",
       "高爾夫球-報表",
       "高爾夫球-贈送點數",
+      "高爾夫球-儲值優惠設定",
+      "高爾夫球-累積點數設定",
     ],
     allowedStoreCategory: "golf" as const,
     subLinks: {
@@ -226,7 +234,13 @@ export const linksKV = {
     type: "nested" as const,
     basePath: INDOOR_SIMULATOR_BASE_PATH,
     path: `${INDOOR_SIMULATOR_BASE_PATH}/member-management`,
-    allowedPermissions: ["模擬器-基本操作", "模擬器-報表", "模擬器-贈送點數"],
+    allowedPermissions: [
+      "模擬器-基本操作",
+      "模擬器-報表",
+      "模擬器-贈送點數",
+      "模擬器-儲值優惠設定",
+      "模擬器-累積點數設定",
+    ],
     allowedStoreCategory: "simulator" as const,
     subLinks: {
       "member-management": {
@@ -426,11 +440,7 @@ export const linksKV = {
         allowedPermissions: ["會員身分折扣管理"],
       },
     },
-    allowedPermissions: [
-      "模擬器-基本操作",
-      "高爾夫球-基本操作",
-      "練習場-基本操作",
-    ],
+    allowedPermissions: ["系統管理"],
   },
   "coach-management": {
     label: "教練管理",
