@@ -59,6 +59,7 @@ export function CategoryMain({
   type: "golf";
   stores: GolfStoreWithSites[];
 }): React.JSX.Element;
+
 export function CategoryMain({
   newSiteHref,
   siteDetailsHref,
