@@ -20,6 +20,7 @@ export function Modal({
   onModalClose,
   onClickSubmit,
   className,
+  headerClassName,
 }: {
   dialogTriggerChildren:
     | ReactElement
@@ -30,6 +31,7 @@ export function Modal({
   onModalClose?: () => void;
   onClickSubmit?: () => void;
   className?: string;
+  headerClassName?: string;
 }) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -40,7 +42,6 @@ export function Modal({
       open={open}
       onOpenChange={(open) => {
         setOpen(open);
-
         onModalClose && !open && onModalClose();
       }}
     >
@@ -74,7 +75,7 @@ export function Modal({
             className,
           )}
         >
-          <DialogHeader className="">
+          <DialogHeader className={headerClassName}>
             <DialogTitle>{title}</DialogTitle>
             {children}
           </DialogHeader>

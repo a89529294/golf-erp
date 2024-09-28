@@ -58,15 +58,15 @@ export function SiteSection({
     0,
   );
 
-  const totalSiteRevenuePercentage = (() => {
-    if (currentYearRevenue === 0) return 0;
-    if (data.total.totalAmount === 0) return 0;
-    return roundUpToOneDecimalPlace(
-      (data.total.storeGroundAppointments[id].totalAmount /
-        data.total.totalAmount) *
-        100,
-    );
-  })();
+  // const totalSiteRevenuePercentage = (() => {
+  //   if (currentYearRevenue === 0) return 0;
+  //   if (data.total.totalAmount === 0) return 0;
+  //   return roundUpToOneDecimalPlace(
+  //     (data.total.storeGroundAppointments[id].totalAmount /
+  //       data.total.totalAmount) *
+  //       100,
+  //   );
+  // })();
 
   const secondCircularBarLabel = (() => {
     if (isCurrentYearSelected) return `${new Date().getFullYear()}營業額`;
@@ -74,10 +74,6 @@ export function SiteSection({
     if (isCurrentDaySelected) return `${new Date().getDate()}日營業額`;
     return "指定範圍 營業額";
   })();
-
-  const secondCircularBarAmount = isCurrentYearSelected
-    ? Object.values(data.year).reduce((acc, v) => acc + v.totalAmount, 0)
-    : Object.values(data.detailed).reduce((acc, v) => acc + v.totalAmount, 0);
 
   const secondCircularBarPercentage = (() => {
     if (isCurrentYearSelected) {
@@ -106,21 +102,31 @@ export function SiteSection({
     );
   })();
 
-  const totalAppointmentCount = data.total.totalCount;
+  const secondCircularBarAmount =
+    ((isCurrentYearSelected
+      ? Object.values(data.year).reduce((acc, v) => acc + v.totalAmount, 0)
+      : Object.values(data.detailed).reduce(
+          (acc, v) => acc + v.totalAmount,
+          0,
+        )) *
+      secondCircularBarPercentage) /
+    100;
 
-  const totalAppointmentCountForAllSites = data.total.totalCount;
+  // const totalAppointmentCount = data.total.totalCount;
 
-  const thirdCircularBarPercentage = (() => {
-    if (totalAppointmentCount === 0) return 0;
+  // const totalAppointmentCountForAllSites = data.total.totalCount;
 
-    if (totalAppointmentCountForAllSites === 0) return 0;
+  // const thirdCircularBarPercentage = (() => {
+  //   if (totalAppointmentCount === 0) return 0;
 
-    return roundUpToOneDecimalPlace(
-      (data.total.storeGroundAppointments[id].totalCount /
-        totalAppointmentCountForAllSites) *
-        100,
-    );
-  })();
+  //   if (totalAppointmentCountForAllSites === 0) return 0;
+
+  //   return roundUpToOneDecimalPlace(
+  //     (data.total.storeGroundAppointments[id].totalCount /
+  //       totalAppointmentCountForAllSites) *
+  //       100,
+  //   );
+  // })();
 
   const currentPeriodSiteAppointmentCount = (() => {
     if (isCurrentYearSelected)
@@ -181,22 +187,22 @@ export function SiteSection({
     <section className="col-span-2 rounded-md bg-white px-5 py-4">
       <h2 className="text-lg font-bold">{title}</h2>
       <ul className="mb-4 mt-2.5 flex gap-4">
-        <CircularProgressWithDesc
+        {/* <CircularProgressWithDesc
           filledPercentage={totalSiteRevenuePercentage}
           amount={data.total.totalAmount}
           label="總營業額"
-        />
+        /> */}
         <CircularProgressWithDesc
           filledPercentage={secondCircularBarPercentage}
           amount={secondCircularBarAmount}
           label={secondCircularBarLabel}
         />
-        <CircularProgressWithDesc
+        {/* <CircularProgressWithDesc
           filledPercentage={thirdCircularBarPercentage}
           amount={data.total.totalCount}
           label="總訂單數"
           type="secondary"
-        />
+        /> */}
         <CircularProgressWithDesc
           filledPercentage={currentPeriodSiteAppointmentPercentage}
           amount={currentPeriodSiteAppointmentCount}

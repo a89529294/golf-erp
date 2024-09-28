@@ -70,6 +70,7 @@ import { toast } from "sonner";
 import { useQuery } from "@tanstack/react-query";
 import { equipmentsQuery } from "@/pages/equipment-management/loader.ts";
 import { Spinner } from "@/components/ui/spinner.tsx";
+import { useAuth } from "@/hooks/use-auth";
 
 type S = {
   golf: NewGolfCourse;
@@ -93,6 +94,7 @@ export function Site({
   onSubmit: (v: S[typeof type]) => void;
   isPending: boolean;
 }): React.ReactElement {
+  const { user } = useAuth();
   const isNewSite = window.location.pathname.includes("/new");
   const openingDateRangeRef = useRef<HTMLLIElement>(null);
   const openingHoursRef = useRef<HTMLLIElement>(null);
@@ -457,7 +459,13 @@ export function Site({
             ),
           }}
           disabled={
-            formDisabled || form.getValues("plans")?.some((v) => !v.saved)
+            formDisabled ||
+            form.getValues("plans")?.some((v) => !v.saved) ||
+            ((type === "driving-range" || type === "existing-driving-range") &&
+              !user!.permissions.includes("練習場-編輯場地價格")) ||
+            ((type === "indoor-simulator" ||
+              type === "existing-indoor-simulator") &&
+              !user!.permissions.includes("模擬器-編輯場地價格"))
           }
         >
           {form.watch("plans")?.length ? (
@@ -478,7 +486,15 @@ export function Site({
                     onRemove={() => onRemovePlan(plan.id, form)}
                     onSave={(plan: Plan) => onSavePlan(plan, form)}
                     data={plan}
-                    disabled={formDisabled}
+                    disabled={
+                      formDisabled ||
+                      ((type === "driving-range" ||
+                        type === "existing-driving-range") &&
+                        !user!.permissions.includes("練習場-編輯場地價格")) ||
+                      ((type === "indoor-simulator" ||
+                        type === "existing-indoor-simulator") &&
+                        !user!.permissions.includes("模擬器-編輯場地價格"))
+                    }
                     // errorMessage={errorMessage}
                   />
                 );

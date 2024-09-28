@@ -11,7 +11,7 @@ export const appointmentsQuery = {
   queryKey: ["appointments", "simulator"],
   queryFn: async () => {
     const response = await privateFetch(
-      "/appointment/simulator?populate=storeSimulator&populate=appUser&populate=storeSimulator.store&populate=order&pageSize=999",
+      "/appointment/simulator?populate=storeSimulator&populate=appUser&populate=storeSimulator.store&populate=order&populate=usedCoupon&pageSize=999",
     );
 
     const data = await response.json();
@@ -44,6 +44,9 @@ export const appointmentsQuery = {
           : undefined,
         status: appointment.status,
         amount: appointment.amount,
+        discount: appointment.discount,
+        originAmount: appointment.originAmount,
+        usedCoupon: appointment.usedCoupon,
       };
 
       if (foundStore) {
@@ -72,93 +75,7 @@ export const appointmentsQuery = {
       }
     });
 
-    // Count the final number of appointments
-    let finalAppointmentCount = 0;
-    storesWithSiteAppointments.forEach((store) => {
-      store.sites.forEach((site) => {
-        finalAppointmentCount += site.appointments.length;
-      });
-    });
-    console.log(`Final appointment count: ${finalAppointmentCount}`);
-
     return storesWithSiteAppointments;
-
-    // const parsedData = simulatorAppoitmentsSchema.parse(data);
-    // const storesWithSiteAppointments = [] as StoreWithSiteAppointments[];
-
-    // let totalAppointments = 0;
-    // let processedAppointments = 0;
-
-    // parsedData.data.forEach((appointment) => {
-    //   totalAppointments++;
-    //   const storeId = appointment.storeSimulator.store?.id;
-
-    //   if (!storeId) {
-    //     console.log("Appointment without storeId:", appointment);
-    //     return;
-    //   }
-
-    //   const siteId = appointment.storeSimulator.id;
-    //   const foundStore = storesWithSiteAppointments.find(
-    //     (v) => v.id === storeId,
-    //   );
-
-    //   const transformedAppointment = {
-    //     id: appointment.id,
-    //     startTime: appointment.startTime,
-    //     endTime: appointment.endTime,
-    //     appUser: appointment.appUser
-    //       ? {
-    //           id: appointment.appUser.id,
-    //           chName: appointment.appUser.chName,
-    //           phone: appointment.appUser.phone,
-    //         }
-    //       : undefined,
-    //     status: appointment.status,
-    //     amount: appointment.amount,
-    //   };
-
-    //   if (foundStore) {
-    //     const foundSite = foundStore.sites.find((v) => v.id === siteId);
-
-    //     if (foundSite) {
-    //       foundSite.appointments.push(transformedAppointment);
-    //     } else {
-    //       foundStore.sites.push({
-    //         id: appointment.storeSimulator.id,
-    //         name: appointment.storeSimulator.name,
-    //         appointments: [transformedAppointment],
-    //       });
-    //     }
-    //   } else {
-    //     storesWithSiteAppointments.push({
-    //       id: storeId,
-    //       sites: [
-    //         {
-    //           id: appointment.storeSimulator.id,
-    //           name: appointment.storeSimulator.name,
-    //           appointments: [transformedAppointment],
-    //         },
-    //       ],
-    //     });
-    //   }
-
-    //   processedAppointments++;
-    // });
-
-    // console.log(`Total appointments: ${totalAppointments}`);
-    // console.log(`Processed appointments: ${processedAppointments}`);
-
-    // // Count the final number of appointments
-    // let finalAppointmentCount = 0;
-    // storesWithSiteAppointments.forEach((store) => {
-    //   store.sites.forEach((site) => {
-    //     finalAppointmentCount += site.appointments.length;
-    //   });
-    // });
-    // console.log(`Final appointment count: ${finalAppointmentCount}`);
-
-    // return storesWithSiteAppointments;
   },
 };
 

@@ -37,7 +37,7 @@ export function AddCoinModal({
       }}
     >
       <div>
-        <h1 className="mb-1 text-center">數入點數</h1>
+        <h1 className="mb-1 text-center">輸入點數</h1>
         <Input
           className="rounded-none border-0 border-b border-b-secondary-dark text-center"
           type="number"

@@ -35,6 +35,18 @@ export const baseAppointmentSchema = z.object({
         .transform((v) => v ?? undefined),
     })
     .optional(),
+  usedCoupon: z
+    .array(
+      z.object({
+        id: z.string(),
+        name: z.string(),
+        amount: z.number(),
+        number: z.string(),
+      }),
+    )
+    .nullish(),
+  originAmount: z.number().nullish(),
+  discount: z.string().nullish(),
 });
 
 export const simulatorAppoitmentsSchema = z.object({

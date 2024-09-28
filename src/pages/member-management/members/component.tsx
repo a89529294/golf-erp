@@ -11,11 +11,13 @@ import { Scrollbar } from "@radix-ui/react-scroll-area";
 import { useQuery } from "@tanstack/react-query";
 import { useRef, useState } from "react";
 import { Link, useLoaderData } from "react-router-dom";
-import { columns, mobileColumns } from "./data-table/columns.tsx";
+import { genColumns, mobileColumns } from "./data-table/columns.tsx";
 import { DataTable } from "./data-table/data-table.tsx";
 import { useDebouncedValue } from "@/hooks/use-debounced-value.ts";
+import { useAuth } from "@/hooks/use-auth.tsx";
 
 export function Component() {
+  const { user } = useAuth();
   const headerRowRef = useRef<HTMLTableRowElement>(null);
   const [headerRowHeight, setHeaderRowHeight] = useState(48);
   const isMobile = useMediaQuery("(max-width: 639px)");
@@ -83,7 +85,7 @@ export function Component() {
           />
           {data && (
             <DataTable
-              columns={columns}
+              columns={genColumns(user!.permissions)}
               data={data}
               rowSelection={rowSelection}
               setRowSelection={setRowSelection}

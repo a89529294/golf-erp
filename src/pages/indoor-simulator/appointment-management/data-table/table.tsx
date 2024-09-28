@@ -51,13 +51,16 @@ export function DataTable<TData extends { id: string }, TValue>({
   });
 
   return (
-    <div className="border border-t-0 border-line-gray">
-      <Table className="border-separate border-spacing-0">
+    <div className="relative flex-1 border border-t-0 border-line-gray">
+      <Table
+        outerDivClassName="w-auto overflow-auto absolute inset-0"
+        className="w-auto min-w-full border-separate border-spacing-0"
+      >
         <TableHeader className="[&_tr]:border-b-0">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow
               key={headerGroup.id}
-              className="sticky top-[90px] bg-light-gray "
+              className="sticky top-0 bg-light-gray "
             >
               {headerGroup.headers.map((header) => {
                 return (
