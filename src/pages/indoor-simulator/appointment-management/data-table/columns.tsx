@@ -124,14 +124,116 @@ export const columns: ColumnDef<Appointment>[] = [
     ),
   },
   {
+    accessorKey: "originAmount",
+    header: ({ column }) => {
+      return (
+        <button
+          className="flex items-center gap-1 whitespace-nowrap"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          原訂單金額
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </button>
+      );
+    },
+    cell: (prop) => (
+      <div className="whitespace-nowrap">{prop.getValue() as string}</div>
+    ),
+  },
+  {
+    id: "discountPercentage",
+    header: ({ column }) => {
+      return (
+        <button
+          className="flex items-center gap-1 whitespace-nowrap"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          折數
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </button>
+      );
+    },
+    cell: (prop) => {
+      const row = prop.row.original;
+      const originAmount =
+        row.originAmount ?? row.amount + (row.usedCoupon?.[0]?.amount ?? 0);
+      const percentOff = (
+        ((originAmount - row.amount) / originAmount) *
+        100
+      ).toFixed(2);
+      return <div className="whitespace-nowrap">{percentOff}</div>;
+    },
+  },
+  {
+    id: "usedCouponAmount",
+    header: ({ column }) => {
+      return (
+        <button
+          className="flex items-center gap-1 whitespace-nowrap"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          優惠券金額
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </button>
+      );
+    },
+    cell: (prop) => (
+      <div className="whitespace-nowrap">
+        {prop.row.original.usedCoupon?.[0]?.amount}
+      </div>
+    ),
+  },
+  {
+    id: "usedCouponName",
+    header: ({ column }) => {
+      return (
+        <button
+          className="flex items-center gap-1 whitespace-nowrap"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          優惠券名稱
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </button>
+      );
+    },
+    cell: (prop) => {
+      console.log(prop.row.original.usedCoupon);
+      return (
+        <div className="whitespace-nowrap">
+          {prop.row.original.usedCoupon?.[0]?.name}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "amount",
+    header: ({ column }) => {
+      return (
+        <button
+          className="flex items-center gap-1 whitespace-nowrap"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          實際付款金額
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </button>
+      );
+    },
+    cell: (prop) => {
+      console.log(prop.row.original.usedCoupon);
+      return (
+        <div className="whitespace-nowrap">{prop.getValue() as string}</div>
+      );
+    },
+  },
+  {
     id: "cancel-appointment",
     cell: (prop) => {
       const appointment = prop.row.original;
-      return appointment.status === "取消" ? null : (
+      return (
         <Modal
           dialogTriggerChildren={
             <IconShortButton
-              className="invisible whitespace-nowrap group-hover:visible"
+              className="w-28 whitespace-nowrap group-hover:visible"
               icon="x"
             >
               取消預約

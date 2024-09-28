@@ -46,6 +46,7 @@ export const baseAppointmentSchema = z.object({
     )
     .nullish(),
   originAmount: z.number().nullish(),
+  discount: z.string().nullish(),
 });
 
 export const simulatorAppoitmentsSchema = z.object({
