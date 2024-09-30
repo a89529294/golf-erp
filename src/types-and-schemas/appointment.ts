@@ -14,9 +14,8 @@ export const baseAppointmentSchema = z.object({
       z.literal("overtime"),
     ])
     .transform((v) => {
-      if (v === "pending") return "進行中";
+      if (v === "pending" || v === "overtime") return "進行中";
       if (v === "complete") return "完成";
-      if (v === "overtime") return "過期";
       return "取消";
     }),
   order: z
