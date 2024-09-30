@@ -26,6 +26,7 @@ import { StoreFormSelectField } from "./store-form-select-field";
 // import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { ChargeImageField } from "@/pages/store-management/components/charge-image-field";
 
 export function StoreForm({
   form,
@@ -36,8 +37,10 @@ export function StoreForm({
   employees,
   disabled,
   disableCode,
+  setChargeImageId,
 }: {
   form: UseFormReturn<z.infer<typeof formSchema>>;
+  setChargeImageId?: React.Dispatch<React.SetStateAction<string>>;
   onSubmit: (values: z.infer<typeof formSchema>) => void;
   isMutating: boolean;
   counties: {
@@ -272,6 +275,25 @@ export function StoreForm({
             districts={districts}
             disabled={isInputDisabled}
           />
+          <StoreFormField
+            disabled={isInputDisabled}
+            form={form}
+            name={"LineLink"}
+            label="Line連結"
+          />
+          <StoreFormField
+            disabled={isInputDisabled}
+            form={form}
+            name={"IGLink"}
+            label="IG連結"
+          />
+
+          <ChargeImageField
+            form={form}
+            disabled={isInputDisabled}
+            setChargeImageId={setChargeImageId}
+          />
+
           <div>藍新金流設定</div>
           <StoreFormField
             disabled={isInputDisabled}

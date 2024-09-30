@@ -18,6 +18,9 @@ export const storeSchema = z.object({
   district: z.string(),
   address: z.string(),
   employees: z.array(employeeSchema).optional(),
+  LineLink: z.string().nullish(),
+  IGLink: z.string().nullish(),
+  chargeImage: z.string().nullish(),
   merchantId: z
     .string()
     .nullish()

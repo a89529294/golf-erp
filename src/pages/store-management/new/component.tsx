@@ -3,29 +3,26 @@ import { MainLayout } from "@/layouts/main-layout";
 import { loader } from "@/pages/store-management/new/loader";
 import { storeCategories } from "@/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import {
-  useLoaderData,
-  useLocation,
-  useSearchParams,
-  useSubmit,
-} from "react-router-dom";
+import { redirect, useLoaderData } from "react-router-dom";
 import { z } from "zod";
 
 import { countyQuery, generateDistrictQuery } from "@/api/county-district";
 import { useIsMobile } from "@/hooks/use-is-mobile";
 import { NewStoreDesktopMenubar } from "@/pages/store-management/components/new-store-desktop-menubar";
+import { NewStoreMobileMenubar } from "@/pages/store-management/components/new-store-mobile-menubar";
 import { genEmployeesQuery } from "@/pages/system-management/personnel-management/loader";
+import { linksKV } from "@/utils/links";
+import { privateFetch } from "@/utils/utils";
+import { toast } from "sonner";
 import { StoreForm } from "../components/store-form";
 import { formSchema } from "../schemas";
-import { NewStoreMobileMenubar } from "@/pages/store-management/components/new-store-mobile-menubar";
 
 export function Component() {
-  const submit = useSubmit();
-  const { pathname } = useLocation();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const queryClient = useQueryClient();
+
   const isMobile = useIsMobile();
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
 
@@ -56,6 +53,9 @@ export function Component() {
       district: "",
       address: "",
       employees: [],
+      LineLink: "",
+      IGLink: "",
+      chargeImage: undefined,
       merchantId: "",
       hashKey: "",
       linepayChannelId: "",
@@ -66,6 +66,7 @@ export function Component() {
       invoiceHashIV: "",
     },
   });
+
   const currentCounty = form.watch("county");
   const { data: districts } = useQuery({
     ...generateDistrictQuery(currentCounty),
@@ -74,7 +75,7 @@ export function Component() {
 
   const [isMutating, setIsMutating] = useState(false);
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     const transformedValues = {
       code: values.code,
       name: values.name,
@@ -90,6 +91,8 @@ export function Component() {
       district: values.district,
       address: values.address,
       employeeIds: values.employees.map((e) => e.id),
+      ...(values.LineLink ? { LineLink: values.LineLink } : {}),
+      ...(values.IGLink ? { IGLink: values.IGLink } : {}),
       ...(values.merchantId ? { merchantId: values.merchantId } : {}),
       ...(values.hashKey ? { hashKey: values.hashKey } : {}),
       ...(values.hashIV ? { hashIV: values.hashIV } : {}),
@@ -109,19 +112,43 @@ export function Component() {
     };
 
     setIsMutating(true);
-    submit(transformedValues, {
-      method: "post",
-      action: pathname,
-      encType: "application/json",
-    });
-  }
 
-  useEffect(() => {
-    if (searchParams.get("error")) {
-      setIsMutating(false);
-      setSearchParams("");
+    //  submit(transformedValues, {
+    //   method: "post",
+    //   action: pathname,
+    //   encType: "application/json",
+    // });
+
+    const response = await privateFetch("/store", {
+      method: "POST",
+      body: JSON.stringify(transformedValues),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      toast.error("新增廠商失敗");
+
+      return setIsMutating(false);
     }
-  }, [searchParams, setSearchParams]);
+
+    const storeId = (await response.json()).id;
+
+    if (values.chargeImage) {
+      const formData = new FormData();
+      formData.append("image", (values.chargeImage as FileList).item(0)!);
+      await privateFetch(`/store/${storeId}/upload-charge-image`, {
+        method: "POST",
+        body: formData,
+      });
+    }
+
+    toast.success("新增廠商成功");
+    queryClient.invalidateQueries({ queryKey: ["stores"] });
+
+    redirect(linksKV["store-management"].paths.index);
+  }
 
   return (
     <MainLayout
