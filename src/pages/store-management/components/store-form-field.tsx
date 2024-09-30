@@ -20,7 +20,7 @@ export function StoreFormField({
   labelClassName,
 }: {
   form: UseFormReturn<z.infer<typeof formSchema>, unknown, undefined>;
-  name: Exclude<keyof z.infer<typeof formSchema>, "employees">;
+  name: Exclude<keyof z.infer<typeof formSchema>, "employees" | "chargeImage">;
   label: string;
   disabled: boolean;
   asNumber?: boolean;

@@ -1,5 +1,5 @@
-import { linksKV } from "@/utils/links";
-import { queryClient } from "@/utils/query-client";
+// import { linksKV } from "@/utils/links";
+// import { queryClient } from "@/utils/query-client";
 import { privateFetch } from "@/utils/utils";
 import { ActionFunction, redirect } from "react-router-dom";
 import { toast } from "sonner";
@@ -22,8 +22,11 @@ export const action: ActionFunction = async ({ request }) => {
     return redirect(`${url.pathname}/?error=true`);
   }
 
-  toast.success("新增廠商成功");
-  queryClient.invalidateQueries({ queryKey: ["stores"] });
+  const storeId = (await response.json()).id;
 
-  return redirect(linksKV["store-management"].paths.index);
+  return storeId;
+  // toast.success("新增廠商成功");
+  // queryClient.invalidateQueries({ queryKey: ["stores"] });
+
+  // return redirect(linksKV["store-management"].paths.index);
 };

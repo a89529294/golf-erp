@@ -2,38 +2,30 @@ import { MainLayout } from "@/layouts/main-layout";
 import { loader } from "@/pages/store-management/details/loader";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import {
-  useLoaderData,
-  useLocation,
-  useNavigate,
-  useParams,
-  useSearchParams,
-  useSubmit,
-} from "react-router-dom";
+import { useLoaderData, useNavigate, useParams } from "react-router-dom";
 import { z } from "zod";
 
 import { countyQuery, generateDistrictQuery } from "@/api/county-district";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 import { DetailsDesktopMenubar } from "@/pages/store-management/components/details-desktop-menubar";
+import { DetailsMobileMenubar } from "@/pages/store-management/components/details-mobile-menubar";
 import { genEmployeesQuery } from "@/pages/system-management/personnel-management/loader";
 import { privateFetch } from "@/utils/utils";
 import { toast } from "sonner";
 import { StoreForm } from "../components/store-form";
 import { formSchema } from "../schemas";
 import { genStoreQuery } from "./loader";
-import { DetailsMobileMenubar } from "@/pages/store-management/components/details-mobile-menubar";
-import { useIsMobile } from "@/hooks/use-is-mobile";
 
 export function Component() {
   const isMobile = useIsMobile();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const submit = useSubmit();
-  const { pathname } = useLocation();
+
   const [disabled, setDisabled] = useState(true);
   const { storeId } = useParams();
+  const [chargeImageId, setChargeImageId] = useState("");
   const initialData = useLoaderData() as Exclude<
     Awaited<ReturnType<typeof loader>>,
     Response | undefined
@@ -84,6 +76,9 @@ export function Component() {
       employees: employees.filter((e) =>
         store.employees?.map((se) => se.id).includes(e.id),
       ),
+      LineLink: store.LineLink ?? "",
+      IGLink: store.IGLink ?? "",
+      chargeImage: store.chargeImage,
       merchantId: store.merchantId ?? "",
       hashKey: store.hashKey ?? "",
       hashIV: store.hashIV ?? "",
@@ -117,7 +112,7 @@ export function Component() {
   });
   const [isMutating, setIsMutating] = useState(false);
 
-  function onSubmit() {
+  async function onSubmit() {
     const values = form.getValues();
     const dirtyFields = form.formState.dirtyFields;
 
@@ -136,6 +131,8 @@ export function Component() {
       district: values.district,
       address: values.address,
       employeeIds: values.employees.map((e) => e.id),
+      LineLink: values.LineLink,
+      IGLink: values.IGLink,
       merchantId: values.merchantId,
       hashIV: values.hashIV,
       hashKey: values.hashKey,
@@ -168,6 +165,11 @@ export function Component() {
     if (dirtyFields.address) changedFields.address = transformedValues.address;
     if (dirtyFields.employees)
       changedFields.employeeIds = transformedValues.employeeIds;
+
+    if (dirtyFields.LineLink)
+      changedFields.LineLink = transformedValues.LineLink;
+    if (dirtyFields.IGLink) changedFields.IGLink = transformedValues.IGLink;
+
     if (dirtyFields.merchantId)
       changedFields.merchantId = transformedValues.merchantId;
     if (dirtyFields.hashIV) changedFields.hashIV = transformedValues.hashIV;
@@ -187,54 +189,86 @@ export function Component() {
       changedFields.invoiceHashKey = transformedValues.invoiceHashKey;
 
     setIsMutating(true);
-    submit(
-      {
-        ...changedFields,
-        storeId: storeId as string,
-      },
-      {
-        method: "post",
-        action: pathname,
-        encType: "application/json",
-      },
-    );
-  }
+    // submit(
+    //   {
+    //     ...changedFields,
+    //     storeId: storeId as string,
+    //   },
+    //   {
+    //     method: "post",
+    //     action: pathname,
+    //     encType: "application/json",
+    //   },
+    // );
 
-  useEffect(() => {
-    if (searchParams.get("error")) {
-      setIsMutating(false);
-      setSearchParams({});
-    } else {
-      setIsMutating(false);
-      setDisabled(true);
-      setSearchParams({});
-      form.reset({
-        code: form.getValues("code"),
-        name: form.getValues("name"),
-        category: form.getValues("category"),
-        openingHoursStart: form.getValues("openingHoursStart"),
-        openingHoursEnd: form.getValues("openingHoursEnd"),
-        phoneAreaCode: form.getValues("phoneAreaCode"),
-        phone: form.getValues("phone"),
-        contact: form.getValues("contact"),
-        contactPhone: form.getValues("contactPhone"),
-        latitude: form.getValues("latitude"),
-        longitude: form.getValues("longitude"),
-        county: oldCountyCode,
-        district: form.getValues("district"),
-        address: form.getValues("address"),
-        employees: form.getValues("employees"),
-        merchantId: form.getValues("merchantId"),
-        hashKey: form.getValues("hashKey"),
-        hashIV: form.getValues("hashIV"),
-        linepayChannelId: form.getValues("linepayChannelId"),
-        linepayChannelSecret: form.getValues("linepayChannelSecret"),
-        invoiceMerchantId: form.getValues("invoiceMerchantId"),
-        invoiceHashKey: form.getValues("invoiceHashKey"),
-        invoiceHashIV: form.getValues("invoiceHashIV"),
+    if (Object.keys(changedFields).length) {
+      const response = await privateFetch(`/store/${storeId}`, {
+        method: "PATCH",
+        body: JSON.stringify(transformedValues),
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
+
+      if (!response.ok) {
+        toast.error("更新廠商失敗");
+        return setIsMutating(false);
+      }
     }
-  }, [searchParams, setSearchParams, form, oldCountyCode]);
+
+    if (dirtyFields.chargeImage) {
+      console.log(chargeImageId);
+      console.log(form.getValues("chargeImage"));
+      await privateFetch(`/store/${storeId}/charge-image/${chargeImageId}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+
+      const newChargeImage = form.getValues("chargeImage");
+      if (newChargeImage) {
+        const formData = new FormData();
+        formData.append("image", (values.chargeImage as FileList).item(0)!);
+        await privateFetch(`/store/${storeId}/upload-charge-image`, {
+          method: "POST",
+          body: formData,
+        });
+      }
+    }
+
+    toast.success("更新廠商成功");
+    queryClient.invalidateQueries({ queryKey: ["stores"] });
+    // const url = new URL(request.url);
+    setIsMutating(false);
+    setDisabled(true);
+    form.reset({
+      code: form.getValues("code"),
+      name: form.getValues("name"),
+      category: form.getValues("category"),
+      openingHoursStart: form.getValues("openingHoursStart"),
+      openingHoursEnd: form.getValues("openingHoursEnd"),
+      phoneAreaCode: form.getValues("phoneAreaCode"),
+      phone: form.getValues("phone"),
+      contact: form.getValues("contact"),
+      contactPhone: form.getValues("contactPhone"),
+      latitude: form.getValues("latitude"),
+      longitude: form.getValues("longitude"),
+      county: oldCountyCode,
+      district: form.getValues("district"),
+      address: form.getValues("address"),
+      employees: form.getValues("employees"),
+      LineLink: form.getValues("LineLink"),
+      IGLink: form.getValues("IGLink"),
+      chargeImage: form.getValues("chargeImage"),
+      merchantId: form.getValues("merchantId"),
+      hashKey: form.getValues("hashKey"),
+      hashIV: form.getValues("hashIV"),
+      linepayChannelId: form.getValues("linepayChannelId"),
+      linepayChannelSecret: form.getValues("linepayChannelSecret"),
+      invoiceMerchantId: form.getValues("invoiceMerchantId"),
+      invoiceHashKey: form.getValues("invoiceHashKey"),
+      invoiceHashIV: form.getValues("invoiceHashIV"),
+    });
+  }
 
   return (
     <MainLayout
@@ -283,6 +317,7 @@ export function Component() {
           isMutating={isMutating}
           onSubmit={onSubmit}
           disabled={disabled}
+          setChargeImageId={setChargeImageId}
           // isSimulatorDetails={store.category === "simulator"}
         />
       </div>

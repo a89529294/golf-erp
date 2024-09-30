@@ -18,6 +18,15 @@ export const formSchema = z
     district: z.string().min(1, { message: "請選擇地區" }),
     address: z.string().trim().min(1, { message: "請填入地址" }),
     employees: z.array(employeeSchema),
+    LineLink: z
+      .string()
+      .nullish()
+      .transform((v) => v ?? ""),
+    IGLink: z
+      .string()
+      .nullish()
+      .transform((v) => v ?? ""),
+    chargeImage: z.union([z.instanceof(FileList), z.string()]).nullable(),
     merchantId: z
       .string()
       .nullish()
