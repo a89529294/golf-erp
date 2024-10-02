@@ -26,7 +26,7 @@ export const formSchema = z
       .string()
       .nullish()
       .transform((v) => v ?? ""),
-    chargeImage: z.union([z.instanceof(FileList), z.string()]).nullable(),
+    chargeImages: z.union([z.instanceof(FileList), z.string()]).nullable(), // for now keep it as a single value, may change to array later
     merchantId: z
       .string()
       .nullish()

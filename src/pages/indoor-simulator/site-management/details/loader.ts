@@ -37,6 +37,7 @@ export const simulatorGETSchema = z.object({
       .extend({ openDays: z.array(baseOpenDay.extend({ id: z.string() })) })
       .extend({ openTimes: z.array(baseOpenTime) })
       .extend({ coverImages: z.array(z.string()) })
+      .extend({ bannerImages: z.array(z.string()).nullish() })
       .extend({ store: z.object({ id: z.string() }) })
       .extend({ code: z.string() }),
   ),
@@ -84,6 +85,10 @@ export const genSimulatorDetailsQuery = (storeId: string, siteId: string) => ({
         end: v.endDay,
       })),
       imageFiles: parsed.coverImages.map((id) => ({ id: id, src: id })),
+      bannerImages: (parsed.bannerImages ?? []).map((id) => ({
+        id: id,
+        src: id,
+      })),
       ...(parsed.openTimes && parsed.openTimes[0]
         ? {
             openingHours: [

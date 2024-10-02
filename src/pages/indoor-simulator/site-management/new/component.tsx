@@ -36,6 +36,7 @@ export function Component() {
       introduce: "",
       equipments: [],
       imageFiles: [],
+      bannerImages: [],
       openingDates: [],
       openingHours: [],
       plans: [],
@@ -83,15 +84,27 @@ export function Component() {
       });
       const siteId = (await response.json()).id;
 
-      const formData = new FormData();
-      form
-        .getValues("imageFiles")
-        .forEach((img) => formData.append("image", img.file));
+      const imageFiles = form.getValues("imageFiles");
+      if (imageFiles.length) {
+        const formData = new FormData();
+        imageFiles.forEach((img) => formData.append("image", img.file));
 
-      await privateFetch(`/store/simulator/${siteId}/cover`, {
-        method: "POST",
-        body: formData,
-      });
+        await privateFetch(`/store/simulator/${siteId}/cover`, {
+          method: "POST",
+          body: formData,
+        });
+      }
+
+      const bannerImages = form.getValues("bannerImages");
+      if (bannerImages.length) {
+        const formData2 = new FormData();
+        bannerImages.forEach((img) => formData2.append("image", img.file));
+
+        await privateFetch(`/store/simulator/${siteId}/banner`, {
+          method: "POST",
+          body: formData2,
+        });
+      }
     },
     onSuccess() {
       toast.success("新增場地成功");

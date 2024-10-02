@@ -34,6 +34,7 @@ export function Component() {
       introduce: "",
       equipments: [],
       imageFiles: [],
+      bannerImages: [],
       openingDates: [],
       monday: [],
       tuesday: [],
@@ -109,6 +110,17 @@ export function Component() {
         await privateFetch(`/store/golf/${id}/cover`, {
           method: "POST",
           body: formData,
+        });
+      }
+
+      const bannerImages = form.getValues("bannerImages");
+      if (bannerImages.length) {
+        const formData2 = new FormData();
+        bannerImages.forEach((img) => formData2.append("image", img.file));
+
+        await privateFetch(`/store/golf/${id}/banner`, {
+          method: "POST",
+          body: formData2,
         });
       }
     },

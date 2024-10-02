@@ -39,6 +39,7 @@ import React, { useRef } from "react";
 import { useFormContext } from "react-hook-form";
 import {
   findRealEquipments,
+  onAddNewBannerImages,
   onAddNewImages,
   onAddNewOpeningDateRange,
   onAddNewOpeningHoursRange,
@@ -49,6 +50,7 @@ import {
   onEditOpeningTimeRange,
   onEditVenueSettingsRow,
   onEditWeekdayTimeRange,
+  onRemoveBannerImage,
   onRemoveImage,
   onRemoveOpeningDateRange,
   onRemoveOpeningTimeRange,
@@ -290,6 +292,44 @@ export function Site({
             })
           )}
         </div>
+      </Section>
+
+      <Section
+        title="場地banner"
+        subTitle="(圖片上限1張)"
+        inputButton={{
+          text: "新增圖片",
+          element: (
+            <input
+              type="file"
+              className="hidden"
+              accept="image/png, image/jpeg"
+              onChange={(e) => onAddNewBannerImages(e, form)}
+            />
+          ),
+        }}
+        disabled={formDisabled}
+      >
+        {form.watch("bannerImages").length ? (
+          <div
+            className={cn(
+              "grid grid-cols-[repeat(auto-fill,minmax(130px,1fr))] px-3 py-5 sm:p-2",
+            )}
+          >
+            {form.getValues("bannerImages").map((file) => {
+              return (
+                <PreviewImage
+                  key={file.id}
+                  file={file}
+                  onRemoveImage={(id) => onRemoveBannerImage(id, form)}
+                  disabled={formDisabled}
+                />
+              );
+            })}
+          </div>
+        ) : (
+          <p className="py-2.5">尚未新增圖片</p>
+        )}
       </Section>
       <Section
         title="場地圖片"

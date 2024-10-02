@@ -38,6 +38,10 @@ export function Component() {
     data.venueSettings,
   );
   const [defaultImageFiles, setDefaultImageFiles] = useState(data.imageFiles);
+  const [defaultBannerImages, setDefaultBannerImages] = useState(
+    data.bannerImages,
+  );
+
   const form = useForm<z.infer<typeof existingDrivingRangeSchema>>({
     resolver: zodResolver(existingDrivingRangeSchema),
     defaultValues: {
@@ -47,6 +51,7 @@ export function Component() {
       storeId: data.storeId,
       equipments: data.equipments,
       imageFiles: data.imageFiles,
+      bannerImages: data.bannerImages,
       openingDates: data.openingDates,
       venueSettings: data.venueSettings,
       costPerBox: data.costPerBox,
@@ -144,6 +149,38 @@ export function Component() {
         await Promise.all(promises);
       }
 
+      if (changedFields["bannerImages"]) {
+        try {
+          const imagesToBeDeletedPromises: Promise<Response>[] = [];
+          defaultBannerImages.forEach((v) => {
+            if (!changedFields.bannerImages?.find((cif) => cif.id === v.id)) {
+              imagesToBeDeletedPromises.push(
+                privateFetch(`/store/ground/${siteId}/banner/${v.id}`, {
+                  method: "DELETE",
+                }),
+              );
+            }
+          });
+          const formData = new FormData();
+          const imgIds = [] as string[];
+          changedFields.bannerImages.forEach((v) => {
+            if ("file" in v) {
+              formData.append("image", v.file);
+            } else imgIds.push(v.id);
+          });
+          await privateFetch(`/store/ground/${siteId}/banner`, {
+            method: "POST",
+            body: formData,
+          });
+          // const imgData = (await resp.json()) as {
+          //   coverImages: string[];
+          // };
+          // imgIds.push(...imgData.coverImages);
+        } catch (e) {
+          console.log(e);
+        }
+      }
+
       await privateFetch(`/store/ground/${siteId}`, {
         method: "PATCH",
         body: JSON.stringify(x),
@@ -183,6 +220,7 @@ export function Component() {
     setDefaultImageFiles(data.imageFiles);
     setDefaultOpeningDates(data.openingDates);
     setDefaultVenueSettings(data.venueSettings);
+    setDefaultBannerImages(data.bannerImages);
   }, [data, form]);
 
   function onBackWithoutSave() {
@@ -191,6 +229,7 @@ export function Component() {
     setDefaultImageFiles(data.imageFiles);
     setDefaultOpeningDates(data.openingDates);
     setDefaultVenueSettings(data.venueSettings);
+    setDefaultBannerImages(data.bannerImages);
   }
 
   return (
@@ -204,6 +243,8 @@ export function Component() {
             isPending={isPending}
             onBackWithoutSave={onBackWithoutSave}
             setFormDisabled={setFormDisabled}
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
             siteName={form.getValues("name")}
             onPatchForm={mutate}
           />

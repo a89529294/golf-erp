@@ -29,6 +29,10 @@ export const genGolfSiteDetailsQuery = (storeId: string, siteId: string) => ({
         id: img,
         src: img,
       })),
+      bannerImages: (site.bannerImages ?? []).map((img) => ({
+        id: img,
+        src: img,
+      })),
       equipments: site.equipments,
       openTimes: (site.openTimes ?? []).map((ot) => ({
         id: ot.id,

@@ -48,6 +48,25 @@ export function onRemoveImage(
   );
 }
 
+export function onRemoveBannerImage(
+  id: string,
+  form: UseFormReturn<
+    | NewGolfCourse
+    | NewIndoorSimulator
+    | NewDrivingRange
+    | ExistingGolfCourse
+    | ExistingDrivingRange
+    | ExistingIndoorSimulator
+  >,
+) {
+  const imageFiles = form.getValues("bannerImages");
+  form.setValue(
+    "bannerImages",
+    imageFiles.filter((f) => f.id !== id),
+    { shouldDirty: true },
+  );
+}
+
 export async function onAddNewImages(
   e: React.ChangeEvent<HTMLInputElement>,
   form: UseFormReturn<
@@ -80,6 +99,36 @@ export async function onAddNewImages(
     [...form.getValues("imageFiles"), ...filesArray],
     { shouldDirty: true },
   );
+}
+
+export async function onAddNewBannerImages(
+  e: React.ChangeEvent<HTMLInputElement>,
+  form: UseFormReturn<
+    | NewGolfCourse
+    | NewIndoorSimulator
+    | NewDrivingRange
+    | ExistingGolfCourse
+    | ExistingDrivingRange
+    | ExistingIndoorSimulator
+  >,
+) {
+  const files = e.target.files;
+  if (!files) return;
+
+  let filesArray: FileWithId[] = [];
+
+  const promises = [] as Promise<File>[];
+
+  Array.from(files).forEach((file) => promises.push(compressImage(file)));
+
+  const compressedFiles = await Promise.all(promises);
+
+  filesArray = compressedFiles.map((file) => ({
+    file: file,
+    id: crypto.randomUUID(),
+  }));
+
+  form.setValue("bannerImages", [...filesArray], { shouldDirty: true });
 }
 
 export function onAddNewOpeningDateRange(

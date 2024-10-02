@@ -5,6 +5,7 @@
     "lib": ["ES2020", "ES2023", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
+    "maxNodeModuleJsDepth": 20,
 
     /* Bundler mode */
     "moduleResolution": "bundler",

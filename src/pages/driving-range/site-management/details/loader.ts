@@ -37,6 +37,12 @@ export const drivingRangeGETSchema = z.object({
       .extend({ openDays: z.array(baseOpenDay.extend({ id: z.string() })) })
       .extend({ openTimes: z.array(baseOpenTime.extend({ id: z.string() })) })
       .extend({ coverImages: z.array(z.string()) })
+      .extend({
+        bannerImages: z
+          .array(z.string())
+          .nullish()
+          .transform((v) => v ?? []),
+      })
       .extend({ store: storeSchema }),
   ),
 });
@@ -86,6 +92,10 @@ export const genDrivingRangeDetailsQuery = (
       costPerBox: parsed.ballPrice,
       equipments: parsed.equipments,
       imageFiles: parsed.coverImages.map((src) => ({
+        id: src,
+        src,
+      })),
+      bannerImages: parsed.bannerImages.map((src) => ({
         id: src,
         src,
       })),

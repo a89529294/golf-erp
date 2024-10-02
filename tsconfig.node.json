@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "composite": true,
+    "maxNodeModuleJsDepth": 20,
     "skipLibCheck": true,
     "module": "ESNext",
     "moduleResolution": "bundler",
