@@ -1,6 +1,7 @@
 import { fromDateToDateTimeString } from "@/utils";
 import { queryClient } from "@/utils/query-client";
 import { privateFetch } from "@/utils/utils";
+import { keepPreviousData } from "@tanstack/react-query";
 import qs from "query-string";
 import { z } from "zod";
 
@@ -81,6 +82,14 @@ export const simpleMemberSchema = memberSchema.omit({
 
 export const simpleMembersSchema = z.object({
   data: z.array(simpleMemberSchema),
+  meta: z.object({
+    page: z.number(),
+    pageSize: z.number(),
+    itemCount: z.number(),
+    pageCount: z.number(),
+    hasPreviousPage: z.boolean(),
+    hasNextPage: z.boolean(),
+  }),
 });
 
 export type Member = z.infer<typeof memberSchema>;
@@ -106,11 +115,52 @@ export const genderEnChMap: Record<Gender, string> = {
   unknown: "未知",
 };
 
-export const membersQuery = {
-  queryKey: ["members"],
+export const genMembersKey = (page: number) => ["members", page];
+export const genMembersFunction = (page: number) => async () => {
+  const queryString = qs.stringify({
+    page: page,
+    pageSize: 8,
+    sort: "updatedAt",
+    order: "DESC",
+    populate: ["store", "storeAppUsers"],
+  });
+  const response = await privateFetch(`/app-users?${queryString}`);
+
+  const data = await response.json();
+
+  return simpleMembersSchema.parse(data);
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// export const useMembers = (page: number, initialData: any) => {
+//   console.log("wtff");
+//   return useQuery({
+//     queryKey: ["members", page],
+//     queryFn: async ({ queryKey }) => {
+//       console.log(queryKey);
+//       const queryString = qs.stringify({
+//         page: page,
+//         pageSize: 8,
+//         sort: "updatedAt",
+//         order: "DESC",
+//         populate: ["store", "storeAppUsers"],
+//       });
+//       const response = await privateFetch(`/app-users?${queryString}`);
+
+//       const data = await response.json();
+
+//       return simpleMembersSchema.parse(data);
+//     },
+//     initialData,
+//   });
+// };
+
+export const genMembersQuery = (page: number) => ({
+  queryKey: ["members", page],
   queryFn: async () => {
     const queryString = qs.stringify({
-      pageSize: 999,
+      page: page,
+      pageSize: 8,
       sort: "updatedAt",
       order: "DESC",
       populate: ["store", "storeAppUsers"],
@@ -119,10 +169,11 @@ export const membersQuery = {
 
     const data = await response.json();
 
-    return simpleMembersSchema.parse(data).data;
+    return simpleMembersSchema.parse(data);
   },
-};
+  placeholderData: keepPreviousData,
+});
 
 export async function loader() {
-  return await queryClient.ensureQueryData(membersQuery);
+  return await queryClient.ensureQueryData(genMembersQuery(1));
 }

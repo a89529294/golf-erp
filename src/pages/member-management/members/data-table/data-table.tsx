@@ -20,6 +20,8 @@ import {
 import { cn } from "@/lib/utils";
 import { Dispatch, ReactNode, SetStateAction, useState } from "react";
 import React from "react";
+import { DataTablePagination } from "@/pages/member-management/members/data-table/data-table-pagination";
+import { Spinner } from "@/components/ui/spinner";
 
 declare module "@tanstack/react-table" {
   interface FilterFns {
@@ -35,6 +37,10 @@ interface DataTableProps<TData, TValue> {
   globalFilter: string;
   setGlobalFilter: Dispatch<SetStateAction<string>>;
   headerRowRef?: React.RefObject<HTMLTableRowElement>;
+  page?: number;
+  setPage?: Dispatch<SetStateAction<number>>;
+  totalPages?: number;
+  isFetching?: boolean;
 }
 
 const fuzzyFilter: FilterFn<unknown> = (row, columnId, value) => {
@@ -58,6 +64,9 @@ const DataTable: <TData extends { id: string }, TValue>({
   globalFilter,
   setGlobalFilter,
   headerRowRef,
+  page,
+  totalPages,
+  isFetching,
 }: DataTableProps<TData, TValue>) => ReactNode = React.memo(function ({
   columns,
   data,
@@ -66,6 +75,10 @@ const DataTable: <TData extends { id: string }, TValue>({
   globalFilter,
   setGlobalFilter,
   headerRowRef,
+  page,
+  setPage,
+  totalPages,
+  isFetching,
 }) {
   const [sorting, setSorting] = useState<SortingState>([]);
 
@@ -91,8 +104,11 @@ const DataTable: <TData extends { id: string }, TValue>({
   });
 
   return (
-    <div className="m-1 mb-2.5 mt-0 w-fit border-y border-t-0 border-line-gray sm:w-max">
-      <Table className="relative isolate table-fixed sm:w-max">
+    <div className="absolute inset-0  m-1 mb-2.5 mt-0 w-fit border-line-gray sm:w-max">
+      <Table
+        outerDivClassName="h-full"
+        className="relative isolate h-full table-fixed items-stretch sm:w-max"
+      >
         <TableHeader className="relative z-10 [&_tr]:border-b-0">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow
@@ -127,30 +143,53 @@ const DataTable: <TData extends { id: string }, TValue>({
           ))}
         </TableHeader>
 
-        <TableBody className="relative ">
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-                className="group relative border-b-line-gray bg-white data-[state=selected]:border-b-orange"
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id} className="last-of-type:px-0">
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
+        {isFetching ? (
+          <div className="absolute inset-0 flex grow items-center justify-center">
+            <Spinner />
+          </div>
+        ) : (
+          <TableBody className="relative ">
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                  className="group relative border-b-line-gray bg-white data-[state=selected]:border-b-orange"
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell
+                      key={cell.id}
+                      className="py-[18px] last-of-type:px-0"
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  查無資料
+                </TableCell>
               </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                查無資料
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
+            )}
+          </TableBody>
+        )}
       </Table>
+
+      {page && setPage && totalPages && (
+        <DataTablePagination
+          page={page}
+          totalPages={totalPages}
+          setPage={setPage}
+        />
+      )}
     </div>
   );
 });
