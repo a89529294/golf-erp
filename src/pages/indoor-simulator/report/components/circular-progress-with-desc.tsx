@@ -18,7 +18,9 @@ export function CircularProgressWithDesc({
       <CircularProgressBar filledPercentage={filledPercentage} type={type} />
       <div>
         <p className="text-sm font-medium">{label}</p>
-        <p className="text-xl text-secondary-purple">{nf.format(amount)}</p>
+        <p className="text-xl text-secondary-purple">
+          {nf.format(Math.round(amount))}
+        </p>
       </div>
     </div>
   );

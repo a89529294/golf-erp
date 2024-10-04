@@ -1,8 +1,8 @@
 import backIcon from "@/assets/back.svg";
-import checkIcon from "@/assets/check.svg";
-import pencilIcon from "@/assets/pencil.svg";
-import redXIcon from "@/assets/red-x-icon.svg";
-import saveIcon from "@/assets/save.svg";
+// import checkIcon from "@/assets/check.svg";
+// import pencilIcon from "@/assets/pencil.svg";
+// import redXIcon from "@/assets/red-x-icon.svg";
+// import saveIcon from "@/assets/save.svg";
 import { button } from "@/components/ui/button-cn";
 import {
   Menubar,
@@ -61,7 +61,7 @@ export function MobileMenubar<T extends FieldValues>({
                 </Link>
               </MenubarItem>
               <MenubarSeparator />
-              {data.isActive ? (
+              {/* {data.isActive ? (
                 <>
                   <MenubarItem>
                     <button
@@ -89,8 +89,8 @@ export function MobileMenubar<T extends FieldValues>({
                   </MenubarItem>
                   <MenubarSeparator />
                 </>
-              )}
-              <MenubarItem>
+              )} */}
+              {/* <MenubarItem>
                 <button
                   type="button"
                   onClick={() => {
@@ -103,12 +103,12 @@ export function MobileMenubar<T extends FieldValues>({
                   <img src={pencilIcon} />
                   編輯
                 </button>
-              </MenubarItem>
+              </MenubarItem> */}
               <MenubarSeparator />
             </>
           ) : (
             <>
-              <MenubarItem>
+              {/* <MenubarItem>
                 <button
                   type="button"
                   onClick={() => {
@@ -143,7 +143,7 @@ export function MobileMenubar<T extends FieldValues>({
                   <img src={saveIcon} />
                   儲存
                 </button>
-              </MenubarItem>
+              </MenubarItem> */}
             </>
           )}
         </MenubarContent>

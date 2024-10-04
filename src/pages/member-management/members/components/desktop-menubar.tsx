@@ -1,5 +1,5 @@
 import backIcon from "@/assets/back.svg";
-import { IconButton, IconWarningButton } from "@/components/ui/button";
+// import { IconButton, IconWarningButton } from "@/components/ui/button";
 import { button } from "@/components/ui/button-cn";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 
@@ -49,7 +49,7 @@ export function DesktopMenubar({
             <img src={backIcon} />
             返回
           </Link>
-          {data.isActive ? (
+          {/* {data.isActive ? (
             <IconWarningButton
               disabled={isUpdatingMemberStatus}
               onClick={() => toggleMemberStatus()}
@@ -66,8 +66,8 @@ export function DesktopMenubar({
             >
               恢復
             </IconButton>
-          )}
-          <IconButton
+          )} */}
+          {/* <IconButton
             icon="pencil"
             type="button"
             onClick={(e) => {
@@ -77,12 +77,12 @@ export function DesktopMenubar({
             disabled={isUpdatingMemberStatus}
           >
             編輯
-          </IconButton>
+          </IconButton> */}
           {storeId && <SendCouponModal storeId={storeId} />}
         </>
       ) : (
         <>
-          <IconWarningButton
+          {/* <IconWarningButton
             type="button"
             onClick={() => {
               setDisabled(true);
@@ -110,7 +110,7 @@ export function DesktopMenubar({
             form="member-form"
           >
             儲存
-          </IconButton>
+          </IconButton> */}
         </>
       )}
     </>
