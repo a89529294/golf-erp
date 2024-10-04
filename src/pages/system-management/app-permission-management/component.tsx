@@ -16,8 +16,10 @@ import { useState } from "react";
 import { useActionData } from "react-router-dom";
 import { toast } from "sonner";
 import { loader } from "./loader";
+import { motion } from "framer-motion";
 
 export function Component() {
+  const [category, setCategory] = useState("1");
   const initialData = useActionData() as Awaited<ReturnType<typeof loader>>;
   const { data } = useQuery({
     ...erpFeaturesWithUsersQuery,
@@ -25,16 +27,63 @@ export function Component() {
   });
   // const allUsersWithoutCurrentPermission = (currentPermission:sting)=>data['all-users']
 
+  console.log(data.erpFeaturesWithUsers);
+
+  const visibleFeatures = data.erpFeaturesWithUsers.filter((feature) => {
+    if (category === "1") return true;
+    if (category === "2") return feature.featureName.includes("模擬器");
+    if (category === "3") return feature.featureName.includes("高爾夫");
+    if (category === "4") return feature.featureName.includes("練習場");
+  });
+
   return (
     <MainLayout>
       {({ height }) => {
         return (
           <ScrollArea
             style={{ height: `${height - 10}px` }}
-            className="mb-2.5 w-full border border-line-gray bg-light-gray px-5 py-12"
+            className="relative mb-2.5 w-full border border-line-gray bg-light-gray px-5 pb-4 pt-14"
           >
-            <div className="flex flex-col h-full gap-5">
-              {data.erpFeaturesWithUsers.map((feature) => (
+            <ul className="absolute left-2 top-2 isolate flex items-center gap-3 py-2 pl-3 sm:hidden">
+              {[
+                { id: "1", name: "全部" },
+                { id: "2", name: "模擬器" },
+                { id: "3", name: "高爾夫" },
+                {
+                  id: "4",
+                  name: "練習場",
+                },
+              ].map(({ id, name }) => (
+                <li key={id}>
+                  <button
+                    onClick={() => setCategory(id)}
+                    className={cn(
+                      "relative grid h-9 place-items-center rounded-full border border-line-gray bg-white px-5",
+                    )}
+                  >
+                    {category === id && (
+                      <motion.div
+                        className="absolute inset-0 z-10 rounded-full bg-black"
+                        layoutId="site-tab"
+                        transition={{
+                          duration: 0.3,
+                        }}
+                      />
+                    )}
+                    <div
+                      className={cn(
+                        "relative z-20 transition-colors duration-300",
+                        category === id && "text-white",
+                      )}
+                    >
+                      {name}
+                    </div>
+                  </button>
+                </li>
+              ))}
+            </ul>
+            <div className="flex h-full flex-col gap-5 ">
+              {visibleFeatures.map((feature) => (
                 <Section
                   key={feature.featureId}
                   title={feature.featureName}
@@ -98,7 +147,7 @@ function Section({
         <label className="px-6 py-5">
           <input
             type="checkbox"
-            className="hidden peer"
+            className="peer hidden"
             checked={users.length === rowSelection.size && users.length > 0}
             onChange={(e) => {
               if (e.target.checked)
@@ -146,7 +195,7 @@ function Section({
               <label className="block px-6 py-5">
                 <input
                   type="checkbox"
-                  className="hidden peer"
+                  className="peer hidden"
                   checked={rowSelection.has(user.employeeId)}
                   onChange={(e) => {
                     if (e.target.checked) {
