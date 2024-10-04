@@ -17,9 +17,9 @@ export function ChargeImageField({
   setChargeImageId?: React.Dispatch<React.SetStateAction<string>>;
 }) {
   const { register, setValue, getValues } = form;
-  const { onChange, ref } = register("chargeImage");
+  const { onChange, ref } = register("chargeImages");
   const [image, setImage] = useState("");
-  const chargeImage = getValues("chargeImage");
+  const chargeImages = getValues("chargeImages");
 
   const onImageChange = useCallback(
     async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,19 +27,20 @@ export function ChargeImageField({
         const base64 = await getBase64(event.target.files[0]);
 
         setImage(base64);
-        if (setChargeImageId && typeof chargeImage === "string")
-          setChargeImageId(chargeImage);
+        if (setChargeImageId && typeof chargeImages === "string")
+          setChargeImageId(chargeImages);
         onChange(event);
+        console.log(event);
       }
     },
-    [onChange, setChargeImageId, chargeImage],
+    [onChange, setChargeImageId, chargeImages],
   );
 
   useEffect(() => {
-    if (typeof chargeImage === "string" && chargeImage) {
+    if (typeof chargeImages === "string" && chargeImages) {
       (async () => {
         const response = await privateFetch(
-          `/store/charge-image/${chargeImage}`,
+          `/store/charge-image/${chargeImages}`,
           {
             credentials: "include",
           },
@@ -54,7 +55,7 @@ export function ChargeImageField({
         setImage(imageUrl);
       })();
     }
-  }, [chargeImage]);
+  }, [chargeImages]);
 
   return (
     <div
@@ -72,7 +73,7 @@ export function ChargeImageField({
         <label className="rounded-md border border-line-gray px-2 py-1">
           <input
             type="file"
-            name="chargeImage"
+            name="chargeImages"
             ref={ref}
             onChange={onImageChange}
             className="hidden"
@@ -87,9 +88,9 @@ export function ChargeImageField({
             <button
               className="absolute right-0 top-0 -translate-y-1/2 translate-x-1/2"
               onClick={() => {
-                if (typeof chargeImage === "string" && setChargeImageId)
-                  setChargeImageId(chargeImage);
-                setValue("chargeImage", null, { shouldDirty: true });
+                if (typeof chargeImages === "string" && setChargeImageId)
+                  setChargeImageId(chargeImages);
+                setValue("chargeImages", null, { shouldDirty: true });
                 setImage("");
               }}
               disabled={disabled}

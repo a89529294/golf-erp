@@ -21,9 +21,9 @@ export function StoreFormAddressSelectFields({
 }: {
   form: UseFormReturn<z.infer<typeof formSchema>, unknown, undefined>;
   names: [
-    Exclude<keyof z.infer<typeof formSchema>, "employees" | "chargeImage">,
-    Exclude<keyof z.infer<typeof formSchema>, "employees" | "chargeImage">,
-    Exclude<keyof z.infer<typeof formSchema>, "employees" | "chargeImage">,
+    Exclude<keyof z.infer<typeof formSchema>, "employees" | "chargeImages">,
+    Exclude<keyof z.infer<typeof formSchema>, "employees" | "chargeImages">,
+    Exclude<keyof z.infer<typeof formSchema>, "employees" | "chargeImages">,
   ];
   label: string;
   counties: { countyname: string; countycode: string }[];

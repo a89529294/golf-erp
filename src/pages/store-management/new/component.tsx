@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { redirect, useLoaderData } from "react-router-dom";
+import { useLoaderData, useNavigate } from "react-router-dom";
 import { z } from "zod";
 
 import { countyQuery, generateDistrictQuery } from "@/api/county-district";
@@ -22,7 +22,7 @@ import { formSchema } from "../schemas";
 
 export function Component() {
   const queryClient = useQueryClient();
-
+  const navigate = useNavigate();
   const isMobile = useIsMobile();
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
 
@@ -55,7 +55,7 @@ export function Component() {
       employees: [],
       LineLink: "",
       IGLink: "",
-      chargeImage: undefined,
+      chargeImages: undefined,
       merchantId: "",
       hashKey: "",
       linepayChannelId: "",
@@ -135,9 +135,9 @@ export function Component() {
 
     const storeId = (await response.json()).id;
 
-    if (values.chargeImage) {
+    if (values.chargeImages) {
       const formData = new FormData();
-      formData.append("image", (values.chargeImage as FileList).item(0)!);
+      formData.append("image", (values.chargeImages as FileList).item(0)!);
       await privateFetch(`/store/${storeId}/upload-charge-image`, {
         method: "POST",
         body: formData,
@@ -147,7 +147,9 @@ export function Component() {
     toast.success("新增廠商成功");
     queryClient.invalidateQueries({ queryKey: ["stores"] });
 
-    redirect(linksKV["store-management"].paths.index);
+    console.log("?");
+    navigate(linksKV["store-management"].paths.index);
+    console.log("!");
   }
 
   return (

@@ -19,6 +19,7 @@ export function MainChart({
   const [searchParams] = useSearchParams();
   const range = searchParams.get("range")! as reportTimeRange;
   const isYearData = fromRangeStringToLastDateSetBy(range) === "year";
+  const isSameDay = range.split(":")[0] === range.split(":")[1];
 
   React.useEffect(() => {
     const secondaryPurple = "#262873";
@@ -26,15 +27,40 @@ export function MainChart({
       ? Object.keys(data.year).map(
           (v) => `${new Date().getFullYear()}/${v.padStart(2, "0")}`,
         )
-      : Object.keys(data.detailed).map((v) => v);
+      : isSameDay
+        ? Array(24)
+            .fill("")
+            .map((_, idx) => `${idx}:00`)
+        : Object.keys(data.detailed).map((v) => v);
 
     const yData = isYearData
       ? Object.values(data.year).map((v) => {
           return activeDataType === "revenue" ? v.totalAmount : v.totalCount;
         })
-      : Object.values(data.detailed).map((v) => {
-          return activeDataType === "revenue" ? v.totalAmount : v.totalCount;
-        });
+      : isSameDay
+        ? Object.values(
+            Object.values(data.detailed)[1].storeSimulatorAppointments,
+          ).reduce(
+            (acc, val) => {
+              val.forEach((v) => {
+                const startTimeHour = +v.startTime.split(" ")[1].split(":")[0];
+
+                const incrementBy = activeDataType === "revenue" ? v.amount : 1;
+
+                acc[startTimeHour] = acc[startTimeHour]
+                  ? acc[startTimeHour] + incrementBy
+                  : incrementBy;
+              });
+              return acc;
+            },
+            Array(24)
+              .fill("")
+              .map(() => 0),
+          )
+        : Object.values(data.detailed).map((v) => {
+            return activeDataType === "revenue" ? v.totalAmount : v.totalCount;
+          });
+    console.log(yData);
 
     if (!document.getElementById("chart")) return;
     const myChart = new Chart(

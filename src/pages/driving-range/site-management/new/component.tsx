@@ -36,6 +36,7 @@ export function Component() {
       storeId: "",
       equipments: [],
       imageFiles: [],
+      bannerImages: [],
       openingDates: [],
       venueSettings: [],
       costPerBox: 0,
@@ -78,13 +79,24 @@ export function Component() {
       });
       const data = await response.json();
 
-      if (v.imageFiles) {
+      if (v.imageFiles.length) {
         const formData = new FormData();
         v.imageFiles.map((img) => formData.append("image", img.file));
 
         await privateFetch(`/store/ground/${data.id}/cover`, {
           method: "POST",
           body: formData,
+        });
+      }
+
+      const bannerImages = form.getValues("bannerImages");
+      if (bannerImages.length) {
+        const formData2 = new FormData();
+        bannerImages.forEach((img) => formData2.append("image", img.file));
+
+        await privateFetch(`/store/ground/${data.id}/banner`, {
+          method: "POST",
+          body: formData2,
         });
       }
     },

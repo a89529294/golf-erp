@@ -78,7 +78,7 @@ export function Component() {
       ),
       LineLink: store.LineLink ?? "",
       IGLink: store.IGLink ?? "",
-      chargeImage: store.chargeImage,
+      chargeImages: store.chargeImages,
       merchantId: store.merchantId ?? "",
       hashKey: store.hashKey ?? "",
       hashIV: store.hashIV ?? "",
@@ -216,18 +216,29 @@ export function Component() {
       }
     }
 
-    if (dirtyFields.chargeImage) {
-      console.log(chargeImageId);
-      console.log(form.getValues("chargeImage"));
-      await privateFetch(`/store/${storeId}/charge-image/${chargeImageId}`, {
-        method: "DELETE",
-        credentials: "include",
-      });
+    console.log(dirtyFields, chargeImageId);
 
-      const newChargeImage = form.getValues("chargeImage");
+    if (dirtyFields.chargeImages) {
+      if (chargeImageId) {
+        try {
+          await privateFetch(
+            `/store/${storeId}/charge-image/${chargeImageId}`,
+            {
+              method: "DELETE",
+              credentials: "include",
+            },
+          );
+          setChargeImageId("");
+        } catch (e) {
+          console.log(e);
+        }
+      }
+
+      const newChargeImage = form.getValues("chargeImages");
+      console.log(newChargeImage);
       if (newChargeImage) {
         const formData = new FormData();
-        formData.append("image", (values.chargeImage as FileList).item(0)!);
+        formData.append("image", (values.chargeImages as FileList).item(0)!);
         await privateFetch(`/store/${storeId}/upload-charge-image`, {
           method: "POST",
           body: formData,
@@ -258,7 +269,7 @@ export function Component() {
       employees: form.getValues("employees"),
       LineLink: form.getValues("LineLink"),
       IGLink: form.getValues("IGLink"),
-      chargeImage: form.getValues("chargeImage"),
+      chargeImages: form.getValues("chargeImages"),
       merchantId: form.getValues("merchantId"),
       hashKey: form.getValues("hashKey"),
       hashIV: form.getValues("hashIV"),

@@ -20,7 +20,10 @@ export const storeSchema = z.object({
   employees: z.array(employeeSchema).optional(),
   LineLink: z.string().nullish(),
   IGLink: z.string().nullish(),
-  chargeImage: z.string().nullish(),
+  chargeImages: z
+    .array(z.string())
+    .nullish()
+    .transform((v) => (v?.length ? v[0] : undefined)),
   merchantId: z
     .string()
     .nullish()
@@ -97,8 +100,12 @@ const equipmentsSchema = {
   equipments: z.array(equipmentSchema),
 };
 const newImagesSchema = { imageFiles: z.array(fileWithIdSchema) };
+const newBannerImagesSchema = { bannerImages: z.array(fileWithIdSchema) };
 const existingImagesSchema = {
   imageFiles: z.array(z.union([existingImgSchema, fileWithIdSchema])),
+};
+const existingBannerImagesSchema = {
+  bannerImages: z.array(z.union([existingImgSchema, fileWithIdSchema])),
 };
 
 type DateRange = z.infer<typeof openingDatesSchema.openingDates>[number];
@@ -203,6 +210,7 @@ const costPerBoxSchema = {
 const newIndoorSimulatorSchema = baseSchema
   .extend(equipmentsSchema)
   .extend(newImagesSchema)
+  .extend(newBannerImagesSchema)
   .extend(openingHoursSchema)
   .extend(plansSchema);
 type NewIndoorSimulator = z.infer<typeof newIndoorSimulatorSchema> & {
@@ -212,6 +220,7 @@ type NewIndoorSimulator = z.infer<typeof newIndoorSimulatorSchema> & {
 const existingIndoorSimulatorSchema = baseSchema
   .extend(equipmentsSchema)
   .extend(existingImagesSchema)
+  .extend(existingBannerImagesSchema)
   .extend(openingHoursSchema)
   .extend(plansSchema)
   .extend({
@@ -221,6 +230,7 @@ type ExistingIndoorSimulator = z.infer<typeof existingIndoorSimulatorSchema>;
 
 const newGolfCourseSchema = baseSchema
   .extend(equipmentsSchema)
+  .extend(newBannerImagesSchema)
   .extend(newImagesSchema)
   .extend(weekDaysSchema);
 type NewGolfCourse = z.infer<typeof newGolfCourseSchema> & { category: "golf" };
@@ -228,6 +238,7 @@ type NewGolfCourse = z.infer<typeof newGolfCourseSchema> & { category: "golf" };
 const existingGolfCourseSchema = baseSchema
   .extend(equipmentsSchema)
   .extend(existingImagesSchema)
+  .extend(existingBannerImagesSchema)
   .extend({
     store: storeSchema,
   })
@@ -237,6 +248,7 @@ type ExistingGolfCourse = z.infer<typeof existingGolfCourseSchema>;
 const newDrivingRangeSchema = baseSchema
   .extend(equipmentsSchema)
   .extend(newImagesSchema)
+  .extend(newBannerImagesSchema)
   .extend(venueSettingsSchema)
   .extend(costPerBoxSchema)
   .extend(plansSchema);
@@ -250,6 +262,7 @@ const existingDrivingRangeSchema = baseSchema
   })
   .extend(equipmentsSchema)
   .extend(existingImagesSchema)
+  .extend(existingBannerImagesSchema)
   .extend(venueSettingsSchema)
   .extend(costPerBoxSchema)
   .extend(plansSchema);
@@ -260,6 +273,7 @@ const genericSitesSchema = z.object({
   name: z.string(),
   isActive: z.boolean(),
   coverImages: z.array(z.string()),
+  bannerImages: z.array(z.string()).nullish(),
   introduce: z.string(),
   equipments: z.array(equipmentSchema),
   store: storeSchema,

@@ -41,6 +41,9 @@ export function Component() {
     data.openingDates,
   );
   const [defaultImageFiles, setDefaultImageFiles] = useState(data.imageFiles);
+  const [defaultBannerImages, setDefaultBannerImages] = useState(
+    data.bannerImages,
+  );
   const navigate = useNavigate();
   const form = useForm<z.infer<typeof existingIndoorSimulatorSchema>>({
     resolver: zodResolver(existingIndoorSimulatorSchema),
@@ -52,6 +55,7 @@ export function Component() {
       equipments: data.equipments,
       storeId: data.storeId,
       imageFiles: data.imageFiles,
+      bannerImages: data.bannerImages,
       openingDates: data.openingDates,
       openingHours: data.openingHours,
       plans: data.plans,
@@ -98,15 +102,17 @@ export function Component() {
             },
           ];
       }
+
       if (changedValues["imageFiles"]) {
         const imagesToBeDeletedPromises: Promise<Response>[] = [];
         defaultImageFiles.forEach((v) => {
-          if (!changedValues.imageFiles?.find((cif) => cif.id === v.id))
+          if (!changedValues.imageFiles?.find((cif) => cif.id === v.id)) {
             imagesToBeDeletedPromises.push(
               privateFetch(`/store/simulator/${siteId}/cover/${v.id}`, {
                 method: "DELETE",
               }),
             );
+          }
         });
         const formData = new FormData();
         const imgIds = [] as string[];
@@ -124,6 +130,39 @@ export function Component() {
         };
         imgIds.push(...imgData.coverImages);
       }
+
+      if (changedValues["bannerImages"]) {
+        try {
+          const imagesToBeDeletedPromises: Promise<Response>[] = [];
+          defaultBannerImages.forEach((v) => {
+            if (!changedValues.bannerImages?.find((cif) => cif.id === v.id)) {
+              imagesToBeDeletedPromises.push(
+                privateFetch(`/store/simulator/${siteId}/banner/${v.id}`, {
+                  method: "DELETE",
+                }),
+              );
+            }
+          });
+          const formData = new FormData();
+          const imgIds = [] as string[];
+          changedValues.bannerImages.forEach((v) => {
+            if ("file" in v) {
+              formData.append("image", v.file);
+            } else imgIds.push(v.id);
+          });
+          await privateFetch(`/store/simulator/${siteId}/banner`, {
+            method: "POST",
+            body: formData,
+          });
+          // const imgData = (await resp.json()) as {
+          //   coverImages: string[];
+          // };
+          // imgIds.push(...imgData.coverImages);
+        } catch (e) {
+          console.log(e);
+        }
+      }
+
       if (changedValues["equipments"]) {
         x.equipmentIds = changedValues.equipments.map((e) => e.id);
       }
@@ -131,6 +170,9 @@ export function Component() {
         x.plans = changedValues["plans"];
       }
       if (changedValues["isActive"]) x.isActive = changedValues["isActive"];
+
+      if (Object.keys(changedValues).length === 1 && changedValues.imageFiles)
+        return;
 
       await privateFetch(`/store/simulator/${siteId}`, {
         method: "PATCH",
@@ -170,6 +212,7 @@ export function Component() {
     form.reset(data);
     setDefaultOpeningDates(data.openingDates);
     setDefaultImageFiles(data.imageFiles);
+    setDefaultBannerImages(data.bannerImages);
   }, [data, form]);
 
   return (
@@ -188,6 +231,7 @@ export function Component() {
               form.reset(data);
               setDefaultOpeningDates(data.openingDates);
               setDefaultImageFiles(data.imageFiles);
+              setDefaultBannerImages(data.bannerImages);
             }}
             onPatchForm={async () => {
               const success = await form.trigger();
@@ -207,6 +251,7 @@ export function Component() {
               form.reset(data);
               setDefaultOpeningDates(data.openingDates);
               setDefaultImageFiles(data.imageFiles);
+              setDefaultBannerImages(data.bannerImages);
             }}
           />
         )

@@ -29,6 +29,11 @@ export function Component() {
     ...genGolfSiteDetailsQuery(storeId!, siteId!),
     initialData: initialData.details,
   });
+  const [defaultImageFiles, setDefaultImageFiles] = useState(data.imageFiles);
+  const [defaultBannerImages, setDefaultBannerImages] = useState(
+    data.bannerImages,
+  );
+
   const form = useForm<ExistingGolfCourse>({
     resolver: zodResolver(existingGolfCourseSchema),
     defaultValues: {
@@ -37,6 +42,7 @@ export function Component() {
       introduce: data.introduce,
       equipments: data.equipments,
       imageFiles: data.imageFiles,
+      bannerImages: data.bannerImages,
       openingDates: data.openingDates,
       storeId: data.store.id,
       monday: data.openTimes.filter((v) => v.day === 1),
@@ -125,30 +131,64 @@ export function Component() {
       }
       if (changedValues.isActive) x.isActive = changedValues.isActive;
 
-      if (changedValues.imageFiles) {
-        // new images
-        const formData = new FormData();
-
-        changedValues.imageFiles.forEach((img) => {
-          if ("file" in img) formData.append("image", img.file);
-        });
-
-        promises.push(
-          privateFetch(`/store/golf/${siteId}/cover`, {
-            method: "POST",
-            body: formData,
-          }),
-        );
-
-        // removed images
-        data.imageFiles.forEach((img) => {
-          if (!changedValues.imageFiles?.find((ci) => ci.id === img.id))
-            promises.push(
-              privateFetch(`/store/golf/${siteId}/cover/${img.id}`, {
+      if (changedValues["imageFiles"]) {
+        const imagesToBeDeletedPromises: Promise<Response>[] = [];
+        defaultImageFiles.forEach((v) => {
+          if (!changedValues.imageFiles?.find((cif) => cif.id === v.id)) {
+            imagesToBeDeletedPromises.push(
+              privateFetch(`/store/golf/${siteId}/cover/${v.id}`, {
                 method: "DELETE",
               }),
             );
+          }
         });
+        const formData = new FormData();
+        const imgIds = [] as string[];
+        changedValues.imageFiles.forEach((v) => {
+          if ("file" in v) {
+            formData.append("image", v.file);
+          } else imgIds.push(v.id);
+        });
+        const resp = await privateFetch(`/store/golf/${siteId}/cover`, {
+          method: "POST",
+          body: formData,
+        });
+        const imgData = (await resp.json()) as {
+          coverImages: string[];
+        };
+        imgIds.push(...imgData.coverImages);
+      }
+
+      if (changedValues["bannerImages"]) {
+        try {
+          const imagesToBeDeletedPromises: Promise<Response>[] = [];
+          defaultBannerImages.forEach((v) => {
+            if (!changedValues.bannerImages?.find((cif) => cif.id === v.id)) {
+              imagesToBeDeletedPromises.push(
+                privateFetch(`/store/golf/${siteId}/banner/${v.id}`, {
+                  method: "DELETE",
+                }),
+              );
+            }
+          });
+          const formData = new FormData();
+          const imgIds = [] as string[];
+          changedValues.bannerImages.forEach((v) => {
+            if ("file" in v) {
+              formData.append("image", v.file);
+            } else imgIds.push(v.id);
+          });
+          await privateFetch(`/store/golf/${siteId}/banner`, {
+            method: "POST",
+            body: formData,
+          });
+          // const imgData = (await resp.json()) as {
+          //   coverImages: string[];
+          // };
+          // imgIds.push(...imgData.coverImages);
+        } catch (e) {
+          console.log(e);
+        }
       }
 
       promises.push(
@@ -196,6 +236,7 @@ export function Component() {
       introduce: data.introduce,
       equipments: data.equipments,
       imageFiles: data.imageFiles,
+      bannerImages: data.bannerImages,
       openingDates: data.openingDates,
       storeId: data.store.id,
       monday: data.openTimes.filter((v) => v.day === 1),
@@ -207,6 +248,8 @@ export function Component() {
       sunday: data.openTimes.filter((v) => v.day === 0),
       store: data.store,
     });
+    setDefaultImageFiles(data.imageFiles);
+    setDefaultBannerImages(data.bannerImages);
   }, [data, form]);
 
   function onBackWithoutSave() {
@@ -228,6 +271,8 @@ export function Component() {
       sunday: data.openTimes.filter((v) => v.day === 0),
       store: data.store,
     });
+    setDefaultBannerImages(data.bannerImages);
+    setDefaultImageFiles(data.imageFiles);
   }
 
   return (
