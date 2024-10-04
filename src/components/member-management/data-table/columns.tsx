@@ -165,7 +165,7 @@ export const columns = (
         header: ({ column }) => {
           return (
             <button
-              className="flex items-center gap-1"
+              className="flex items-center gap-1 whitespace-nowrap"
               onClick={() =>
                 column.toggleSorting(column.getIsSorted() === "asc")
               }
