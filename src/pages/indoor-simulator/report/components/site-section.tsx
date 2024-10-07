@@ -71,6 +71,18 @@ export function SiteSection({
     return "指定範圍 營業額";
   })();
 
+  const currentPeriodRevenue = Object.values(data.detailed).reduce((acc, v) => {
+    return (
+      acc +
+      v.orders
+        .filter((order) => order.simulatorAppointment?.storeSimulator.id === id)
+        .reduce((acc, v) => {
+          console.log(v.amount);
+          return v.amount + acc;
+        }, 0)
+    );
+  }, 0);
+
   const secondCircularBarPercentage = (() => {
     if (isCurrentYearSelected) {
       if (currentYearRevenue === 0) return 0;
@@ -79,19 +91,8 @@ export function SiteSection({
         (currentYearRevenue / data.total.totalAmount) * 100,
       );
     }
-    const currentPeriodRevenue = Object.values(data.detailed).reduce(
-      (acc, v) => {
-        return (
-          acc +
-          v.orders
-            .filter(
-              (order) => order.simulatorAppointment?.storeSimulator.id === id,
-            )
-            .reduce((acc, v) => v.amount + acc, 0)
-        );
-      },
-      0,
-    );
+
+    console.log(currentPeriodRevenue);
     const currentPeriodRevenueForAllSites = Object.values(data.detailed).reduce(
       (acc, v) => acc + v.totalAmount,
       0,
@@ -105,15 +106,9 @@ export function SiteSection({
     );
   })();
 
-  const secondCircularBarAmount =
-    ((isCurrentYearSelected
-      ? Object.values(data.year).reduce((acc, v) => acc + v.totalAmount, 0)
-      : Object.values(data.detailed).reduce(
-          (acc, v) => acc + v.totalAmount,
-          0,
-        )) *
-      secondCircularBarPercentage) /
-    100;
+  const secondCircularBarAmount = isCurrentYearSelected
+    ? currentYearRevenue
+    : currentPeriodRevenue;
 
   // const totalAppointmentCount = data.total.totalCount;
 
