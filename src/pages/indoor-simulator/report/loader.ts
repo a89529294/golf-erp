@@ -1,8 +1,7 @@
-import { baseAppointmentSchema } from "@/types-and-schemas/appointment";
 import { formatDateAsString, getAllowedStores } from "@/utils";
 import { queryClient } from "@/utils/query-client";
 import { privateFetch } from "@/utils/utils";
-import { addDays, differenceInDays, subDays } from "date-fns";
+import { addDays, differenceInDays, format, subDays } from "date-fns";
 import queryString from "query-string";
 import { LoaderFunctionArgs } from "react-router-dom";
 import { z } from "zod";
@@ -32,23 +31,56 @@ export const genIndoorSimulatorStoresQuery = (
   },
 });
 
+const orderSchema = z.object({
+  id: z.string(),
+  userName: z.string(),
+  userPhone: z.string(),
+  merchantId: z
+    .string()
+    .nullish()
+    .transform((v) => v ?? ""),
+  createdAt: z.coerce.date().transform((v) => format(v, "y-MM-dd H:mm:ss")),
+  paymentMethod: z
+    .string()
+    .nullable()
+    .transform((v) => v ?? ""),
+  amount: z.number(),
+  simulatorAppointment: z
+    .object({
+      id: z.string(),
+      status: z.string(),
+      storeSimulator: z.object({
+        id: z.string(),
+        name: z.string(),
+      }),
+      startTime: z.coerce.date().transform((v) => format(v, "y-MM-dd H:mm:ss")),
+      endTime: z.coerce.date().transform((v) => format(v, "y-MM-dd H:mm:ss")),
+      appUser: z.object({
+        id: z.string(),
+        chName: z.string(),
+        phone: z
+          .string()
+          .nullish()
+          .transform((v) => v ?? ""),
+      }),
+      amount: z.number(),
+    })
+    .nullable(),
+  appChargeHistory: z
+    .object({
+      id: z.string(),
+      createdAt: z.coerce.date().transform((v) => format(v, "y-MM-dd H:mm:ss")),
+    })
+    .nullable(),
+});
+
 const totalSchema = z.object({
   totalAmount: z
     .number()
     .nullable()
     .transform((v) => v ?? 0),
   totalCount: z.number(),
-  storeSimulatorAppointments: z.record(
-    z.string(),
-    z.object({
-      totalAmount: z.number(),
-      totalCount: z.number(),
-      storeSimulator: z.object({
-        id: z.string(),
-        name: z.string(),
-      }),
-    }),
-  ),
+  orders: z.array(orderSchema),
 });
 
 const objectSchema = z.object({
@@ -57,13 +89,15 @@ const objectSchema = z.object({
     .nullable()
     .transform((v) => v ?? 0),
   totalCount: z.number(),
-  storeSimulatorAppointments: z
-    .record(z.string(), z.array(baseAppointmentSchema))
-    .optional()
-    .transform((v) => v ?? {}),
+  orders: z
+    .array(orderSchema)
+    .nullish()
+    .transform((v) => v ?? []),
 });
 
 export type ReportItem = z.infer<typeof objectSchema>;
+
+export type Order = z.infer<typeof orderSchema>;
 
 export const yearSchema = z.object({
   1: objectSchema,
@@ -112,13 +146,13 @@ export const genDataQuery = (storeId: string, startAt: Date, endAt: Date) => ({
 
     const promises = [
       privateFetch(
-        `/appointment/simulator/report/count?storeId=${storeId}`,
+        `/appointment/simulator/order-report/count?storeId=${storeId}`,
       ).then((r) => r.json()),
-      privateFetch(`/appointment/simulator/report?${qsYear}`).then((r) =>
+      privateFetch(`/appointment/simulator/order-report?${qsYear}`).then((r) =>
         r.json(),
       ),
-      privateFetch(`/appointment/simulator/daily-report?${qs}`).then((r) =>
-        r.json(),
+      privateFetch(`/appointment/simulator/daily-order-report?${qs}`).then(
+        (r) => r.json(),
       ),
     ];
 

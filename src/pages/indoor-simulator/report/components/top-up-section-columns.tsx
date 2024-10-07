@@ -1,25 +1,20 @@
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 
-type AppointmentOrder = {
+type Order = {
   id: string;
   name?: string;
   phone?: string;
-  startDateTime: string;
-  endDateTime: string;
+  createdAt: string;
   paymentType: string;
   amount: number;
   merchantId?: string;
 };
 
-const columnHelper = createColumnHelper<AppointmentOrder>();
+const columnHelper = createColumnHelper<Order>();
 
 export const columns = [
-  columnHelper.accessor("startDateTime", {
-    header: "開始時間",
-    cell: (prop) => <div className="whitespace-nowrap">{prop.getValue()}</div>,
-  }),
-  columnHelper.accessor("endDateTime", {
-    header: "結束時間",
+  columnHelper.accessor("createdAt", {
+    header: "時間",
     cell: (prop) => <div className="whitespace-nowrap">{prop.getValue()}</div>,
   }),
   columnHelper.accessor("name", {
@@ -46,4 +41,4 @@ export const columns = [
       </div>
     ),
   }),
-] as ColumnDef<AppointmentOrder>[];
+] as ColumnDef<Order>[];

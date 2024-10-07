@@ -34,7 +34,7 @@ export function usePrevIntervalReportDataQuery({
 
       if (isFullCurrentYear) {
         const response = await privateFetch(
-          `/appointment/simulator/report?storeId=${storeId}&year=${new Date().getFullYear() - 1}`,
+          `/appointment/simulator/order-report?storeId=${storeId}&year=${new Date().getFullYear() - 1}`,
         );
         const data = await response.json();
 
@@ -49,7 +49,7 @@ export function usePrevIntervalReportDataQuery({
         });
 
         const response = await privateFetch(
-          `/appointment/simulator/daily-report?${qs}`,
+          `/appointment/simulator/daily-order-report?${qs}`,
         );
         const data = await response.json();
 

@@ -5,6 +5,7 @@ import { MainChart } from "@/pages/indoor-simulator/report/components/main-chart
 import { RightPanel } from "@/pages/indoor-simulator/report/components/right-panel";
 import { SitesList } from "@/pages/indoor-simulator/report/components/sites-list";
 import { SwitchButton } from "@/pages/indoor-simulator/report/components/switch-button";
+import { TopUpSectionWrapper } from "@/pages/indoor-simulator/report/components/top-up-section-wrapper";
 import { ReportData } from "@/pages/indoor-simulator/report/loader";
 import { DataType } from "@/types-and-schemas/report";
 import { formatDateAsString, updateSearchParams } from "@/utils";
@@ -79,7 +80,7 @@ export function ReportContainer({
       <div className="grid grid-cols-[1fr_auto] gap-x-2.5 gap-y-6">
         {data && (
           <>
-            {rightPanelHeight && (
+            {!!rightPanelHeight && (
               <div
                 style={{ height: rightPanelHeight }}
                 className="flex flex-1 flex-col gap-2 rounded-md bg-white p-4"
@@ -103,6 +104,7 @@ export function ReportContainer({
               </div>
             )}
             <RightPanel ref={rightPanelRef} data={data} />
+            <TopUpSectionWrapper data={data} />
             <SitesList data={data} stores={stores} />
           </>
         )}

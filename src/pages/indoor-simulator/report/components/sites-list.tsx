@@ -1,6 +1,5 @@
 import { SiteSection } from "@/pages/indoor-simulator/report/components/site-section";
-import { ReportData } from "@/pages/indoor-simulator/report/loader";
-import { Appointment } from "@/types-and-schemas/appointment";
+import { Order, ReportData } from "@/pages/indoor-simulator/report/loader";
 import { useParams } from "react-router-dom";
 
 export function SitesList({
@@ -12,17 +11,38 @@ export function SitesList({
 }) {
   const { storeId } = useParams();
 
-  const sites = Object.values(data?.total.storeSimulatorAppointments ?? {}).map(
-    (v) => ({
-      ...v.storeSimulator,
-    }),
+  const unfilteredSites = Object.values(data.total.orders).map((v) => {
+    if (!v.simulatorAppointment) return null;
+
+    return v.simulatorAppointment.storeSimulator;
+  });
+
+  const foundSiteIds: Record<string, boolean> = {};
+
+  const sites = unfilteredSites.filter(
+    (
+      v,
+    ): v is {
+      id: string;
+      name: string;
+    } => {
+      if (!!v && !foundSiteIds[v.id]) {
+        foundSiteIds[v.id] = true;
+        return true;
+      }
+
+      return false;
+    },
   );
 
   return sites.map((site) => {
-    const siteAppointments: Appointment[] = [];
+    const siteAppointments: Order[] = [];
     Object.values(data.detailed).forEach((v) => {
-      const appointments = v.storeSimulatorAppointments[site.id] ?? [];
-      siteAppointments.push(...appointments);
+      v.orders.forEach((order) => {
+        if (!order.simulatorAppointment) return;
+        if (order.simulatorAppointment.storeSimulator.id === site.id)
+          siteAppointments.push(order);
+      });
     });
 
     return (
@@ -32,9 +52,7 @@ export function SitesList({
         appointments={siteAppointments}
         title={site.name}
         data={data}
-        merchantId={
-          stores.find((s) => s.id === storeId)?.merchantId ?? undefined
-        }
+        merchantId={stores.find((store) => store.id === storeId)?.merchantId}
       />
     );
   });

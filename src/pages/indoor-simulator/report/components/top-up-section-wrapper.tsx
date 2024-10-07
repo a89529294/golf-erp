@@ -1,8 +1,8 @@
+import { Order, ReportData } from "@/pages/indoor-simulator/report/loader";
 import { GenericDataTable } from "@/components/generic-data-table";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { CircularProgressWithDesc } from "@/pages/indoor-simulator/report/components/circular-progress-with-desc";
 import { TextButton } from "@/pages/indoor-simulator/report/components/text-button";
-import { Order, ReportData } from "@/pages/indoor-simulator/report/loader";
 import { reportTimeRange } from "@/types-and-schemas/report";
 import { roundUpToOneDecimalPlace } from "@/utils";
 import {
@@ -14,18 +14,38 @@ import {
 } from "date-fns";
 import React, { useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
-import { columns } from "./site-section-columns";
+import { columns } from "./top-up-section-columns";
 
-export function SiteSection({
+export function TopUpSectionWrapper({ data }: { data: ReportData }) {
+  const ordersWithNulls = Object.values(data.total.orders).map((v) => {
+    if (!v.appChargeHistory) return null;
+
+    return v;
+  });
+
+  const orders = ordersWithNulls.filter((v): v is Order => !!v);
+
+  return orders.map((order) => {
+    return (
+      <TopUpSection
+        key={order.id}
+        id={order.id}
+        orders={orders}
+        data={data}
+        merchantId={order.merchantId}
+      />
+    );
+  });
+}
+
+export function TopUpSection({
   id,
-  title,
-  appointments,
+  orders,
   data,
   merchantId,
 }: {
   id: string;
-  title: string;
-  appointments: Order[];
+  orders: Order[];
   data: ReportData;
   merchantId?: string;
 }) {
@@ -46,23 +66,8 @@ export function SiteSection({
     isSameDay(new Date(), new Date(endAt));
 
   const currentYearRevenue = Object.values(data.year).reduce((acc, v) => {
-    return (
-      acc +
-      v.orders
-        .filter((order) => order.simulatorAppointment?.storeSimulator.id === id)
-        .reduce((acc, v) => v.amount + acc, 0)
-    );
+    return acc + v.orders.reduce((acc, v) => v.amount + acc, 0);
   }, 0);
-
-  // const totalSiteRevenuePercentage = (() => {
-  //   if (currentYearRevenue === 0) return 0;
-  //   if (data.total.totalAmount === 0) return 0;
-  //   return roundUpToOneDecimalPlace(
-  //     (data.total.storeSimulatorAppointments[id].totalAmount /
-  //       data.total.totalAmount) *
-  //       100,
-  //   );
-  // })();
 
   const secondCircularBarLabel = (() => {
     if (isCurrentYearSelected) return `${new Date().getFullYear()}營業額`;
@@ -81,14 +86,7 @@ export function SiteSection({
     }
     const currentPeriodRevenue = Object.values(data.detailed).reduce(
       (acc, v) => {
-        return (
-          acc +
-          v.orders
-            .filter(
-              (order) => order.simulatorAppointment?.storeSimulator.id === id,
-            )
-            .reduce((acc, v) => v.amount + acc, 0)
-        );
+        return acc + v.orders.reduce((acc, v) => v.amount + acc, 0);
       },
       0,
     );
@@ -107,47 +105,46 @@ export function SiteSection({
 
   const secondCircularBarAmount =
     ((isCurrentYearSelected
-      ? Object.values(data.year).reduce((acc, v) => acc + v.totalAmount, 0)
-      : Object.values(data.detailed).reduce(
-          (acc, v) => acc + v.totalAmount,
-          0,
-        )) *
+      ? Object.values(data.year).reduce((acc, v) => {
+          return (
+            acc +
+            v.orders.reduce((acc, val) => {
+              if (!val.appChargeHistory) return acc;
+              return acc + val.amount;
+            }, 0)
+          );
+        }, 0)
+      : Object.values(data.detailed).reduce((acc, v) => {
+          return (
+            acc +
+            v.orders.reduce((acc, val) => {
+              if (!val.appChargeHistory) return acc;
+              return acc + val.amount;
+            }, 0)
+          );
+        }, 0)) *
       secondCircularBarPercentage) /
     100;
-
-  // const totalAppointmentCount = data.total.totalCount;
-
-  // const totalAppointmentCountForAllSites = data.total.totalCount;
-
-  // const thirdCircularBarPercentage = (() => {
-  //   if (totalAppointmentCount === 0) return 0;
-
-  //   if (totalAppointmentCountForAllSites === 0) return 0;
-
-  //   return roundUpToOneDecimalPlace(
-  //     (data.total.storeSimulatorAppointments[id].totalCount /
-  //       totalAppointmentCountForAllSites) *
-  //       100,
-  //   );
-  // })();
 
   const currentPeriodSiteAppointmentCount = (() => {
     if (isCurrentYearSelected)
       return Object.values(data.year).reduce((acc, v) => {
         return (
           acc +
-          v.orders.filter(
-            (order) => order.simulatorAppointment?.storeSimulator.id === id,
-          ).length
+          v.orders.reduce((acc, val) => {
+            if (!val.appChargeHistory) return acc;
+            return acc + 1;
+          }, 0)
         );
       }, 0);
 
     return Object.values(data.detailed).reduce((acc, v) => {
       return (
         acc +
-        v.orders.filter(
-          (order) => order.simulatorAppointment?.storeSimulator.id === id,
-        ).length
+        v.orders.reduce((acc, val) => {
+          if (!val.appChargeHistory) return acc;
+          return acc + 1;
+        }, 0)
       );
     }, 0);
   })();
@@ -156,12 +153,7 @@ export function SiteSection({
     const currentPeriodSiteAppointmentCount = Object.values(
       data.detailed,
     ).reduce((acc, v) => {
-      return (
-        acc +
-        v.orders.filter(
-          (order) => order.simulatorAppointment?.storeSimulator.id === id,
-        ).length
-      );
+      return acc + v.orders.length;
     }, 0);
     const currenPeriodSiteAppointCountForAllSites = Object.values(
       data.detailed,
@@ -189,38 +181,26 @@ export function SiteSection({
   })();
 
   const tableData = useMemo(() => {
-    return appointments.map((v) => ({
+    return orders.map((v) => ({
       id: v.id,
-      name: v.simulatorAppointment?.appUser?.chName,
-      phone: v.simulatorAppointment?.appUser?.phone,
-      startDateTime: v.simulatorAppointment?.startTime ?? "",
-      endDateTime: v.simulatorAppointment?.endTime ?? "",
+      name: v.userName,
+      phone: v.userPhone,
+      createdAt: v.createdAt ?? "",
       amount: v.amount,
       merchantId,
       paymentType: v.paymentMethod,
     }));
-  }, [merchantId, appointments]);
+  }, [merchantId, orders]);
 
   return (
     <section className="col-span-2 rounded-md bg-white px-5 py-4">
-      <h2 className="text-lg font-bold">{title}</h2>
+      <h2 className="text-lg font-bold">儲值紀錄</h2>
       <ul className="mb-4 mt-2.5 flex gap-4">
-        {/* <CircularProgressWithDesc
-          filledPercentage={totalSiteRevenuePercentage}
-          amount={data.total.totalAmount}
-          label="總營業額"
-        /> */}
         <CircularProgressWithDesc
           filledPercentage={secondCircularBarPercentage}
           amount={secondCircularBarAmount}
           label={secondCircularBarLabel}
         />
-        {/* <CircularProgressWithDesc
-          filledPercentage={thirdCircularBarPercentage}
-          amount={data.total.totalCount}
-          label="總訂單數"
-          type="secondary"
-        /> */}
         <CircularProgressWithDesc
           filledPercentage={currentPeriodSiteAppointmentPercentage}
           amount={currentPeriodSiteAppointmentCount}
