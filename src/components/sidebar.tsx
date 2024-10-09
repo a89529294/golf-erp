@@ -4,6 +4,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { UserDisplayLogout } from "@/components/user-display-logout";
 import { useAuth } from "@/hooks/use-auth";
 import { usePrevious } from "@/hooks/use-previous";
 import { cn } from "@/lib/utils";
@@ -176,6 +177,8 @@ export function Sidebar({
           onLinkClick={onLinkClick}
         />
       )}
+
+      <UserDisplayLogout />
     </Accordion>
   );
 }
@@ -228,7 +231,7 @@ function AccordionItemWrapper({
           if (link.type !== "nested" && onLinkClick) onLinkClick();
         }}
       >
-        <NavLink to={path} className="group relative block py-3 pl-7">
+        <NavLink to={path} className="relative block py-3 group pl-7">
           {({ isPending }) => {
             let isPathPending = isPending;
 
@@ -280,7 +283,7 @@ function AccordionItemWrapper({
       </AccordionTrigger>
       {link.type === "nested" && (
         <AccordionContent
-          className="flex flex-col bg-white pt-1"
+          className="flex flex-col pt-1 bg-white"
           onAnimationEnd={() => {
             if (!pathname.startsWith(link.path)) setNestedLinksClosed(true);
           }}

@@ -14,7 +14,7 @@ export function DataTablePagination({
   const allPages = generatePagination(currentPage, totalPages);
 
   return (
-    <div className="absolute inline-flex -translate-x-1/2 -bottom-20 left-1/2">
+    <div className="absolute -bottom-20 left-1/2 inline-flex -translate-x-1/2 sm:bottom-10 sm:-translate-x-[calc(50%+5px)]">
       <button>
         <PaginationArrow
           direction="left"

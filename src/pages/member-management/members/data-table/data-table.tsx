@@ -113,10 +113,10 @@ const DataTable: <TData extends { id: string }, TValue>({
   });
 
   return (
-    <div className="absolute inset-0  m-1 mb-2.5 mt-0 w-fit border-line-gray sm:w-max">
+    <div className="absolute inset-0  m-1 mb-2.5 mt-0 w-fit border-line-gray sm:w-full">
       <Table
         outerDivClassName="h-full relative"
-        className="items-stretch table-fixed isolate sm:w-max"
+        className="items-stretch table-fixed isolate sm:w-full"
       >
         <TableHeader className="relative z-10 [&_tr]:border-b-0">
           {table.getHeaderGroups().map((headerGroup) => (

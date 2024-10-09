@@ -70,7 +70,7 @@ export function Component() {
     >
       {isMobile ? (
         ({ height }) => (
-          <ScrollArea style={{ height }}>
+          <ScrollArea style={{ height, width: "100%" }}>
             <div className="w-full p-1 pt-0 border border-line-gray bg-light-gray">
               {data && (
                 <DataTable
@@ -82,6 +82,11 @@ export function Component() {
                   setGlobalFilter={setGlobalFilter}
                   sorting={sorting}
                   setSorting={setSorting}
+                  page={page}
+                  setPage={setPage}
+                  totalPages={data.meta.pageCount}
+                  isFetching={isFetching}
+                  isFetched={isFetched}
                 />
               )}
             </div>
@@ -106,14 +111,14 @@ export function Component() {
               setRowSelection={setRowSelection}
               globalFilter={debouncedGlobalFilter}
               setGlobalFilter={setGlobalFilter}
+              sorting={sorting}
+              setSorting={setSorting}
               headerRowRef={headerRowRef}
               page={page}
               setPage={setPage}
               totalPages={data.meta.pageCount}
               isFetching={isFetching}
               isFetched={isFetched}
-              sorting={sorting}
-              setSorting={setSorting}
             />
           )}
         </div>
