@@ -18,6 +18,7 @@ import { useRef, useState } from "react";
 import { Link, useLoaderData } from "react-router-dom";
 import { genColumns, mobileColumns } from "./data-table/columns.tsx";
 import { DataTable } from "./data-table/data-table.tsx";
+import { SortingState } from "@tanstack/react-table";
 
 export function Component() {
   const { user } = useAuth();
@@ -26,16 +27,21 @@ export function Component() {
   const isMobile = useMediaQuery("(max-width: 639px)");
   const [rowSelection, setRowSelection] = useState({});
   const [globalFilter, setGlobalFilter] = useState("");
+  const [sorting, setSorting] = useState<SortingState>([
+    { id: "updatedAt", desc: true },
+  ]);
   const debouncedGlobalFilter = useDebouncedValue(globalFilter, 500);
   const [page, setPage] = useState(1);
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
 
-  // const { data } = useMembers(page, initialData);
-  const { data, isFetching } = useQuery({
-    ...genMembersQuery(page),
+  const { data, isFetching, isFetched } = useQuery({
+    ...genMembersQuery(page, {
+      sort: sorting[0].id,
+      order: sorting[0].desc ? "DESC" : "ASC",
+      filter: debouncedGlobalFilter,
+    }),
     initialData,
   });
-  console.log(isFetching);
 
   useWindowSizeChange(() => {
     if (headerRowRef.current)
@@ -65,7 +71,7 @@ export function Component() {
       {isMobile ? (
         ({ height }) => (
           <ScrollArea style={{ height }}>
-            <div className="w-full border border-line-gray bg-light-gray p-1 pt-0">
+            <div className="w-full p-1 pt-0 border border-line-gray bg-light-gray">
               {data && (
                 <DataTable
                   columns={mobileColumns}
@@ -74,6 +80,8 @@ export function Component() {
                   setRowSelection={setRowSelection}
                   globalFilter={debouncedGlobalFilter}
                   setGlobalFilter={setGlobalFilter}
+                  sorting={sorting}
+                  setSorting={setSorting}
                 />
               )}
             </div>
@@ -81,7 +89,7 @@ export function Component() {
           </ScrollArea>
         )
       ) : (
-        <div className="relative mb-10 w-full border border-t-0 border-line-gray bg-light-gray pt-0">
+        <div className="relative mb-[100px] w-full border border-t-0 border-line-gray bg-light-gray pt-0">
           <div className="sticky top-[90px] z-10 w-full border-b border-line-gray" />
           <div
             className="sticky z-10 w-full border-b border-line-gray"
@@ -92,7 +100,7 @@ export function Component() {
           />
           {data && (
             <DataTable
-              columns={genColumns(user!.permissions)}
+              columns={genColumns(user!.permissions, () => setPage(1))}
               data={data.data}
               rowSelection={rowSelection}
               setRowSelection={setRowSelection}
@@ -103,6 +111,9 @@ export function Component() {
               setPage={setPage}
               totalPages={data.meta.pageCount}
               isFetching={isFetching}
+              isFetched={isFetched}
+              sorting={sorting}
+              setSorting={setSorting}
             />
           )}
         </div>

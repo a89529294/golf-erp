@@ -1,3 +1,4 @@
+import { appUserTypeFromChinese } from "@/constants/appuser-type";
 import { fromDateToDateTimeString } from "@/utils";
 import { queryClient } from "@/utils/query-client";
 import { privateFetch } from "@/utils/utils";
@@ -155,12 +156,51 @@ export const genMembersFunction = (page: number) => async () => {
 //   });
 // };
 
-export const genMembersQuery = (page: number) => ({
-  queryKey: ["members", page],
+export const genMembersQuery = (
+  page: number,
+  options: {
+    sort: string;
+    order: "ASC" | "DESC";
+    filter: string;
+  },
+) => {
+  const sort = options.sort;
+  const order = options.order;
+  const filter = options.filter;
+  return {
+    queryKey: ["members", page, sort, order, filter],
+    queryFn: async () => {
+      const queryString = qs.stringify({
+        page: page,
+        pageSize: 7,
+        sort: sort,
+        order: order,
+        populate: ["store", "storeAppUsers"],
+      });
+      const encodedFilter = encodeURIComponent(filter);
+      const encodedAppUserType = encodeURIComponent(
+        appUserTypeFromChinese[filter],
+      );
+      const filterString = filter
+        ? `&filter[$or][account][$containsi]=${encodedFilter}&filter[$or][appUserType][$containsi]=${encodedAppUserType}&filter[$or][chName][$containsi]=${encodedFilter}&filter[$or][phone][$containsi]=${encodedFilter}&filter[$or][gender][$containsi]=${encodedFilter}&filter[$or][birthday][$containsi]=${encodedFilter}`
+        : "";
+      const response = await privateFetch(
+        `/app-users?${queryString}${filterString}`,
+      );
+
+      const data = await response.json();
+
+      return simpleMembersSchema.parse(data);
+    },
+    placeholderData: keepPreviousData,
+  };
+};
+
+export const membersQuery = {
+  queryKey: ["members"],
   queryFn: async () => {
     const queryString = qs.stringify({
-      page: page,
-      pageSize: 8,
+      pageSize: 999,
       sort: "updatedAt",
       order: "DESC",
       populate: ["store", "storeAppUsers"],
@@ -169,11 +209,16 @@ export const genMembersQuery = (page: number) => ({
 
     const data = await response.json();
 
-    return simpleMembersSchema.parse(data);
+    return simpleMembersSchema.parse(data).data;
   },
-  placeholderData: keepPreviousData,
-});
+};
 
 export async function loader() {
-  return await queryClient.ensureQueryData(genMembersQuery(1));
+  return await queryClient.ensureQueryData(
+    genMembersQuery(1, {
+      sort: "updatedAt",
+      order: "DESC",
+      filter: "",
+    }),
+  );
 }

@@ -6,7 +6,7 @@ import {
   getFilteredRowModel,
   useReactTable,
   SortingState,
-  getSortedRowModel,
+  // getSortedRowModel,
 } from "@tanstack/react-table";
 
 import {
@@ -18,7 +18,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
-import { Dispatch, ReactNode, SetStateAction, useState } from "react";
+import { Dispatch, ReactNode, SetStateAction } from "react";
 import React from "react";
 import { DataTablePagination } from "@/pages/member-management/members/data-table/data-table-pagination";
 import { Spinner } from "@/components/ui/spinner";
@@ -41,6 +41,9 @@ interface DataTableProps<TData, TValue> {
   setPage?: Dispatch<SetStateAction<number>>;
   totalPages?: number;
   isFetching?: boolean;
+  isFetched?: boolean;
+  sorting: SortingState;
+  setSorting: Dispatch<SetStateAction<SortingState>>;
 }
 
 const fuzzyFilter: FilterFn<unknown> = (row, columnId, value) => {
@@ -67,6 +70,9 @@ const DataTable: <TData extends { id: string }, TValue>({
   page,
   totalPages,
   isFetching,
+  isFetched,
+  sorting,
+  setSorting,
 }: DataTableProps<TData, TValue>) => ReactNode = React.memo(function ({
   columns,
   data,
@@ -79,8 +85,11 @@ const DataTable: <TData extends { id: string }, TValue>({
   setPage,
   totalPages,
   isFetching,
+  isFetched,
+  sorting,
+  setSorting,
 }) {
-  const [sorting, setSorting] = useState<SortingState>([]);
+  // const [sorting, setSorting] = useState<SortingState>([]);
 
   const table = useReactTable({
     data: data,
@@ -95,7 +104,7 @@ const DataTable: <TData extends { id: string }, TValue>({
     getFilteredRowModel: getFilteredRowModel(),
     getRowId: (row) => row.id,
     onSortingChange: setSorting,
-    getSortedRowModel: getSortedRowModel(),
+    // getSortedRowModel: getSortedRowModel(),
     state: {
       rowSelection,
       globalFilter,
@@ -106,8 +115,8 @@ const DataTable: <TData extends { id: string }, TValue>({
   return (
     <div className="absolute inset-0  m-1 mb-2.5 mt-0 w-fit border-line-gray sm:w-max">
       <Table
-        outerDivClassName="h-full"
-        className="relative isolate h-full table-fixed items-stretch sm:w-max"
+        outerDivClassName="h-full relative"
+        className="items-stretch table-fixed isolate sm:w-max"
       >
         <TableHeader className="relative z-10 [&_tr]:border-b-0">
           {table.getHeaderGroups().map((headerGroup) => (
@@ -143,23 +152,23 @@ const DataTable: <TData extends { id: string }, TValue>({
           ))}
         </TableHeader>
 
-        {isFetching ? (
-          <div className="absolute inset-0 flex grow items-center justify-center">
+        {isFetching && !isFetched ? (
+          <div className="absolute inset-0 flex items-center justify-center grow">
             <Spinner />
           </div>
         ) : (
-          <TableBody className="relative ">
+          <TableBody className="[&_tr:last-child]:border-px ">
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className="group relative border-b-line-gray bg-white data-[state=selected]:border-b-orange"
+                  className="group border-b-line-gray bg-white data-[state=selected]:border-b-orange"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
                       key={cell.id}
-                      className="py-[18px] last-of-type:px-0"
+                      className=" py-[18px] last-of-type:px-0"
                     >
                       {flexRender(
                         cell.column.columnDef.cell,
@@ -185,7 +194,7 @@ const DataTable: <TData extends { id: string }, TValue>({
 
       {page && setPage && totalPages && (
         <DataTablePagination
-          page={page}
+          currentPage={page}
           totalPages={totalPages}
           setPage={setPage}
         />
