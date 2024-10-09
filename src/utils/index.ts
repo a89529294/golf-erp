@@ -251,13 +251,13 @@ export const navigateUponLogin = (
   if (permissions.includes("系統管理")) {
     navigate("/member-management/members", { replace: true });
   } else if (permissions.includes("模擬器-基本操作")) {
-    navigate("/indoor-simulator/member-management");
+    navigate("/indoor-simulator/member-management", { replace: true });
   } else if (permissions.includes("高爾夫球-基本操作")) {
-    navigate("/golf/member-management");
+    navigate("/golf/member-management", { replace: true });
   } else if (permissions.includes("練習場-基本操作")) {
-    navigate("/driving-range/member-management");
+    navigate("/driving-range/member-management", { replace: true });
   } else if (permissions.includes("會員身分折扣管理")) {
-    navigate("/member-management/discount-management");
+    navigate("/member-management/discount-management", { replace: true });
   } else if (permissions.includes("教練管理")) {
     navigate("/coach-management", { replace: true });
   } else if (permissions.includes("廠商管理")) {

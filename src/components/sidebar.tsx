@@ -178,7 +178,10 @@ export function Sidebar({
         />
       )}
 
-      <UserDisplayLogout />
+      <UserDisplayLogout
+        className="hidden sm:flex"
+        btnClassName="flex flex-col justify-center px-0 flex-1"
+      />
     </Accordion>
   );
 }
