@@ -251,13 +251,13 @@ export const navigateUponLogin = (
   if (permissions.includes("系統管理")) {
     navigate("/member-management/members", { replace: true });
   } else if (permissions.includes("模擬器-基本操作")) {
-    navigate("/indoor-simulator/member-management");
+    navigate("/indoor-simulator/member-management", { replace: true });
   } else if (permissions.includes("高爾夫球-基本操作")) {
-    navigate("/golf/member-management");
+    navigate("/golf/member-management", { replace: true });
   } else if (permissions.includes("練習場-基本操作")) {
-    navigate("/driving-range/member-management");
+    navigate("/driving-range/member-management", { replace: true });
   } else if (permissions.includes("會員身分折扣管理")) {
-    navigate("/member-management/discount-management");
+    navigate("/member-management/discount-management", { replace: true });
   } else if (permissions.includes("教練管理")) {
     navigate("/coach-management", { replace: true });
   } else if (permissions.includes("廠商管理")) {
@@ -300,3 +300,36 @@ export function getBase64(file: File) {
     reader.onerror = (error) => reject(error);
   }) as Promise<string>;
 }
+
+export const generatePagination = (currentPage: number, totalPages: number) => {
+  // If the total number of pages is 7 or less,
+  // display all pages without any ellipsis.
+  if (totalPages <= 7) {
+    return Array.from({ length: totalPages }, (_, i) => i + 1);
+  }
+
+  // If the current page is among the first 3 pages,
+  // show the first 3, an ellipsis, and the last 2 pages.
+  if (currentPage <= 3) {
+    return [1, 2, 3, "...", totalPages - 1, totalPages];
+  }
+
+  // If the current page is among the last 3 pages,
+  // show the first 2, an ellipsis, and the last 3 pages.
+  if (currentPage >= totalPages - 2) {
+    return [1, 2, "...", totalPages - 2, totalPages - 1, totalPages];
+  }
+
+  // If the current page is somewhere in the middle,
+  // show the first page, an ellipsis, the current page and its neighbors,
+  // another ellipsis, and the last page.
+  return [
+    1,
+    "...",
+    currentPage - 1,
+    currentPage,
+    currentPage + 1,
+    "...",
+    totalPages,
+  ];
+};

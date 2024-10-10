@@ -20,7 +20,11 @@ import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
 
-export function UserModifyPasswordDialog() {
+export function UserModifyPasswordDialog({
+  btnClassName,
+}: {
+  btnClassName?: string;
+}) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [disabled, setDisabled] = useState(false);
@@ -48,11 +52,13 @@ export function UserModifyPasswordDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <IconButtonBorderLess icon="lock">更新密碼</IconButtonBorderLess>
+        <IconButtonBorderLess className={btnClassName} icon="lock">
+          更新密碼
+        </IconButtonBorderLess>
       </DialogTrigger>
       <DialogContent className="h-[355px] w-[621px] items-stretch sm:w-72">
-        <div className="flex flex-col flex-1">
-          <DialogHeader className="flex items-center justify-center flex-grow-0 h-10 basis-10 bg-light-gray">
+        <div className="flex flex-1 flex-col">
+          <DialogHeader className="flex h-10 flex-grow-0 basis-10 items-center justify-center bg-light-gray">
             <DialogTitle className="">更新密碼</DialogTitle>
             <DialogDescription />
           </DialogHeader>
@@ -79,9 +85,9 @@ export function UserModifyPasswordDialog() {
 
               e.stopPropagation();
             }}
-            className="flex flex-col items-center justify-center flex-1 gap-6 pb-10"
+            className="flex flex-1 flex-col items-center justify-center gap-6 pb-10"
           >
-            <Label className="flex items-center gap-5 mt-10">
+            <Label className="mt-10 flex items-center gap-5">
               <h2 className="w-16">舊密碼</h2>
               <UnderscoredInput
                 className="w-80 sm:w-40"
@@ -103,7 +109,7 @@ export function UserModifyPasswordDialog() {
             </Label>
           </form>
         </div>
-        <DialogFooter className="items-center justify-center mb-5">
+        <DialogFooter className="mb-5 items-center justify-center">
           <TextButton
             type="submit"
             form="xx"

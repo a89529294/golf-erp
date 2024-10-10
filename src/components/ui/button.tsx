@@ -111,12 +111,16 @@ const IconButtonBorderLess = forwardRef<
     children?: ReactNode;
     icon: keyof typeof iconMap;
     onClick?: () => void;
+    className?: string;
   }
->(({ children, icon, onClick }, ref) => {
+>(({ children, icon, onClick, className }, ref) => {
   return (
     <button
       ref={ref}
-      className={twMerge(button({ borderLess: true, class: "h-full" }))}
+      className={twMerge(
+        button({ borderLess: true, class: "h-full" }),
+        className,
+      )}
       onClick={onClick}
     >
       <img className="w-5 h-5" src={iconMap[icon]} />

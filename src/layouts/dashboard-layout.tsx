@@ -17,7 +17,7 @@ export default function DashboardLayout() {
           state === "loading" && "opacity-25",
         )}
       >
-        <UserDisplayLogout />
+        <UserDisplayLogout className="sm:hidden" />
         <Outlet />
       </main>
 

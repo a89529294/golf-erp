@@ -1,10 +1,11 @@
 import fileIcon from "@/assets/black-file-icon.svg";
 import { Tablet } from "@/components/tablet";
 import { SendPointsModal } from "@/pages/member-management/members/components/send-points-modal";
-import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
-import { ArrowUpDown } from "lucide-react";
+import { Column, ColumnDef, createColumnHelper } from "@tanstack/react-table";
+import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
 import { Link } from "react-router-dom";
 import { SimpleMember, genderEnChMap, memberTypeEnChMap } from "../loader";
+import { ReactNode } from "react";
 
 const columnHelper = createColumnHelper<SimpleMember>();
 
@@ -14,7 +15,10 @@ const showSendPoints = (userPermissions: string[]) => {
   return false;
 };
 
-export const genColumns = (userPermissions: string[]) =>
+export const genColumns = (
+  userPermissions: string[],
+  resetCurrentPage: () => void,
+) =>
   [
     columnHelper.accessor((row) => (row.isActive ? "恢復" : "停權"), {
       id: "isActive",
@@ -44,47 +48,29 @@ export const genColumns = (userPermissions: string[]) =>
         ]
       : []),
     columnHelper.accessor("account", {
-      header: ({ column }) => {
-        return (
-          <button
-            className="flex items-center gap-1"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            帳號
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </button>
-        );
-      },
+      header: ({ column }) => (
+        <SortableButton resetCurrentPage={resetCurrentPage} column={column}>
+          帳號
+        </SortableButton>
+      ),
       cell: (props) => props.getValue(),
       size: 10.5,
     }),
     columnHelper.accessor((row) => memberTypeEnChMap[row.appUserType], {
       id: "appUserType",
-      header: ({ column }) => {
-        return (
-          <button
-            className="flex items-center gap-1"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            會員類別
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </button>
-        );
-      },
+      header: ({ column }) => (
+        <SortableButton resetCurrentPage={resetCurrentPage} column={column}>
+          會員類別
+        </SortableButton>
+      ),
       size: 10.5,
     }),
     columnHelper.accessor("chName", {
-      header: ({ column }) => {
-        return (
-          <button
-            className="flex items-center gap-1"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            姓名
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </button>
-        );
-      },
+      header: ({ column }) => (
+        <SortableButton resetCurrentPage={resetCurrentPage} column={column}>
+          姓名
+        </SortableButton>
+      ),
       cell: (props) => (
         <span className="whitespace-nowrap">{props.getValue()}</span>
       ),
@@ -98,31 +84,19 @@ export const genColumns = (userPermissions: string[]) =>
     }),
     columnHelper.accessor((row) => genderEnChMap[row.gender], {
       id: "gender",
-      header: ({ column }) => {
-        return (
-          <button
-            className="flex items-center gap-1"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            性別
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </button>
-        );
-      },
+      header: ({ column }) => (
+        <SortableButton resetCurrentPage={resetCurrentPage} column={column}>
+          性別
+        </SortableButton>
+      ),
       size: 8,
     }),
     columnHelper.accessor("birthday", {
-      header: ({ column }) => {
-        return (
-          <button
-            className="flex items-center gap-1"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            生日
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </button>
-        );
-      },
+      header: ({ column }) => (
+        <SortableButton resetCurrentPage={resetCurrentPage} column={column}>
+          生日
+        </SortableButton>
+      ),
       cell: (props) => props.getValue(),
       size: 11.5,
     }),
@@ -135,19 +109,11 @@ export const genColumns = (userPermissions: string[]) =>
           .toString(),
       {
         id: "coin",
-        header: ({ column }) => {
-          return (
-            <button
-              className="flex items-center gap-1 whitespace-nowrap"
-              onClick={() =>
-                column.toggleSorting(column.getIsSorted() === "asc")
-              }
-            >
-              累積儲值金額
-              <ArrowUpDown className="ml-2 h-4 w-4" />
-            </button>
-          );
-        },
+        header: ({ column }) => (
+          <SortableButton resetCurrentPage={resetCurrentPage} column={column}>
+            累積儲值金額
+          </SortableButton>
+        ),
         cell: (props) => {
           return (
             <div className="flex gap-1">
@@ -220,3 +186,32 @@ export const mobileColumns = [
     size: 10,
   }),
 ] as ColumnDef<SimpleMember>[];
+
+function SortableButton({
+  column,
+  children,
+  resetCurrentPage,
+}: {
+  column: Column<SimpleMember>;
+  children: ReactNode;
+  resetCurrentPage: () => void;
+}) {
+  return (
+    <button
+      className="flex items-center gap-1 whitespace-nowrap"
+      onClick={() => {
+        column.toggleSorting(column.getIsSorted() === "asc");
+        resetCurrentPage();
+      }}
+    >
+      {children}
+      {column.getIsSorted() === false ? (
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      ) : column.getIsSorted() === "asc" ? (
+        <ArrowUp className="ml-2 h-4 w-4" />
+      ) : (
+        <ArrowDown className="ml-2 h-4 w-4" />
+      )}
+    </button>
+  );
+}
