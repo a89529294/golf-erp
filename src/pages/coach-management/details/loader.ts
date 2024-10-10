@@ -4,6 +4,7 @@ import { queryClient } from "@/utils/query-client";
 import { privateFetch } from "@/utils/utils";
 import { LoaderFunctionArgs } from "react-router-dom";
 import { z } from "zod";
+import pfp from "@/assets/pfp-icon.svg";
 // import { privateFetch } from "@/utils/utils";
 
 const coachDetailsSchema = coachSchema
@@ -45,7 +46,9 @@ const coachDetailsSchema = coachSchema
     reviewStars: z.union([z.string(), z.number()]),
   })
   .transform(async (coach) => {
-    const avatarSrc = `${base_url}/coach/image/${coach.avatarFileId}`;
+    const avatarSrc = coach.avatarFileId
+      ? `${base_url}/coach/image/${coach.avatarFileId}`
+      : pfp;
 
     const resumesSrc = await fromImageIdsToSrc(coach.resumes, "/coach/image/");
     const certificatesSrc = await fromImageIdsToSrc(

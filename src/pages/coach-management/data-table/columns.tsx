@@ -6,7 +6,7 @@ export const columns: ColumnDef<Coach>[] = [
   {
     accessorKey: "avatarFileId",
     id: "avatar",
-    header: "大頭照",
+    header: <div className="whitespace-nowrap">大頭照</div>,
     cell: ({ row }) => (
       <div className="h-10 w-10">
         <img
@@ -54,7 +54,8 @@ export const columns: ColumnDef<Coach>[] = [
   {
     accessorKey: "verificationStatus",
     id: "verificationStatus",
-    header: "審核狀態",
+    header: <div className="whitespace-nowrap">審核狀態</div>,
     cell: ({ row }) => row.original.status ?? "",
+    size: 200,
   },
 ] as ColumnDef<Coach>[];

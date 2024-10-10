@@ -97,7 +97,9 @@ export const genColumns = (
           生日
         </SortableButton>
       ),
-      cell: (props) => props.getValue(),
+      cell: (props) => (
+        <div className="whitespace-nowrap">{props.getValue()}</div>
+      ),
       size: 11.5,
     }),
     columnHelper.accessor(
@@ -133,7 +135,7 @@ export const genColumns = (
         return (
           <Link
             to={`/member-management/members/details/${props.row.original.id}`}
-            className="hidden group-hover:block"
+            className="hidden group-hover:block sm:block"
           >
             <img src={fileIcon} />
           </Link>

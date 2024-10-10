@@ -16,7 +16,7 @@ import { Scrollbar } from "@radix-ui/react-scroll-area";
 import { useQuery } from "@tanstack/react-query";
 import { useRef, useState } from "react";
 import { Link, useLoaderData } from "react-router-dom";
-import { genColumns, mobileColumns } from "./data-table/columns.tsx";
+import { genColumns } from "./data-table/columns.tsx";
 import { DataTable } from "./data-table/data-table.tsx";
 import { SortingState } from "@tanstack/react-table";
 
@@ -61,7 +61,7 @@ export function Component() {
           </Link>
 
           <SearchInput
-            className="sm:hidden"
+            // className="sm:hidden"
             value={globalFilter}
             setValue={setGlobalFilter}
           />
@@ -71,10 +71,10 @@ export function Component() {
       {isMobile ? (
         ({ height }) => (
           <ScrollArea style={{ height, width: "100%" }}>
-            <div className="w-full p-1 pt-0 border border-line-gray bg-light-gray">
+            <div className="w-full border border-line-gray bg-light-gray p-1 pt-0">
               {data && (
                 <DataTable
-                  columns={mobileColumns}
+                  columns={genColumns(user!.permissions, () => setPage(1))}
                   data={data.data}
                   rowSelection={rowSelection}
                   setRowSelection={setRowSelection}
