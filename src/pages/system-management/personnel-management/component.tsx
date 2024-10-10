@@ -3,7 +3,6 @@ import { Modal } from "@/components/modal";
 import { SearchInput } from "@/components/search-input";
 import { IconWarningButton } from "@/components/ui/button";
 import { button } from "@/components/ui/button-cn";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { useIsMobile } from "@/hooks/use-is-mobile";
 import { useWindowSizeChange } from "@/hooks/use-window-size-change";
 import { MainLayout } from "@/layouts/main-layout";
@@ -19,7 +18,6 @@ import {
 } from "@/pages/system-management/personnel-management/loader";
 import { linksKV } from "@/utils/links";
 import { privateFetch } from "@/utils/utils";
-import { Scrollbar } from "@radix-ui/react-scroll-area";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRef, useState } from "react";
 import { Link, useLoaderData } from "react-router-dom";
@@ -101,17 +99,15 @@ export function Component() {
     >
       {({ height }) => {
         return isMobile ? (
-          <ScrollArea style={{ height }}>
-            <DataTable
-              columns={mobileColumns}
-              data={data}
-              rowSelection={rowSelection}
-              setRowSelection={setRowSelection}
-              globalFilter={globalFilter}
-              setGlobalFilter={setGlobalFilter}
-            />
-            <Scrollbar className="hidden sm:block" orientation="horizontal" />
-          </ScrollArea>
+          <DataTable
+            columns={mobileColumns}
+            data={data}
+            rowSelection={rowSelection}
+            setRowSelection={setRowSelection}
+            globalFilter={globalFilter}
+            setGlobalFilter={setGlobalFilter}
+            style={{ height }}
+          />
         ) : (
           <div className="w-full border border-t-0 border-line-gray bg-light-gray pt-0">
             <div className="sticky top-[90px] z-10 w-full border-b border-line-gray" />

@@ -17,7 +17,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Dispatch, SetStateAction, useState } from "react";
+import { CSSProperties, Dispatch, SetStateAction, useState } from "react";
 import { cn } from "@/lib/utils";
 
 declare module "@tanstack/react-table" {
@@ -34,6 +34,7 @@ interface DataTableProps<TData, TValue> {
   globalFilter: string;
   setGlobalFilter: Dispatch<SetStateAction<string>>;
   headerRowRef?: React.RefObject<HTMLTableRowElement>;
+  style?: CSSProperties;
 }
 
 // Tip: If you find yourself using <DataTable /> in multiple places,
@@ -55,6 +56,7 @@ export function DataTable<TData extends { id: string }, TValue>({
   globalFilter,
   setGlobalFilter,
   headerRowRef,
+  style,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
 
@@ -80,8 +82,11 @@ export function DataTable<TData extends { id: string }, TValue>({
   });
 
   return (
-    <div className="m-1 mb-2.5 mt-0 w-fit">
-      <Table className="relative isolate table-fixed ">
+    <div className="m-1 mb-2.5 mt-0 w-fit sm:overflow-scroll" style={style}>
+      <Table
+        outerDivClassName="sm:w-auto"
+        className="relative isolate table-fixed sm:w-auto"
+      >
         <TableHeader className="relative z-10 [&_tr]:border-b-0">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow
@@ -95,7 +100,7 @@ export function DataTable<TData extends { id: string }, TValue>({
                     key={header.id}
                     // height of header 80 plus gap 10
                     className={cn(
-                      "sticky top-[90px] w-full bg-light-gray hover:bg-light-gray sm:top-0",
+                      "sticky top-[90px] w-full bg-light-gray hover:bg-light-gray sm:top-0 ",
                     )}
                     style={{
                       width:

@@ -110,12 +110,12 @@ export const genColumns = (
           )
           .toString(),
       {
-        id: "coin",
-        header: ({ column }) => (
-          <SortableButton resetCurrentPage={resetCurrentPage} column={column}>
-            累積儲值金額
-          </SortableButton>
-        ),
+        id: "storeAppUser.coin",
+        header: ({ column }) =>
+          // <SortableButton resetCurrentPage={resetCurrentPage} column={column}>
+          //   累積儲值金額
+          // </SortableButton>
+          "累積儲值金額",
         cell: (props) => {
           return (
             <div className="flex gap-1">

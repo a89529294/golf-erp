@@ -127,7 +127,7 @@ export const mobileColumns = [
   columnHelper.display({
     id: "select",
     header: ({ table }) => (
-      <div className="grid h-full place-items-center">
+      <div className="grid h-full place-items-center whitespace-nowrap">
         <Checkbox
           checked={
             table.getIsAllPageRowsSelected() ||
@@ -139,7 +139,7 @@ export const mobileColumns = [
       </div>
     ),
     cell: ({ row }) => (
-      <div className="grid h-full place-items-center">
+      <div className="grid h-full place-items-center whitespace-nowrap">
         <Checkbox
           checked={row.getIsSelected()}
           onCheckedChange={(value) => row.toggleSelected(!!value)}
@@ -160,8 +160,12 @@ export const mobileColumns = [
   columnHelper.accessor(
     (row) => (row.stores && row.stores[0] ? row.stores[0].name : ""),
     {
-      header: "廠商名稱",
+      id: "storeName",
+      header: () => <div className="whitespace-nowrap">廠商名稱</div>,
       size: 200,
+      cell: (prop) => (
+        <div className="whitespace-nowrap">{prop.getValue()}</div>
+      ),
     },
   ),
   columnHelper.display({
@@ -170,7 +174,7 @@ export const mobileColumns = [
     cell: ({ row }) => {
       return (
         <Link
-          className="grid h-5 w-5 place-items-center"
+          className="grid h-5 w-5 place-items-center "
           to={linksKV["system-management"].subLinks[
             "personnel-system-management"
           ].paths.details.replace(":id", row.original.id)}
