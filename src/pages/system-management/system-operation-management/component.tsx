@@ -3,10 +3,7 @@ import { SearchInput } from "@/components/search-input";
 import { IconButton, IconWarningButton } from "@/components/ui/button";
 import { MainLayout } from "@/layouts/main-layout";
 
-import {
-  columns,
-  mobileColumns,
-} from "@/pages/system-management/system-operation-management/data-table/columns";
+import { columns } from "@/pages/system-management/system-operation-management/data-table/columns";
 import { DataTable } from "@/pages/system-management/system-operation-management/data-table/data-table";
 import {
   loader,
@@ -80,7 +77,14 @@ export function Component() {
                   新增系統{!isMobile && "操作"}人員
                 </IconButton>
               }
-              employees={employees}
+              employees={[
+                ...employees,
+                ...employees,
+                ...employees,
+                ...employees,
+                ...employees,
+                ...employees,
+              ]}
             />
           )}
 
@@ -95,9 +99,9 @@ export function Component() {
       {isMobile ? (
         ({ height }) => {
           return (
-            <ScrollArea className="" style={{ height }}>
+            <ScrollArea className="inset-0 sm:absolute">
               <DataTable
-                columns={mobileColumns}
+                columns={columns}
                 data={users}
                 rowSelection={rowSelection}
                 setRowSelection={setRowSelection}

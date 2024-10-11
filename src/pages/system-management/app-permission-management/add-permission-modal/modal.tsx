@@ -15,13 +15,8 @@ import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ReactElement, useState } from "react";
 import { toast } from "sonner";
-import {
-  columns as userColumns,
-  mobileColumns as mobileUserColumns,
-} from "./columns";
+import { columns as userColumns } from "./columns";
 import { useIsMobile } from "@/hooks/use-is-mobile";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Scrollbar } from "@radix-ui/react-scroll-area";
 
 export function AddPermissionModal({
   dialogTriggerChildren,
@@ -81,19 +76,19 @@ export function AddPermissionModal({
               e.preventDefault();
               mutate();
             }}
-            className={cn(`flex h-[610px] w-[790px] flex-col  pb-5 sm:w-80`)}
+            className={cn(`h-[610px] w-[790px]  sm:w-80`)}
           >
-            <DialogHeader className="relative block mb-5 overflow-auto isolate px-14 sm:px-4">
-              <EmployeesModalSearchHeader
-                globalFilter={globalFilter}
-                setGlobalFilter={setGlobalFilter}
-                selectedStoreId={selectedStoreId}
-                setSelectedStoreId={setSelectedStoreId}
-              />
-              {isMobile ? (
-                <ScrollArea className="overflow-auto sm:h-[417px] sm:w-72">
+            <div className="flex h-full flex-col pb-5">
+              <DialogHeader className="relative isolate mb-5 flex flex-1 flex-col items-stretch px-14 sm:px-4">
+                <EmployeesModalSearchHeader
+                  globalFilter={globalFilter}
+                  setGlobalFilter={setGlobalFilter}
+                  selectedStoreId={selectedStoreId}
+                  setSelectedStoreId={setSelectedStoreId}
+                />
+                {isMobile ? (
                   <ModalDataTable
-                    columns={mobileUserColumns}
+                    columns={userColumns}
                     data={filteredUsers}
                     rowSelection={rowSelection}
                     setRowSelection={setRowSelection}
@@ -101,33 +96,34 @@ export function AddPermissionModal({
                     globalFilter={globalFilter}
                     setGlobalFilter={setGlobalFilter}
                   />
-                  <Scrollbar orientation="horizontal" />
-                </ScrollArea>
-              ) : (
-                <ModalDataTable
-                  columns={userColumns}
-                  data={filteredUsers}
-                  rowSelection={rowSelection}
-                  setRowSelection={setRowSelection}
-                  getRowId={(row) => row.employeeId}
-                  globalFilter={globalFilter}
-                  setGlobalFilter={setGlobalFilter}
-                />
-              )}
-            </DialogHeader>
-            <DialogFooter className="justify-center ">
-              <TextButton
-                type="submit"
-                form="xx"
-                loading={isPending}
-                disabled={isPending || Object.keys(rowSelection).length === 0}
-              >
-                確定
-              </TextButton>
-              <DialogPrimitive.Close asChild>
-                <TextWarningButton disabled={isPending}>取消</TextWarningButton>
-              </DialogPrimitive.Close>
-            </DialogFooter>
+                ) : (
+                  <ModalDataTable
+                    columns={userColumns}
+                    data={filteredUsers}
+                    rowSelection={rowSelection}
+                    setRowSelection={setRowSelection}
+                    getRowId={(row) => row.employeeId}
+                    globalFilter={globalFilter}
+                    setGlobalFilter={setGlobalFilter}
+                  />
+                )}
+              </DialogHeader>
+              <DialogFooter className="justify-center ">
+                <TextButton
+                  type="submit"
+                  form="xx"
+                  loading={isPending}
+                  disabled={isPending || Object.keys(rowSelection).length === 0}
+                >
+                  確定
+                </TextButton>
+                <DialogPrimitive.Close asChild>
+                  <TextWarningButton disabled={isPending}>
+                    取消
+                  </TextWarningButton>
+                </DialogPrimitive.Close>
+              </DialogFooter>
+            </div>
           </form>
         }
       </DialogContent>

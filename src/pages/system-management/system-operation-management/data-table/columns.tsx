@@ -23,7 +23,7 @@ export const columns: ColumnDef<UserWithEmployee>[] = [
       </div>
     ),
     cell: ({ row }) => (
-      <div className="grid h-full place-items-center">
+      <div className="grid h-full place-items-center whitespace-nowrap">
         <Checkbox
           checked={row.getIsSelected()}
           onCheckedChange={(value) => row.toggleSelected(!!value)}
@@ -56,6 +56,11 @@ export const columns: ColumnDef<UserWithEmployee>[] = [
       );
     },
     accessorFn: (user) => user.employee.idNumber,
+    cell(props) {
+      return (
+        <div className="whitespace-nowrap">{props.getValue() as string}</div>
+      );
+    },
     size: 12,
   },
   {
@@ -73,6 +78,11 @@ export const columns: ColumnDef<UserWithEmployee>[] = [
       );
     },
     accessorFn: (user) => user.employee.chName,
+    cell(props) {
+      return (
+        <div className="whitespace-nowrap">{props.getValue() as string}</div>
+      );
+    },
     size: 12,
   },
   {
@@ -80,6 +90,11 @@ export const columns: ColumnDef<UserWithEmployee>[] = [
     id: "telphone",
     header: "電話",
     accessorFn: (user) => user.employee.telphone,
+    cell(props) {
+      return (
+        <div className="whitespace-nowrap">{props.getValue() as string}</div>
+      );
+    },
     size: 15,
   },
   {
@@ -102,6 +117,9 @@ export const columns: ColumnDef<UserWithEmployee>[] = [
         user.employee.stores?.[0].category as StoreCategory
       ];
     },
+    cell: (prop) => (
+      <div className="whitespace-nowrap">{prop.getValue() as string}</div>
+    ),
     size: 12,
   },
   {
@@ -122,22 +140,25 @@ export const columns: ColumnDef<UserWithEmployee>[] = [
       if (!user.employee.stores || !user.employee.stores[0]) return "";
       return user.employee.stores?.[0].name;
     },
+    cell: (prop) => (
+      <div className="whitespace-nowrap">{prop.getValue() as string}</div>
+    ),
   },
 ];
 
-export const mobileColumns = columns.map((c) => {
-  const sizeMap = {
-    select: 80,
-    password: 80,
-    idNumber: 120,
-    chName: 100,
-    telphone: 140,
-    storeCategory: 130,
-    storeName: 160,
-  } as Record<string, number>;
+// export const mobileColumns = columns.map((c) => {
+//   const sizeMap = {
+//     select: 80,
+//     password: 80,
+//     idNumber: 120,
+//     chName: 100,
+//     telphone: 140,
+//     storeCategory: 130,
+//     storeName: 160,
+//   } as Record<string, number>;
 
-  return {
-    ...c,
-    size: sizeMap[c.id!],
-  };
-});
+//   return {
+//     ...c,
+//     size: sizeMap[c.id!],
+//   };
+// });

@@ -72,8 +72,8 @@ export function DataTable<TData extends { id: string }, TValue>({
   });
 
   return (
-    <div className="m-1 mt-0 w-fit ">
-      <Table className="relative isolate table-fixed">
+    <div className="m-1 mt-0 w-fit sm:w-auto">
+      <Table className="relative isolate table-fixed sm:table-auto sm:border-separate sm:border-spacing-0 sm:border sm:border-t-0 sm:border-line-gray">
         <TableHeader className="relative z-10 [&_tr]:border-b-0">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id} className="">
@@ -82,7 +82,7 @@ export function DataTable<TData extends { id: string }, TValue>({
                   <TableHead
                     key={header.id}
                     // height of header 80 plus gap 10
-                    className="sticky top-[90px] bg-light-gray hover:bg-light-gray sm:top-0"
+                    className="sticky top-[90px] whitespace-nowrap bg-light-gray hover:bg-light-gray sm:top-0 sm:border-t sm:border-line-gray"
                     style={{
                       width:
                         header.column.columnDef.size !== 150
@@ -112,7 +112,10 @@ export function DataTable<TData extends { id: string }, TValue>({
                 className="bg-white"
               >
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
+                  <TableCell
+                    key={cell.id}
+                    className="border-t border-line-gray"
+                  >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}
