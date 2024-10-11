@@ -85,7 +85,7 @@ export function DataTable<TData extends { id: string }, TValue>({
     <div className="m-1 mb-2.5 mt-0 w-fit sm:overflow-scroll" style={style}>
       <Table
         outerDivClassName="sm:w-auto"
-        className="relative isolate table-fixed sm:w-auto"
+        className="relative isolate table-fixed sm:table-auto"
       >
         <TableHeader className="relative z-10 [&_tr]:border-b-0">
           {table.getHeaderGroups().map((headerGroup) => (
@@ -100,7 +100,7 @@ export function DataTable<TData extends { id: string }, TValue>({
                     key={header.id}
                     // height of header 80 plus gap 10
                     className={cn(
-                      "sticky top-[90px] w-full bg-light-gray hover:bg-light-gray sm:top-0 ",
+                      "sticky top-[90px] w-full bg-light-gray hover:bg-light-gray sm:top-0 sm:whitespace-nowrap ",
                     )}
                     style={{
                       width:

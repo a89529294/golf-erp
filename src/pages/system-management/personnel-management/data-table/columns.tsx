@@ -147,16 +147,40 @@ export const mobileColumns = [
         />
       </div>
     ),
-    size: 80,
   }),
   columnHelper.accessor("idNumber", {
     header: "編號",
-    size: 120,
   }),
   columnHelper.accessor("chName", {
-    header: "姓名",
-    size: 130,
+    header: () => <div className="whitespace-nowrap">姓名</div>,
+    cell: (prop) => <div className="whitespace-nowrap">{prop.getValue()}</div>,
   }),
+  columnHelper.accessor("telphone", {
+    header: "電話",
+  }),
+  columnHelper.accessor(
+    (row) =>
+      row.stores && row.stores[0]
+        ? storeCategoryMap[row.stores[0].category]
+        : "",
+    {
+      id: "category",
+      header: ({ column }) => {
+        return (
+          <button
+            className="flex items-center gap-1 "
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            分類
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </button>
+        );
+      },
+      cell: (prop) => (
+        <div className="whitespace-nowrap">{prop.getValue()}</div>
+      ),
+    },
+  ),
   columnHelper.accessor(
     (row) => (row.stores && row.stores[0] ? row.stores[0].name : ""),
     {
@@ -183,6 +207,5 @@ export const mobileColumns = [
         </Link>
       );
     },
-    size: 60,
   }),
 ] as ColumnDef<Employee, unknown>[];

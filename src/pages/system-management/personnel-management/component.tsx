@@ -90,7 +90,7 @@ export function Component() {
           </Link>
 
           <SearchInput
-            className="sm:hidden"
+            // className="sm:hidden"
             value={globalFilter}
             setValue={setGlobalFilter}
           />
