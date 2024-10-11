@@ -25,26 +25,20 @@ export function TopUpSectionWrapper({ data }: { data: ReportData }) {
 
   const orders = ordersWithNulls.filter((v): v is Order => !!v);
 
-  return orders.map((order) => {
-    return (
-      <TopUpSection
-        key={order.id}
-        id={order.id}
-        orders={orders}
-        data={data}
-        merchantId={order.merchantId}
-      />
-    );
-  });
+  return (
+    <TopUpSection
+      orders={orders}
+      data={data}
+      merchantId={orders[0].merchantId}
+    />
+  );
 }
 
 export function TopUpSection({
-  id,
   orders,
   data,
   merchantId,
 }: {
-  id: string;
   orders: Order[];
   data: ReportData;
   merchantId?: string;
