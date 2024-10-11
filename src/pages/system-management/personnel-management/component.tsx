@@ -3,14 +3,10 @@ import { Modal } from "@/components/modal";
 import { SearchInput } from "@/components/search-input";
 import { IconWarningButton } from "@/components/ui/button";
 import { button } from "@/components/ui/button-cn";
-import { useIsMobile } from "@/hooks/use-is-mobile";
-import { useWindowSizeChange } from "@/hooks/use-window-size-change";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { MainLayout } from "@/layouts/main-layout";
 import { cn } from "@/lib/utils";
-import {
-  columns,
-  mobileColumns,
-} from "@/pages/system-management/personnel-management/data-table/columns";
+import { columns } from "@/pages/system-management/personnel-management/data-table/columns";
 import { DataTable } from "@/pages/system-management/personnel-management/data-table/data-table";
 import {
   genEmployeesQuery,
@@ -19,14 +15,12 @@ import {
 import { linksKV } from "@/utils/links";
 import { privateFetch } from "@/utils/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { Link, useLoaderData } from "react-router-dom";
 import { toast } from "sonner";
 
 export function Component() {
-  const headerRowRef = useRef<HTMLTableRowElement>(null);
-  const [headerRowHeight, setHeaderRowHeight] = useState(48);
-  const isMobile = useIsMobile();
+  // const headerRowRef = useRef<HTMLTableRowElement>(null);
   const [rowSelection, setRowSelection] = useState({});
   const [globalFilter, setGlobalFilter] = useState("");
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
@@ -55,10 +49,10 @@ export function Component() {
     onError: () => toast.error("刪除員工失敗"),
   });
 
-  useWindowSizeChange(() => {
-    if (headerRowRef.current)
-      setHeaderRowHeight(headerRowRef.current.clientHeight);
-  });
+  // useWindowSizeChange(() => {
+  //   if (headerRowRef.current)
+  //     setHeaderRowHeight(headerRowRef.current.clientHeight);
+  // });
 
   return (
     <MainLayout
@@ -97,7 +91,7 @@ export function Component() {
         </>
       }
     >
-      {({ height }) => {
+      {/* {({ height }) => {
         return isMobile ? (
           <DataTable
             columns={mobileColumns}
@@ -109,7 +103,7 @@ export function Component() {
             style={{ height }}
           />
         ) : (
-          <div className="w-full border border-t-0 border-line-gray bg-light-gray pt-0">
+          <div className="w-full pt-0 border border-t-0 border-line-gray bg-light-gray">
             <div className="sticky top-[90px] z-10 w-full border-b border-line-gray" />
             <div
               className="sticky z-10 w-full border-b border-line-gray"
@@ -128,7 +122,20 @@ export function Component() {
             />
           </div>
         );
-      }}
+      }} */}
+      <div className="absolute inset-0 bottom-2.5  border border-t-0 border-line-gray">
+        <ScrollArea className="h-full w-full ">
+          <DataTable
+            columns={columns}
+            data={data}
+            rowSelection={rowSelection}
+            setRowSelection={setRowSelection}
+            globalFilter={globalFilter}
+            setGlobalFilter={setGlobalFilter}
+          />
+          <ScrollBar orientation="horizontal" />
+        </ScrollArea>
+      </div>
     </MainLayout>
   );
 }

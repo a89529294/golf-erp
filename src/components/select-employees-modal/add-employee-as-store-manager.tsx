@@ -11,10 +11,7 @@ import { cn } from "@/lib/utils";
 import { Employee } from "@/pages/system-management/personnel-management/loader";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { Dispatch, ReactElement, SetStateAction, useState } from "react";
-import {
-  columns as employeeColumns,
-  mobileColumns as employeeMobileColumns,
-} from "./columns";
+import { columns as employeeColumns } from "./columns";
 import { EmployeesModalSearchHeader } from "@/components/employees-modal-search-header";
 import { ScrollArea, Scrollbar } from "@radix-ui/react-scroll-area";
 import { useIsMobile } from "@/hooks/use-is-mobile";
@@ -68,7 +65,7 @@ export function AddEmployeeAsStoreManagerModal({
           }}
           className={cn(`flex h-[610px] w-[790px] flex-col pb-5 sm:w-80`)}
         >
-          <DialogHeader className="relative block mb-5 overflow-auto isolate px-14 sm:px-4">
+          <DialogHeader className="relative isolate mb-5 flex flex-col items-stretch overflow-auto px-14 sm:px-4">
             <EmployeesModalSearchHeader
               globalFilter={globalFilter}
               setGlobalFilter={setGlobalFilter}
@@ -79,9 +76,13 @@ export function AddEmployeeAsStoreManagerModal({
             {isMobile ? (
               <ScrollArea className="overflow-auto sm:h-[417px] sm:w-72">
                 <ModalDataTable
+                  // columns={[
+                  //   ...employeeMobileColumns.slice(0, -2),
+                  //   employeeMobileColumns.at(-1)!,
+                  // ]}
                   columns={[
-                    ...employeeMobileColumns.slice(0, -2),
-                    employeeMobileColumns.at(-1)!,
+                    ...employeeColumns.slice(0, -2),
+                    employeeColumns.at(-1)!,
                   ]}
                   data={filteredEmployees}
                   rowSelection={rowSelection}
