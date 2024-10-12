@@ -6,7 +6,7 @@ import {
   getFilteredRowModel,
   useReactTable,
   SortingState,
-  getSortedRowModel,
+  // getSortedRowModel,
 } from "@tanstack/react-table";
 
 import {
@@ -18,8 +18,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
-import { Dispatch, ReactNode, SetStateAction, useState } from "react";
+import { Dispatch, ReactNode, SetStateAction } from "react";
 import React from "react";
+import { DataTablePagination } from "@/pages/member-management/members/data-table/data-table-pagination";
+import { Spinner } from "@/components/ui/spinner";
 
 declare module "@tanstack/react-table" {
   interface FilterFns {
@@ -35,6 +37,13 @@ interface DataTableProps<TData, TValue> {
   globalFilter: string;
   setGlobalFilter: Dispatch<SetStateAction<string>>;
   headerRowRef?: React.RefObject<HTMLTableRowElement>;
+  page?: number;
+  setPage?: Dispatch<SetStateAction<number>>;
+  totalPages?: number;
+  isFetching?: boolean;
+  isFetched?: boolean;
+  sorting: SortingState;
+  setSorting: Dispatch<SetStateAction<SortingState>>;
 }
 
 const fuzzyFilter: FilterFn<unknown> = (row, columnId, value) => {
@@ -58,6 +67,12 @@ const DataTable: <TData extends { id: string }, TValue>({
   globalFilter,
   setGlobalFilter,
   headerRowRef,
+  page,
+  totalPages,
+  isFetching,
+  isFetched,
+  sorting,
+  setSorting,
 }: DataTableProps<TData, TValue>) => ReactNode = React.memo(function ({
   columns,
   data,
@@ -66,8 +81,15 @@ const DataTable: <TData extends { id: string }, TValue>({
   globalFilter,
   setGlobalFilter,
   headerRowRef,
+  page,
+  setPage,
+  totalPages,
+  isFetching,
+  isFetched,
+  sorting,
+  setSorting,
 }) {
-  const [sorting, setSorting] = useState<SortingState>([]);
+  // const [sorting, setSorting] = useState<SortingState>([]);
 
   const table = useReactTable({
     data: data,
@@ -82,7 +104,7 @@ const DataTable: <TData extends { id: string }, TValue>({
     getFilteredRowModel: getFilteredRowModel(),
     getRowId: (row) => row.id,
     onSortingChange: setSorting,
-    getSortedRowModel: getSortedRowModel(),
+    // getSortedRowModel: getSortedRowModel(),
     state: {
       rowSelection,
       globalFilter,
@@ -91,8 +113,11 @@ const DataTable: <TData extends { id: string }, TValue>({
   });
 
   return (
-    <div className="m-1 mb-2.5 mt-0 w-fit border-y border-t-0 border-line-gray sm:w-max">
-      <Table className="relative isolate table-fixed sm:w-max">
+    <div className="absolute inset-0  m-1 mb-2.5 mt-0 w-fit border-line-gray sm:w-full">
+      <Table
+        outerDivClassName="h-full relative"
+        className="items-stretch table-fixed isolate sm:w-full"
+      >
         <TableHeader className="relative z-10 [&_tr]:border-b-0">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow
@@ -127,30 +152,53 @@ const DataTable: <TData extends { id: string }, TValue>({
           ))}
         </TableHeader>
 
-        <TableBody className="relative ">
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-                className="group relative border-b-line-gray bg-white data-[state=selected]:border-b-orange"
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id} className="last-of-type:px-0">
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
+        {isFetching && !isFetched ? (
+          <div className="absolute inset-0 flex items-center justify-center grow">
+            <Spinner />
+          </div>
+        ) : (
+          <TableBody className="[&_tr:last-child]:border-px ">
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                  className="group border-b-line-gray bg-white data-[state=selected]:border-b-orange"
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell
+                      key={cell.id}
+                      className=" py-[18px] last-of-type:px-0"
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  查無資料
+                </TableCell>
               </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                查無資料
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
+            )}
+          </TableBody>
+        )}
       </Table>
+
+      {page && setPage && totalPages && (
+        <DataTablePagination
+          currentPage={page}
+          totalPages={totalPages}
+          setPage={setPage}
+        />
+      )}
     </div>
   );
 });

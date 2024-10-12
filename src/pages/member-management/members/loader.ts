@@ -1,6 +1,8 @@
+import { appUserTypeFromChinese } from "@/constants/appuser-type";
 import { fromDateToDateTimeString } from "@/utils";
 import { queryClient } from "@/utils/query-client";
 import { privateFetch } from "@/utils/utils";
+import { keepPreviousData } from "@tanstack/react-query";
 import qs from "query-string";
 import { z } from "zod";
 
@@ -81,6 +83,14 @@ export const simpleMemberSchema = memberSchema.omit({
 
 export const simpleMembersSchema = z.object({
   data: z.array(simpleMemberSchema),
+  meta: z.object({
+    page: z.number(),
+    pageSize: z.number(),
+    itemCount: z.number(),
+    pageCount: z.number(),
+    hasPreviousPage: z.boolean(),
+    hasNextPage: z.boolean(),
+  }),
 });
 
 export type Member = z.infer<typeof memberSchema>;
@@ -106,6 +116,86 @@ export const genderEnChMap: Record<Gender, string> = {
   unknown: "未知",
 };
 
+export const genMembersKey = (page: number) => ["members", page];
+export const genMembersFunction = (page: number) => async () => {
+  const queryString = qs.stringify({
+    page: page,
+    pageSize: 8,
+    sort: "updatedAt",
+    order: "DESC",
+    populate: ["store", "storeAppUsers"],
+  });
+  const response = await privateFetch(`/app-users?${queryString}`);
+
+  const data = await response.json();
+
+  return simpleMembersSchema.parse(data);
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// export const useMembers = (page: number, initialData: any) => {
+//   console.log("wtff");
+//   return useQuery({
+//     queryKey: ["members", page],
+//     queryFn: async ({ queryKey }) => {
+//       console.log(queryKey);
+//       const queryString = qs.stringify({
+//         page: page,
+//         pageSize: 8,
+//         sort: "updatedAt",
+//         order: "DESC",
+//         populate: ["store", "storeAppUsers"],
+//       });
+//       const response = await privateFetch(`/app-users?${queryString}`);
+
+//       const data = await response.json();
+
+//       return simpleMembersSchema.parse(data);
+//     },
+//     initialData,
+//   });
+// };
+
+export const genMembersQuery = (
+  page: number,
+  options: {
+    sort: string;
+    order: "ASC" | "DESC";
+    filter: string;
+  },
+) => {
+  const sort = options.sort;
+  const order = options.order;
+  const filter = options.filter;
+  return {
+    queryKey: ["members", page, sort, order, filter],
+    queryFn: async () => {
+      const queryString = qs.stringify({
+        page: page,
+        pageSize: 7,
+        sort: sort,
+        order: order,
+        populate: ["store", "storeAppUsers"],
+      });
+      const encodedFilter = encodeURIComponent(filter);
+      const encodedAppUserType = encodeURIComponent(
+        appUserTypeFromChinese[filter],
+      );
+      const filterString = filter
+        ? `&filter[$or][account][$containsi]=${encodedFilter}&filter[$or][appUserType][$containsi]=${encodedAppUserType}&filter[$or][chName][$containsi]=${encodedFilter}&filter[$or][phone][$containsi]=${encodedFilter}&filter[$or][gender][$containsi]=${encodedFilter}&filter[$or][birthday][$containsi]=${encodedFilter}`
+        : "";
+      const response = await privateFetch(
+        `/app-users?${queryString}${filterString}`,
+      );
+
+      const data = await response.json();
+
+      return simpleMembersSchema.parse(data);
+    },
+    placeholderData: keepPreviousData,
+  };
+};
+
 export const membersQuery = {
   queryKey: ["members"],
   queryFn: async () => {
@@ -124,5 +214,11 @@ export const membersQuery = {
 };
 
 export async function loader() {
-  return await queryClient.ensureQueryData(membersQuery);
+  return await queryClient.ensureQueryData(
+    genMembersQuery(1, {
+      sort: "updatedAt",
+      order: "DESC",
+      filter: "",
+    }),
+  );
 }

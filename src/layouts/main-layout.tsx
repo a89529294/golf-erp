@@ -27,7 +27,7 @@ export function MainLayout({
   }, []);
 
   return (
-    <div className="relative isolate -mr-[358px] flex min-h-full w-full flex-col px-2.5">
+    <div className="relative isolate -mr-[358px] flex min-h-full w-full flex-col px-2.5 sm:-mr-0">
       <header className="sticky top-0 z-10 flex h-20 flex-shrink-0 items-end gap-2.5 bg-white pb-[1.5px]">
         {headerChildren}
         {/* <UserDisplayLogout /> */}
