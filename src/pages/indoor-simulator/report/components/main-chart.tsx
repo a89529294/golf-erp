@@ -38,19 +38,20 @@ export function MainChart({
           return activeDataType === "revenue" ? v.totalAmount : v.totalCount;
         })
       : isSameDay
-        ? Object.values(
-            Object.values(data.detailed)[1].storeSimulatorAppointments,
-          ).reduce(
+        ? Object.values(Object.values(data.detailed)[1].orders).reduce(
             (acc, val) => {
-              val.forEach((v) => {
-                const startTimeHour = +v.startTime.split(" ")[1].split(":")[0];
+              const timeToSplit = val.appChargeHistory
+                ? val.appChargeHistory.createdAt
+                : val.simulatorAppointment?.startTime ?? "";
 
-                const incrementBy = activeDataType === "revenue" ? v.amount : 1;
+              const startTimeHour = +timeToSplit.split(" ")[1].split(":")[0];
 
-                acc[startTimeHour] = acc[startTimeHour]
-                  ? acc[startTimeHour] + incrementBy
-                  : incrementBy;
-              });
+              const incrementBy = activeDataType === "revenue" ? val.amount : 1;
+
+              acc[startTimeHour] = acc[startTimeHour]
+                ? acc[startTimeHour] + incrementBy
+                : incrementBy;
+
               return acc;
             },
             Array(24)
