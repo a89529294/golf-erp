@@ -29,7 +29,7 @@ export function TopUpSectionWrapper({ data }: { data: ReportData }) {
     <TopUpSection
       orders={orders}
       data={data}
-      merchantId={orders[0].merchantId}
+      merchantId={orders[0]?.merchantId}
     />
   );
 }
