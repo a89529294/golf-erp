@@ -206,7 +206,7 @@ export function Component() {
         </nav>
         <div className="relative grow sm:h-96">
           <div className="absolute inset-0 ">
-            <ScrollArea className="h-full ">
+            <ScrollArea className="h-full border border-t-0 border-line-gray">
               <GenericDataTable
                 columns={
                   memberHistory === "top-up-history"

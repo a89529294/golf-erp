@@ -55,7 +55,7 @@ export function StoreSelect({
       value={storeId ?? ""}
       onValueChange={(v) => onStoreValueChange(v, false)}
     >
-      <SelectTrigger className="h-11 w-[280px] rounded-none border-0 border-b border-secondary-dark sm:w-32">
+      <SelectTrigger className="h-11 w-[280px] rounded-none border-0 border-b border-secondary-dark sm:w-40">
         <SelectValue placeholder="選擇廠商" />
       </SelectTrigger>
       <SelectContent className="w-[280px]">

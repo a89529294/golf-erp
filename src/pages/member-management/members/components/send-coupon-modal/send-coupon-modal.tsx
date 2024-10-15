@@ -7,6 +7,7 @@ import {
   Dialog,
   DialogContent,
   DialogFooter,
+  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
@@ -25,8 +26,17 @@ import {
   genStoreQuery,
   loader,
 } from "@/pages/store-management/details/loader.ts";
+import couponIcon from "@/assets/coupon.svg";
 
-export function SendCouponModal({ storeId }: { storeId: string }) {
+export function SendCouponModal({
+  storeId,
+  asMenuItem,
+  closeMenu,
+}: {
+  storeId: string;
+  asMenuItem?: boolean;
+  closeMenu?: () => void;
+}) {
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const [rowSelection, setRowSelection] = useState({});
@@ -94,13 +104,24 @@ export function SendCouponModal({ storeId }: { storeId: string }) {
       open={open}
       onOpenChange={(s) => {
         setOpen(s);
-        if (!s) setRowSelection({});
+
+        if (!s) {
+          setRowSelection({});
+          closeMenu && closeMenu();
+        }
       }}
     >
-      <DialogTrigger asChild>
-        <IconButton icon="coupon" type="button">
-          發送優惠券
-        </IconButton>
+      <DialogTrigger>
+        {asMenuItem ? (
+          <div className="flex gap-1">
+            <img src={couponIcon} />
+            發送優惠券
+          </div>
+        ) : (
+          <IconButton icon="coupon" type="button">
+            發送優惠券
+          </IconButton>
+        )}
       </DialogTrigger>
       <DialogContent>
         <form
@@ -110,19 +131,19 @@ export function SendCouponModal({ storeId }: { storeId: string }) {
             mutate();
           }}
           className={cn(
-            `flex h-[610px] w-[790px] flex-col  px-14 py-5 sm:w-80`,
+            `flex h-[610px] w-[790px] flex-col px-14 py-5 sm:h-[500px] sm:w-80 sm:p-4`,
           )}
         >
           {/* <DialogHeader className="relative block mb-5 overflow-auto isolate px-14 sm:px-4"> */}
 
-          <ScrollArea className="h-[500px] overflow-auto border-t border-line-gray sm:h-[417px] sm:w-72">
+          <ScrollArea className="h-[500px] overflow-auto border border-line-gray  sm:h-[417px] sm:w-72">
             {coupons && (
-              <div className="border-b border-x border-line-gray before:fixed before:h-12 before:w-1 before:bg-light-gray">
+              <div className=" before:fixed before:h-12 before:w-1 before:bg-light-gray">
                 <div className="fixed right-[57px] h-12 w-1 bg-light-gray" />
-                <div className="sticky z-10 w-full border-b top-12 border-line-gray" />
+                <div className="sticky top-12 z-10 w-full border-b border-line-gray" />
                 <DataTable
                   columns={columns}
-                  data={coupons}
+                  data={Array(1).fill(coupons).flat()}
                   rowSelection={rowSelection}
                   setRowSelection={setRowSelection}
                   globalFilter={globalFilter}
@@ -135,7 +156,7 @@ export function SendCouponModal({ storeId }: { storeId: string }) {
           </ScrollArea>
 
           {/* </DialogHeader> */}
-          <DialogFooter className="justify-center mt-6">
+          <DialogFooter className="mt-6 justify-center">
             <TextButton
               type="submit"
               form="xx"
@@ -150,6 +171,7 @@ export function SendCouponModal({ storeId }: { storeId: string }) {
           </DialogFooter>
         </form>
       </DialogContent>
+      <DialogTitle />
     </Dialog>
   );
 }

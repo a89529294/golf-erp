@@ -15,7 +15,9 @@ import {
 import { cn } from "@/lib/utils";
 import { Member } from "@/pages/member-management/members/loader";
 import { FieldValues, UseFormReturn } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { SendCouponModal } from "@/pages/member-management/members/components/send-coupon-modal/send-coupon-modal";
+import { useState } from "react";
 
 export function MobileMenubar<T extends FieldValues>({
   disabled,
@@ -36,9 +38,16 @@ export function MobileMenubar<T extends FieldValues>({
   form: UseFormReturn<T>;
   onSubmit: () => void;
 }) {
+  const [searchParams] = useSearchParams();
+  const storeId = searchParams.get("storeId");
   const navigate = useNavigate();
+  const [value, setValue] = useState("");
   return (
-    <Menubar className="h-auto border-none bg-transparent">
+    <Menubar
+      className="h-auto border-none bg-transparent"
+      value={value}
+      onValueChange={(v) => setValue(v)}
+    >
       <MenubarMenu>
         <MenubarTrigger className={button()}>選項</MenubarTrigger>
         <MenubarContent>
@@ -105,6 +114,15 @@ export function MobileMenubar<T extends FieldValues>({
                 </button>
               </MenubarItem> */}
               <MenubarSeparator />
+              <MenubarItem onClick={(e) => e.preventDefault()}>
+                {storeId && (
+                  <SendCouponModal
+                    closeMenu={() => setValue("")}
+                    asMenuItem
+                    storeId={storeId}
+                  />
+                )}
+              </MenubarItem>
             </>
           ) : (
             <>
