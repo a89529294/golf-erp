@@ -115,8 +115,8 @@ const DataTable: <TData extends { id: string }, TValue>({
   return (
     <div className="absolute inset-0  m-1 mb-2.5 mt-0 w-fit border-line-gray sm:w-full">
       <Table
-        outerDivClassName="h-full relative"
-        className="items-stretch table-fixed isolate sm:w-full"
+        outerDivClassName="h-full relative sm:overflow-scroll"
+        className="isolate table-fixed items-stretch sm:w-auto"
       >
         <TableHeader className="relative z-10 [&_tr]:border-b-0">
           {table.getHeaderGroups().map((headerGroup) => (
@@ -153,9 +153,13 @@ const DataTable: <TData extends { id: string }, TValue>({
         </TableHeader>
 
         {isFetching && !isFetched ? (
-          <div className="absolute inset-0 flex items-center justify-center grow">
-            <Spinner />
-          </div>
+          <TableBody className="absolute inset-0 flex grow items-center justify-center sm:fixed">
+            <tr>
+              <td>
+                <Spinner />
+              </td>
+            </tr>
+          </TableBody>
         ) : (
           <TableBody className="[&_tr:last-child]:border-px ">
             {table.getRowModel().rows?.length ? (

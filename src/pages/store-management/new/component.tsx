@@ -147,9 +147,7 @@ export function Component() {
     toast.success("新增廠商成功");
     queryClient.invalidateQueries({ queryKey: ["stores"] });
 
-    console.log("?");
     navigate(linksKV["store-management"].paths.index);
-    console.log("!");
   }
 
   return (

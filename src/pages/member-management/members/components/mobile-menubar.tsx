@@ -10,6 +10,7 @@ import {
   MenubarItem,
   MenubarMenu,
   MenubarSeparator,
+  // MenubarSeparator,
   MenubarTrigger,
 } from "@/components/ui/menubar";
 import { cn } from "@/lib/utils";
@@ -69,7 +70,7 @@ export function MobileMenubar<T extends FieldValues>({
                   返回
                 </Link>
               </MenubarItem>
-              <MenubarSeparator />
+              {/* <MenubarSeparator /> */}
               {/* {data.isActive ? (
                 <>
                   <MenubarItem>

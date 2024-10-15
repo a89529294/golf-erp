@@ -132,32 +132,29 @@ export function EquipmentDetailModal({
               e.stopPropagation();
             }}
             className={cn(
-              `flex w-[620px] flex-col items-center pb-5 sm:w-72`,
+              `flex h-[190px] w-[400px] flex-col justify-between pb-5 sm:w-72`,
               className,
             )}
           >
             <DialogPrimitive.DialogTitle />
-            <DialogHeader className="w-full">
-              <div className="flex flex-col w-full">
-                <header className="py-2 text-center bg-light-gray">
-                  {mode === "new" ? "新增" : "編輯"}標籤
-                </header>
-
-                <div className="flex flex-col items-center justify-center flex-1 gap-6 pb-10">
-                  <Label className="flex items-center gap-5 mt-10">
-                    <h2 className="w-28">名稱</h2>
-                    <UnderscoredInput
-                      className="w-80"
-                      name={"title"}
-                      disabled={false}
-                      required
-                      defaultValue={equipment?.title ?? ""}
-                    />
-                  </Label>
-                </div>
-              </div>
+            <DialogHeader className="block w-full grow-0">
+              <header className="bg-light-gray py-2 text-center">
+                {mode === "new" ? "新增" : "編輯"}標籤
+              </header>
             </DialogHeader>
-            <DialogFooter className="">
+            <div className="flex flex-1 items-center justify-center ">
+              <Label className="flex items-center gap-5">
+                <h2 className="w-14 text-right">名稱</h2>
+                <UnderscoredInput
+                  className="w-40"
+                  name={"title"}
+                  disabled={false}
+                  required
+                  defaultValue={equipment?.title ?? ""}
+                />
+              </Label>
+            </div>
+            <DialogFooter className="justify-center">
               <TextButton
                 type="submit"
                 form="xx"

@@ -29,14 +29,12 @@ export const columns: ColumnDef<Store>[] = [
         />
       </div>
     ),
-    size: 80,
   },
   {
     accessorKey: "code",
     id: "code",
     header: "編號",
     accessorFn: (row) => row.code ?? "",
-    size: 180,
   },
   {
     id: "name-address",
@@ -108,16 +106,16 @@ export const columns: ColumnDef<Store>[] = [
   },
 ];
 
-export const mobileColumns = columns.map((c) => {
-  const sizeMap = {
-    select: 80,
-    "name-address": 180,
-    category: 120,
-    telphone: 120,
-    "contact-name-phone": 180,
-  } as Record<string, number>;
-  return {
-    ...c,
-    size: sizeMap[c.id!],
-  };
-});
+// export const mobileColumns = columns.map((c) => {
+//   const sizeMap = {
+//     select: 80,
+//     "name-address": 180,
+//     category: 120,
+//     telphone: 120,
+//     "contact-name-phone": 180,
+//   } as Record<string, number>;
+//   return {
+//     ...c,
+//     size: sizeMap[c.id!],
+//   };
+// });

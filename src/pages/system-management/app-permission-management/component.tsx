@@ -227,7 +227,9 @@ function Section({
               <div className="mr-20 w-28 sm:mr-5 sm:w-20 sm:shrink-0">
                 {user.storeCategory}
               </div>
-              <div className="sm:w-28">{user.store?.name}</div>
+              <div className="sm:w-auto sm:whitespace-nowrap">
+                {user.store?.name}
+              </div>
             </li>
           ))
         ) : (

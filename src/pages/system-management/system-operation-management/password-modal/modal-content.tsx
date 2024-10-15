@@ -12,7 +12,7 @@ export function PasswordModalContent({
 }) {
   return (
     <form
-      className="flex w-[377px] flex-col pb-5"
+      className="flex w-[377px] flex-col pb-5 sm:w-72"
       onSubmit={(e) => {
         e.preventDefault();
         onConfirm();

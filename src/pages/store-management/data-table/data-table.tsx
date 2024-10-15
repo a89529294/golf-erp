@@ -35,6 +35,7 @@ interface DataTableProps<TData, TValue> {
   setRowSelection: Dispatch<SetStateAction<Record<string, boolean>>>;
   globalFilter: string;
   setGlobalFilter: Dispatch<SetStateAction<string>>;
+  tableHeaderClassName?: string;
 }
 
 const fuzzyFilter: FilterFn<unknown> = (row, columnId, value) => {
@@ -52,6 +53,7 @@ export function DataTable<TData extends { id: string }, TValue>({
   setRowSelection,
   globalFilter,
   setGlobalFilter,
+  tableHeaderClassName,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
 
@@ -77,8 +79,8 @@ export function DataTable<TData extends { id: string }, TValue>({
   });
 
   return (
-    <div className="mb-2.5 w-full border-y border-line-gray ">
-      <Table className="relative isolate table-fixed">
+    <div className="w-full border-b border-line-gray">
+      <Table className="relative isolate border-separate border-spacing-0">
         <TableHeader className="relative z-10">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id} className="border-b-line-gray">
@@ -86,9 +88,10 @@ export function DataTable<TData extends { id: string }, TValue>({
                 return (
                   <TableHead
                     key={header.id}
-                    // height of header 80 plus gap 10
                     className={cn(
-                      "sticky top-[90px] bg-light-gray hover:bg-light-gray sm:top-px ",
+                      // "sticky top-[90px] bg-light-gray hover:bg-light-gray sm:top-px ",
+                      " sticky top-0 whitespace-nowrap border-y border-line-gray bg-light-gray hover:bg-light-gray ",
+                      tableHeaderClassName,
                     )}
                     style={{
                       width:
@@ -110,14 +113,21 @@ export function DataTable<TData extends { id: string }, TValue>({
 
         <TableBody className="relative ">
           {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
+            table.getRowModel().rows.map((row, rowIdx) => (
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
                 className="group relative border-b-line-gray bg-white data-[state=selected]:border-b-orange"
               >
                 {row.getVisibleCells().map((cell, idx) => (
-                  <TableCell key={cell.id}>
+                  <TableCell
+                    key={cell.id}
+                    className={cn(
+                      "border-b border-line-gray",
+                      rowIdx === table.getRowModel().rows.length - 1 &&
+                        "border-b-0",
+                    )}
+                  >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     {row.getVisibleCells().length === idx + 1 && (
                       <Link
