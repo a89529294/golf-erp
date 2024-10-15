@@ -24,7 +24,7 @@ export const columns = [
       </div>
     ),
     cell: ({ row }) => (
-      <div className="grid h-full place-items-center">
+      <div className="grid h-full place-items-center whitespace-nowrap">
         <Checkbox
           checked={row.getIsSelected()}
           onCheckedChange={(value) => row.toggleSelected(!!value)}
@@ -45,6 +45,11 @@ export const columns = [
         </button>
       );
     },
+    cell(props) {
+      return (
+        <div className="whitespace-nowrap">{props.getValue() as string}</div>
+      );
+    },
   }),
   columnHelper.accessor("date", {
     header: ({ column }) => {
@@ -56,6 +61,11 @@ export const columns = [
           日期
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </button>
+      );
+    },
+    cell(props) {
+      return (
+        <div className="whitespace-nowrap">{props.getValue() as string}</div>
       );
     },
   }),
@@ -71,6 +81,11 @@ export const columns = [
         </button>
       );
     },
+    cell(props) {
+      return (
+        <div className="whitespace-nowrap">{props.getValue() as string}</div>
+      );
+    },
   }),
   columnHelper.accessor("store.name", {
     header: ({ column }) => {
@@ -82,6 +97,11 @@ export const columns = [
           球場
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </button>
+      );
+    },
+    cell(props) {
+      return (
+        <div className="whitespace-nowrap">{props.getValue() as string}</div>
       );
     },
   }),
@@ -123,7 +143,7 @@ export const columns = [
             "invitation-management"
           ].paths.details.replace(":invitationId", row.original.id)}
         >
-          <img src={pencilIcon} className="hidden group-hover:block" />
+          <img src={pencilIcon} className="hidden group-hover:block sm:block" />
         </Link>
       );
     },

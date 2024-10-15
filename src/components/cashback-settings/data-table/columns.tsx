@@ -68,7 +68,7 @@ export function genColumns(
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             標題
-            <ArrowUpDown className="w-4 h-4 ml-2" />
+            <ArrowUpDown className="ml-2 h-4 w-4" />
           </button>
         );
       },
@@ -79,11 +79,11 @@ export function genColumns(
       header: ({ column }) => {
         return (
           <button
-            className="flex items-center gap-1"
+            className="flex items-center gap-1 whitespace-nowrap"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             儲值金額
-            <ArrowUpDown className="w-4 h-4 ml-2" />
+            <ArrowUpDown className="ml-2 h-4 w-4" />
           </button>
         );
       },
@@ -99,7 +99,7 @@ export function genColumns(
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             贈送金額
-            <ArrowUpDown className="w-4 h-4 ml-2" />
+            <ArrowUpDown className="ml-2 h-4 w-4" />
           </button>
         );
       },

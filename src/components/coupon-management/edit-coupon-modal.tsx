@@ -51,7 +51,11 @@ export function EditCouponModal({
   });
 
   return (
-    <div className={cn("hidden pr-6 text-right group-hover:block")}>
+    <div
+      className={cn(
+        "hidden pr-6 text-right group-hover:block sm:block sm:pr-0",
+      )}
+    >
       <CouponModalBase
         dialogTriggerChildren={
           <button className="">
@@ -72,45 +76,45 @@ export function EditCouponModal({
         <div className="flex w-full flex-col">
           <header className="bg-light-gray py-2 text-center">編輯優惠券</header>
 
-          <div className="flex flex-1 flex-col items-center justify-center gap-6 pb-10">
-            <Label className="mt-10 flex items-center gap-5">
+          <div className="flex flex-1 flex-col items-center justify-center gap-6 pb-10 sm:px-2">
+            <Label className="mt-10 flex items-center gap-5 sm:w-full sm:gap-0">
               <h2 className="w-16">標題</h2>
               <UnderscoredInput
-                className="w-80"
+                className="w-80 sm:w-auto sm:min-w-0 sm:flex-1"
                 name={"name"}
                 disabled={false}
                 required
                 defaultValue={name}
               />
             </Label>
-            <Label className="flex items-center gap-5 ">
+            <Label className="flex items-center gap-5 sm:w-full sm:gap-0 ">
               <h2 className="w-16">編號</h2>
               <UnderscoredInput
-                className="w-80"
+                className="w-80 sm:w-auto sm:min-w-0 sm:flex-1"
                 name={"number"}
                 disabled={false}
                 required
                 defaultValue={number}
               />
             </Label>
-            <Label className="flex items-center gap-5 ">
+            <Label className="flex items-center gap-5 sm:w-full sm:gap-0">
               <h2 className="w-16">使用期限</h2>
-              <div className="flex flex-row items-baseline">
+              <div className="flex flex-row items-baseline sm:w-auto sm:min-w-0 sm:flex-1">
                 <UnderscoredInput
-                  className="w-80"
+                  className="w-80 sm:w-auto sm:min-w-0 sm:flex-1"
                   name={"expiration"}
                   disabled={false}
                   type="number"
                   required
                   defaultValue={expiration}
                 />
-                天
+                <div className="shrink-0">天</div>
               </div>
             </Label>
-            <Label className="flex items-center gap-5 ">
+            <Label className="flex items-center  gap-5 sm:w-full sm:gap-0">
               <h2 className="w-16">金額</h2>
               <UnderscoredInput
-                className="w-80"
+                className="w-80 sm:w-auto sm:min-w-0 sm:flex-1"
                 name={"amount"}
                 disabled={false}
                 type="number"
@@ -118,9 +122,9 @@ export function EditCouponModal({
                 defaultValue={amount}
               />
             </Label>
-            <Label className="flex items-center gap-5">
+            <Label className="flex items-center gap-5 self-start sm:gap-0">
               <h2 className="w-16">有效</h2>
-              <div className="h-4 w-80">
+              <div className="h-4 w-80 sm:w-auto sm:min-w-0 sm:flex-1">
                 <Checkbox name="isActive" defaultChecked={isActive} />
               </div>
             </Label>

@@ -99,21 +99,19 @@ export function Component() {
         </div>
       ) : data ? (
         isMobile ? (
-          ({ height }) => {
-            return (
-              <ScrollArea style={{ height }}>
-                <GenericDataTable
-                  columns={columns}
-                  data={data}
-                  rowSelection={rowSelection}
-                  setRowSelection={setRowSelection}
-                  globalFilter={globalFilter}
-                  setGlobalFilter={setGlobalFilter}
-                />
-                <ScrollBar orientation="horizontal" />
-              </ScrollArea>
-            );
-          }
+          <div className="absolute inset-0 bottom-2.5">
+            <ScrollArea className="h-full border border-t-0 border-line-gray">
+              <GenericDataTable
+                columns={columns}
+                data={data}
+                rowSelection={rowSelection}
+                setRowSelection={setRowSelection}
+                globalFilter={globalFilter}
+                setGlobalFilter={setGlobalFilter}
+              />
+              <ScrollBar orientation="horizontal" />
+            </ScrollArea>
+          </div>
         ) : (
           <GenericDataTable
             columns={columns}

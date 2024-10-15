@@ -12,6 +12,7 @@ import { invitationsQuery, loader } from "./loader";
 import { privateFetch } from "@/utils/utils";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/use-auth";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 export function Component() {
   const { user } = useAuth();
@@ -78,14 +79,21 @@ export function Component() {
         </>
       }
     >
-      <DataTable
-        columns={columns}
-        data={data.data}
-        rowSelection={rowSelection}
-        setRowSelection={setRowSelection}
-        globalFilter={globalFilter}
-        setGlobalFilter={setGlobalFilter}
-      />
+      <div className="flex-1">
+        <div className="absolute inset-0 bottom-2.5">
+          <ScrollArea className="h-full">
+            <DataTable
+              columns={columns}
+              data={data.data}
+              rowSelection={rowSelection}
+              setRowSelection={setRowSelection}
+              globalFilter={globalFilter}
+              setGlobalFilter={setGlobalFilter}
+            />
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
+        </div>
+      </div>
     </MainLayout>
   );
 }

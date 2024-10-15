@@ -76,11 +76,8 @@ export function ModalDataTable<TData extends { id: string }, TValue>({
   });
 
   return (
-    <div className="relative w-full flex-1 overflow-auto border border-line-gray sm:h-full sm:border-none">
-      <Table
-        outerDivClassName="absolute inset-0"
-        className="relative isolate sm:border sm:border-line-gray"
-      >
+    <div className="relative w-full flex-1 overflow-auto border border-line-gray sm:h-full ">
+      <Table outerDivClassName="absolute inset-0" className="relative isolate ">
         <TableHeader className="relative z-10">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id} className="">

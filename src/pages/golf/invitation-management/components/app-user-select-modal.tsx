@@ -6,6 +6,7 @@ import {
   DialogContent,
   DialogFooter,
   DialogHeader,
+  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
@@ -94,13 +95,14 @@ export function AppUserSelectModal({
               }
               setOpen(false);
             }}
-            className={cn(`flex h-[610px] w-[790px] flex-col pb-5`)}
+            className={cn(`flex h-[610px] w-[790px] flex-col pb-5 sm:w-80`)}
           >
-            <DialogHeader className="relative isolate mb-5 block overflow-auto px-14">
+            <DialogHeader className="relative isolate mb-5 flex flex-col overflow-auto px-14 sm:px-6">
               <EmployeesModalSearchHeader
                 globalFilter={globalFilter}
                 setGlobalFilter={setGlobalFilter}
                 disableStoreQuery
+                className="self-stretch sm:-mx-6"
               />
               <ModalDataTable
                 columns={columns}
@@ -129,6 +131,7 @@ export function AppUserSelectModal({
           </form>
         }
       </DialogContent>
+      <DialogTitle />
     </Dialog>
   );
 }

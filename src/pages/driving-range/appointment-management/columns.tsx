@@ -12,7 +12,7 @@ export const columns: ColumnDef<Appointment>[] = [
     header: ({ column }) => {
       return (
         <button
-          className="flex items-center gap-1"
+          className="flex items-center gap-1 whitespace-nowrap"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           訂單編號
@@ -26,7 +26,7 @@ export const columns: ColumnDef<Appointment>[] = [
     header: ({ column }) => {
       return (
         <button
-          className="flex items-center gap-1"
+          className="flex items-center gap-1 whitespace-nowrap"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           名稱
@@ -40,7 +40,7 @@ export const columns: ColumnDef<Appointment>[] = [
   },
   {
     accessorKey: "appUser.phone",
-    header: "電話",
+    header: () => <div className="whitespace-nowrap">電話</div>,
     cell: (prop) => (
       <div className="whitespace-nowrap">{prop.getValue() as string}</div>
     ),
@@ -50,7 +50,7 @@ export const columns: ColumnDef<Appointment>[] = [
     header: ({ column }) => {
       return (
         <button
-          className="flex items-center gap-1"
+          className="flex items-center gap-1 whitespace-nowrap"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           開始時間
@@ -67,7 +67,7 @@ export const columns: ColumnDef<Appointment>[] = [
     header: ({ column }) => {
       return (
         <button
-          className="flex items-center gap-1"
+          className="flex items-center gap-1 whitespace-nowrap"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           結束時間
@@ -84,7 +84,7 @@ export const columns: ColumnDef<Appointment>[] = [
     header: ({ column }) => {
       return (
         <button
-          className="flex items-center gap-1"
+          className="flex items-center gap-1 whitespace-nowrap"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           狀態
