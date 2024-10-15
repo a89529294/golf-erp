@@ -35,7 +35,7 @@ export function DateRangePicker({
             指定範圍
           </TextButton>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="end">
+        <PopoverContent className="w-auto p-0 sm:-translate-y-20" align="end">
           <Calendar
             initialFocus
             mode="range"

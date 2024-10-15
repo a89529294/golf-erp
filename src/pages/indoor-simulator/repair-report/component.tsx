@@ -103,32 +103,21 @@ export function Component() {
           <Spinner />
         </div>
       ) : data ? (
-        isMobile ? (
-          ({ height }) => {
-            return (
-              <ScrollArea style={{ height }}>
-                <GenericDataTable
-                  columns={columns}
-                  data={data}
-                  rowSelection={rowSelection}
-                  setRowSelection={setRowSelection}
-                  globalFilter={globalFilter}
-                  setGlobalFilter={setGlobalFilter}
-                />
-                <ScrollBar orientation="horizontal" />
-              </ScrollArea>
-            );
-          }
-        ) : (
-          <GenericDataTable
-            columns={columns}
-            data={data}
-            rowSelection={rowSelection}
-            setRowSelection={setRowSelection}
-            globalFilter={globalFilter}
-            setGlobalFilter={setGlobalFilter}
-          />
-        )
+        <div className="relative flex-1 ">
+          <div className="border-x- absolute inset-0 bottom-2.5 border border-t-0 border-line-gray">
+            <ScrollArea className="h-full">
+              <GenericDataTable
+                columns={columns}
+                data={data}
+                rowSelection={rowSelection}
+                setRowSelection={setRowSelection}
+                globalFilter={globalFilter}
+                setGlobalFilter={setGlobalFilter}
+              />
+              <ScrollBar orientation="horizontal" />
+            </ScrollArea>
+          </div>
+        </div>
       ) : null}
     </MainLayout>
   );

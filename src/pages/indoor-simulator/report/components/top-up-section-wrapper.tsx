@@ -203,7 +203,7 @@ export function TopUpSection({
         />
 
         <TextButton className="ml-auto self-end" onClick={() => setOpen(!open)}>
-          展開訂單
+          {!open ? "展開訂單" : "關閉訂單"}
         </TextButton>
       </ul>
 
