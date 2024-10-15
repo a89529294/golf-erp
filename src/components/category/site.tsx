@@ -509,7 +509,7 @@ export function Site({
           }
         >
           {form.watch("plans")?.length ? (
-            <ul>
+            <ul className="overflow-x-auto">
               {form.getValues("plans")?.map((plan) => {
                 // let errorMessage = "";
                 // const planError = (form as UseFormReturn<NewIndoorSimulator>)

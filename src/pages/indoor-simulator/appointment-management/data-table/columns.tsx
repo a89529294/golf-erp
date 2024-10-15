@@ -13,12 +13,17 @@ export const columns: ColumnDef<Appointment>[] = [
     header: ({ column }) => {
       return (
         <button
-          className="flex items-center gap-1"
+          className="flex items-center gap-1 whitespace-nowrap"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           訂單編號
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </button>
+      );
+    },
+    cell(props) {
+      return (
+        <div className="whitespace-nowrap">{props.getValue() as string}</div>
       );
     },
   },

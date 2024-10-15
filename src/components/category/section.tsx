@@ -30,7 +30,7 @@ export function Section({
         if (myRef) myRef.current = o;
       }}
     >
-      <header className="flex items-center py-2.5 pl-5 ">
+      <header className="flex items-center py-2.5 pl-5 sm:pl-1">
         <span className="font-semibold">{title}</span>
         {subTitle && (
           <span className="ml-1 text-sm text-word-red">{subTitle}</span>

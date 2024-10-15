@@ -61,7 +61,7 @@ export function TimeRangeRow({
   return (
     <li
       className={cn(
-        "flex items-center border-b-[1.5px] border-b-transparent pb-4 pl-8 pr-5 pt-5 text-secondary-dark sm:px-2",
+        "flex flex-wrap items-center gap-y-2 border-b-[1.5px] border-b-transparent pb-4 pl-8 pr-5 pt-5 text-secondary-dark sm:px-2",
         !data[0].saved && "border-b-orange bg-hover-orange",
         disabled && "opacity-50",
       )}
@@ -134,7 +134,7 @@ export function TimeRangeRow({
         24小時營業
       </Label>
 
-      <div className="ml-auto flex gap-4 ">
+      <div className="ml-auto flex gap-4 sm:ml-2 ">
         <span className="text-red-500">{errorMessage}</span>
         {data[0].saved ? (
           <>

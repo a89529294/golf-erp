@@ -68,7 +68,7 @@ export function DateRangeRow({
   return (
     <li
       className={cn(
-        "flex items-center border-b-[1.5px] border-b-transparent pb-4 pl-8 pr-5 pt-5 sm:px-2",
+        "flex flex-wrap items-center gap-y-1 border-b-[1.5px] border-b-transparent pb-4 pl-8 pr-5 pt-5 sm:px-2",
         !data.saved && "border-b-orange bg-hover-orange",
         disabled && "opacity-50",
       )}
@@ -124,7 +124,7 @@ export function DateRangeRow({
         無期限
       </Label>
 
-      <div className="ml-auto flex gap-4">
+      <div className="ml-auto flex gap-4 sm:ml-2">
         {/* {errorMsg && <span className="text-red-500">{errorMsg}</span>} */}
         {data.saved ? (
           <>
