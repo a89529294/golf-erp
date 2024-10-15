@@ -53,7 +53,7 @@ export const linksKV = {
         type: "multiple" as const,
         paths: {
           index: `${DRIVING_RANGE_BASE_PATH}/member-management`,
-          details: `${DRIVING_RANGE_BASE_PATH}/member-management/details/:id`,
+          details: `${DRIVING_RANGE_BASE_PATH}/member-management/details/view-only/:id`,
         },
         lazy: {
           index: () => import("@/pages/driving-range/member-management"),
@@ -249,7 +249,7 @@ export const linksKV = {
         paths: {
           index: `${INDOOR_SIMULATOR_BASE_PATH}/member-management`,
           // new: `${INDOOR_SIMULATOR_BASE_PATH}/member-management/new`,
-          details: `${INDOOR_SIMULATOR_BASE_PATH}/member-management/details/:id`,
+          details: `${INDOOR_SIMULATOR_BASE_PATH}/member-management/details/view-only/:id`,
         },
         lazy: {
           index: () => import("@/pages/indoor-simulator/member-management"),

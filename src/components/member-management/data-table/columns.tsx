@@ -195,7 +195,7 @@ export const columns = (
       cell: (props) => {
         return (
           <Link
-            to={`/${categoryToLink[category]}/member-management/details/${props.row.original.id}?storeId=${storeId}`}
+            to={`/${categoryToLink[category]}/member-management/details/view-only/${props.row.original.id}?storeId=${storeId}`}
             className="hidden group-hover:block sm:block"
           >
             <img src={fileIcon} />

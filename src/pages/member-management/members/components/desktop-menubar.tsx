@@ -10,6 +10,7 @@ import React from "react";
 import { UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 import { SendCouponModal } from "@/pages/member-management/members/components/send-coupon-modal/send-coupon-modal";
+import { IconButton, IconWarningButton } from "@/components/ui/button";
 
 export function DesktopMenubar({
   disabled,
@@ -19,6 +20,7 @@ export function DesktopMenubar({
   toggleMemberStatus,
   isPending,
   form,
+  allowEdit,
 }: {
   disabled: boolean;
   setDisabled: React.Dispatch<React.SetStateAction<boolean>>;
@@ -27,6 +29,7 @@ export function DesktopMenubar({
   toggleMemberStatus(): void;
   isPending: boolean;
   form: UseFormReturn<z.infer<typeof memberFormSchema>>;
+  allowEdit?: boolean;
 }) {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -67,51 +70,56 @@ export function DesktopMenubar({
               恢復
             </IconButton>
           )} */}
-          {/* <IconButton
-            icon="pencil"
-            type="button"
-            onClick={(e) => {
-              e.preventDefault();
-              setDisabled(false);
-            }}
-            disabled={isUpdatingMemberStatus}
-          >
-            編輯
-          </IconButton> */}
+          {allowEdit && (
+            <IconButton
+              icon="pencil"
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                setDisabled(false);
+              }}
+              disabled={isUpdatingMemberStatus}
+            >
+              編輯
+            </IconButton>
+          )}
           {storeId && <SendCouponModal storeId={storeId} />}
         </>
       ) : (
-        <>
-          {/* <IconWarningButton
-            type="button"
-            onClick={() => {
-              setDisabled(true);
-              form.reset({
-                account: data.account,
-                memberType: data.appUserType,
-                chName: data.chName,
-                phone: data.phone ?? "",
-                gender: data.gender,
-                birthday: data.birthday ? new Date(data.birthday) : "",
-                isActive: data.isActive,
-              });
-            }}
-            icon="redX"
-            disabled={isPending}
-          >
-            取消編輯
-          </IconWarningButton>
-          <IconButton
-            disabled={
-              Object.keys(form.formState.dirtyFields).length === 0 || isPending
-            }
-            icon="save"
-            type="submit"
-            form="member-form"
-          >
-            儲存
-          </IconButton> */}
-        </>
+        allowEdit && (
+          <>
+            <IconWarningButton
+              type="button"
+              onClick={() => {
+                setDisabled(true);
+                form.reset({
+                  account: data.account,
+                  memberType: data.appUserType,
+                  chName: data.chName,
+                  phone: data.phone ?? "",
+                  gender: data.gender,
+                  birthday: data.birthday ? new Date(data.birthday) : "",
+                  isActive: data.isActive,
+                });
+              }}
+              icon="redX"
+              disabled={isPending}
+            >
+              取消編輯
+            </IconWarningButton>
+            <IconButton
+              disabled={
+                Object.keys(form.formState.dirtyFields).length === 0 ||
+                isPending
+              }
+              icon="save"
+              type="submit"
+              form="member-form"
+            >
+              儲存
+            </IconButton>
+          </>
+        )
       )}
     </>
   );
