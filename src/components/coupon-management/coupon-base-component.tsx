@@ -69,9 +69,9 @@ export function CouponBaseComponent({
       }
     >
       {isMobile ? (
-        ({ height }) => (
-          <ScrollArea style={{ height }} className="w-full">
-            <div className="w-full border border-line-gray bg-light-gray p-1 pt-0">
+        <div className="absolute inset-0 bottom-2.5">
+          <ScrollArea className="h-full w-full border border-line-gray">
+            <div className="w-full bg-light-gray p-1 pt-0">
               {coupons && (
                 <DataTable
                   columns={genColumns(category)}
@@ -85,7 +85,7 @@ export function CouponBaseComponent({
             </div>
             <Scrollbar orientation="horizontal" />
           </ScrollArea>
-        )
+        </div>
       ) : (
         <div className={cn("w-full ", isLoading && "grid place-items-center")}>
           {isLoading ? (

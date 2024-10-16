@@ -79,7 +79,7 @@ export function GenericDataTable<TData extends { id: string }, TValue>({
 
   // const extraClasses = "table-fixed w-auto ";
   return (
-    <div className="relative w-full px-1 border-b border-x border-line-gray ">
+    <div className="relative w-full ">
       <Table
         className={cn(
           `relative isolate border-separate border-spacing-0 `,

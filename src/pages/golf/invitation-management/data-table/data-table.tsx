@@ -73,7 +73,10 @@ export function DataTable<TData extends { id: string }, TValue>({
 
   return (
     <div className="mb-2.5 w-full ">
-      <Table className="relative isolate border-separate border-spacing-0">
+      <Table
+        outerDivClassName=""
+        className="relative isolate border-separate border-spacing-0"
+      >
         <TableHeader className="relative z-10">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id} className="">
@@ -82,7 +85,7 @@ export function DataTable<TData extends { id: string }, TValue>({
                   <TableHead
                     key={header.id}
                     // height of header 80 plus gap 10
-                    className="sticky top-[90px] border-y border-line-gray bg-light-gray first:border-l last:border-r hover:bg-light-gray"
+                    className="sticky top-0 whitespace-nowrap border-y border-line-gray bg-light-gray first:border-l last:border-r hover:bg-light-gray"
                   >
                     {header.isPlaceholder
                       ? null

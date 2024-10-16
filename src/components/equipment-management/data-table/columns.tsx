@@ -25,8 +25,8 @@ function ActionButtons({
     <div className="flex gap-2">
       <EquipmentDetailModal
         dialogTriggerChildren={
-          <button className="">
-            <img alt="pencil" src={pencil} />
+          <button className="flex">
+            <img className="h-5" alt="pencil" src={pencil} />
           </button>
         }
         mode="edit"
@@ -36,8 +36,8 @@ function ActionButtons({
       <div className={cn("hidden text-right group-hover:block")}>
         <Modal
           dialogTriggerChildren={
-            <button>
-              <img src={trashCanIcon} />
+            <button className="flex">
+              <img className="h-5" src={trashCanIcon} />
             </button>
           }
           title={`確認刪除${rowData.title}?`}
@@ -58,12 +58,11 @@ export function genColumns(deleteEquipment: (id: string) => Promise<void>) {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             標題
-            <ArrowUpDown className="w-4 h-4 ml-2" />
+            <ArrowUpDown className="ml-2 h-4 w-4" />
           </button>
         );
       },
       cell: (props) => props.getValue(),
-      size: undefined,
     }),
     columnHelper.display({
       id: "edit-modal",
@@ -73,7 +72,7 @@ export function genColumns(deleteEquipment: (id: string) => Promise<void>) {
           deleteEquipment: deleteEquipment,
         });
       },
-      size: 10,
+      size: 80,
     }),
   ] as ColumnDef<Equipment>[];
 }

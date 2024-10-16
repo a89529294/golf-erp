@@ -34,7 +34,10 @@ export function TextFormField({
       name={name}
       render={({ field }) => (
         <FormItem
-          className={cn("grid grid-cols-[1fr_415px] items-baseline", className)}
+          className={cn(
+            "grid grid-cols-[1fr_415px] items-baseline sm:grid-cols-[80px_1fr]",
+            className,
+          )}
         >
           <FormLabel>{label}</FormLabel>
           <FormControl>

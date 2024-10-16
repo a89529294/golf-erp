@@ -1,7 +1,12 @@
 import { MainLayout } from "@/layouts/main-layout";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useLoaderData, useParams, useSearchParams } from "react-router-dom";
+import {
+  useLoaderData,
+  useLocation,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import { z } from "zod";
 
 import { GenericDataTable } from "@/components/generic-data-table";
@@ -23,10 +28,13 @@ import {
   couponHistorycolumns,
 } from "./columns";
 import { genMemberDetailsQuery, loader } from "./loader";
+import { useAuth } from "@/hooks/use-auth";
 
 type MemberHistory = "top-up-history" | "spending-history" | "coupon-history";
 
 export function Component() {
+  const auth = useAuth();
+  const location = useLocation();
   const [searchParams] = useSearchParams();
   const [memberHistory, setMemberHistory] =
     useState<MemberHistory>("top-up-history");
@@ -148,6 +156,10 @@ export function Component() {
               isPending={isPending}
               setDisabled={setDisabled}
               toggleMemberStatus={toggleMemberStatus}
+              allowEdit={
+                !location.pathname.includes("view-only") &&
+                auth.user?.permissions.includes("系統管理")
+              }
             />
           )}
         </>
@@ -206,7 +218,7 @@ export function Component() {
         </nav>
         <div className="relative grow sm:h-96">
           <div className="absolute inset-0 ">
-            <ScrollArea className="h-full ">
+            <ScrollArea className="h-full border border-t-0 border-line-gray">
               <GenericDataTable
                 columns={
                   memberHistory === "top-up-history"

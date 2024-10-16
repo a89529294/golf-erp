@@ -17,7 +17,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Dispatch, SetStateAction, useState } from "react";
+import { CSSProperties, Dispatch, SetStateAction, useState } from "react";
 import { cn } from "@/lib/utils";
 
 declare module "@tanstack/react-table" {
@@ -34,6 +34,7 @@ interface DataTableProps<TData, TValue> {
   globalFilter: string;
   setGlobalFilter: Dispatch<SetStateAction<string>>;
   headerRowRef?: React.RefObject<HTMLTableRowElement>;
+  style?: CSSProperties;
 }
 
 // Tip: If you find yourself using <DataTable /> in multiple places,
@@ -55,6 +56,7 @@ export function DataTable<TData extends { id: string }, TValue>({
   globalFilter,
   setGlobalFilter,
   headerRowRef,
+  style,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
 
@@ -80,8 +82,11 @@ export function DataTable<TData extends { id: string }, TValue>({
   });
 
   return (
-    <div className="m-1 mb-2.5 mt-0 w-fit">
-      <Table className="relative isolate table-fixed ">
+    <div className="" style={style}>
+      <Table
+        outerDivClassName=""
+        className="relative isolate table-fixed border-separate border-spacing-0 sm:w-auto"
+      >
         <TableHeader className="relative z-10 [&_tr]:border-b-0">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow
@@ -95,12 +100,12 @@ export function DataTable<TData extends { id: string }, TValue>({
                     key={header.id}
                     // height of header 80 plus gap 10
                     className={cn(
-                      "sticky top-[90px] w-full bg-light-gray hover:bg-light-gray sm:top-0",
+                      "sticky top-0 w-full whitespace-nowrap border-y border-line-gray bg-light-gray hover:bg-light-gray sm:top-0",
                     )}
                     style={{
                       width:
                         header.column.columnDef.size !== 150
-                          ? `${header.column.columnDef.size}%`
+                          ? `${header.column.columnDef.size}px`
                           : "auto",
                     }}
                   >
@@ -119,19 +124,31 @@ export function DataTable<TData extends { id: string }, TValue>({
 
         <TableBody className="relative ">
           {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-                className="group bg-white"
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))
+            table.getRowModel().rows.map((row, rowIdx) => {
+              return (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                  className="group bg-white"
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell
+                      key={cell.id}
+                      className={cn(
+                        "border-b border-line-gray",
+                        table.getRowModel().rows.length === rowIdx + 1 &&
+                          "border-b-0",
+                      )}
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              );
+            })
           ) : (
             <TableRow>
               <TableCell colSpan={columns.length} className="h-24 text-center">

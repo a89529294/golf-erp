@@ -232,7 +232,7 @@ function Section({
         <label className="block px-6 py-5">
           <input
             type="checkbox"
-            className="hidden peer"
+            className="peer hidden"
             checked={
               selectedLevels.length === levels.length && levels.length !== 0
             }
@@ -272,7 +272,7 @@ function Section({
           icon="plus"
           className={cn(
             "mr-px",
-            selectedLevels.length === 0 ? "ml-auto" : "ml-1",
+            selectedLevels.length === 0 ? "ml-auto" : "ml-1 sm:ml-auto",
             deletingLevels && "opacity-50",
           )}
           disabled={isSomeLevelBeingEdited || deletingLevels}
@@ -339,7 +339,7 @@ function Li({
       <label className="block px-6 py-6">
         <input
           type="checkbox"
-          className="hidden peer"
+          className="peer hidden"
           checked={selected}
           onChange={() => {
             toggleSelected(level.id);
@@ -368,7 +368,7 @@ function Li({
         id={formId}
       >
         <span className="whitespace-nowrap">消費級距</span>
-        <div className="flex items-center isolate">
+        <div className="isolate flex items-center">
           <div className="relative">
             <NumberInput
               autoFocus={autoFocusMinConsumption}
@@ -395,13 +395,13 @@ function Li({
               )}
             />
             {level.errorState?.field === "minConsumption" && (
-              <p className="absolute bottom-0 text-sm text-red-600 translate-y-full whitespace-nowrap">
+              <p className="absolute bottom-0 translate-y-full whitespace-nowrap text-sm text-red-600">
                 {level.errorState?.msg}
               </p>
             )}
           </div>
 
-          <div className="relative z-10 w-4 h-px black-circles-before-after bg-secondary-dark"></div>
+          <div className="black-circles-before-after relative z-10 h-px w-4 bg-secondary-dark"></div>
 
           <div className="relative">
             <NumberInput
@@ -429,7 +429,7 @@ function Li({
               myRef={maxConsumptionRef}
             />
             {level.errorState?.field === "maxConsumption" && (
-              <p className="absolute bottom-0 text-sm text-red-600 translate-y-full whitespace-nowrap">
+              <p className="absolute bottom-0 translate-y-full whitespace-nowrap text-sm text-red-600">
                 {level.errorState?.msg}
               </p>
             )}
@@ -478,7 +478,7 @@ function Li({
       )}
 
       {!level.disabled && (
-        <div className="flex gap-4 ml-auto sm:w-10 sm:gap-1">
+        <div className="ml-auto flex gap-4 sm:w-10 sm:gap-1">
           <button
             type="submit"
             form={formId}

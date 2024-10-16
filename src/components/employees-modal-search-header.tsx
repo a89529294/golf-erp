@@ -8,6 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 import { storesQuery } from "@/pages/store-management/loader";
 import { useQuery } from "@tanstack/react-query";
 import { Dispatch, SetStateAction, useState } from "react";
@@ -18,12 +19,14 @@ export function EmployeesModalSearchHeader({
   globalFilter,
   setGlobalFilter,
   disableStoreQuery,
+  className,
 }: {
   selectedStoreId?: string | undefined;
   setSelectedStoreId?: Dispatch<SetStateAction<string | undefined>>;
   globalFilter: string;
   setGlobalFilter: Dispatch<SetStateAction<string>>;
   disableStoreQuery?: boolean;
+  className?: string;
 }) {
   const [selectKey, setSelectKey] = useState(0);
   const { data: stores } = useQuery({
@@ -35,9 +38,14 @@ export function EmployeesModalSearchHeader({
     : [];
 
   return (
-    <div className="sticky top-0 z-10 -mx-14 -mb-px flex h-[110px] flex-col border-b border-b-line-gray bg-white  [clip-path:polygon(0_0,100%_0,100%_calc(100%-1px),calc(100%-56px)_calc(100%-1px),calc(100%-56px)_100%,56px_100%,56px_calc(100%-1px),0_calc(100%-1px))]">
+    <div
+      className={cn(
+        "sticky top-0 z-10 -mx-14 -mb-px flex h-[110px] flex-col border-b border-b-line-gray bg-white [clip-path:polygon(0_0,100%_0,100%_calc(100%-1px),calc(100%-56px)_calc(100%-1px),calc(100%-56px)_100%,56px_100%,56px_calc(100%-1px),0_calc(100%-1px))]  sm:-mx-4",
+        className,
+      )}
+    >
       <h1 className="bg-light-gray py-2 text-center">選擇人員</h1>
-      <div className="mt-auto flex items-center gap-2 px-14 pb-4">
+      <div className="mt-auto flex items-center gap-2 px-14 pb-4 sm:px-4">
         <img src={MagnifyingGlass} />
         {selectedStoreId && setSelectedStoreId && (
           <Select

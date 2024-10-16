@@ -33,7 +33,7 @@ export function MainLayout({
         {/* <UserDisplayLogout /> */}
       </header>
       <div className="sticky top-20 z-10 h-2.5 bg-white" />
-      <div className="flex flex-1 " ref={ref}>
+      <div className="relative flex flex-1" ref={ref}>
         {containerHeight > 0
           ? typeof children === "function"
             ? children({ height: containerHeight })

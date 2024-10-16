@@ -79,63 +79,68 @@ export function DataTable<TData extends { id: string }, TValue>({
   });
 
   return (
-    <div className="m-1 mt-0 w-fit sm:w-max">
-      <Table className="relative isolate table-fixed sm:w-max">
-        <TableHeader className="relative z-10 [&_tr]:border-b-0">
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id} className="border-b-line-gray">
-              {headerGroup.headers.map((header) => {
-                return (
-                  <TableHead
-                    key={header.id}
-                    // height of header 80 plus gap 10
-                    className={cn(
-                      "sticky top-[90px] bg-light-gray hover:bg-light-gray sm:top-0",
-                      rmTheadMarginTop && "top-0",
-                    )}
-                    style={{
-                      width: header.column.columnDef.size
-                        ? `${header.column.columnDef.size}%`
+    <Table className="relative isolate table-fixed border-separate border-spacing-0">
+      <TableHeader className="relative z-10 ">
+        {table.getHeaderGroups().map((headerGroup) => (
+          <TableRow key={headerGroup.id}>
+            {headerGroup.headers.map((header) => {
+              return (
+                <TableHead
+                  key={header.id}
+                  // height of header 80 plus gap 10
+                  className={cn(
+                    "sticky top-0 border-y border-y-line-gray bg-light-gray  hover:bg-light-gray ",
+                    rmTheadMarginTop && "top-0",
+                  )}
+                  style={{
+                    width:
+                      header.column.columnDef.size !== 150
+                        ? `${header.column.columnDef.size}px`
                         : "auto",
-                    }}
-                  >
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
-                  </TableHead>
-                );
-              })}
-            </TableRow>
-          ))}
-        </TableHeader>
+                  }}
+                >
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext(),
+                      )}
+                </TableHead>
+              );
+            })}
+          </TableRow>
+        ))}
+      </TableHeader>
 
-        <TableBody className="relative ">
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-                className="group relative border-b-line-gray bg-white data-[state=selected]:border-b-orange"
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id} className="last-of-type:px-0">
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                查無資料
-              </TableCell>
+      <TableBody className="relative ">
+        {table.getRowModel().rows?.length ? (
+          table.getRowModel().rows.map((row, rowIdx) => (
+            <TableRow
+              key={row.id}
+              data-state={row.getIsSelected() && "selected"}
+              className="group relative bg-white "
+            >
+              {row.getVisibleCells().map((cell) => (
+                <TableCell
+                  key={cell.id}
+                  className={cn(
+                    "border-b border-line-gray last-of-type:px-0",
+                    rowIdx + 1 === table.getRowCount() && "border-b-0",
+                  )}
+                >
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </TableCell>
+              ))}
             </TableRow>
-          )}
-        </TableBody>
-      </Table>
-    </div>
+          ))
+        ) : (
+          <TableRow>
+            <TableCell colSpan={columns.length} className="h-24 text-center">
+              查無資料
+            </TableCell>
+          </TableRow>
+        )}
+      </TableBody>
+    </Table>
   );
 }

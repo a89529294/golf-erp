@@ -30,13 +30,15 @@ export function AddressFields({
     <>
       <StoreSelectField stores={stores} disabled={disabled} />
       <fieldset className="flex items-baseline gap-5">
-        <label className="flex-1">球場地址</label>
-        <div className="grid w-[415px] auto-rows-[32px] grid-cols-[176fr_227fr] gap-3">
+        <label className="flex-1 shrink-0 sm:w-20 sm:flex-initial sm:whitespace-nowrap">
+          球場地址
+        </label>
+        <div className="grid w-[415px] auto-rows-[32px] grid-cols-[176fr_227fr] gap-3 sm:flex sm:w-auto sm:flex-col">
           <DisabledTextFormField name="county" />
           <DisabledTextFormField name="district" />
           <TextFormField
             name="address"
-            className="col-span-2 "
+            className="col-span-2 sm:flex"
             placeholder=""
             textLeft
             disabled={true}
@@ -62,7 +64,7 @@ function StoreSelectField({
       control={form.control}
       name="storeId"
       render={({ field }) => (
-        <FormItem className="grid grid-cols-[1fr_415px] items-baseline">
+        <FormItem className="grid grid-cols-[1fr_415px] items-baseline sm:grid-cols-[80px_1fr]">
           <FormLabel>球場</FormLabel>
           <Select
             onValueChange={(storeId) => {

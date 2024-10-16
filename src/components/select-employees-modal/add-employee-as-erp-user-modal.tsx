@@ -18,10 +18,10 @@ import { Employee } from "@/pages/system-management/personnel-management/loader"
 import { ModalDataTable } from "@/components/select-employees-modal/data-table";
 import {
   columns as employeeColumns,
-  mobileColumns as mobileEmployeeColumns,
+  // mobileColumns as mobileEmployeeColumns,
 } from "./columns";
 import { EmployeesModalSearchHeader } from "@/components/employees-modal-search-header";
-import { ScrollArea, Scrollbar } from "@radix-ui/react-scroll-area";
+
 import { useIsMobile } from "@/hooks/use-is-mobile";
 
 const newERPUserReturnSchema = z.object({
@@ -113,9 +113,12 @@ export function AddEmployeeAsERPUserModal({
               e.preventDefault();
               mutate();
             }}
-            className={cn(`flex h-[610px] w-[790px] flex-col pb-5 sm:w-80`)}
+            className={cn(
+              `relative  flex h-[610px] w-[790px] flex-col pb-5 sm:w-80`,
+            )}
           >
-            <DialogHeader className="relative isolate mb-5 block overflow-auto px-14 sm:overflow-hidden sm:px-4">
+            {/* <div className="absolute inset-0 flex flex-col pb-5 overflow-auto"> */}
+            <DialogHeader className="relative isolate mb-5 flex flex-col items-stretch px-14 sm:overflow-hidden sm:px-4 ">
               <EmployeesModalSearchHeader
                 globalFilter={globalFilter}
                 setGlobalFilter={setGlobalFilter}
@@ -123,17 +126,14 @@ export function AddEmployeeAsERPUserModal({
                 setSelectedStoreId={setSelectedStoreId}
               />
               {isMobile ? (
-                <ScrollArea className="overflow-auto sm:h-[417px] sm:w-72">
-                  <ModalDataTable
-                    columns={mobileEmployeeColumns}
-                    data={filteredEmployees}
-                    rowSelection={rowSelection}
-                    setRowSelection={setRowSelection}
-                    globalFilter={globalFilter}
-                    setGlobalFilter={setGlobalFilter}
-                  />
-                  <Scrollbar orientation="horizontal" />
-                </ScrollArea>
+                <ModalDataTable
+                  columns={employeeColumns}
+                  data={filteredEmployees}
+                  rowSelection={rowSelection}
+                  setRowSelection={setRowSelection}
+                  globalFilter={globalFilter}
+                  setGlobalFilter={setGlobalFilter}
+                />
               ) : (
                 <ModalDataTable
                   columns={employeeColumns}
@@ -158,6 +158,7 @@ export function AddEmployeeAsERPUserModal({
                 <TextWarningButton disabled={isPending}>取消</TextWarningButton>
               </DialogPrimitive.Close>
             </DialogFooter>
+            {/* </div> */}
           </form>
         )}
       </DialogContent>

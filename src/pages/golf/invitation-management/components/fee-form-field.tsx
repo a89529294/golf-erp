@@ -15,13 +15,13 @@ export function FeeFormField({ disabled }: { disabled?: boolean }) {
       control={form.control}
       name={"price"}
       render={({ field }) => (
-        <FormItem className="relative grid grid-cols-[1fr_415px] items-baseline">
+        <FormItem className="relative grid grid-cols-[1fr_415px] items-baseline sm:grid-cols-[80px_1fr]">
           <FormLabel>費用</FormLabel>
           <FormControl>
             <UnderscoredInput
               placeholder="費用"
               {...field}
-              className="col-start-2 row-start-1 h-8 w-[395px] p-1 text-center"
+              className="col-start-2 row-start-1 h-8 w-[395px] p-1 text-center sm:w-auto"
               type="number"
               disabled={disabled}
             />

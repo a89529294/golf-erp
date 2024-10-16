@@ -158,26 +158,26 @@ export function CashbackDetailModal({
           >
             <DialogPrimitive.DialogTitle />
             <DialogHeader className="w-full">
-              <div className="flex flex-col w-full">
-                <header className="py-2 text-center bg-light-gray">
+              <div className="flex w-full flex-col">
+                <header className="bg-light-gray py-2 text-center">
                   {mode === "new" ? "新增" : "編輯"}儲值優惠
                 </header>
 
-                <div className="flex flex-col items-center justify-center flex-1 gap-6 pb-10">
-                  <Label className="flex items-center gap-5 mt-10">
-                    <h2 className="w-28">標題</h2>
+                <div className="flex flex-1 flex-col items-center justify-center gap-6 pb-10 sm:items-stretch sm:gap-3 sm:px-2">
+                  <Label className="mt-10 flex items-center gap-5 sm:gap-2">
+                    <h2 className="w-28 shrink-0">標題</h2>
                     <UnderscoredInput
-                      className="w-80"
+                      className="w-80 sm:w-auto sm:min-w-0 sm:flex-1"
                       name={"title"}
                       disabled={false}
                       required
                       defaultValue={chargeDiscount?.title ?? ""}
                     />
                   </Label>
-                  <Label className="flex items-center gap-5 ">
-                    <h2 className="w-28">單筆消費滿額</h2>
+                  <Label className="flex items-center gap-5 sm:gap-2 ">
+                    <h2 className="w-28 shrink-0">單筆消費滿額</h2>
                     <UnderscoredInput
-                      className="w-80"
+                      className="w-80 sm:w-auto sm:min-w-0 sm:flex-1"
                       name={"chargeAmount"}
                       disabled={false}
                       type="number"
@@ -185,18 +185,16 @@ export function CashbackDetailModal({
                       defaultValue={chargeDiscount?.chargeAmount ?? 0}
                     />
                   </Label>
-                  <Label className="flex items-center gap-5 ">
-                    <h2 className="w-28">贈送點數</h2>
-                    <div className="flex flex-row items-baseline">
-                      <UnderscoredInput
-                        className="w-80"
-                        name={"extraAmount"}
-                        disabled={false}
-                        type="number"
-                        required
-                        defaultValue={chargeDiscount?.extraAmount ?? 0}
-                      />
-                    </div>
+                  <Label className="flex items-center gap-5 sm:gap-2 ">
+                    <h2 className="w-28 shrink-0">贈送點數</h2>
+                    <UnderscoredInput
+                      className="w-80 sm:w-auto sm:min-w-0 sm:flex-1"
+                      name={"extraAmount"}
+                      disabled={false}
+                      type="number"
+                      required
+                      defaultValue={chargeDiscount?.extraAmount ?? 0}
+                    />
                   </Label>
                 </div>
               </div>

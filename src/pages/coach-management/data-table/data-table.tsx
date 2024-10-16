@@ -78,8 +78,11 @@ export function DataTable<TData extends { id: string }, TValue>({
 
   return (
     <div className="mb-2.5 w-full border-b border-line-gray ">
-      <Table className="relative isolate table-fixed border-separate border-spacing-0">
-        <TableHeader className="relative z-10">
+      <Table
+        outerDivClassName="sm:overflow-scroll"
+        className="relative isolate table-fixed border-separate border-spacing-0 sm:w-auto"
+      >
+        <TableHeader className="relative z-10 ">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id} className="">
               {headerGroup.headers.map((header) => {
@@ -91,7 +94,7 @@ export function DataTable<TData extends { id: string }, TValue>({
                       "sticky top-[90px] border-y border-line-gray bg-light-gray hover:bg-light-gray sm:top-px ",
                     )}
                     style={{
-                      width:
+                      minWidth:
                         header.getSize() !== 150 ? header.getSize() : "auto",
                     }}
                   >

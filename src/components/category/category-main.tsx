@@ -266,7 +266,7 @@ function Section({
   }, [imgId]);
 
   return (
-    <section className="grid grid-cols-[128px_1fr_150px_192px_305px_20px] gap-x-2.5 border border-line-gray bg-white p-4 xl:grid-cols-[128px_1fr_150px_192px_20px] lg:grid-cols-[128px_1fr_150px_20px]">
+    <section className="grid grid-cols-[128px_1fr_150px_192px_305px_20px] gap-x-2.5 border border-line-gray bg-white p-4 ">
       {imgId ? (
         !img ? (
           <Skeleton className="mr-1.5 h-32 w-32 rounded-none bg-[#c1c1c1]" />
@@ -285,14 +285,14 @@ function Section({
       <MiddleSection
         header="場地設備"
         list={equipments}
-        className="lg:hidden"
+        // className="lg:hidden"
         liContentRenderer={(e) => <> {e} </>}
         useOrderedList
       />
 
       <MiddleSection
         alignCenter
-        className="lg:hidden"
+        // className="lg:hidden"
         header="場地開放日期"
         list={openingDates}
         liContentRenderer={(d) => (
@@ -307,7 +307,7 @@ function Section({
       {type === "golf" ? (
         <MiddleSection
           alignCenter
-          className="xl:hidden"
+          // className="xl:hidden"
           header="場地開放時間"
           list={openingWeekDays}
           liContentRenderer={(h) => (
@@ -321,7 +321,7 @@ function Section({
       ) : (
         <MiddleSection
           alignCenter
-          className="xl:hidden"
+          // className="xl:hidden"
           header="場地開放時間"
           list={openingHours}
           liContentRenderer={(h) => (

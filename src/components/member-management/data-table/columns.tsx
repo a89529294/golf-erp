@@ -86,7 +86,7 @@ export const columns = (
       header: ({ column }) => {
         return (
           <button
-            className="flex items-center gap-1"
+            className="flex items-center gap-1 whitespace-nowrap"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             會員類別
@@ -123,7 +123,7 @@ export const columns = (
       header: ({ column }) => {
         return (
           <button
-            className="flex items-center gap-1"
+            className="flex items-center gap-1 whitespace-nowrap"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             性別
@@ -145,7 +145,9 @@ export const columns = (
           </button>
         );
       },
-      cell: (props) => props.getValue(),
+      cell: (props) => (
+        <div className="whitespace-nowrap">{props.getValue()}</div>
+      ),
       size: 11.5,
     }),
     columnHelper.accessor(
@@ -193,8 +195,8 @@ export const columns = (
       cell: (props) => {
         return (
           <Link
-            to={`/${categoryToLink[category]}/member-management/details/${props.row.original.id}?storeId=${storeId}`}
-            className="hidden group-hover:block"
+            to={`/${categoryToLink[category]}/member-management/details/view-only/${props.row.original.id}?storeId=${storeId}`}
+            className="hidden group-hover:block sm:block"
           >
             <img src={fileIcon} />
           </Link>
@@ -205,59 +207,59 @@ export const columns = (
   ] as ColumnDef<Member>[];
 };
 
-export const mobileColumns = (
-  storeId: string,
-  category: "ground" | "simulator" | "golf",
-  userPermissions: string[],
-) =>
-  [
-    ...(showSendPoints(category, userPermissions)
-      ? [
-          columnHelper.display({
-            id: "send_points",
-            header: "",
-            cell: (props) => {
-              const appUserId = props.row.original.id;
-              return <AddCoinModal appUserId={appUserId} storeId={storeId} />;
-            },
-            size: 40,
-          }),
-        ]
-      : []),
-    columnHelper.accessor("account", {
-      header: ({ column }) => {
-        return (
-          <button
-            className="flex items-center gap-1"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            帳號
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </button>
-        );
-      },
-      cell: (props) => props.getValue(),
-      size: showSendPoints(category, userPermissions) ? 20 : 30,
-    }),
-    columnHelper.accessor("chName", {
-      header: "姓名",
-      cell: (props) => (
-        <span className="whitespace-nowrap">{props.getValue()}</span>
-      ),
-      size: showSendPoints(category, userPermissions) ? 30 : 50,
-    }),
-    columnHelper.display({
-      id: "detail-link",
-      cell: (props) => {
-        return (
-          <Link
-            to={`/${categoryToLink[category]}/member-management/details/${props.row.original.id}?storeId=${storeId}`}
-            className="flex justify-center"
-          >
-            <img src={fileIcon} className="" />
-          </Link>
-        );
-      },
-      size: showSendPoints(category, userPermissions) ? 10 : 20,
-    }),
-  ] as ColumnDef<Member>[];
+// export const mobileColumns = (
+//   storeId: string,
+//   category: "ground" | "simulator" | "golf",
+//   userPermissions: string[],
+// ) =>
+//   [
+//     ...(showSendPoints(category, userPermissions)
+//       ? [
+//           columnHelper.display({
+//             id: "send_points",
+//             header: "",
+//             cell: (props) => {
+//               const appUserId = props.row.original.id;
+//               return <AddCoinModal appUserId={appUserId} storeId={storeId} />;
+//             },
+//             size: 40,
+//           }),
+//         ]
+//       : []),
+//     columnHelper.accessor("account", {
+//       header: ({ column }) => {
+//         return (
+//           <button
+//             className="flex items-center gap-1"
+//             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+//           >
+//             帳號
+//             <ArrowUpDown className="w-4 h-4 ml-2" />
+//           </button>
+//         );
+//       },
+//       cell: (props) => props.getValue(),
+//       size: showSendPoints(category, userPermissions) ? 20 : 30,
+//     }),
+//     columnHelper.accessor("chName", {
+//       header: "姓名",
+//       cell: (props) => (
+//         <span className="whitespace-nowrap">{props.getValue()}</span>
+//       ),
+//       size: showSendPoints(category, userPermissions) ? 30 : 50,
+//     }),
+//     columnHelper.display({
+//       id: "detail-link",
+//       cell: (props) => {
+//         return (
+//           <Link
+//             to={`/${categoryToLink[category]}/member-management/details/${props.row.original.id}?storeId=${storeId}`}
+//             className="flex justify-center"
+//           >
+//             <img src={fileIcon} className="" />
+//           </Link>
+//         );
+//       },
+//       size: showSendPoints(category, userPermissions) ? 10 : 20,
+//     }),
+//   ] as ColumnDef<Member>[];

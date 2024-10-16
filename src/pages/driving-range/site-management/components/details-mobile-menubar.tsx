@@ -57,7 +57,6 @@ export function DetailsMobileMenubar({
             <Modal
               onModalClose={() => {
                 setValue("");
-                console.log("??");
               }}
               dialogTriggerChildren={({ setOpen }) => (
                 <MenubarItem

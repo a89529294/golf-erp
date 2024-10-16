@@ -76,8 +76,8 @@ export function ModalDataTable<TData extends { id: string }, TValue>({
   });
 
   return (
-    <div className="w-full border border-line-gray sm:border-none">
-      <Table className="relative isolate sm:table-fixed">
+    <div className="relative w-full flex-1 overflow-auto border border-line-gray sm:h-full ">
+      <Table outerDivClassName="absolute inset-0" className="relative isolate ">
         <TableHeader className="relative z-10">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id} className="">
@@ -86,7 +86,7 @@ export function ModalDataTable<TData extends { id: string }, TValue>({
                   <TableHead
                     key={header.id}
                     // height of header 80 plus gap 10
-                    className="sticky top-[110px] bg-light-gray hover:bg-light-gray sm:top-0"
+                    className="sticky top-0 bg-light-gray hover:bg-light-gray sm:top-0 sm:whitespace-nowrap"
                     style={{
                       width:
                         header.getSize() !== 150 ? header.getSize() : "auto",

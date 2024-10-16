@@ -15,7 +15,7 @@ export const button = tv({
     },
     size: {
       wide: "px-8",
-      short: "h-8",
+      short: "h-8 sm:px-2",
     },
   },
 });

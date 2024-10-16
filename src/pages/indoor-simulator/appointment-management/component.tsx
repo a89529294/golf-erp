@@ -1,29 +1,19 @@
 import { QueryParamSelect } from "@/components/query-param-select";
+import { useAuth } from "@/hooks/use-auth";
 import { MainLayout } from "@/layouts/main-layout";
+import { cn } from "@/lib/utils";
+import { columns } from "@/pages/indoor-simulator/appointment-management/data-table/columns";
+import { DataTable } from "@/pages/indoor-simulator/appointment-management/data-table/table";
 import { indoorSimulatorStoresQuery } from "@/pages/indoor-simulator/site-management/loader";
 import { useQuery } from "@tanstack/react-query";
+import { motion } from "framer-motion";
+import { useState } from "react";
 import { useLoaderData, useSearchParams } from "react-router-dom";
 import { appointmentsQuery, loader } from "./loader";
-import { DataTable } from "@/pages/indoor-simulator/appointment-management/data-table/table";
-import { columns } from "@/pages/indoor-simulator/appointment-management/data-table/columns";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { useAuth } from "@/hooks/use-auth";
-import { useState } from "react";
-import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectValue,
-} from "@/components/ui/select";
-import { SelectTrigger } from "@radix-ui/react-select";
-import { useIsMobile } from "@/hooks/use-is-mobile";
 
 export function Component() {
-  const isMobile = useIsMobile();
   const [site, setSite] = useState("all");
-  const [nav, setNav] = useState<HTMLElement | null>(null);
+
   const { user } = useAuth();
   const [searchParams] = useSearchParams();
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
@@ -90,17 +80,17 @@ export function Component() {
         return (
           <div className="flex w-full flex-col border border-line-gray bg-light-gray p-1">
             <nav
-              ref={(e) => {
-                setNav(e);
-              }}
+            // ref={(e) => {
+            //   setNav(e);
+            // }}
             >
-              <ul className="isolate flex items-center gap-3 py-2 pl-5 sm:hidden">
+              <ul className="isolate flex items-center gap-3 overflow-x-auto py-2 pl-5">
                 {siteOptions.map(({ id, name }) => (
                   <li key={id}>
                     <button
                       onClick={() => setSite(id)}
                       className={cn(
-                        "relative grid h-9 place-items-center rounded-full border border-line-gray bg-white px-5",
+                        "relative grid h-9 place-items-center whitespace-nowrap rounded-full border border-line-gray bg-white px-5",
                       )}
                     >
                       {site === id && (
@@ -124,9 +114,9 @@ export function Component() {
                   </li>
                 ))}
               </ul>
-              <div className="hidden pb-1 sm:block">
+              {/* <div className="hidden pb-1 sm:block">
                 <Select value={site ?? ""} onValueChange={setSite}>
-                  <SelectTrigger className="grid h-9 place-items-center rounded-full border border-line-gray bg-secondary-dark px-5 text-white">
+                  <SelectTrigger className="grid px-5 text-white border rounded-full h-9 place-items-center border-line-gray bg-secondary-dark">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -139,26 +129,10 @@ export function Component() {
                     })}
                   </SelectContent>
                 </Select>
-              </div>
+              </div> */}
             </nav>
 
-            {isMobile ? (
-              <ScrollArea
-                className=""
-                style={{
-                  height: nav ? height - nav?.clientHeight : 0,
-                }}
-              >
-                <DataTable
-                  // columns={mobileColumns}
-                  columns={columns}
-                  data={filteredData}
-                />
-                <ScrollBar orientation="horizontal" />
-              </ScrollArea>
-            ) : (
-              <DataTable columns={columns} data={filteredData} />
-            )}
+            <DataTable columns={columns} data={filteredData} />
           </div>
         );
       }}

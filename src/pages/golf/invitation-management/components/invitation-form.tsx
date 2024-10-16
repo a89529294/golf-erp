@@ -62,12 +62,12 @@ export function InvitationForm({
         <form
           id="appointment-form"
           onSubmit={form.handleSubmit(onSubmit, (e) => console.log(e))}
-          className="flex w-[600px] flex-1 flex-col self-center border border-line-gray"
+          className="flex w-[600px] flex-1 flex-col self-center border border-line-gray sm:w-80"
         >
           <header className="bg-light-gray py-2.5 text-center text-black">
             邀約資料
           </header>
-          <div className="flex-1 space-y-7 px-12 py-10">
+          <div className="flex-1 space-y-7 px-12 py-10 sm:px-6 sm:py-5">
             <TextFormField name="title" label="標題" disabled={disabled} />
             <TextFormField name="introduce" label="介紹" disabled={disabled} />
             <AppointmentDatePicker disabled={disabled} />
@@ -79,7 +79,7 @@ export function InvitationForm({
         </form>
         <div
           className={cn(
-            "w-[600px] self-center border border-t-0 border-line-gray ",
+            "w-[600px] self-center border border-t-0 border-line-gray sm:w-80 ",
           )}
         >
           <header className="relative bg-light-gray py-2.5 text-center text-black">
@@ -93,14 +93,14 @@ export function InvitationForm({
 
           <div
             className={cn(
-              "space-y-2 px-12 py-10",
+              "space-y-2 px-12 py-10 sm:px-6 sm:py-5",
               headcountInvalid && "opacity-50",
             )}
           >
-            <div className="grid grid-cols-[1fr_415px] items-baseline">
+            <div className="grid grid-cols-[1fr_415px] items-baseline sm:flex sm:flex-col sm:items-stretch sm:gap-1">
               <label>主辦人</label>
               <div className="flex items-center gap-2">
-                <div className="grid size-10 place-items-center rounded-full border border-line-gray bg-light-gray">
+                <div className="grid size-10 place-items-center rounded-full border border-line-gray bg-light-gray ">
                   <img className="" src={pfp} />
                 </div>
                 <AppUserSelectModal
@@ -139,7 +139,11 @@ export function InvitationForm({
               </div>
             </div>
 
-            <div className={cn(" grid grid-cols-[1fr_415px] items-baseline ")}>
+            <div
+              className={cn(
+                " grid grid-cols-[1fr_415px] items-baseline sm:flex sm:flex-col sm:items-stretch sm:gap-1",
+              )}
+            >
               <label>參與人員</label>
               <ul className="space-y-2">
                 {[
@@ -153,7 +157,7 @@ export function InvitationForm({
                       </div>
                       <div
                         className={cn(
-                          "flex flex-1 border-b border-secondary-dark pb-1 ",
+                          "flex flex-1 border-b border-secondary-dark pb-1 pr-2",
                           disabled && "opacity-50",
                         )}
                       >

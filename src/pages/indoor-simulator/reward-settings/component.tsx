@@ -32,6 +32,7 @@ import { Spinner } from "@/components/ui/spinner.tsx";
 import { SearchInput } from "@/components/search-input.tsx";
 import useMediaQuery from "@/hooks/use-media-query.ts";
 import { GenericDataTable } from "@/components/generic-data-table.tsx";
+import { MobileMenubar } from "@/pages/indoor-simulator/reward-settings/components/mobile-menubar";
 
 const category = "simulator";
 const navigateTo = "/indoor-simulator/reward-settings";
@@ -83,7 +84,7 @@ function genColumns(isSelecting: boolean) {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             編號
-            <ArrowUpDown className="w-4 h-4 ml-2" />
+            <ArrowUpDown className="ml-2 h-4 w-4" />
           </button>
         );
       },
@@ -98,7 +99,7 @@ function genColumns(isSelecting: boolean) {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             標題
-            <ArrowUpDown className="w-4 h-4 ml-2" />
+            <ArrowUpDown className="ml-2 h-4 w-4" />
           </button>
         );
       },
@@ -114,7 +115,7 @@ function genColumns(isSelecting: boolean) {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             使用期限
-            <ArrowUpDown className="w-4 h-4 ml-2" />
+            <ArrowUpDown className="ml-2 h-4 w-4" />
           </button>
         );
       },
@@ -131,7 +132,7 @@ function genColumns(isSelecting: boolean) {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             金額
-            <ArrowUpDown className="w-4 h-4 ml-2" />
+            <ArrowUpDown className="ml-2 h-4 w-4" />
           </button>
         );
       },
@@ -306,47 +307,60 @@ export function Component() {
     <MainLayout
       headerChildren={
         <>
+          {isMobile ? (
+            <MobileMenubar
+              isEditing={isEditing}
+              isPending={isPending}
+              onBackWithoutSave={cancelEdit}
+              onPatchForm={onSubmit}
+              setFormState={setIsEditing}
+            />
+          ) : (
+            <>
+              {isEditing ? (
+                <>
+                  <IconWarningButton
+                    icon="redX"
+                    type="button"
+                    onClick={cancelEdit}
+                    form="discount-form"
+                    disabled={isPending}
+                  >
+                    取消編輯
+                  </IconWarningButton>
+
+                  <IconButton
+                    icon="save"
+                    type="submit"
+                    form="discount-form"
+                    disabled={isPending}
+                  >
+                    儲存
+                  </IconButton>
+                </>
+              ) : (
+                <IconButton
+                  icon="pencil"
+                  type="button"
+                  form="discount-form"
+                  onClick={startEdit}
+                  disabled={isPending}
+                >
+                  編輯
+                </IconButton>
+              )}
+            </>
+          )}
+
           <StoreSelect
             category={category}
             initialData={initialData}
             navigateTo={navigateTo}
           />
-          {isEditing ? (
-            <>
-              <IconWarningButton
-                icon="redX"
-                type="button"
-                onClick={cancelEdit}
-                form="discount-form"
-                disabled={isPending}
-              >
-                取消編輯
-              </IconWarningButton>
-
-              <IconButton
-                icon="save"
-                type="submit"
-                form="discount-form"
-                disabled={isPending}
-              >
-                儲存
-              </IconButton>
-            </>
-          ) : (
-            <IconButton
-              icon="pencil"
-              type="button"
-              form="discount-form"
-              onClick={startEdit}
-              disabled={isPending}
-            >
-              編輯
-            </IconButton>
-          )}
         </>
       }
     >
-      <div className="flex flex-col w-full gap-10 p-1 border border-line-gray bg-light-gray">
+      <div className="flex w-full flex-col gap-10 border border-line-gray bg-light-gray p-1 ">
         <h1 className="bg-mid-gray py-2.5 text-center text-black">
           累積點數設定
         </h1>
@@ -354,10 +368,10 @@ export function Component() {
           <form
             id="discount-form"
             onSubmit={form.handleSubmit(onSubmit)}
-            className={`${isMobile ? "w-full" : "w-2/3"} space-y-10 self-center px-20 sm:px-4`}
+            className={`${isMobile ? "w-full" : "w-2/3"} flex flex-1 flex-col gap-10 self-center px-20 sm:px-4`}
           >
-            <section className="px-12 py-6 space-y-6 bg-white border border-line-gray sm:px-2 sm:py-4">
-              <div className="flex flex-col w-full gap-10 p-4 bg-white">
+            <section className="space-y-6 border border-line-gray bg-white px-12 py-6 sm:px-2 sm:py-4">
+              <div className="flex w-full flex-col gap-10 bg-white p-4">
                 <div className="flex flex-col gap-4">
                   <FormField
                     control={form.control}
@@ -369,7 +383,7 @@ export function Component() {
                         <FormControl>
                           <UnderscoredInput
                             placeholder={`請輸入金額`}
-                            className="w-1/5 p-0 pb-1 h-7"
+                            className="h-7 w-1/5 p-0 pb-1"
                             disabled={!isEditing}
                             {...field}
                             type="number"
@@ -389,19 +403,21 @@ export function Component() {
               </div>
             </section>
 
-            <section>
-              <header className="flex items-center gap-4 py-2.5 pl-5 ">
-                <span className="font-semibold">選擇可兌換的優惠券</span>
-                <SearchInput
-                  className="sm:hidden"
-                  value={globalFilter}
-                  setValue={setGlobalFilter}
-                />
-              </header>
+            <section className="relative flex-1">
+              <div className="absolute inset-0 flex flex-col">
+                <header className="flex items-center gap-4 py-2.5 pl-5 ">
+                  <span className="whitespace-nowrap font-semibold">
+                    選擇可兌換的優惠券
+                  </span>
+                  <SearchInput
+                    // className="sm:hidden"
+                    value={globalFilter}
+                    setValue={setGlobalFilter}
+                  />
+                </header>
 
-              <div className="text-center bg-white border-y border-line-gray">
-                <div className="flex flex-col w-full gap-10 p-4 bg-white">
-                  <ScrollArea className="h-full ">
+                <ScrollArea className="flex-1 border border-t-0 border-line-gray bg-white text-center">
+                  <div className="flex w-full flex-col gap-10 bg-white ">
                     {couponsData && (
                       <div className="before:fixed before:h-12 before:w-1 before:bg-light-gray">
                         {isLoading ? (
@@ -409,7 +425,7 @@ export function Component() {
                         ) : (
                           <GenericDataTable
                             columns={columns}
-                            data={couponsData}
+                            data={Array(3).fill(couponsData).flat()}
                             rowSelection={rowSelection}
                             setRowSelection={setRowSelection}
                             globalFilter={globalFilter}
@@ -418,12 +434,9 @@ export function Component() {
                         )}
                       </div>
                     )}
-                    <ScrollBar
-                      className="hidden sm:block"
-                      orientation="horizontal"
-                    />
-                  </ScrollArea>
-                </div>
+                  </div>
+                  <ScrollBar orientation="horizontal" />
+                </ScrollArea>
               </div>
             </section>
           </form>

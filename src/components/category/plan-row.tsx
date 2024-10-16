@@ -75,8 +75,8 @@ export function PlanRow({
   return (
     <li
       className={cn(
-        "flex items-center gap-4 border-b-[1.5px] border-b-transparent pb-4 pl-8 pr-5 pt-5 text-secondary-dark sm:px-2",
-        !data.saved && "border-b-orange bg-hover-orange",
+        "flex items-center gap-4 border-b-[1.5px] border-b-transparent pb-4 pl-8 pr-5 pt-5 text-secondary-dark sm:gap-2 sm:px-2",
+        !data.saved && "border-b-orange bg-hover-orange sm:bg-transparent",
         disabled && "opacity-50",
       )}
       ref={myRef}
@@ -101,7 +101,7 @@ export function PlanRow({
 
       <Input
         className={cn(
-          "h-7 w-32 rounded-none border-0 border-b border-b-secondary-dark bg-transparent font-mono sm:w-28 ",
+          "h-7 w-32 rounded-none border-0 border-b border-b-secondary-dark bg-transparent font-mono sm:w-24 ",
           errorFields.hours && "border-red-500",
         )}
         onChange={(e) => {
@@ -118,10 +118,10 @@ export function PlanRow({
         type="number"
       />
 
-      <div className="relative">
+      <div className="relative ">
         <Input
           className={cn(
-            "h-7 w-32 rounded-none border-0 border-b border-b-secondary-dark bg-transparent font-mono *:w-full sm:w-20",
+            "h-7 w-32 rounded-none border-0 border-b border-b-secondary-dark bg-transparent font-mono *:w-full ",
             errorFields.price && "border-red-500",
           )}
           onChange={(e) => {
@@ -137,18 +137,18 @@ export function PlanRow({
           placeholder="費用"
           type="number"
         />
-        <div className="absolute right-0 -translate-y-1/2 top-1/2">元</div>
+        <div className="absolute right-0 top-1/2 -translate-y-1/2">元</div>
       </div>
 
-      <div className="flex gap-4 ml-auto">
-        <span className="text-red-500">{errorMessage}</span>
+      <div className="ml-auto flex shrink-0 gap-4 sm:w-10 sm:gap-2">
+        <span className="text-red-500 ">{errorMessage}</span>
         {data.saved ? (
           <>
             <button
               type="button"
               onClick={onRemove}
               disabled={disabled}
-              className={cn(disabled && "cursor-not-allowed")}
+              className={cn("flex-1", disabled && "cursor-not-allowed")}
             >
               <img src={trashCanIcon} />
             </button>
@@ -158,7 +158,7 @@ export function PlanRow({
             {/* <button type="button" onClick={onSaveTimeRange}>
               <img src={greenFileIcon} />
             </button> */}
-            <button type="button" onClick={onRemove}>
+            <button type="button" onClick={onRemove} className="w-full">
               <img src={redXIcon} />
             </button>
           </>

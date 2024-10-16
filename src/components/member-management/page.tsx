@@ -1,7 +1,6 @@
 import { SearchInput } from "@/components/search-input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Spinner } from "@/components/ui/spinner";
-import useMediaQuery from "@/hooks/use-media-query";
 import { MainLayout } from "@/layouts/main-layout";
 import { cn } from "@/lib/utils";
 
@@ -10,11 +9,10 @@ import { Scrollbar } from "@radix-ui/react-scroll-area";
 import { useQuery } from "@tanstack/react-query";
 import { useRef, useState } from "react";
 import { useLoaderData, useSearchParams } from "react-router-dom";
-import { columns, mobileColumns } from "./data-table/columns";
+import { columns } from "./data-table/columns";
 import { DataTable } from "./data-table/data-table";
 import { StoreSelect } from "@/components/category/store-select";
 import { useAuth } from "@/hooks/use-auth";
-import { useWindowSizeChange } from "@/hooks/use-window-size-change";
 
 const navigateMap = {
   ground: "/driving-range/member-management",
@@ -35,19 +33,18 @@ export function MemberManagementPage({
   >;
 }) {
   const headerRowRef = useRef<HTMLTableRowElement>(null);
-  const [headerRowHeight, setHeaderRowHeight] = useState(48);
   const [searchParams] = useSearchParams();
   const storeId = searchParams.get("storeId");
-  const isMobile = useMediaQuery("(max-width: 639px)");
   const [rowSelection, setRowSelection] = useState({});
   const [globalFilter, setGlobalFilter] = useState("");
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
   const auth = useAuth();
-  useWindowSizeChange(() => {
-    if (headerRowRef.current)
-      setHeaderRowHeight(headerRowRef.current.clientHeight);
-  });
-  const { data: members, isLoading: isLoadingMembers } = useQuery({
+
+  const {
+    data: members,
+    isLoading: isLoadingMembers,
+    isError: isErrorMembers,
+  } = useQuery({
     queryKey: [category, "members", storeId],
     queryFn: async () => {
       const response = await privateFetch(
@@ -57,6 +54,7 @@ export function MemberManagementPage({
       return data.data;
     },
     enabled: !!storeId,
+    throwOnError: false,
   });
 
   return (
@@ -69,17 +67,17 @@ export function MemberManagementPage({
             navigateTo={navigateMap[category]}
           />
           <SearchInput
-            className="sm:hidden"
+            // className="sm:hidden"
             value={globalFilter}
             setValue={setGlobalFilter}
           />
         </>
       }
     >
-      {isMobile ? (
+      {/* {isMobile ? (
         ({ height }) => (
           <ScrollArea style={{ height }} className="w-full">
-            <div className="w-full border border-line-gray bg-light-gray p-1 pt-0">
+            <div className="w-full p-1 pt-0 border border-line-gray bg-light-gray">
               {members && (
                 <DataTable
                   columns={mobileColumns(
@@ -108,7 +106,7 @@ export function MemberManagementPage({
           {isLoadingMembers ? (
             <Spinner />
           ) : members ? (
-            <div className="w-full border border-t-0 border-line-gray bg-light-gray pt-0">
+            <div className="w-full pt-0 border border-t-0 border-line-gray bg-light-gray">
               <div className="sticky top-[90px] z-10 w-full border-b border-line-gray" />
               <div
                 className="sticky z-10 w-full border-b border-line-gray"
@@ -132,7 +130,42 @@ export function MemberManagementPage({
             </div>
           ) : null}
         </div>
-      )}
+      )} */}
+      <div className="relative flex-1">
+        <div
+          className={cn(
+            "absolute inset-0 bottom-2.5",
+            isLoadingMembers && "grid place-items-center",
+          )}
+        >
+          {isLoadingMembers ? (
+            <Spinner />
+          ) : isErrorMembers ? (
+            <div>讀取會員資料出現錯誤</div>
+          ) : (
+            <div className="h-full w-full border border-line-gray bg-light-gray pt-0">
+              <ScrollArea className="h-full">
+                <DataTable
+                  columns={columns(
+                    storeId ?? "",
+                    category,
+                    auth.user?.permissions ?? [],
+                  )}
+                  data={Array(10)
+                    .fill(members)
+                    .flatMap((v) => v)}
+                  rowSelection={rowSelection}
+                  setRowSelection={setRowSelection}
+                  globalFilter={globalFilter}
+                  setGlobalFilter={setGlobalFilter}
+                  headerRowRef={headerRowRef}
+                />
+                <Scrollbar orientation="horizontal" />
+              </ScrollArea>
+            </div>
+          )}
+        </div>
+      </div>
     </MainLayout>
   );
 }

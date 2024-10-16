@@ -170,7 +170,7 @@ export function StoreForm({
                 </FormItem>
               )}
             />
-            <Label className="flex items-center gap-2">
+            <Label className="flex items-center gap-2 sm:mt-2">
               24小時營業
               <Checkbox
                 className="disabled:opacity-25"
@@ -326,14 +326,15 @@ export function StoreForm({
             name={"linepayChannelSecret"}
             label="Secret"
           />
-          <Label className="flex items-center">
+          <Label className="flex items-center sm:items-baseline sm:justify-between">
             <div className="space-y-1">
-              <div className="w-28">電子發票</div>
-              <div className="w-28">多加三個</div>
+              <div className="w-28 sm:hidden">電子發票</div>
+              <div className="w-28 sm:hidden">多加三個</div>
+              <div className="hidden sm:block">電子發票多加三個</div>
             </div>
 
             <Checkbox
-              className="disabled:opacity-25"
+              className="disabled:opacity-25 "
               checked={eInvoiceChecked}
               onCheckedChange={(s) => {
                 setEInvoiceChecked(s);

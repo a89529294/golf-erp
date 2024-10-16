@@ -58,32 +58,32 @@ export function NewCouponModal({
           });
         }}
       >
-        <div className="flex flex-col w-full">
-          <header className="py-2 text-center bg-light-gray">新增優惠券</header>
+        <div className="flex w-full flex-col">
+          <header className="bg-light-gray py-2 text-center">新增優惠券</header>
 
-          <div className="flex items-center justify-center flex-1 pb-10">
-            <div className="flex w-[400px] flex-col gap-6">
-              <Label className="flex items-center gap-5 mt-10">
-                <h2 className="w-16">標題</h2>
+          <div className="flex flex-1 items-center justify-center pb-10 ">
+            <div className="flex w-[400px] flex-col gap-6 sm:w-72 sm:gap-3 sm:px-2">
+              <Label className="mt-10 flex items-center gap-5">
+                <h2 className="w-20 shrink-0">標題</h2>
                 <UnderscoredInput
-                  className="w-80"
+                  className="w-80 sm:w-auto sm:min-w-0 sm:flex-1"
                   name={"name"}
                   disabled={false}
                   required
                 />
               </Label>
               <Label className="flex items-center gap-5 ">
-                <h2 className="w-16">編號</h2>
+                <h2 className="w-20 shrink-0">編號</h2>
                 <UnderscoredInput
-                  className="w-80"
+                  className="w-80 sm:w-auto sm:min-w-0 sm:flex-1"
                   name={"number"}
                   disabled={false}
                   required
                 />
               </Label>
               <Label className="flex items-center gap-5 ">
-                <h2 className="w-16 ">使用期限</h2>
-                <div className="flex flex-row items-baseline flex-1">
+                <h2 className="w-20 shrink-0">使用期限</h2>
+                <div className="flex flex-1 flex-row items-baseline sm:w-auto sm:min-w-0 sm:flex-1">
                   <UnderscoredInput
                     className="w-full"
                     name={"expiration"}
@@ -95,9 +95,9 @@ export function NewCouponModal({
                 </div>
               </Label>
               <Label className="flex items-center gap-5 ">
-                <h2 className="w-16">金額</h2>
+                <h2 className="w-20 shrink-0">金額</h2>
                 <UnderscoredInput
-                  className="w-80"
+                  className="w-80 sm:w-auto sm:min-w-0 sm:flex-1"
                   name={"amount"}
                   disabled={false}
                   type="number"
@@ -105,8 +105,8 @@ export function NewCouponModal({
                 />
               </Label>
               <Label className="flex items-center gap-5">
-                <h2 className="w-16">有效</h2>
-                <div className="h-4 w-80">
+                <h2 className="w-20 shrink-0">有效</h2>
+                <div className="h-4 w-80 sm:w-auto sm:min-w-0 sm:flex-1">
                   <Checkbox name="isActive" />
                 </div>
               </Label>

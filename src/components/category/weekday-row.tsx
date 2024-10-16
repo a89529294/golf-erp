@@ -121,7 +121,7 @@ export function WeekdayRow({
         <header className="flex gap-1.5">
           <LabeledUnderscoredInput
             label="標題"
-            className="grow-[400] basis-0 bg-white p-4 pb-2.5"
+            className="grow-[400] basis-0 whitespace-nowrap bg-white p-4 pb-2.5"
             inputProps={{
               value: title,
               onChange: (e) => setTitle(e.target.value),
@@ -129,7 +129,12 @@ export function WeekdayRow({
             }}
           />
           <div className="flex grow-[280] basis-0 items-center gap-1.5 bg-white p-4 pb-2.5">
-            <label htmlFor={`start-time-${data.id}`}>開放時間</label>
+            <label
+              className="whitespace-nowrap"
+              htmlFor={`start-time-${data.id}`}
+            >
+              開放時間
+            </label>
             <UnderscoredInput
               className="flex-1 basis-0 px-0 text-center"
               id={`start-time-${data.id}`}
@@ -166,7 +171,7 @@ export function WeekdayRow({
           </div>
           <LabeledUnderscoredInput
             label="開放組數"
-            className="flex grow-[160] basis-0 bg-white p-4 pb-2.5"
+            className="flex grow-[160] basis-0 whitespace-nowrap bg-white p-4 pb-2.5"
             inputProps={{
               ref: groupRef,
               value: numberOfGroups,

@@ -1,25 +1,23 @@
-import { loader } from ".";
-import { useLoaderData } from "react-router-dom";
-import { useMemo, useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { MainLayout } from "@/layouts/main-layout.tsx";
-import useMediaQuery from "@/hooks/use-media-query.ts";
-import { SearchInput } from "@/components/search-input.tsx";
-import { ScrollArea } from "@/components/ui/scroll-area.tsx";
-import { Scrollbar } from "@radix-ui/react-scroll-area";
-import { cn } from "@/lib/utils.ts";
-import { Spinner } from "@/components/ui/spinner.tsx";
-import { privateFetch } from "@/utils/utils.ts";
 import { genColumns } from "@/components/equipment-management/data-table/columns";
-import { IconButton } from "@/components/ui/button.tsx";
 import { DataTable } from "@/components/equipment-management/data-table/data-table.tsx";
-import { toast } from "sonner";
 import { EquipmentDetailModal } from "@/components/equipment-management/equipment-detail-modal.tsx";
+import { SearchInput } from "@/components/search-input.tsx";
+import { IconButton } from "@/components/ui/button.tsx";
+import { ScrollArea } from "@/components/ui/scroll-area.tsx";
+// import useMediaQuery from "@/hooks/use-media-query.ts";
+import { MainLayout } from "@/layouts/main-layout.tsx";
 import { equipmentsQuery } from "@/pages/equipment-management/loader.ts";
+import { privateFetch } from "@/utils/utils.ts";
+import { Scrollbar } from "@radix-ui/react-scroll-area";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMemo, useState } from "react";
+import { useLoaderData } from "react-router-dom";
+import { toast } from "sonner";
+import { loader } from ".";
 
 export function Component() {
-  const isMobile = useMediaQuery("(max-width: 639px)");
-  const headerRowHeight = 48;
+  // const isMobile = useMediaQuery("(max-width: 639px)");
+  // const headerRowHeight = 48;
 
   // const [isModalOpen, setIsModalOpen] = useState(false);
   const [rowSelection, setRowSelection] = useState({});
@@ -28,7 +26,7 @@ export function Component() {
   const queryClient = useQueryClient();
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
 
-  const { data: equipments, isLoading } = useQuery({
+  const { data: equipments } = useQuery({
     ...equipmentsQuery,
     initialData,
   });
@@ -74,49 +72,19 @@ export function Component() {
         </>
       }
     >
-      {isMobile ? (
-        ({ height }) => (
-          <ScrollArea style={{ height }} className="w-full">
-            <div className="w-full border border-line-gray bg-light-gray p-1 pt-0">
-              {equipments && (
-                <DataTable
-                  columns={columns}
-                  data={equipments}
-                  rowSelection={rowSelection}
-                  setRowSelection={setRowSelection}
-                  globalFilter={globalFilter}
-                  setGlobalFilter={setGlobalFilter}
-                />
-              )}
-            </div>
-            <Scrollbar orientation="horizontal" />
-          </ScrollArea>
-        )
-      ) : (
-        <div className={cn("w-full ", isLoading && "grid place-items-center")}>
-          {isLoading ? (
-            <Spinner />
-          ) : equipments ? (
-            <div className="w-full border border-t-0 border-line-gray bg-light-gray pt-0">
-              <div className="sticky top-[90px] z-10 w-full border-b border-line-gray" />
-              <div
-                className="sticky z-10 w-full border-b border-line-gray"
-                style={{
-                  top: `calc(90px + ${headerRowHeight}px)`,
-                }}
-              />
-              <DataTable
-                columns={columns}
-                data={equipments}
-                rowSelection={rowSelection}
-                setRowSelection={setRowSelection}
-                globalFilter={globalFilter}
-                setGlobalFilter={setGlobalFilter}
-              />
-            </div>
-          ) : null}
-        </div>
-      )}
+      <div className="absolute inset-0 mb-2.5 border border-t-0 border-line-gray">
+        <ScrollArea className="h-full w-full">
+          <DataTable
+            columns={columns}
+            data={[...equipments, ...equipments, ...equipments]}
+            rowSelection={rowSelection}
+            setRowSelection={setRowSelection}
+            globalFilter={globalFilter}
+            setGlobalFilter={setGlobalFilter}
+          />
+          <Scrollbar orientation="horizontal" />
+        </ScrollArea>
+      </div>
     </MainLayout>
   );
 }

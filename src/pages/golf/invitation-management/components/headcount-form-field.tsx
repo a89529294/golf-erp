@@ -17,7 +17,11 @@ export function HeadcountFormField({ disabled }: { disabled?: boolean }) {
       control={form.control}
       name="headcount"
       render={({ field }) => (
-        <FormItem className={cn("grid grid-cols-[1fr_415px] items-baseline")}>
+        <FormItem
+          className={cn(
+            "grid grid-cols-[1fr_415px] items-baseline sm:grid-cols-[80px_1fr]",
+          )}
+        >
           <FormLabel>人數</FormLabel>
           <FormControl>
             <UnderscoredInput

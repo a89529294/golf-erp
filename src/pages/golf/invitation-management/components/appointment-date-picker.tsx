@@ -25,7 +25,7 @@ export function AppointmentDatePicker({ disabled }: { disabled?: boolean }) {
       control={form.control}
       name="date"
       render={({ field }) => (
-        <FormItem className="grid grid-cols-[1fr_415px] items-baseline">
+        <FormItem className="grid grid-cols-[1fr_415px] items-baseline sm:grid-cols-[80px_1fr]">
           <FormLabel>日期</FormLabel>
           <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
