@@ -75,6 +75,7 @@ export function StoreForm({
       <form
         id="store-form"
         onSubmit={form.handleSubmit(onSubmit, (error, event) => {
+          console.log(form.getValues("chargeImages"));
           console.log(error, event);
         })}
         className="flex flex-col items-center pt-12"
