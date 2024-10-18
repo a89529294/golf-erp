@@ -52,7 +52,7 @@ export function DesktopMenubar({
             <img src={backIcon} />
             返回
           </Link>
-          {/* {data.isActive ? (
+          {data.isActive && allowEdit && (
             <IconWarningButton
               disabled={isUpdatingMemberStatus}
               onClick={() => toggleMemberStatus()}
@@ -60,7 +60,8 @@ export function DesktopMenubar({
             >
               停權
             </IconWarningButton>
-          ) : (
+          )}
+          {!data.isActive && allowEdit && (
             <IconButton
               className="bg-secondary-purple/10 text-secondary-purple outline-secondary-purple"
               icon="check"
@@ -69,7 +70,7 @@ export function DesktopMenubar({
             >
               恢復
             </IconButton>
-          )} */}
+          )}
           {allowEdit && (
             <IconButton
               icon="pencil"
