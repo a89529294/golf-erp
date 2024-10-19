@@ -330,8 +330,8 @@ export function StoreForm({
           <Label className="flex items-center sm:items-baseline sm:justify-between">
             <div className="space-y-1">
               <div className="w-28 sm:hidden">電子發票</div>
-              <div className="w-28 sm:hidden">多加三個</div>
-              <div className="hidden sm:block">電子發票多加三個</div>
+              <div className="w-28 sm:hidden">三個</div>
+              <div className="hidden sm:block">電子發票三個</div>
             </div>
 
             <Checkbox
