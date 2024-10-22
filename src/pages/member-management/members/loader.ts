@@ -36,7 +36,13 @@ export const memberSchema = z.object({
   appChargeHistories: z.array(
     z.object({
       id: z.string(),
-      createdAt: z.coerce.date().transform((v) => fromDateToDateTimeString(v)),
+      createdAt: z.coerce
+        .date()
+        .transform((v) => {
+          v.setHours(v.getHours() - 8);
+          return v;
+        })
+        .transform((v) => fromDateToDateTimeString(v)),
       amount: z.number(),
       store: z.object({
         id: z.string(),
