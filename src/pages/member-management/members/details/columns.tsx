@@ -20,7 +20,7 @@ export const topUpHistorycolumns = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         廠商
-        <ArrowUpDown className="w-4 h-4 ml-2" />
+        <ArrowUpDown className="ml-2 h-4 w-4" />
       </button>
     ),
   }),
@@ -32,10 +32,13 @@ export const topUpHistorycolumns = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         付款完成日期
-        <ArrowUpDown className="w-4 h-4 ml-2" />
+        <ArrowUpDown className="ml-2 h-4 w-4" />
       </button>
     ),
-    cell: (props) => <div className="text-orange">{props.getValue()}</div>,
+    cell: (props) => {
+      console.log(props.getValue());
+      return <div className="text-orange">{props.getValue()}</div>;
+    },
   }),
   topUpHistoryColumnHelper.display({
     id: "payment-method",
@@ -45,7 +48,7 @@ export const topUpHistorycolumns = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         支付方式
-        <ArrowUpDown className="w-4 h-4 ml-2" />
+        <ArrowUpDown className="ml-2 h-4 w-4" />
       </button>
     ),
     cell: "信用卡",
@@ -57,7 +60,7 @@ export const topUpHistorycolumns = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         金額
-        <ArrowUpDown className="w-4 h-4 ml-2" />
+        <ArrowUpDown className="ml-2 h-4 w-4" />
       </button>
     ),
     id: "amount",
@@ -94,7 +97,7 @@ export const spendingHistoryColumns = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         包廂
-        <ArrowUpDown className="w-4 h-4 ml-2" />
+        <ArrowUpDown className="ml-2 h-4 w-4" />
       </button>
     ),
   }),
@@ -106,7 +109,7 @@ export const spendingHistoryColumns = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         開始時間
-        <ArrowUpDown className="w-4 h-4 ml-2" />
+        <ArrowUpDown className="ml-2 h-4 w-4" />
       </button>
     ),
     cell: (props) => <div className="text-orange">{props.getValue()}</div>,
@@ -119,7 +122,7 @@ export const spendingHistoryColumns = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         結束時間
-        <ArrowUpDown className="w-4 h-4 ml-2" />
+        <ArrowUpDown className="ml-2 h-4 w-4" />
       </button>
     ),
     cell: (props) => <div className="text-orange">{props.getValue()}</div>,
@@ -136,7 +139,7 @@ export const spendingHistoryColumns = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         金額
-        <ArrowUpDown className="w-4 h-4 ml-2" />
+        <ArrowUpDown className="ml-2 h-4 w-4" />
       </button>
     ),
     id: "amount",
@@ -154,7 +157,7 @@ export const spendingHistoryColumns = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         狀態
-        <ArrowUpDown className="w-4 h-4 ml-2" />
+        <ArrowUpDown className="ml-2 h-4 w-4" />
       </button>
     ),
     id: "status",
@@ -170,7 +173,7 @@ export const couponHistorycolumns = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         標題
-        <ArrowUpDown className="w-4 h-4 ml-2" />
+        <ArrowUpDown className="ml-2 h-4 w-4" />
       </button>
     ),
     size: 600,
@@ -183,7 +186,7 @@ export const couponHistorycolumns = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         使用期限
-        <ArrowUpDown className="w-4 h-4 ml-2" />
+        <ArrowUpDown className="ml-2 h-4 w-4" />
       </button>
     ),
     cell: (props) => <div>{props.getValue() + " 天"}</div>,
@@ -196,7 +199,7 @@ export const couponHistorycolumns = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         使用時間
-        <ArrowUpDown className="w-4 h-4 ml-2" />
+        <ArrowUpDown className="ml-2 h-4 w-4" />
       </button>
     ),
     cell: (props) => {
@@ -221,7 +224,7 @@ export const couponHistorycolumns = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         金額
-        <ArrowUpDown className="w-4 h-4 ml-2" />
+        <ArrowUpDown className="ml-2 h-4 w-4" />
       </button>
     ),
     id: "amount",
