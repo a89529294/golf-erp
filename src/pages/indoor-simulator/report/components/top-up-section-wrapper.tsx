@@ -1,6 +1,6 @@
 import { Order, ReportData } from "@/pages/indoor-simulator/report/loader";
 import { GenericDataTable } from "@/components/generic-data-table";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { CircularProgressWithDesc } from "@/pages/indoor-simulator/report/components/circular-progress-with-desc";
 import { TextButton } from "@/pages/indoor-simulator/report/components/text-button";
 import { reportTimeRange } from "@/types-and-schemas/report";
@@ -17,10 +17,8 @@ import { useSearchParams } from "react-router-dom";
 import { columns } from "./top-up-section-columns";
 
 export function TopUpSectionWrapper({ data }: { data: ReportData }) {
-  const ordersWithNulls = Object.values(data.total.orders).map((v) => {
-    if (!v.appChargeHistory) return null;
-
-    return v;
+  const ordersWithNulls = Object.values(data.detailed).flatMap((v) => {
+    return v.orders.filter((order) => order.appChargeHistory);
   });
 
   const orders = ordersWithNulls.filter((v): v is Order => !!v);
@@ -209,7 +207,7 @@ export function TopUpSection({
 
       <ScrollArea className={open ? "max-h-[390px]" : "max-h-0"}>
         <GenericDataTable columns={columns} data={tableData} />
-        <ScrollBar orientation="horizontal" />
+        {/* <ScrollBar orientation="horizontal" /> */}
       </ScrollArea>
     </section>
   );

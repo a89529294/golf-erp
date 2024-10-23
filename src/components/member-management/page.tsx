@@ -151,7 +151,7 @@ export function MemberManagementPage({
                     category,
                     auth.user?.permissions ?? [],
                   )}
-                  data={Array(10)
+                  data={Array(1)
                     .fill(members)
                     .flatMap((v) => v)}
                   rowSelection={rowSelection}

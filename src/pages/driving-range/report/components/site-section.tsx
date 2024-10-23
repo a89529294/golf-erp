@@ -1,5 +1,5 @@
 import { GenericDataTable } from "@/components/generic-data-table";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { CircularProgressWithDesc } from "@/pages/driving-range/report/components/circular-progress-with-desc";
 import { TextButton } from "@/pages/driving-range/report/components/text-button";
 import { ReportData } from "@/pages/driving-range/report/loader";
@@ -217,7 +217,7 @@ export function SiteSection({
 
       <ScrollArea className={open ? "max-h-[390px]" : "max-h-0"}>
         <GenericDataTable columns={columns} data={tableData} />
-        <ScrollBar orientation="horizontal" />
+        {/* <ScrollBar orientation="horizontal" /> */}
       </ScrollArea>
     </section>
   );

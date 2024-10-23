@@ -1,5 +1,5 @@
 import { GenericDataTable } from "@/components/generic-data-table";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { CircularProgressWithDesc } from "@/pages/indoor-simulator/report/components/circular-progress-with-desc";
 import { TextButton } from "@/pages/indoor-simulator/report/components/text-button";
 import { Order, ReportData } from "@/pages/indoor-simulator/report/loader";
@@ -92,7 +92,6 @@ export function SiteSection({
       );
     }
 
-    console.log(currentPeriodRevenue);
     const currentPeriodRevenueForAllSites = Object.values(data.detailed).reduce(
       (acc, v) => acc + v.totalAmount,
       0,
@@ -230,7 +229,7 @@ export function SiteSection({
 
       <ScrollArea className={open ? "max-h-[390px]" : "max-h-0"}>
         <GenericDataTable columns={columns} data={tableData} />
-        <ScrollBar orientation="horizontal" />
+        {/* <ScrollBar orientation="horizontal" /> */}
       </ScrollArea>
     </section>
   );
