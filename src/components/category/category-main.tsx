@@ -80,6 +80,9 @@ export function CategoryMain({
   const [globalFilter, setGlobalFilter] = useState("");
 
   const sites = stores.find((store) => store.id === storeId)?.sites;
+  sites?.sort((a, b) =>
+    a.name.toLowerCase().localeCompare(b.name.toLowerCase()),
+  );
 
   const onStoreValueChange = useCallback(
     (storeId: string, replace: boolean) => {
