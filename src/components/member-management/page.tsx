@@ -138,9 +138,9 @@ export function MemberManagementPage({
             isLoadingMembers && "grid place-items-center",
           )}
         >
-          {isLoadingMembers || !members ? (
+          {isLoadingMembers ? (
             <Spinner />
-          ) : isErrorMembers ? (
+          ) : isErrorMembers || !members ? (
             <div>讀取會員資料出現錯誤</div>
           ) : (
             <div className="h-full w-full border border-line-gray bg-light-gray pt-0">
