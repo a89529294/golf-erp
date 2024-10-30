@@ -29,7 +29,7 @@ export const genGolfStoresWithSitesQuery = (
     } else {
       if (!allowedStores[0]) return [];
       const promises = allowedStores.map((as) =>
-        privateFetch(`/store/${as.id}/golf?pageSize=999&populate=*`),
+        privateFetch(`/store/${as.id}/golf?pageSize=999&&populate=openTimes&populate=equipments&populate=openDays`),
       );
 
       const responses = await Promise.all(promises);

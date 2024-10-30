@@ -33,7 +33,7 @@ export const genGroundStoresWithSitesQuery = (
         if (!allowedStores[0]) return [];
 
         const promises = allowedStores.map((as) =>
-          privateFetch(`/store/${as.id}/ground?pageSize=999&populate=*`),
+          privateFetch(`/store/${as.id}/ground?pageSize=999&populate=openTimes&populate=equipments&populate=openDays&populate=merchantId`),
         );
 
         const responses = await Promise.all(promises);
