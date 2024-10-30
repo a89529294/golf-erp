@@ -29,7 +29,7 @@ export const genIndoorSimulatorStoresWithSitesQuery = (
       if (!allowedStores[0]) return [];
 
       const promises = allowedStores.map((as) =>
-        privateFetch(`/store/${as.id}/simulator?pageSize=999&populate=*`),
+        privateFetch(`/store/${as.id}/simulator?pageSize=999&populate=openTimes&populate=equipments&populate=openDays&populate=store`),
       );
 
       const responses = await Promise.all(promises);
