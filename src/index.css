@@ -123,3 +123,11 @@ select::-webkit-scrollbar {
 .rdp-multiple_months > div > div:last-of-type {
   margin-top: 0 !important;
 }
+
+.hl-next-tr:hover + tr {
+  background-color: #feeed1;
+}
+
+.hl-next-tr:has(+ tr:hover) {
+  background-color: #feeed1;
+}

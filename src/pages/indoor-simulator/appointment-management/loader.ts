@@ -47,6 +47,7 @@ export const appointmentsQuery = {
         discount: appointment.discount,
         originAmount: appointment.originAmount,
         usedCoupon: appointment.usedCoupon,
+        order: appointment.order,
       };
 
       if (foundStore) {
