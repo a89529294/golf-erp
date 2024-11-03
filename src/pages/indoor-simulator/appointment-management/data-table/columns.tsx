@@ -153,7 +153,7 @@ export const columns: ColumnDef<Appointment>[] = [
           className="flex items-center gap-1 whitespace-nowrap"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          折數
+          折數%
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </button>
       );
@@ -202,12 +202,31 @@ export const columns: ColumnDef<Appointment>[] = [
       );
     },
     cell: (prop) => {
-      console.log(prop.row.original.usedCoupon);
       return (
         <div className="whitespace-nowrap">
           {prop.row.original.usedCoupon?.[0]?.name}
         </div>
       );
+    },
+  },
+  {
+    id: "deductedAmount",
+    header: ({ column }) => {
+      return (
+        <button
+          className="flex items-center gap-1 whitespace-nowrap"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          折扣
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </button>
+      );
+    },
+    cell: (prop) => {
+      const amount = prop.row.original.amount;
+      const originAmount = prop.row.original.originAmount ?? amount;
+
+      return <div className="whitespace-nowrap">{originAmount - amount}</div>;
     },
   },
   {
@@ -224,7 +243,6 @@ export const columns: ColumnDef<Appointment>[] = [
       );
     },
     cell: (prop) => {
-      console.log(prop.row.original.usedCoupon);
       return (
         <div className="whitespace-nowrap">{prop.getValue() as string}</div>
       );

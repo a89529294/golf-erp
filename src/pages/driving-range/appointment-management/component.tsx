@@ -8,7 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { useLoaderData, useSearchParams } from "react-router-dom";
-import { columns } from "./columns";
+import { columns } from "../../indoor-simulator/appointment-management/data-table/columns.tsx";
 import { appointmentsQuery, loader } from "./loader";
 
 export function Component() {
