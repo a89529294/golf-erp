@@ -19,6 +19,7 @@ import {
 import { useState } from "react";
 import { Appointment } from "@/types-and-schemas/appointment";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Scrollbar } from "@radix-ui/react-scroll-area";
 
 const fuzzyFilter: FilterFn<unknown> = (row, columnId, value) => {
   return (row.getValue(columnId) as string)
@@ -125,7 +126,7 @@ export function DataTable<TData extends Appointment, TValue>({
                           className="border-b border-line-gray pt-0"
                         >
                           <div className="flex gap-2.5">
-                            <div className="flex gap-7 rounded border border-line-gray bg-black/5 px-3 py-2.5">
+                            <div className="flex  w-[158px] gap-7 rounded border border-line-gray bg-black/5 px-3 py-2.5">
                               <div>
                                 <p className="text-sm font-medium text-secondary-dark">
                                   付款方式
@@ -217,6 +218,7 @@ export function DataTable<TData extends Appointment, TValue>({
               )}
             </TableBody>
           </Table>
+          <Scrollbar orientation="horizontal" />
         </ScrollArea>
       </div>
     </div>
