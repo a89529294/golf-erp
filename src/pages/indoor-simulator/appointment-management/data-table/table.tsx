@@ -126,16 +126,16 @@ export function DataTable<TData extends Appointment, TValue>({
                           className="border-b border-line-gray pt-0"
                         >
                           <div className="flex gap-2.5">
-                            <div className="flex w-[158px] gap-7 rounded border border-line-gray bg-black/5 px-3 py-2.5">
-                              <div>
+                            <div className="flex  gap-7 rounded border border-line-gray bg-black/5 px-3 py-2.5">
+                              <div className="w-24">
                                 <p className="text-sm font-medium text-secondary-dark">
                                   付款方式
                                 </p>
-                                <p className="text-secondary-purple">
+                                <p className="text-secondary-purple ">
                                   {row.original.order?.paymentMethod ?? "現金"}
                                 </p>
                               </div>
-                              <div>
+                              <div className="w-14">
                                 <p className="text-sm font-medium text-secondary-dark">
                                   狀態
                                 </p>
