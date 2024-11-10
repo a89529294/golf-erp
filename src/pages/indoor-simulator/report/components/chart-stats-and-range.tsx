@@ -107,6 +107,18 @@ export function ChartStatsAndRange({
           activeDataType === "revenue" ? totalRevenue : totalAppointmentCount
         }
       />
+      {activeDataType === "revenue" && (
+        <GraphRevenueCell
+          title="金流手續費"
+          amount={Math.round(totalRevenue * 0.028)}
+        />
+      )}
+      {activeDataType === "revenue" && (
+        <GraphRevenueCell
+          title="實際營業額"
+          amount={Math.round(totalRevenue * 0.972)}
+        />
+      )}
       <GraphRevenueCell
         title={title}
         amount={

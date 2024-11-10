@@ -126,7 +126,7 @@ export function DataTable<TData extends Appointment, TValue>({
                           className="border-b border-line-gray pt-0"
                         >
                           <div className="flex gap-2.5">
-                            <div className="flex  w-[158px] gap-7 rounded border border-line-gray bg-black/5 px-3 py-2.5">
+                            <div className="flex w-[158px] gap-7 rounded border border-line-gray bg-black/5 px-3 py-2.5">
                               <div>
                                 <p className="text-sm font-medium text-secondary-dark">
                                   付款方式
@@ -144,60 +144,59 @@ export function DataTable<TData extends Appointment, TValue>({
                                 </p>
                               </div>
                             </div>
-                            <div className="flex gap-2.5">
-                              <div className="flex gap-7 rounded border border-line-gray bg-black/5 px-3 py-2.5">
-                                <div>
-                                  <p className="text-sm font-medium text-secondary-dark">
-                                    原訂單金額
-                                  </p>
-                                  <p className="text-secondary-purple">
-                                    {row.original.originAmount}
-                                  </p>
-                                </div>
-                                <div>
-                                  <p className="text-sm font-medium text-secondary-dark">
-                                    折數%
-                                  </p>
-                                  <p className="text-secondary-purple">
-                                    {percentOff}
-                                  </p>
-                                </div>
 
-                                <div>
-                                  <p className="text-sm font-medium text-secondary-dark">
-                                    優惠券名稱
-                                  </p>
-                                  <p className="text-secondary-purple">
-                                    {row.original.usedCoupon?.[0]?.name}
-                                  </p>
-                                </div>
+                            <div className="flex  gap-7 rounded border border-line-gray bg-black/5 px-3 py-2.5">
+                              <div>
+                                <p className="text-sm font-medium text-secondary-dark">
+                                  原訂單金額
+                                </p>
+                                <p className="text-secondary-purple">
+                                  {row.original.originAmount}
+                                </p>
+                              </div>
+                              <div>
+                                <p className="text-sm font-medium text-secondary-dark">
+                                  折數%
+                                </p>
+                                <p className="text-secondary-purple">
+                                  {percentOff}
+                                </p>
+                              </div>
 
-                                <div>
-                                  <p className="text-sm font-medium text-secondary-dark">
-                                    優惠券金額
-                                  </p>
-                                  <p className="text-secondary-purple">
-                                    {row.original.usedCoupon?.[0]?.amount}
-                                  </p>
-                                </div>
+                              <div className="w-36 ">
+                                <p className="text-sm font-medium text-secondary-dark">
+                                  優惠券名稱
+                                </p>
+                                <p className="truncate text-secondary-purple">
+                                  {row.original.usedCoupon?.[0]?.name}
+                                </p>
+                              </div>
 
-                                <div>
-                                  <p className="text-sm font-medium text-secondary-dark">
-                                    折扣
-                                  </p>
-                                  <p className="text-secondary-purple">
-                                    {originAmount - row.original.amount}
-                                  </p>
-                                </div>
+                              <div>
+                                <p className="text-sm font-medium text-secondary-dark">
+                                  優惠券金額
+                                </p>
+                                <p className="text-secondary-purple">
+                                  {row.original.usedCoupon?.[0]?.amount}
+                                </p>
+                              </div>
 
-                                <div>
-                                  <p className="text-sm font-medium text-secondary-dark">
-                                    實際付款金額
-                                  </p>
-                                  <p className="text-secondary-purple">
-                                    {row.original.amount}
-                                  </p>
-                                </div>
+                              <div className="w-10">
+                                <p className="text-sm font-medium text-secondary-dark">
+                                  折扣
+                                </p>
+                                <p className="text-secondary-purple">
+                                  {originAmount - row.original.amount}
+                                </p>
+                              </div>
+
+                              <div>
+                                <p className="text-sm font-medium text-secondary-dark">
+                                  實際付款金額
+                                </p>
+                                <p className="text-secondary-purple">
+                                  {row.original.amount}
+                                </p>
                               </div>
                             </div>
                           </div>
