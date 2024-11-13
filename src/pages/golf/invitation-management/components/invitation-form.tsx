@@ -3,7 +3,6 @@ import pfp from "@/assets/pfp-outline.svg";
 import redMinusIcon from "@/assets/red-minus-icon.svg";
 import { Form } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
-import { SimpleMember } from "@/pages/member-management/members/loader";
 import { SimpleStore } from "@/utils/types";
 import { useEffect } from "react";
 import { SubmitHandler, UseFormReturn } from "react-hook-form";
@@ -23,22 +22,16 @@ export function InvitationForm({
   onSubmit,
   disabled,
   stores,
-  appUsers,
 }: {
   form: UseFormReturn<z.infer<typeof formSchema>>;
   onSubmit: SubmitHandler<z.infer<typeof formSchema>>;
   disabled?: boolean;
   stores: SimpleStore[];
-  appUsers: SimpleMember[];
 }) {
   const headcount = form.watch("headcount");
   const headcountInvalid = headcount === "" || headcount === "0";
   const disableAddMember = +headcount <= form.watch("members").length + 1;
   const hostValue = form.watch("host");
-  const appUsersMinusHost =
-    hostValue.length === 1
-      ? appUsers.filter((appUser) => appUser.id !== hostValue[0].id)
-      : [];
 
   const numericHeadcount = +form.watch("headcount");
   useEffect(() => {
@@ -105,7 +98,6 @@ export function InvitationForm({
                 </div>
                 <AppUserSelectModal
                   type="host"
-                  appUsers={appUsers}
                   columns={inviteHostcolumns}
                   dialogTriggerChildren={
                     <button
@@ -185,7 +177,7 @@ export function InvitationForm({
                         {idx === form.watch("members").length && (
                           <AppUserSelectModal
                             type="members"
-                            appUsers={appUsersMinusHost}
+                            // hostValue={hostValue[0]}
                             columns={inviteHostcolumns}
                             dialogTriggerChildren={
                               <button

@@ -31,6 +31,7 @@ export function StoreSelect({
       user?.account ?? "",
     ),
     initialData,
+    staleTime: 5000,
   });
 
   const onStoreValueChange = useCallback(

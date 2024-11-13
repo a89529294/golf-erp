@@ -7,13 +7,16 @@ import { DataTable } from "@/pages/indoor-simulator/appointment-management/data-
 import { indoorSimulatorStoresQuery } from "@/pages/indoor-simulator/site-management/loader";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useLoaderData, useSearchParams } from "react-router-dom";
 import { appointmentsQuery, loader } from "./loader";
+import { IconButton } from "@/components/ui/button";
 
 export function Component() {
+  const currentDataRef = useRef({
+    exportDataAsXlsx: (storeName?: string) => {},
+  });
   const [site, setSite] = useState("all");
-
   const { user } = useAuth();
   const [searchParams] = useSearchParams();
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
@@ -22,10 +25,12 @@ export function Component() {
       user!.isAdmin ? "all" : user!.allowedStores.simulator,
     ),
     initialData: initialData.stores,
+    staleTime: 5000,
   });
   const { data: storesWithSiteAppointments } = useQuery({
     ...appointmentsQuery,
     initialData: initialData.storesWithSiteAppointments,
+    staleTime: 5000,
   });
 
   const storeId = searchParams.get("storeId");
@@ -48,14 +53,27 @@ export function Component() {
   return (
     <MainLayout
       headerChildren={
-        <QueryParamSelect
-          options={stores}
-          optionKey="id"
-          optionValue="name"
-          placeholder="請選廠商"
-          queryKey="storeId"
-          className="w-56 sm:w-40"
-        />
+        <>
+          <QueryParamSelect
+            options={stores}
+            optionKey="id"
+            optionValue="name"
+            placeholder="請選廠商"
+            queryKey="storeId"
+            className="w-56 sm:w-40"
+          />
+          <IconButton
+            icon="save"
+            onClick={() => {
+              console.log(currentDataRef.current.exportDataAsXlsx);
+              currentDataRef.current.exportDataAsXlsx(
+                stores.find((store) => store.id === storeId)?.name,
+              );
+            }}
+          >
+            下載xlsx
+          </IconButton>
+        </>
       }
     >
       {/* <div className="mb-2.5 flex-1 border border-line-gray bg-light-gray p-4">
@@ -132,7 +150,11 @@ export function Component() {
               </div> */}
             </nav>
 
-            <DataTable columns={columns} data={filteredData} />
+            <DataTable
+              currentDataRef={currentDataRef}
+              columns={columns}
+              data={filteredData}
+            />
           </div>
         );
       }}

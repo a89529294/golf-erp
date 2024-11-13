@@ -15,7 +15,8 @@ export const getStoresQuery = (
       );
 
       const data = await response.json();
-      console.log(data.data);
+      console.log(".1.");
+
       return data.data as { id: string; name: string }[];
       // const queryString = qs.stringify({
       //     pageSize: 999,

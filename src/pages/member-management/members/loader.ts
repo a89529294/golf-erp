@@ -168,6 +168,7 @@ export const genMembersQuery = (
     sort: string;
     order: "ASC" | "DESC";
     filter: string;
+    pageSize?: number;
   },
 ) => {
   const sort = options.sort;
@@ -178,7 +179,7 @@ export const genMembersQuery = (
     queryFn: async () => {
       const queryString = qs.stringify({
         page: page,
-        pageSize: 7,
+        pageSize: options.pageSize || 7,
         sort: sort,
         order: order,
         populate: ["store", "storeAppUsers"],

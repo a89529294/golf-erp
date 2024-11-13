@@ -18,7 +18,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
-import { Dispatch, ReactNode, SetStateAction } from "react";
+import { CSSProperties, Dispatch, ReactNode, SetStateAction } from "react";
 import React from "react";
 import { DataTablePagination } from "@/pages/member-management/members/data-table/data-table-pagination";
 import { Spinner } from "@/components/ui/spinner";
@@ -44,6 +44,8 @@ interface DataTableProps<TData, TValue> {
   isFetched?: boolean;
   sorting: SortingState;
   setSorting: Dispatch<SetStateAction<SortingState>>;
+  enableMultiRowSelection?: boolean;
+  paginationStyle?: CSSProperties;
 }
 
 const fuzzyFilter: FilterFn<unknown> = (row, columnId, value) => {
@@ -73,6 +75,8 @@ const DataTable: <TData extends { id: string }, TValue>({
   isFetched,
   sorting,
   setSorting,
+  enableMultiRowSelection,
+  paginationStyle,
 }: DataTableProps<TData, TValue>) => ReactNode = React.memo(function ({
   columns,
   data,
@@ -88,6 +92,8 @@ const DataTable: <TData extends { id: string }, TValue>({
   isFetched,
   sorting,
   setSorting,
+  enableMultiRowSelection,
+  paginationStyle,
 }) {
   // const [sorting, setSorting] = useState<SortingState>([]);
 
@@ -97,6 +103,7 @@ const DataTable: <TData extends { id: string }, TValue>({
     filterFns: {
       fuzzy: fuzzyFilter, //define as a filter function that can be used in column definitions
     },
+    enableMultiRowSelection: !!enableMultiRowSelection,
     onGlobalFilterChange: setGlobalFilter,
     globalFilterFn: "fuzzy",
     getCoreRowModel: getCoreRowModel(),
@@ -201,6 +208,7 @@ const DataTable: <TData extends { id: string }, TValue>({
           currentPage={page}
           totalPages={totalPages}
           setPage={setPage}
+          paginationStyle={paginationStyle ?? {}}
         />
       )}
     </div>

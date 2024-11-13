@@ -6,12 +6,16 @@ import { groundStoresQuery } from "@/pages/driving-range/site-management/loader"
 import { DataTable } from "@/pages/indoor-simulator/appointment-management/data-table/table";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useLoaderData, useSearchParams } from "react-router-dom";
 import { columns } from "../../indoor-simulator/appointment-management/data-table/columns.tsx";
 import { appointmentsQuery, loader } from "./loader";
+import { IconButton } from "@/components/ui/button.tsx";
 
 export function Component() {
+  const currentDataRef = useRef({
+    exportDataAsXlsx: (storeName?: string) => {},
+  });
   const [site, setSite] = useState("all");
   const { user } = useAuth();
   const [searchParams] = useSearchParams();
@@ -45,14 +49,26 @@ export function Component() {
   return (
     <MainLayout
       headerChildren={
-        <QueryParamSelect
-          options={stores}
-          optionKey="id"
-          optionValue="name"
-          placeholder="請選廠商"
-          queryKey="storeId"
-          className="w-56 sm:w-40"
-        />
+        <>
+          <QueryParamSelect
+            options={stores}
+            optionKey="id"
+            optionValue="name"
+            placeholder="請選廠商"
+            queryKey="storeId"
+            className="w-56 sm:w-40"
+          />
+          <IconButton
+            icon="save"
+            onClick={() => {
+              currentDataRef.current.exportDataAsXlsx(
+                stores.find((store) => store.id === storeId)?.name,
+              );
+            }}
+          >
+            下載xlsx
+          </IconButton>
+        </>
       }
     >
       {/* <div className="mb-2.5 flex-1 border border-line-gray bg-light-gray p-4">
@@ -129,7 +145,11 @@ export function Component() {
               </div> */}
             </nav>
 
-            <DataTable columns={columns} data={filteredData} />
+            <DataTable
+              currentDataRef={currentDataRef}
+              columns={columns}
+              data={filteredData}
+            />
           </div>
         );
       }}

@@ -163,7 +163,6 @@ export const getAllowedStores = async (
   ) as Exclude<User, null>;
   if (userFromLocalStorage.isAdmin) allowedStores = "all";
   else allowedStores = userFromLocalStorage.allowedStores[type];
-  console.log(allowedStores);
 
   // const permissionsResponse = await privateFetch("/auth/permissions");
   // const permissions = await permissionsResponse.json();

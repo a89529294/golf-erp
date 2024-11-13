@@ -13,6 +13,7 @@ export const bannerQuery = {
       name: string;
       createdAt: string;
       uri: string;
+      size: number;
     }[];
     if (plainTextData === "") data = [];
     else
@@ -21,13 +22,14 @@ export const bannerQuery = {
         name: string;
         createdAt: string;
         uri: string;
+        size: number;
       }[];
     data.sort(
       (a, b) =>
         new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
     );
 
-    return data;
+    return data.filter((v) => v.size);
     // const ids = data.map((d) => ({ id: d.id, name: d.name }));
 
     // const images = await fromImageIdsToSrc(ids.map((v) => v.id));

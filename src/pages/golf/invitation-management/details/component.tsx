@@ -2,22 +2,21 @@ import back from "@/assets/back.svg";
 import { IconButton } from "@/components/ui/button";
 import { button } from "@/components/ui/button-cn";
 import { MainLayout } from "@/layouts/main-layout";
+import { filterObject, fromDateAndTimeToDateTimeString } from "@/utils";
 import { linksKV } from "@/utils/links";
+import { privateFetch } from "@/utils/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { Link, useLoaderData, useNavigate, useParams } from "react-router-dom";
+import { toast } from "sonner";
 import { z } from "zod";
 import { formSchema } from "..";
 import { InvitationForm } from "../components/invitation-form";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { InvitationPATCH } from "../loader";
 import { storesWithoutEmployeesQuery } from "../new/loader";
 import { genInvitationDetailsQuery, loader } from "./loader";
-import { membersQuery } from "@/pages/member-management/members/loader";
-import { filterObject, fromDateAndTimeToDateTimeString } from "@/utils";
-import { InvitationPATCH } from "../loader";
-import { privateFetch } from "@/utils/utils";
-import { toast } from "sonner";
 
 export function Component() {
   const navigate = useNavigate();
@@ -33,10 +32,7 @@ export function Component() {
     ...genInvitationDetailsQuery(invitationId!),
     initialData: initialData.invitation,
   });
-  const { data: appUsers } = useQuery({
-    ...membersQuery,
-    initialData: initialData.appUsers,
-  });
+
   const { mutate, isPending } = useMutation({
     mutationKey: ["patch-invitation"],
     mutationFn: async (v: InvitationPATCH) => {
@@ -150,7 +146,6 @@ export function Component() {
         onSubmit={onSubmit}
         disabled={formDisabled || isPending}
         stores={stores}
-        appUsers={appUsers}
       />
     </MainLayout>
   );

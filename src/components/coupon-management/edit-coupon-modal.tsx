@@ -100,18 +100,20 @@ export function EditCouponModal({
             <Label className="flex items-center gap-5 sm:w-full sm:gap-0">
               <h2 className="w-16">使用期限</h2>
               <div className="flex flex-row items-baseline sm:w-auto sm:min-w-0 sm:flex-1">
-                <UnderscoredInput
-                  className="w-80 sm:w-auto sm:min-w-0 sm:flex-1"
-                  name={"expiration"}
-                  disabled={false}
-                  type="number"
-                  required
-                  defaultValue={expiration}
-                />
-                <div className="shrink-0">天</div>
+                <div className="flex w-80 flex-1 flex-row items-baseline sm:w-auto sm:min-w-0 sm:flex-1">
+                  <UnderscoredInput
+                    className="flex-1"
+                    name={"expiration"}
+                    disabled={false}
+                    type="number"
+                    required
+                    defaultValue={expiration}
+                  />
+                  <div className="shrink-0">天</div>
+                </div>
               </div>
             </Label>
-            <Label className="flex items-center  gap-5 sm:w-full sm:gap-0">
+            <Label className="flex items-center gap-5 sm:w-full sm:gap-0">
               <h2 className="w-16">金額</h2>
               <UnderscoredInput
                 className="w-80 sm:w-auto sm:min-w-0 sm:flex-1"
@@ -122,7 +124,7 @@ export function EditCouponModal({
                 defaultValue={amount}
               />
             </Label>
-            <Label className="flex items-center gap-5 self-start sm:gap-0">
+            <Label className="flex items-center gap-5 sm:w-full sm:gap-0">
               <h2 className="w-16">有效</h2>
               <div className="h-4 w-80 sm:w-auto sm:min-w-0 sm:flex-1">
                 <Checkbox name="isActive" defaultChecked={isActive} />

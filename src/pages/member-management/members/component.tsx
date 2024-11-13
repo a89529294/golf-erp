@@ -17,7 +17,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useRef, useState } from "react";
 import { Link, useLoaderData } from "react-router-dom";
 import { genColumns } from "./data-table/columns.tsx";
-import { DataTable } from "./data-table/data-table.tsx";
+// import { DataTable } from "./data-table/data-table.tsx";
+import { DataTable } from "@/pages/member-management/members/data-table/data-table.tsx";
 import { SortingState } from "@tanstack/react-table";
 
 export function Component() {
@@ -63,7 +64,10 @@ export function Component() {
           <SearchInput
             // className="sm:hidden"
             value={globalFilter}
-            setValue={setGlobalFilter}
+            setValue={(v) => {
+              setGlobalFilter(v);
+              setPage(1);
+            }}
           />
         </>
       }

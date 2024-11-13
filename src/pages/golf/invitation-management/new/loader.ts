@@ -1,4 +1,4 @@
-import { membersQuery } from "@/pages/member-management/members/loader";
+import { genMembersQuery } from "@/pages/member-management/members/loader";
 import { storesWithoutEmployeesSchema } from "@/pages/store-management/loader";
 import { getAllowedStores } from "@/utils";
 import { queryClient } from "@/utils/query-client";
@@ -23,7 +23,11 @@ export const storesWithoutEmployeesQuery = {
 export async function loader() {
   const data = await Promise.all([
     queryClient.ensureQueryData(storesWithoutEmployeesQuery),
-    queryClient.ensureQueryData(membersQuery),
+    genMembersQuery(1, {
+      sort: "updatedAt",
+      order: "DESC",
+      filter: "",
+    }),
   ]);
   return {
     stores: data[0],

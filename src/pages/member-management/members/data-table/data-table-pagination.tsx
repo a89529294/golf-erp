@@ -1,20 +1,26 @@
 import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/24/outline";
 import { generatePagination } from "@/utils";
 import { cn } from "@/lib/utils";
+import { CSSProperties } from "react";
 
 export function DataTablePagination({
   currentPage,
   totalPages,
   setPage,
+  paginationStyle,
 }: {
   currentPage: number;
   setPage: React.Dispatch<React.SetStateAction<number>>;
   totalPages: number;
+  paginationStyle?: CSSProperties;
 }) {
   const allPages = generatePagination(currentPage, totalPages);
 
   return (
-    <div className="absolute -bottom-20 left-1/2 inline-flex -translate-x-1/2 sm:bottom-10 sm:-translate-x-[calc(50%+5px)]">
+    <div
+      style={paginationStyle}
+      className="absolute -bottom-20 left-1/2 inline-flex -translate-x-1/2 sm:bottom-10 sm:-translate-x-[calc(50%+5px)]"
+    >
       <button>
         <PaginationArrow
           direction="left"

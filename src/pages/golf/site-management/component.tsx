@@ -17,6 +17,7 @@ export function Component() {
       user!.isAdmin ? "all" : user!.allowedStores.golf,
     ),
     initialData,
+    staleTime: 5000,
   });
 
   return (

@@ -200,7 +200,6 @@ export function Component() {
 
   // refresh form data
   useEffect(() => {
-    console.log("Update data...");
     form.reset();
     setFormValues(couponsData, pointSetting);
   }, [form, couponsData, pointSetting]);
@@ -425,7 +424,7 @@ export function Component() {
                         ) : (
                           <GenericDataTable
                             columns={columns}
-                            data={Array(3).fill(couponsData).flat()}
+                            data={couponsData}
                             rowSelection={rowSelection}
                             setRowSelection={setRowSelection}
                             globalFilter={globalFilter}

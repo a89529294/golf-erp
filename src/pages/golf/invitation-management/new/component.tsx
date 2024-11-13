@@ -2,19 +2,18 @@ import back from "@/assets/back.svg";
 import { IconButton } from "@/components/ui/button";
 import { button } from "@/components/ui/button-cn";
 import { MainLayout } from "@/layouts/main-layout";
+import { cn } from "@/lib/utils";
 import { linksKV } from "@/utils/links";
+import { privateFetch } from "@/utils/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { Link, useLoaderData, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { z } from "zod";
 import { formSchema } from "..";
 import { InvitationForm } from "../components/invitation-form";
 import { loader, storesWithoutEmployeesQuery } from "./loader";
-import { membersQuery } from "@/pages/member-management/members/loader";
-import { privateFetch } from "@/utils/utils";
-import { toast } from "sonner";
-import { cn } from "@/lib/utils";
 
 export function Component() {
   const navigate = useNavigate();
@@ -24,10 +23,11 @@ export function Component() {
     ...storesWithoutEmployeesQuery,
     initialData: initialData.stores,
   });
-  const { data: appUsers } = useQuery({
-    ...membersQuery,
-    initialData: initialData.appUsers,
-  });
+
+  // const { data: appUsers } = useQuery({
+  //   ...membersQuery,
+  //   initialData: initialData.appUsers,
+  // });
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -108,7 +108,6 @@ export function Component() {
         onSubmit={onSubmit}
         stores={stores}
         disabled={isPending}
-        appUsers={appUsers}
       />
     </MainLayout>
   );

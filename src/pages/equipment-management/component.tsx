@@ -76,7 +76,7 @@ export function Component() {
         <ScrollArea className="h-full w-full">
           <DataTable
             columns={columns}
-            data={[...equipments, ...equipments, ...equipments]}
+            data={equipments}
             rowSelection={rowSelection}
             setRowSelection={setRowSelection}
             globalFilter={globalFilter}

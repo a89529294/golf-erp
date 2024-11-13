@@ -77,14 +77,7 @@ export function Component() {
                   新增系統{!isMobile && "操作"}人員
                 </IconButton>
               }
-              employees={[
-                ...employees,
-                ...employees,
-                ...employees,
-                ...employees,
-                ...employees,
-                ...employees,
-              ]}
+              employees={employees}
             />
           )}
 

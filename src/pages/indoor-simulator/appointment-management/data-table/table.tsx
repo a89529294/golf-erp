@@ -16,10 +16,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useState } from "react";
+import { useImperativeHandle, useState } from "react";
 import { Appointment } from "@/types-and-schemas/appointment";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Scrollbar } from "@radix-ui/react-scroll-area";
+
+import { saveAs } from "file-saver";
+import * as XLSX from "xlsx";
 
 const fuzzyFilter: FilterFn<unknown> = (row, columnId, value) => {
   return (row.getValue(columnId) as string)
@@ -30,11 +33,13 @@ const fuzzyFilter: FilterFn<unknown> = (row, columnId, value) => {
 interface DataTableProps<TData extends { id: string }, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  currentDataRef: React.MutableRefObject<{ exportDataAsXlsx: () => void }>;
 }
 
 export function DataTable<TData extends Appointment, TValue>({
   columns,
   data,
+  currentDataRef,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
 
@@ -51,6 +56,65 @@ export function DataTable<TData extends Appointment, TValue>({
     state: {
       sorting,
     },
+  });
+
+  useImperativeHandle(currentDataRef, () => {
+    return {
+      exportDataAsXlsx: (storeName?: string) => {
+        const data = table.getRowModel().rows.map((r) => {
+          const originAmount =
+            r.original.originAmount ??
+            r.original.amount + (r.original.usedCoupon?.[0]?.amount ?? 0);
+          const percentOff = (
+            ((originAmount - r.original.amount) / originAmount) *
+            100
+          ).toFixed(2);
+
+          return {
+            訂單編號: r.original.id,
+            名稱: r.original.appUser?.chName,
+            電話: r.original.appUser?.phone,
+            開始時間: r.original.startTime,
+            結束時間: r.original.endTime,
+            付款方式: r.original.order?.paymentMethod ?? "現金",
+            狀態: r.original.status,
+            原訂單金額: originAmount,
+            折數: percentOff,
+            優惠券名稱: r.original.usedCoupon?.[0]?.name,
+            優惠券金額: r.original.usedCoupon?.[0]?.amount,
+            折扣: originAmount - r.original.amount,
+            實際付款金額: r.original.amount,
+          };
+        });
+        const worksheet = XLSX.utils.json_to_sheet(data);
+
+        // Calculate the maximum width for each column
+        const columnWidths = (
+          Object.keys(data[0]) as (keyof (typeof data)[0])[]
+        ).map((key) => {
+          const maxLength = Math.max(
+            key.length * 2, // header length
+            ...data.map((row) => {
+              return row[key] ? row[key]?.toString().length ?? 0 : 0;
+            }), // max length of each cell in the column
+          );
+          return { wch: maxLength + 2 }; // add padding for better readability
+        });
+
+        worksheet["!cols"] = columnWidths; // Set column widths in the worksheet
+
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+        const excelBuffer = XLSX.write(workbook, {
+          bookType: "xlsx",
+          type: "array",
+        });
+        const blob = new Blob([excelBuffer], {
+          type: "application/octet-stream",
+        });
+        saveAs(blob, `${storeName}-預約記錄.xlsx`);
+      },
+    };
   });
 
   return (
@@ -151,7 +215,7 @@ export function DataTable<TData extends Appointment, TValue>({
                                   原訂單金額
                                 </p>
                                 <p className="text-secondary-purple">
-                                  {row.original.originAmount}
+                                  {originAmount}
                                 </p>
                               </div>
                               <div>
