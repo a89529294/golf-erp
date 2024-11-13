@@ -11,7 +11,7 @@ export const appointmentsQuery = {
   queryKey: ["appointments", "simulator"],
   queryFn: async () => {
     const response = await privateFetch(
-      "/appointment/simulator?populate=storeSimulator&populate=appUser&populate=storeSimulator.store&populate=order&populate=usedCoupon&pageSize=999",
+      "/appointment/simulator?populate=storeSimulator&populate=appUser&populate=storeSimulator.store&populate=order&populate=usedCoupon&pageSize=99999",
     );
 
     const data = await response.json();
