@@ -183,16 +183,47 @@ export function SiteSection({
   })();
 
   const tableData = useMemo(() => {
-    return appointments.map((v) => ({
-      id: v.id,
-      name: v.simulatorAppointment?.appUser?.chName,
-      phone: v.simulatorAppointment?.appUser?.phone,
-      startDateTime: v.simulatorAppointment?.startTime ?? "",
-      endDateTime: v.simulatorAppointment?.endTime ?? "",
-      amount: v.amount,
-      merchantId,
-      paymentType: v.paymentMethod,
-    }));
+    return appointments.map((v) => {
+      const sd = new Date(v.simulatorAppointment?.startTime ?? "");
+      const ed = new Date(v.simulatorAppointment?.endTime ?? "");
+
+      sd.setHours(sd.getHours() - 8);
+      ed.setHours(ed.getHours() - 8);
+      const sdFormatted = new Intl.DateTimeFormat("en-CA", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "numeric",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+      })
+        .format(sd)
+        .replace(",", "");
+
+      const edFormatted = new Intl.DateTimeFormat("en-CA", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "numeric",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+      })
+        .format(ed)
+        .replace(",", "");
+
+      return {
+        id: v.id,
+        name: v.simulatorAppointment?.appUser?.chName,
+        phone: v.simulatorAppointment?.appUser?.phone,
+        startDateTime: sdFormatted,
+        endDateTime: edFormatted,
+        amount: v.amount,
+        merchantId,
+        paymentType: v.paymentMethod,
+      };
+    });
   }, [merchantId, appointments]);
 
   return (

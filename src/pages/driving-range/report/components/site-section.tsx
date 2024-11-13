@@ -171,16 +171,47 @@ export function SiteSection({
   })();
 
   const tableData = useMemo(() => {
-    return appointments.map((v) => ({
-      id: v.id,
-      name: v.appUser?.chName,
-      phone: v.appUser?.phone,
-      startDateTime: v.startTime,
-      endDateTime: v.endTime,
-      amount: v.amount,
-      merchantId,
-      paymentType: v.order ? getOrderPaymentMethod(v.order) : "點數",
-    }));
+    return appointments.map((v) => {
+      const sd = new Date(v.startTime ?? "");
+      const ed = new Date(v.endTime ?? "");
+
+      sd.setHours(sd.getHours() - 8);
+      ed.setHours(ed.getHours() - 8);
+      const sdFormatted = new Intl.DateTimeFormat("en-CA", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "numeric",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+      })
+        .format(sd)
+        .replace(",", "");
+
+      const edFormatted = new Intl.DateTimeFormat("en-CA", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "numeric",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+      })
+        .format(ed)
+        .replace(",", "");
+
+      return {
+        id: v.id,
+        name: v.appUser?.chName,
+        phone: v.appUser?.phone,
+        startDateTime: sdFormatted,
+        endDateTime: edFormatted,
+        amount: v.amount,
+        merchantId,
+        paymentType: v.order ? getOrderPaymentMethod(v.order) : "點數",
+      };
+    });
   }, [merchantId, appointments]);
 
   return (
@@ -211,7 +242,7 @@ export function SiteSection({
         />
 
         <TextButton className="ml-auto self-end" onClick={() => setOpen(!open)}>
-          展開訂單
+          {open ? "關閉訂單" : "展開訂單"}
         </TextButton>
       </ul>
 

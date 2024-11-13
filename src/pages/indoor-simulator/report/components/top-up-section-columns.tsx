@@ -15,7 +15,10 @@ const columnHelper = createColumnHelper<Order>();
 export const columns = [
   columnHelper.accessor("createdAt", {
     header: "時間",
-    cell: (prop) => <div className="whitespace-nowrap">{prop.getValue()}</div>,
+    cell: (prop) => {
+      console.log(prop.getValue());
+      return <div className="whitespace-nowrap">{prop.getValue()}</div>;
+    },
   }),
   columnHelper.accessor("name", {
     header: "名稱",

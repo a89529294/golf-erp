@@ -36,8 +36,20 @@ export const topUpHistorycolumns = [
       </button>
     ),
     cell: (props) => {
-      console.log(props.getValue());
-      return <div className="text-orange">{props.getValue()}</div>;
+      const ed = new Date(props.getValue());
+      ed.setHours(ed.getHours() + 8);
+      const edFormatted = new Intl.DateTimeFormat("en-CA", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "numeric",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+      })
+        .format(ed)
+        .replace(",", "");
+      return <div className="text-orange">{edFormatted}</div>;
     },
   }),
   topUpHistoryColumnHelper.display({
@@ -112,7 +124,24 @@ export const spendingHistoryColumns = [
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </button>
     ),
-    cell: (props) => <div className="text-orange">{props.getValue()}</div>,
+    cell: (props) => {
+      const sd = new Date(props.getValue());
+
+      sd.setHours(sd.getHours() - 8);
+
+      const sdFormatted = new Intl.DateTimeFormat("en-CA", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "numeric",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+      })
+        .format(sd)
+        .replace(",", "");
+      return <div className="text-orange">{sdFormatted}</div>;
+    },
   }),
   spendingHistoryColumnHelper.accessor("endTime", {
     id: "endTime",
@@ -125,7 +154,24 @@ export const spendingHistoryColumns = [
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </button>
     ),
-    cell: (props) => <div className="text-orange">{props.getValue()}</div>,
+    cell: (props) => {
+      const sd = new Date(props.getValue());
+
+      sd.setHours(sd.getHours() - 8);
+
+      const sdFormatted = new Intl.DateTimeFormat("en-CA", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "numeric",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+      })
+        .format(sd)
+        .replace(",", "");
+      return <div className="text-orange">{sdFormatted}</div>;
+    },
   }),
   spendingHistoryColumnHelper.display({
     id: "payment-method",
