@@ -24,6 +24,7 @@ import { Scrollbar } from "@radix-ui/react-scroll-area";
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
 import { DataTablePagination } from "@/pages/member-management/members/data-table/data-table-pagination";
+import { Spinner } from "@/components/ui/spinner";
 
 const fuzzyFilter: FilterFn<unknown> = (row, columnId, value) => {
   return (row.getValue(columnId) as string)
@@ -39,7 +40,6 @@ interface DataTableProps<TData extends { id: string }, TValue> {
   setPage: Dispatch<SetStateAction<number>>;
   totalPages: number;
   isLoading: boolean;
-  isFetching: boolean;
 }
 
 export function DataTable<TData extends Appointment, TValue>({
@@ -50,7 +50,6 @@ export function DataTable<TData extends Appointment, TValue>({
   totalPages,
   currentDataRef,
   isLoading,
-  isFetching,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
 
@@ -160,8 +159,17 @@ export function DataTable<TData extends Appointment, TValue>({
                 </TableRow>
               ))}
             </TableHeader>
-            <TableBody>
-              {table.getRowModel().rows?.length ? (
+            <TableBody className={isLoading ? "absolute inset-0 top-12" : ""}>
+              {isLoading ? (
+                <TableRow className="absolute inset-0">
+                  <TableCell
+                    colSpan={6}
+                    className="absolute inset-0 grid place-items-center"
+                  >
+                    <Spinner />
+                  </TableCell>
+                </TableRow>
+              ) : table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row, i) => {
                   const originAmount =
                     row.original.originAmount ??

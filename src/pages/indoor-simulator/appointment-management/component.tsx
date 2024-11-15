@@ -32,7 +32,7 @@ export function Component() {
 
   const storeId = searchParams.get("storeId");
 
-  const { data, isLoading, isFetching } = useQuery({
+  const { data, isLoading } = useQuery({
     ...genAppointmentsQuery(storeId ?? "", site, page),
     enabled: !!storeId,
   });
@@ -174,7 +174,6 @@ export function Component() {
               columns={columns}
               data={filteredData}
               isLoading={isLoading}
-              isFetching={isFetching}
               page={page}
               setPage={setPage}
               totalPages={pageCount}

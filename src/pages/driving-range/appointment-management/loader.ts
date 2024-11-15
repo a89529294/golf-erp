@@ -7,11 +7,15 @@ import { getAllowedStores } from "@/utils";
 import { queryClient } from "@/utils/query-client";
 import { privateFetch } from "@/utils/utils";
 
-export const appointmentsQuery = {
-  queryKey: ["appointments", "ground"],
+export const genAppointmentsQuery = (
+  storeId: string,
+  siteId: string,
+  page: number,
+) => ({
+  queryKey: ["appointments", "ground", storeId, siteId, page],
   queryFn: async () => {
     const response = await privateFetch(
-      "/appointment/ground?populate=storeGround&populate=appUser&populate=storeGround.store&pageSize=999",
+      `/appointment/ground?populate=storeGround&populate=appUser&populate=storeGround.store&populate=order&populate=usedCoupon&filter[storeGround.store.id]=${storeId}${siteId === "all" ? "" : `&filter[storeGround.id]=${siteId}`}&pageSize=10&page=${page}`,
     );
 
     const data = await response.json();
@@ -74,22 +78,25 @@ export const appointmentsQuery = {
       }
     });
 
-    return storesWithSiteAppointments;
+    return {
+      data: storesWithSiteAppointments,
+      meta: parsedData.meta,
+    };
   },
-};
+});
 
 export async function loader() {
   const promises = [
     queryClient.ensureQueryData(
       groundStoresQuery(await getAllowedStores("ground")),
     ),
-    queryClient.ensureQueryData(appointmentsQuery),
+    // queryClient.ensureQueryData(appointmentsQuery),
   ] as const;
 
   const results = await Promise.all(promises);
 
   return {
     stores: results[0].map((v) => ({ id: v.id, name: v.name })),
-    storesWithSiteAppointments: results[1],
+    // storesWithSiteAppointments: results[1],
   };
 }

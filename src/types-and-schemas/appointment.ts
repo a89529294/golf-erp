@@ -82,6 +82,10 @@ export const groundAppoitmentsSchema = z.object({
       }),
     }),
   ),
+  meta: z.object({
+    page: z.number(),
+    pageCount: z.number(),
+  }),
 });
 
 export type StoreWithSiteAppointments = {
