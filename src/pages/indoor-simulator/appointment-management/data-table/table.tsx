@@ -16,13 +16,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useImperativeHandle, useState } from "react";
+import { Dispatch, SetStateAction, useImperativeHandle, useState } from "react";
 import { Appointment } from "@/types-and-schemas/appointment";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Scrollbar } from "@radix-ui/react-scroll-area";
 
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
+import { DataTablePagination } from "@/pages/member-management/members/data-table/data-table-pagination";
 
 const fuzzyFilter: FilterFn<unknown> = (row, columnId, value) => {
   return (row.getValue(columnId) as string)
@@ -34,12 +35,22 @@ interface DataTableProps<TData extends { id: string }, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   currentDataRef: React.MutableRefObject<{ exportDataAsXlsx: () => void }>;
+  page: number;
+  setPage: Dispatch<SetStateAction<number>>;
+  totalPages: number;
+  isLoading: boolean;
+  isFetching: boolean;
 }
 
 export function DataTable<TData extends Appointment, TValue>({
   columns,
   data,
+  page,
+  setPage,
+  totalPages,
   currentDataRef,
+  isLoading,
+  isFetching,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
 
@@ -119,10 +130,10 @@ export function DataTable<TData extends Appointment, TValue>({
 
   return (
     <div className="relative flex-1 border border-t-0 border-line-gray">
-      <div className="absolute inset-0">
-        <ScrollArea className="h-full">
+      <div className="absolute inset-0 ">
+        <ScrollArea className="absolute bottom-14">
           <Table
-            outerDivClassName="w-auto "
+            outerDivClassName="w-auto"
             className="w-auto min-w-full border-separate border-spacing-0"
           >
             <TableHeader className="[&_tr]:border-b-0">
@@ -281,8 +292,18 @@ export function DataTable<TData extends Appointment, TValue>({
               )}
             </TableBody>
           </Table>
+
           <Scrollbar orientation="horizontal" />
         </ScrollArea>
+        <DataTablePagination
+          currentPage={page}
+          setPage={setPage}
+          totalPages={totalPages}
+          paginationStyle={{
+            position: "absolute",
+            bottom: 8,
+          }}
+        />
       </div>
     </div>
   );

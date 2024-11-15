@@ -7,9 +7,9 @@ import { DataTable } from "@/pages/indoor-simulator/appointment-management/data-
 import { indoorSimulatorStoresQuery } from "@/pages/indoor-simulator/site-management/loader";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLoaderData, useSearchParams } from "react-router-dom";
-import { appointmentsQuery, loader } from "./loader";
+import { genAppointmentsQuery, loader } from "./loader";
 import { IconButton } from "@/components/ui/button";
 
 export function Component() {
@@ -17,9 +17,11 @@ export function Component() {
     exportDataAsXlsx: (storeName?: string) => {},
   });
   const [site, setSite] = useState("all");
+  const sitesRef = useRef<{ id: string; name: string }[]>([]);
   const { user } = useAuth();
   const [searchParams] = useSearchParams();
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
+  const [page, setPage] = useState(1);
   const { data: stores } = useQuery({
     ...indoorSimulatorStoresQuery(
       user!.isAdmin ? "all" : user!.allowedStores.simulator,
@@ -27,27 +29,44 @@ export function Component() {
     initialData: initialData.stores,
     staleTime: 5000,
   });
-  const { data: storesWithSiteAppointments } = useQuery({
-    ...appointmentsQuery,
-    initialData: initialData.storesWithSiteAppointments,
-    staleTime: 5000,
-  });
 
   const storeId = searchParams.get("storeId");
 
-  const store = storesWithSiteAppointments.find((s) => s.id === storeId);
+  const { data, isLoading, isFetching } = useQuery({
+    ...genAppointmentsQuery(storeId ?? "", site, page),
+    enabled: !!storeId,
+  });
+  const [pageCount, setPageCount] = useState(0);
 
-  const siteOptions = [{ id: "all", name: "全部" }, ...(store?.sites ?? [])];
+  useEffect(() => {
+    if (data?.meta.pageCount === undefined) return;
+
+    setPageCount(data.meta.pageCount);
+  }, [data?.meta.pageCount]);
+
+  const storeWithSiteAppointments = data?.data;
+
+  sitesRef.current =
+    site === "all"
+      ? [
+          { id: "all", name: "全部" },
+          ...(storeWithSiteAppointments?.[0]?.sites ?? []),
+        ]
+      : sitesRef.current;
 
   const filteredData = (() => {
-    if (site === "all")
-      return store?.sites.flatMap((s) => s.appointments) ?? [];
-
+    // if (site === "all")
+    // return (
     return (
-      store?.sites
-        .filter((s) => s.id === site)
-        .flatMap((s) => s.appointments) ?? []
+      storeWithSiteAppointments?.[0]?.sites.flatMap((s) => s.appointments) ?? []
     );
+    // );
+
+    // return (
+    //   storeWithSiteAppointments?.[0]?.sites
+    //     .filter((s) => s.id === site)
+    //     .flatMap((s) => s.appointments) ?? []
+    // );
   })();
 
   return (
@@ -103,7 +122,7 @@ export function Component() {
             // }}
             >
               <ul className="isolate flex items-center gap-3 overflow-x-auto py-2 pl-5">
-                {siteOptions.map(({ id, name }) => (
+                {sitesRef.current.map(({ id, name }) => (
                   <li key={id}>
                     <button
                       onClick={() => setSite(id)}
@@ -154,6 +173,11 @@ export function Component() {
               currentDataRef={currentDataRef}
               columns={columns}
               data={filteredData}
+              isLoading={isLoading}
+              isFetching={isFetching}
+              page={page}
+              setPage={setPage}
+              totalPages={pageCount}
             />
           </div>
         );

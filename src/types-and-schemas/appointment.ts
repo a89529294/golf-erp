@@ -62,6 +62,10 @@ export const simulatorAppoitmentsSchema = z.object({
       }),
     }),
   ),
+  meta: z.object({
+    page: z.number(),
+    pageCount: z.number(),
+  }),
 });
 
 export const groundAppoitmentsSchema = z.object({
