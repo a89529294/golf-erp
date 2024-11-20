@@ -14,6 +14,7 @@ import xIcon from "@/assets/x.svg";
 import redXIcon from "@/assets/red-x-icon.svg";
 import checkIcon from "@/assets/check.svg";
 import couponIcon from "@/assets/coupon.svg";
+import sendIcon from "@/assets/send-icon.svg";
 import { ComponentProps, ReactNode, forwardRef } from "react";
 import { twMerge } from "tailwind-merge";
 
@@ -36,6 +37,7 @@ const iconMap = {
   coupon: couponIcon,
   lock: lockIcon,
   reset: resetIcon,
+  send: sendIcon,
 };
 
 type IconButtonType = ComponentProps<"button"> & {
@@ -82,7 +84,7 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonType>(
         onClick={onClick}
         {...props}
       >
-        <img src={iconMap[icon]} />
+        <img src={iconMap[icon]} className="size-5" />
         {children}
       </button>
     );
@@ -123,7 +125,7 @@ const IconButtonBorderLess = forwardRef<
       )}
       onClick={onClick}
     >
-      <img className="w-5 h-5" src={iconMap[icon]} />
+      <img className="h-5 w-5" src={iconMap[icon]} />
       {children}
     </button>
   );
@@ -142,7 +144,7 @@ export const TextButton = forwardRef<
       onClick={onClick}
       {...props}
     >
-      {loading && <img src={circleIcon} className="w-5 h-5 animate-spin" />}
+      {loading && <img src={circleIcon} className="h-5 w-5 animate-spin" />}
       {children}
     </button>
   );

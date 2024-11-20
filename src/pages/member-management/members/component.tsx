@@ -20,6 +20,7 @@ import { genColumns } from "./data-table/columns.tsx";
 // import { DataTable } from "./data-table/data-table.tsx";
 import { DataTable } from "@/pages/member-management/members/data-table/data-table.tsx";
 import { SortingState } from "@tanstack/react-table";
+import { SendToAllCouponModal } from "@/components/coupon-management/send-to-all-coupon-modal.tsx";
 
 export function Component() {
   const { user } = useAuth();
@@ -60,7 +61,6 @@ export function Component() {
             <img src={plusIcon} />
             新增會員
           </Link>
-
           <SearchInput
             // className="sm:hidden"
             value={globalFilter}
@@ -69,6 +69,7 @@ export function Component() {
               setPage(1);
             }}
           />
+          <SendToAllCouponModal />
         </>
       }
     >

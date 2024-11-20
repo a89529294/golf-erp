@@ -16,7 +16,7 @@ export function NewCouponModal({
   const [searchParams] = useSearchParams();
   const queryClient = useQueryClient();
   const { mutateAsync } = useMutation({
-    mutationKey: ["update-coupon"],
+    mutationKey: ["add-coupon"],
     mutationFn: async (prop: {
       name: string;
       expiration: number;
