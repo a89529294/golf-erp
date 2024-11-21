@@ -1,16 +1,17 @@
 import { EditCouponModal } from "@/components/coupon-management/edit-coupon-modal";
+import { StoreSendToAllCouponModal } from "@/components/coupon-management/store-send-to-all-coupon-modal";
 import { Tablet } from "@/components/tablet";
 import { Coupon } from "@/pages/driving-range/coupon-management/loader";
-import {
-  ColumnDef,
-  createColumnHelper,
-  flexRender,
-} from "@tanstack/react-table";
+import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 
 const columnHelper = createColumnHelper<Coupon>();
 
-export function genColumns(category: "ground" | "golf" | "simulator") {
+export function genColumns(
+  category: "ground" | "golf" | "simulator",
+  storeName: string,
+  storeId: string,
+) {
   return [
     columnHelper.accessor((row) => (row.isActive ? "有效" : "無效"), {
       id: "isActive",
@@ -59,7 +60,6 @@ export function genColumns(category: "ground" | "golf" | "simulator") {
       cell: (props) => props.getValue(),
       size: 40,
     }),
-
     columnHelper.accessor("expiration", {
       header: ({ column }) => {
         return (
@@ -98,19 +98,45 @@ export function genColumns(category: "ground" | "golf" | "simulator") {
       size: undefined,
     }),
     columnHelper.display({
-      id: "edit-modal",
+      id: "send-coupon-modal",
       cell: (props) => {
-        return flexRender(EditCouponModal, {
-          category,
-          id: props.row.original.id,
-          name: props.row.original.name,
-          expiration: props.row.original.expiration,
-          amount: props.row.original.amount,
-          number: props.row.original.number,
-          isActive: props.row.original.isActive,
-        });
+        return (
+          <StoreSendToAllCouponModal
+            storeName={storeName}
+            couponName={props.row.original.name}
+          />
+        );
       },
-      size: undefined,
+      size: 5,
+    }),
+    columnHelper.display({
+      id: "edit-modal",
+      // cell: (props) => {
+      //   return flexRender(EditCouponModal, {
+      //     category,
+      //     id: props.row.original.id,
+      //     name: props.row.original.name,
+      //     expiration: props.row.original.expiration,
+      //     amount: props.row.original.amount,
+      //     number: props.row.original.number,
+      //     isActive: props.row.original.isActive,
+      //   });
+      // },
+      cell: (props) => {
+        const originalRow = props.row.original;
+        return (
+          <EditCouponModal
+            category={category}
+            id={originalRow.id}
+            name={originalRow.name}
+            expiration={originalRow.expiration}
+            amount={originalRow.amount}
+            number={originalRow.number}
+            isActive={originalRow.isActive}
+          />
+        );
+      },
+      size: 5,
     }),
   ] as ColumnDef<Coupon>[];
 }

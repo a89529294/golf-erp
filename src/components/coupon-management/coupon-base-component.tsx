@@ -32,6 +32,7 @@ export function CouponBaseComponent({
   const isMobile = useMediaQuery("(max-width: 639px)");
   const [searchParams] = useSearchParams();
   const storeId = searchParams.get("storeId");
+  const [storeName, setStoreName] = useState("");
 
   const [rowSelection, setRowSelection] = useState({});
   const [globalFilter, setGlobalFilter] = useState("");
@@ -58,6 +59,7 @@ export function CouponBaseComponent({
             category={category}
             initialData={initialData}
             navigateTo={navigateTo}
+            setStoreName={setStoreName}
           />
           <NewCouponModal category={category} />
           <SearchInput
@@ -74,7 +76,7 @@ export function CouponBaseComponent({
             <div className="w-full bg-light-gray p-1 pt-0">
               {coupons && (
                 <DataTable
-                  columns={genColumns(category)}
+                  columns={genColumns(category, storeName, storeId ?? "")}
                   data={coupons}
                   rowSelection={rowSelection}
                   setRowSelection={setRowSelection}
@@ -100,7 +102,7 @@ export function CouponBaseComponent({
                 }}
               />
               <DataTable
-                columns={genColumns(category)}
+                columns={genColumns(category, storeName, storeId ?? "")}
                 data={coupons}
                 rowSelection={rowSelection}
                 setRowSelection={setRowSelection}

@@ -15,10 +15,12 @@ export function StoreSelect({
   initialData,
   category,
   navigateTo,
+  setStoreName,
 }: {
   initialData: { id: string; name: string }[];
   category: "ground" | "golf" | "simulator";
   navigateTo: string;
+  setStoreName?: (s: string) => void;
 }) {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -44,12 +46,18 @@ export function StoreSelect({
   );
 
   useEffect(() => {
-    if (storeId) return;
+    if (storeId) {
+      setStoreName &&
+        setStoreName(stores.find((s) => s.id === storeId)?.name ?? "");
+      return;
+    }
 
     if (stores[0]) {
+      setStoreName &&
+        setStoreName(stores.find((s) => s.id === stores[0].id)?.name ?? "");
       onStoreValueChange(stores[0].id, true);
     }
-  }, [stores, onStoreValueChange, storeId]);
+  }, [stores, onStoreValueChange, storeId, setStoreName]);
 
   return (
     <Select
