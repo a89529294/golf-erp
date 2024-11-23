@@ -2,7 +2,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { getStoresQuery } from "@/pages/indoor-simulator/member-management/loader";
 import { useQuery } from "@tanstack/react-query";
 import { useCallback, useEffect } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import {
   Select,
   SelectContent,
@@ -10,6 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useSelectedStoreContext } from "@/contexts/use-store-context";
 
 export function StoreSelect({
   initialData,
@@ -22,9 +23,16 @@ export function StoreSelect({
   navigateTo: string;
   setStoreName?: (s: string) => void;
 }) {
+  const {
+    simulatorStoreId,
+    setSimulatorStoreId,
+    groundStoreId,
+    setGroundStoreId,
+  } = useSelectedStoreContext();
+
   const { user } = useAuth();
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  // const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const storeId = searchParams.get("storeId");
   const { data: stores } = useQuery({
     ...getStoresQuery(
@@ -36,33 +44,70 @@ export function StoreSelect({
     staleTime: 5000,
   });
 
-  const onStoreValueChange = useCallback(
-    (storeId: string, replace: boolean) => {
-      navigate(`${navigateTo}?storeId=${storeId}`, {
-        replace,
-      });
+  const updateStoreName = useCallback(
+    (sid: string) => {
+      setStoreName &&
+        setStoreName(stores.find((s) => s.id === sid)?.name ?? "");
     },
-    [navigate, navigateTo],
+    [setStoreName, stores],
+  );
+
+  const onStoreValueChange = useCallback(
+    (category: string, storeId: string, replace: boolean) => {
+      // navigate(`${navigateTo}?storeId=${storeId}`, {
+      //   replace,
+      // });
+
+      // storeId context update
+      if (category === "simulator") setSimulatorStoreId(storeId);
+      if (category === "ground") setGroundStoreId(storeId);
+
+      // storeId search params update
+      const params = new URLSearchParams();
+      params.set("storeId", storeId);
+      setSearchParams(params, { replace });
+
+      // store name update
+      updateStoreName(storeId);
+    },
+    [setSearchParams, setSimulatorStoreId, setGroundStoreId, updateStoreName],
   );
 
   useEffect(() => {
+    if (category === "simulator" && simulatorStoreId) {
+      onStoreValueChange(category, simulatorStoreId, true);
+
+      return;
+    }
+
+    if (category === "ground" && groundStoreId) {
+      onStoreValueChange(category, groundStoreId, true);
+      return;
+    }
+
     if (storeId) {
-      setStoreName &&
-        setStoreName(stores.find((s) => s.id === storeId)?.name ?? "");
+      onStoreValueChange(category, storeId, true);
       return;
     }
 
     if (stores[0]) {
-      setStoreName &&
-        setStoreName(stores.find((s) => s.id === stores[0].id)?.name ?? "");
-      onStoreValueChange(stores[0].id, true);
+      onStoreValueChange(category, stores[0].id, true);
     }
-  }, [stores, onStoreValueChange, storeId, setStoreName]);
+  }, [
+    stores,
+    onStoreValueChange,
+    storeId,
+    setStoreName,
+    setSearchParams,
+    category,
+    simulatorStoreId,
+    groundStoreId,
+  ]);
 
   return (
     <Select
       value={storeId ?? ""}
-      onValueChange={(v) => onStoreValueChange(v, false)}
+      onValueChange={(v) => onStoreValueChange(category, v, false)}
     >
       <SelectTrigger className="h-11 w-[280px] rounded-none border-0 border-b border-secondary-dark sm:w-40">
         <SelectValue placeholder="選擇廠商" />

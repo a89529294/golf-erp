@@ -1,4 +1,5 @@
-import { QueryParamSelect } from "@/components/query-param-select";
+import { StoreSelect } from "@/components/category/store-select";
+import { IconButton } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
 import { MainLayout } from "@/layouts/main-layout";
 import { cn } from "@/lib/utils";
@@ -10,7 +11,6 @@ import { motion } from "framer-motion";
 import { useRef, useState } from "react";
 import { useLoaderData, useSearchParams } from "react-router-dom";
 import { appointmentsQuery, loader } from "./loader";
-import { IconButton } from "@/components/ui/button";
 
 export function Component() {
   const currentDataRef = useRef({
@@ -54,13 +54,18 @@ export function Component() {
     <MainLayout
       headerChildren={
         <>
-          <QueryParamSelect
+          {/* <QueryParamSelect
             options={stores}
             optionKey="id"
             optionValue="name"
             placeholder="請選廠商"
             queryKey="storeId"
             className="w-56 sm:w-40"
+          /> */}
+          <StoreSelect
+            category="simulator"
+            initialData={stores}
+            navigateTo={""}
           />
           <IconButton
             icon="save"

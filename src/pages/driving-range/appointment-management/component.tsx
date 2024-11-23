@@ -1,4 +1,3 @@
-import { QueryParamSelect } from "@/components/query-param-select";
 import { useAuth } from "@/hooks/use-auth";
 import { MainLayout } from "@/layouts/main-layout";
 import { cn } from "@/lib/utils";
@@ -11,6 +10,7 @@ import { useLoaderData, useSearchParams } from "react-router-dom";
 import { columns } from "../../indoor-simulator/appointment-management/data-table/columns.tsx";
 import { appointmentsQuery, loader } from "./loader";
 import { IconButton } from "@/components/ui/button.tsx";
+import { StoreSelect } from "@/components/category/store-select.tsx";
 
 export function Component() {
   const currentDataRef = useRef({
@@ -50,14 +50,7 @@ export function Component() {
     <MainLayout
       headerChildren={
         <>
-          <QueryParamSelect
-            options={stores}
-            optionKey="id"
-            optionValue="name"
-            placeholder="請選廠商"
-            queryKey="storeId"
-            className="w-56 sm:w-40"
-          />
+          <StoreSelect category="ground" initialData={stores} navigateTo={""} />
           <IconButton
             icon="save"
             onClick={() => {

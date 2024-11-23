@@ -19,6 +19,7 @@ import Index from "./pages";
 import Login from "./pages/login";
 import RedirectToIndexIfAuthed from "./utils/redirect-to-index-if-authed";
 import RedirectToLoginIfNotAuthed from "./utils/redirect-to-login-if-not-authed";
+import { SelectedStoreProvider } from "@/contexts/selected-store-context";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -293,7 +294,9 @@ const router = createBrowserRouter(
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
+      <SelectedStoreProvider>
+        <RouterProvider router={router} />
+      </SelectedStoreProvider>
       <Toaster richColors={true} theme="light" visibleToasts={1} />
       <ReactQueryDevtools buttonPosition="bottom-right" />
     </QueryClientProvider>
