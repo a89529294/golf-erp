@@ -6,14 +6,15 @@ import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
 import { Link } from "react-router-dom";
 import { SimpleMember, genderEnChMap, memberTypeEnChMap } from "../loader";
 import { ReactNode } from "react";
+import { DeleteMemberModal } from "@/pages/member-management/members/components/delete-member-modal";
 
 const columnHelper = createColumnHelper<SimpleMember>();
 
-const showSendPoints = (userPermissions: string[]) => {
-  if (userPermissions.includes("系統管理")) return true;
+const showSendPoints = (userPermissions: string[]) =>
+  userPermissions.includes("系統管理");
 
-  return false;
-};
+const showDeleteMember = (userPermissions: string[]) =>
+  userPermissions.includes("系統刪除使用者");
 
 export const genColumns = (
   userPermissions: string[],
@@ -33,7 +34,10 @@ export const genColumns = (
           </div>
         );
       },
-      size: 7.2,
+      size: 5.2,
+      meta: {
+        className: "px-2",
+      },
     }),
     ...(showSendPoints(userPermissions)
       ? [
@@ -43,7 +47,30 @@ export const genColumns = (
             cell: ({ row }) => {
               return <SendPointsModal userId={row.original.id} />;
             },
-            size: 11.2,
+            size: 9.2,
+            meta: {
+              className: "px-2",
+            },
+          }),
+        ]
+      : []),
+    ...(showDeleteMember(userPermissions)
+      ? [
+          columnHelper.display({
+            id: "send_points",
+            header: "",
+            cell: ({ row }) => {
+              return (
+                <DeleteMemberModal
+                  userId={row.original.id}
+                  userName={row.original.chName}
+                />
+              );
+            },
+            size: 5.2,
+            meta: {
+              className: "px-2",
+            },
           }),
         ]
       : []),

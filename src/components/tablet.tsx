@@ -40,13 +40,34 @@ export const TabletSendPoints = React.forwardRef<
   return (
     <button
       className={cn(
-        "flex h-5 items-center justify-center whitespace-nowrap rounded-full border border-green-500 px-1 text-sm font-medium text-green-500",
+        "mx-auto flex h-5 items-center justify-center whitespace-nowrap rounded-full border border-green-500 px-1 text-sm font-medium text-green-500",
         className,
       )}
       ref={ref}
       {...rest}
     >
       贈送點數
+    </button>
+  );
+});
+
+export const TabletDeleteMember = React.forwardRef<
+  HTMLButtonElement,
+  React.DetailedHTMLProps<
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
+    HTMLButtonElement
+  >
+>(function ({ className, ...rest }, ref) {
+  return (
+    <button
+      className={cn(
+        "flex h-5 items-center justify-center whitespace-nowrap rounded-full border border-red-400 px-1 text-sm font-medium text-red-400",
+        className,
+      )}
+      ref={ref}
+      {...rest}
+    >
+      刪除
     </button>
   );
 });

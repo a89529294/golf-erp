@@ -30,13 +30,13 @@ export function ChargeImageField({
         if (setChargeImageId && typeof chargeImages === "string")
           setChargeImageId(chargeImages);
         onChange(event);
-        console.log(event);
       }
     },
     [onChange, setChargeImageId, chargeImages],
   );
 
   useEffect(() => {
+    console.log(chargeImages);
     if (typeof chargeImages === "string" && chargeImages) {
       (async () => {
         const response = await privateFetch(

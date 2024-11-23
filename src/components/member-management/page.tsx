@@ -151,9 +151,7 @@ export function MemberManagementPage({
                     category,
                     auth.user?.permissions ?? [],
                   )}
-                  data={Array(1)
-                    .fill(members)
-                    .flatMap((v) => v)}
+                  data={members}
                   rowSelection={rowSelection}
                   setRowSelection={setRowSelection}
                   globalFilter={globalFilter}

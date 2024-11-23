@@ -121,7 +121,7 @@ export function DataTable<TData extends { id: string }, TValue>({
                 {row.getVisibleCells().map((cell) => (
                   <TableCell
                     key={cell.id}
-                    className="border-b border-line-gray last-of-type:px-0"
+                    className={`border-b border-line-gray last-of-type:px-0 ${cell.column.columnDef.meta?.className ?? ""}`}
                   >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>

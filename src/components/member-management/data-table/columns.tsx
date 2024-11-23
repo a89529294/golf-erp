@@ -1,6 +1,7 @@
 import fileIcon from "@/assets/black-file-icon.svg";
 import { AddCoinModal } from "@/components/category/add-coin-modal";
 import { Tablet } from "@/components/tablet";
+import { DeleteMemberModal } from "@/pages/member-management/members/components/delete-member-modal";
 import {
   Member,
   genderEnChMap,
@@ -31,6 +32,22 @@ const showSendPoints = (category: string, userPermissions: string[]) => {
   return false;
 };
 
+const showDeleteMember = (category: string, userPermissions: string[]) => {
+  if (
+    category === "ground" &&
+    userPermissions.includes("練習場-刪除使用者權限")
+  )
+    return true;
+
+  if (
+    category === "simulator" &&
+    userPermissions.includes("模擬器-刪除使用者權限")
+  )
+    return true;
+
+  return false;
+};
+
 export const columns = (
   storeId: string,
   category: "ground" | "simulator" | "golf",
@@ -50,7 +67,8 @@ export const columns = (
           </div>
         );
       },
-      size: 7.2,
+      size: 5.2,
+      meta: { className: "px-2" },
     }),
 
     ...(showSendPoints(category, userPermissions)
@@ -62,7 +80,29 @@ export const columns = (
               const appUserId = props.row.original.id;
               return <AddCoinModal appUserId={appUserId} storeId={storeId} />;
             },
-            size: 11.2,
+            size: 9.2,
+            meta: {
+              className: "px-2 ",
+            },
+          }),
+        ]
+      : []),
+    ...(showDeleteMember(category, userPermissions)
+      ? [
+          columnHelper.display({
+            id: "delete_member",
+            header: "",
+            cell: (props) => {
+              const appUserId = props.row.original.id;
+              const appUserName = props.row.original.chName;
+              return (
+                <DeleteMemberModal userId={appUserId} userName={appUserName} />
+              );
+            },
+            size: 5.2,
+            meta: {
+              className: "px-2",
+            },
           }),
         ]
       : []),

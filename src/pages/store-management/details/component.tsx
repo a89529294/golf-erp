@@ -235,7 +235,9 @@ export function Component() {
       }
 
       const newChargeImage = form.getValues("chargeImages");
+
       console.log(newChargeImage);
+
       if (newChargeImage) {
         const formData = new FormData();
         formData.append("image", (values.chargeImages as FileList).item(0)!);
@@ -280,6 +282,10 @@ export function Component() {
       invoiceHashIV: form.getValues("invoiceHashIV"),
     });
   }
+
+  const newChargeImage = form.getValues("chargeImages");
+
+  console.log(newChargeImage);
 
   return (
     <MainLayout

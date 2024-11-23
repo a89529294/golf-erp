@@ -50,6 +50,8 @@ export function Component() {
       setHeaderRowHeight(headerRowRef.current.clientHeight);
   });
 
+  console.log(user?.permissions);
+
   return (
     <MainLayout
       headerChildren={

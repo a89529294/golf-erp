@@ -22,10 +22,16 @@ import { CSSProperties, Dispatch, ReactNode, SetStateAction } from "react";
 import React from "react";
 import { DataTablePagination } from "@/pages/member-management/members/data-table/data-table-pagination";
 import { Spinner } from "@/components/ui/spinner";
+import "@tanstack/react-table";
 
 declare module "@tanstack/react-table" {
   interface FilterFns {
     fuzzy: FilterFn<unknown>;
+  }
+  interface ColumnMeta<TData, TValue> {
+    className?: string;
+    x?: TData;
+    y?: TValue;
   }
 }
 
@@ -179,7 +185,7 @@ const DataTable: <TData extends { id: string }, TValue>({
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
                       key={cell.id}
-                      className=" py-[18px] last-of-type:px-0"
+                      className={`py-[18px] last-of-type:px-0 ${cell.column.columnDef.meta?.className ?? ""}`}
                     >
                       {flexRender(
                         cell.column.columnDef.cell,
