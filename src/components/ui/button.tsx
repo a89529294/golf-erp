@@ -140,7 +140,11 @@ export const TextButton = forwardRef<
   return (
     <button
       ref={ref}
-      className={cn(button({ iconLess: true, size: "wide" }), className)}
+      className={cn(
+        button({ iconLess: true, size: "wide" }),
+        "whitespace-nowrap",
+        className,
+      )}
       onClick={onClick}
       {...props}
     >
@@ -159,6 +163,7 @@ export const TextWarningButton = forwardRef<
       ref={ref}
       className={cn(
         button({ iconLess: true, size: "wide", color: "warning" }),
+        "whitespace-nowrap",
         className,
       )}
       onClick={onClick}

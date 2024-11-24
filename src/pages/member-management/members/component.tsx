@@ -21,6 +21,7 @@ import { genColumns } from "./data-table/columns.tsx";
 import { DataTable } from "@/pages/member-management/members/data-table/data-table.tsx";
 import { SortingState } from "@tanstack/react-table";
 import { SendToAllCouponModal } from "@/components/coupon-management/send-to-all-coupon-modal.tsx";
+import { LayoutGroup } from "framer-motion";
 
 export function Component() {
   const { user } = useAuth();
@@ -33,6 +34,8 @@ export function Component() {
     { id: "updatedAt", desc: true },
   ]);
   const debouncedGlobalFilter = useDebouncedValue(globalFilter, 500);
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const isSearchActive = isSearchFocused ? true : !!globalFilter;
   const [page, setPage] = useState(1);
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
 
@@ -50,28 +53,34 @@ export function Component() {
       setHeaderRowHeight(headerRowRef.current.clientHeight);
   });
 
-  console.log(user?.permissions);
+  // console.log(user?.permissions);
 
   return (
     <MainLayout
       headerChildren={
         <>
-          <Link
-            className={button()}
-            to={linksKV["member-management"].subLinks["members"].paths["new"]}
-          >
-            <img src={plusIcon} />
-            新增會員
-          </Link>
-          <SearchInput
-            // className="sm:hidden"
-            value={globalFilter}
-            setValue={(v) => {
-              setGlobalFilter(v);
-              setPage(1);
-            }}
-          />
-          <SendToAllCouponModal />
+          <div>
+            <Link
+              className={button()}
+              to={linksKV["member-management"].subLinks["members"].paths["new"]}
+            >
+              <img src={plusIcon} />
+              新增會員
+            </Link>
+          </div>
+          <LayoutGroup>
+            <SearchInput
+              // className="sm:hidden"
+              value={globalFilter}
+              setValue={(v) => {
+                setGlobalFilter(v);
+                setPage(1);
+              }}
+              isFocused={isSearchFocused}
+              setIsFocused={setIsSearchFocused}
+            />
+            <SendToAllCouponModal show={!isSearchActive} />
+          </LayoutGroup>
         </>
       }
     >

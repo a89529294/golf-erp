@@ -19,12 +19,15 @@ import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { useMutation } from "@tanstack/react-query";
 import { Dispatch, SetStateAction, useRef, useState } from "react";
 import { toast } from "sonner";
+import { AnimatePresence, motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 
-export function SendToAllCouponModal() {
+export function SendToAllCouponModal({ show }: { show: boolean }) {
   const [open, setOpen] = useState(false);
   const [confirmationOpen, setConfirmationOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const formRef = useRef<HTMLFormElement | null>(null);
+
   const { mutateAsync } = useMutation({
     mutationKey: ["send-coupon"],
     mutationFn: async (prop: {
@@ -52,10 +55,24 @@ export function SendToAllCouponModal() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <IconButton icon="send">贈送優惠券</IconButton>
-      </DialogTrigger>
-
+      <DialogTrigger asChild></DialogTrigger>
+      <AnimatePresence mode="popLayout">
+        {show && (
+          <motion.div
+            className="overflow-hidden"
+            animate={{ width: "auto", originX: 1 }}
+            exit={{ width: 0, originX: 1 }}
+          >
+            <IconButton
+              icon="send"
+              className={cn("", !show && "px-0")}
+              // style={{ width: show ? "auto" : 0 }}
+            >
+              贈送優惠券
+            </IconButton>
+          </motion.div>
+        )}
+      </AnimatePresence>
       <DialogContent>
         <form
           id="xx"
@@ -184,9 +201,11 @@ function ConfirmationModal({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <TextButton type="button" onClick={onClick}>
-          確定
-        </TextButton>
+        <motion.div layout>
+          <TextButton type="button" onClick={onClick}>
+            確定
+          </TextButton>
+        </motion.div>
       </DialogTrigger>
       <DialogContent className="px-4 py-2">
         <DialogHeader>
