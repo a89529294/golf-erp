@@ -3,7 +3,7 @@ import * as React from "react";
 export default function useMediaQuery(mediaQueryString: string) {
   const [matches, setMatches] = React.useState(false);
 
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     const mql = window.matchMedia(mediaQueryString);
     setMatches(mql.matches);
 

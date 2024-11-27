@@ -20,11 +20,20 @@ import { genColumns } from "./data-table/columns.tsx";
 // import { DataTable } from "./data-table/data-table.tsx";
 import { DataTable } from "@/pages/member-management/members/data-table/data-table.tsx";
 import { SortingState } from "@tanstack/react-table";
-import { SendToAllCouponModal } from "@/components/coupon-management/send-to-all-coupon-modal.tsx";
+import { CreateCouponThenSendModal } from "@/components/coupon-management/create-coupon-then-send-modal.tsx";
 import { LayoutGroup } from "framer-motion";
+import {
+  Menubar,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarTrigger,
+} from "@/components/ui/menubar";
+import { IconWarningButton } from "@/components/ui/button.tsx";
 
 export function Component() {
   const { user } = useAuth();
+  const [value, setValue] = useState("");
   const headerRowRef = useRef<HTMLTableRowElement>(null);
   const [headerRowHeight, setHeaderRowHeight] = useState(48);
   const isMobile = useMediaQuery("(max-width: 639px)");
@@ -58,17 +67,55 @@ export function Component() {
   return (
     <MainLayout
       headerChildren={
-        <>
-          <div>
-            <Link
-              className={button()}
-              to={linksKV["member-management"].subLinks["members"].paths["new"]}
+        isMobile ? (
+          <div className="flex items-center gap-1 ">
+            <Menubar
+              value={value}
+              onValueChange={setValue}
+              className="h-auto border-none bg-transparent"
             >
-              <img src={plusIcon} />
-              新增會員
-            </Link>
-          </div>
-          <LayoutGroup>
+              <MenubarMenu value="category-mobile-menu">
+                <MenubarTrigger className={button()}>選項</MenubarTrigger>
+                <MenubarContent>
+                  <MenubarItem>
+                    <Link
+                      className={button()}
+                      to={
+                        linksKV["member-management"].subLinks["members"].paths[
+                          "new"
+                        ]
+                      }
+                    >
+                      <img src={plusIcon} />
+                      新增會員
+                    </Link>
+                  </MenubarItem>
+                  <MenubarItem onClick={(e) => e.preventDefault()}>
+                    <CreateCouponThenSendModal
+                      show={true}
+                      userIds={Object.keys(rowSelection)}
+                      onClose={() => setValue("")}
+                    />
+                  </MenubarItem>
+                  {Object.keys(rowSelection).length > 0 && (
+                    <MenubarItem onClick={(e) => e.preventDefault()}>
+                      <IconWarningButton
+                        onClick={() => setRowSelection({})}
+                        icon="minus"
+                      >
+                        清空已選則
+                      </IconWarningButton>
+                    </MenubarItem>
+                  )}
+                  <MenubarItem onClick={(e) => e.preventDefault()}>
+                    <CreateCouponThenSendModal
+                      show={true}
+                      onClose={() => setValue("")}
+                    />
+                  </MenubarItem>
+                </MenubarContent>
+              </MenubarMenu>
+            </Menubar>
             <SearchInput
               // className="sm:hidden"
               value={globalFilter}
@@ -76,12 +123,49 @@ export function Component() {
                 setGlobalFilter(v);
                 setPage(1);
               }}
-              isFocused={isSearchFocused}
-              setIsFocused={setIsSearchFocused}
             />
-            <SendToAllCouponModal show={!isSearchActive} />
-          </LayoutGroup>
-        </>
+          </div>
+        ) : (
+          <>
+            <div>
+              <Link
+                className={button()}
+                to={
+                  linksKV["member-management"].subLinks["members"].paths["new"]
+                }
+              >
+                <img src={plusIcon} />
+                新增會員
+              </Link>
+            </div>
+            <LayoutGroup>
+              <SearchInput
+                // className="sm:hidden"
+                value={globalFilter}
+                setValue={(v) => {
+                  setGlobalFilter(v);
+                  setPage(1);
+                }}
+                isFocused={isSearchFocused}
+                setIsFocused={setIsSearchFocused}
+              />
+
+              <CreateCouponThenSendModal
+                show={!isSearchActive}
+                userIds={Object.keys(rowSelection)}
+              />
+              {Object.keys(rowSelection).length > 0 && (
+                <IconWarningButton
+                  onClick={() => setRowSelection({})}
+                  icon="minus"
+                >
+                  清空已選則
+                </IconWarningButton>
+              )}
+              <CreateCouponThenSendModal show={!isSearchActive} />
+            </LayoutGroup>
+          </>
+        )
       }
     >
       {isMobile ? (
@@ -103,6 +187,7 @@ export function Component() {
                   totalPages={data.meta.pageCount}
                   isFetching={isFetching}
                   isFetched={isFetched}
+                  enableMultiRowSelection
                 />
               )}
             </div>
@@ -135,6 +220,7 @@ export function Component() {
               totalPages={data.meta.pageCount}
               isFetching={isFetching}
               isFetched={isFetched}
+              enableMultiRowSelection
             />
           )}
         </div>

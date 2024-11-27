@@ -22,7 +22,17 @@ import { toast } from "sonner";
 import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
-export function SendToAllCouponModal({ show }: { show: boolean }) {
+export function CreateCouponThenSendModal({
+  show,
+  userIds,
+  resetUserIds,
+  onClose,
+}: {
+  show: boolean;
+  userIds?: string[];
+  resetUserIds?: () => void;
+  onClose?: () => void;
+}) {
   const [open, setOpen] = useState(false);
   const [confirmationOpen, setConfirmationOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -54,25 +64,37 @@ export function SendToAllCouponModal({ show }: { show: boolean }) {
   });
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild></DialogTrigger>
+    <Dialog
+      open={open}
+      onOpenChange={(v) => {
+        setOpen(v);
+        if (!v && onClose) onClose();
+      }}
+    >
       <AnimatePresence mode="popLayout">
         {show && (
           <motion.div
             className="overflow-hidden"
-            animate={{ width: "auto", originX: 1 }}
-            exit={{ width: 0, originX: 1 }}
+            animate={{ width: "auto", originX: "right" }}
+            exit={{ width: 0, originX: "right" }}
           >
-            <IconButton
-              icon="send"
-              className={cn("", !show && "px-0")}
-              // style={{ width: show ? "auto" : 0 }}
-            >
-              贈送優惠券
-            </IconButton>
+            <DialogTrigger asChild disabled={userIds && userIds.length === 0}>
+              <IconButton
+                icon="send"
+                className={cn(
+                  "",
+                  !show && "px-0",
+                  "border border-line-gray outline-none hover:border-[1.5px] hover:border-orange",
+                )}
+                // style={{ width: show ? "auto" : 0 }}
+              >
+                {userIds ? "贈送優惠券" : "全體贈送優惠券"}
+              </IconButton>
+            </DialogTrigger>
           </motion.div>
         )}
       </AnimatePresence>
+
       <DialogContent>
         <form
           id="xx"
@@ -168,6 +190,7 @@ export function SendToAllCouponModal({ show }: { show: boolean }) {
                 });
                 setLoading(false);
                 setOpen(false);
+                onClose && onClose();
                 setConfirmationOpen(false);
               }}
               open={confirmationOpen}
@@ -180,7 +203,7 @@ export function SendToAllCouponModal({ show }: { show: boolean }) {
           </DialogFooter>
         </form>
       </DialogContent>
-      <DialogDescription />
+      <DialogDescription className="hidden" />
     </Dialog>
   );
 }

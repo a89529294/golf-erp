@@ -12,6 +12,7 @@ export function SearchInput({
   className,
   isFocused,
   setIsFocused,
+  mobileWidth,
 }: {
   value: string;
   setValue: Dispatch<SetStateAction<string>>;
@@ -19,6 +20,7 @@ export function SearchInput({
   className?: string;
   isFocused?: boolean;
   setIsFocused?: Dispatch<SetStateAction<boolean>>;
+  mobileWidth?: number;
 }) {
   const isMobile = useIsMobile();
   const [internalFocused, setInternalFocused] = useState(false);
@@ -34,8 +36,11 @@ export function SearchInput({
 
   return (
     <motion.div
-      className="border"
-      style={{ borderColor: isActive ? "rgb(233 158 24)" : "rgb(182 182 182)" }}
+      className={cn(
+        "outline outline-1 outline-line-gray hover:outline-[1.5px] hover:outline-orange",
+        isActive && "border-orange",
+      )}
+      // style={{ borderColor: isActive ? "rgb(233 158 24)" : "rgb(182 182 182)" }}
       layout
     >
       <motion.label
@@ -46,7 +51,7 @@ export function SearchInput({
           className,
         )}
         style={{
-          width: isActive ? (isMobile ? 160 : 250) : 46,
+          width: isActive ? (isMobile ? mobileWidth || 160 : 250) : 46,
         }}
         layout
         onMouseDown={() => setIsClickingInside(true)}

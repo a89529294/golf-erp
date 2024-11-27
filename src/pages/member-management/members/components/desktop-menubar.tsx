@@ -84,7 +84,7 @@ export function DesktopMenubar({
               編輯
             </IconButton>
           )}
-          {storeId && <SendCouponModal storeId={storeId} />}
+          {storeId && <SendCouponModal show storeId={storeId} />}
         </>
       ) : (
         allowEdit && (

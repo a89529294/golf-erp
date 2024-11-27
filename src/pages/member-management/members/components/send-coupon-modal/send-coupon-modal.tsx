@@ -32,10 +32,16 @@ export function SendCouponModal({
   storeId,
   asMenuItem,
   closeMenu,
+  show,
+  userIds,
+  onClose,
 }: {
   storeId: string;
   asMenuItem?: boolean;
   closeMenu?: () => void;
+  show: boolean;
+  userIds?: "all" | string[];
+  onClose?: () => void;
 }) {
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
@@ -61,16 +67,25 @@ export function SendCouponModal({
   const { mutate, isPending } = useMutation({
     mutationKey: ["add-permission-to-user"],
     mutationFn: async () => {
-      await privateFetch(`/app-users/give-coupon`, {
-        method: "POST",
-        body: JSON.stringify({
-          appUserId: id,
-          couponId: Object.keys(rowSelection)[0],
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      // TODO: api not implemented yet
+      if (userIds === "all") {
+        // send coupon to all users
+      }
+
+      if (Array.isArray(userIds) && userIds.length > 0) {
+        // send coupon to selected users
+      } else {
+        await privateFetch(`/app-users/give-coupon`, {
+          method: "POST",
+          body: JSON.stringify({
+            appUserId: [id],
+            couponId: Object.keys(rowSelection)[0],
+          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
@@ -78,6 +93,7 @@ export function SendCouponModal({
       });
 
       setOpen(false);
+      onClose && onClose();
       toast.success("贈送優惠券成功");
     },
     onError: (e) => {
@@ -105,23 +121,30 @@ export function SendCouponModal({
       onOpenChange={(s) => {
         setOpen(s);
 
+        if (onClose && !s) onClose();
+
         if (!s) {
           setRowSelection({});
           closeMenu && closeMenu();
         }
       }}
     >
-      <DialogTrigger>
-        {asMenuItem ? (
-          <div className="flex gap-1">
-            <img src={couponIcon} />
-            發送優惠券
-          </div>
-        ) : (
-          <IconButton icon="coupon" type="button">
-            發送優惠券
-          </IconButton>
-        )}
+      <DialogTrigger
+        disabled={Array.isArray(userIds) && userIds.length === 0}
+        asChild
+      >
+        {show ? (
+          asMenuItem ? (
+            <div className="flex gap-1">
+              <img src={couponIcon} />
+              {userIds === "all" ? "全體發送優惠券" : "發送優惠券"}
+            </div>
+          ) : (
+            <IconButton icon="coupon" type="button">
+              {userIds === "all" ? "全體發送優惠券" : "發送優惠券"}
+            </IconButton>
+          )
+        ) : null}
       </DialogTrigger>
       <DialogContent>
         <form
@@ -171,7 +194,7 @@ export function SendCouponModal({
           </DialogFooter>
         </form>
       </DialogContent>
-      <DialogTitle />
+      <DialogTitle className="hidden" />
     </Dialog>
   );
 }

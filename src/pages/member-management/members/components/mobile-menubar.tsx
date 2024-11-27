@@ -121,6 +121,7 @@ export function MobileMenubar<T extends FieldValues>({
                     closeMenu={() => setValue("")}
                     asMenuItem
                     storeId={storeId}
+                    show
                   />
                 )}
               </MenubarItem>

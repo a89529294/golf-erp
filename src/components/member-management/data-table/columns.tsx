@@ -1,6 +1,7 @@
 import fileIcon from "@/assets/black-file-icon.svg";
 import { AddCoinModal } from "@/components/category/add-coin-modal";
 import { Tablet } from "@/components/tablet";
+import { Checkbox } from "@/components/ui/checkbox";
 import { DeleteMemberModal } from "@/pages/member-management/members/components/delete-member-modal";
 import {
   Member,
@@ -54,6 +55,18 @@ export const columns = (
   userPermissions: string[],
 ) => {
   return [
+    columnHelper.display({
+      id: "checkbox",
+      size: 3,
+      cell: ({ row }) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      ),
+    }),
+
     columnHelper.accessor((row) => (row.isActive ? "恢復" : "停權"), {
       id: "isActive",
       header: "",
@@ -110,7 +123,7 @@ export const columns = (
       header: ({ column }) => {
         return (
           <button
-            className="flex items-center gap-1"
+            className="flex items-center gap-1 whitespace-nowrap"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             帳號
@@ -140,7 +153,7 @@ export const columns = (
       header: ({ column }) => {
         return (
           <button
-            className="flex items-center gap-1"
+            className="flex items-center gap-1 whitespace-nowrap"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             姓名
@@ -154,7 +167,7 @@ export const columns = (
       size: 10,
     }),
     columnHelper.accessor("phone", {
-      header: "電話",
+      header: () => <div className="whitespace-nowrap">電話</div>,
       cell: (props) => props.getValue(),
       size: 11.7,
     }),
@@ -177,7 +190,7 @@ export const columns = (
       header: ({ column }) => {
         return (
           <button
-            className="flex items-center gap-1"
+            className="flex items-center gap-1 whitespace-nowrap"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             生日

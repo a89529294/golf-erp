@@ -102,6 +102,7 @@ const DataTable: <TData extends { id: string }, TValue>({
   paginationStyle,
 }) {
   // const [sorting, setSorting] = useState<SortingState>([]);
+  console.log(rowSelection);
 
   const table = useReactTable({
     data: data,
@@ -118,6 +119,7 @@ const DataTable: <TData extends { id: string }, TValue>({
     getRowId: (row) => row.id,
     onSortingChange: setSorting,
     // getSortedRowModel: getSortedRowModel(),
+
     state: {
       rowSelection,
       globalFilter,

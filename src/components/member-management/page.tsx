@@ -13,6 +13,18 @@ import { columns } from "./data-table/columns";
 import { DataTable } from "./data-table/data-table";
 import { StoreSelect } from "@/components/category/store-select";
 import { useAuth } from "@/hooks/use-auth";
+import useMediaQuery from "@/hooks/use-media-query";
+import { LayoutGroup } from "framer-motion";
+import { IconWarningButton } from "@/components/ui/button";
+import { SendCouponModal } from "@/pages/member-management/members/components/send-coupon-modal/send-coupon-modal";
+import {
+  Menubar,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarTrigger,
+} from "@/components/ui/menubar";
+import { button } from "@/components/ui/button-cn";
 
 const navigateMap = {
   ground: "/driving-range/member-management",
@@ -39,6 +51,10 @@ export function MemberManagementPage({
   const [globalFilter, setGlobalFilter] = useState("");
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
   const auth = useAuth();
+  const isMobile = useMediaQuery("(max-width: 639px)");
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const isSearchActive = isSearchFocused ? true : !!globalFilter;
+  const [value, setValue] = useState("");
 
   const {
     data: members,
@@ -60,18 +76,107 @@ export function MemberManagementPage({
   return (
     <MainLayout
       headerChildren={
-        <>
-          <StoreSelect
-            category={category}
-            initialData={initialData}
-            navigateTo={navigateMap[category]}
-          />
-          <SearchInput
-            // className="sm:hidden"
-            value={globalFilter}
-            setValue={setGlobalFilter}
-          />
-        </>
+        isMobile ? (
+          <div className="flex items-center gap-1 ">
+            <Menubar
+              value={value}
+              onValueChange={setValue}
+              className="h-auto border-none bg-transparent"
+            >
+              <MenubarMenu value="category-mobile-menu">
+                <MenubarTrigger className={button()}>選項</MenubarTrigger>
+                <MenubarContent>
+                  {storeId && (
+                    <MenubarItem onClick={(e) => e.preventDefault()}>
+                      <SendCouponModal
+                        show={true}
+                        userIds={Object.keys(rowSelection)}
+                        onClose={() => setValue("")}
+                        storeId={storeId}
+                      />
+                    </MenubarItem>
+                  )}
+                  {Object.keys(rowSelection).length > 0 && (
+                    <MenubarItem onClick={(e) => e.preventDefault()}>
+                      <IconWarningButton
+                        onClick={() => setRowSelection({})}
+                        icon="minus"
+                      >
+                        清空已選則
+                      </IconWarningButton>
+                    </MenubarItem>
+                  )}
+                  {storeId && (
+                    <MenubarItem onClick={(e) => e.preventDefault()}>
+                      <SendCouponModal
+                        storeId={storeId}
+                        show={!isSearchActive}
+                        userIds={"all"}
+                      />
+                    </MenubarItem>
+                  )}
+                </MenubarContent>
+              </MenubarMenu>
+            </Menubar>
+            <StoreSelect
+              category={category}
+              initialData={initialData}
+              navigateTo={navigateMap[category]}
+            />
+            <SearchInput
+              mobileWidth={120}
+              value={globalFilter}
+              setValue={(v) => {
+                setGlobalFilter(v);
+                // setPage(1);
+              }}
+            />
+          </div>
+        ) : (
+          <>
+            <StoreSelect
+              category={category}
+              initialData={initialData}
+              navigateTo={navigateMap[category]}
+            />
+            <LayoutGroup>
+              <SearchInput
+                // className="sm:hidden"
+                value={globalFilter}
+                setValue={(v) => {
+                  setGlobalFilter(v);
+                  // setPage(1);
+                }}
+                isFocused={isSearchFocused}
+                setIsFocused={setIsSearchFocused}
+              />
+
+              {storeId && (
+                <SendCouponModal
+                  storeId={storeId}
+                  show={!isSearchActive}
+                  userIds={Object.keys(rowSelection)}
+                />
+              )}
+
+              {Object.keys(rowSelection).length > 0 && (
+                <IconWarningButton
+                  onClick={() => setRowSelection({})}
+                  icon="minus"
+                >
+                  清空已選則
+                </IconWarningButton>
+              )}
+              {storeId && (
+                <SendCouponModal
+                  storeId={storeId}
+                  show={!isSearchActive}
+                  userIds={"all"}
+                />
+              )}
+            </LayoutGroup>
+          </>
+        )
       }
     >
       {/* {isMobile ? (

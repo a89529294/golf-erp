@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { SimpleMember, genderEnChMap, memberTypeEnChMap } from "../loader";
 import { ReactNode } from "react";
 import { DeleteMemberModal } from "@/pages/member-management/members/components/delete-member-modal";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const columnHelper = createColumnHelper<SimpleMember>();
 
@@ -21,6 +22,17 @@ export const genColumns = (
   resetCurrentPage: () => void,
 ) =>
   [
+    columnHelper.display({
+      id: "checkbox",
+      size: 3,
+      cell: ({ row }) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      ),
+    }),
     columnHelper.accessor((row) => (row.isActive ? "恢復" : "停權"), {
       id: "isActive",
       header: "",

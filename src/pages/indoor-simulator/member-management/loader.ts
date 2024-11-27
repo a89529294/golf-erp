@@ -15,7 +15,6 @@ export const getStoresQuery = (
       );
 
       const data = await response.json();
-      console.log(".1.");
 
       return data.data as { id: string; name: string }[];
       // const queryString = qs.stringify({
