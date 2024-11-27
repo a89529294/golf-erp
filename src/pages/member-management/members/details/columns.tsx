@@ -36,7 +36,10 @@ export const topUpHistorycolumns = [
       </button>
     ),
     cell: (props) => {
-      const ed = new Date(props.getValue());
+      const ed = props.getValue() ? new Date(props.getValue()) : "";
+
+      if (typeof ed === "string") return <div className="text-orange" />;
+
       ed.setHours(ed.getHours() + 8);
       const edFormatted = new Intl.DateTimeFormat("en-CA", {
         year: "numeric",
