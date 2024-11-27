@@ -6,6 +6,7 @@ import {
 } from "../loader";
 import { ArrowUpDown } from "lucide-react";
 import { addDays, format } from "date-fns";
+import { formatDateString } from "@/utils";
 
 const topUpHistoryColumnHelper = createColumnHelper<MemberAppChargeHistory>();
 const spendingHistoryColumnHelper = createColumnHelper<MemberSpendingHistory>();
@@ -36,7 +37,9 @@ export const topUpHistorycolumns = [
       </button>
     ),
     cell: (props) => {
-      const ed = props.getValue() ? new Date(props.getValue()) : "";
+      const ed = props.getValue()
+        ? new Date(formatDateString(props.getValue()))
+        : "";
 
       if (typeof ed === "string") return <div className="text-orange" />;
 
@@ -128,7 +131,7 @@ export const spendingHistoryColumns = [
       </button>
     ),
     cell: (props) => {
-      const sd = new Date(props.getValue());
+      const sd = new Date(formatDateString(props.getValue()));
 
       sd.setHours(sd.getHours() - 8);
 
@@ -158,7 +161,7 @@ export const spendingHistoryColumns = [
       </button>
     ),
     cell: (props) => {
-      const sd = new Date(props.getValue());
+      const sd = new Date(formatDateString(props.getValue()));
 
       sd.setHours(sd.getHours() - 8);
 

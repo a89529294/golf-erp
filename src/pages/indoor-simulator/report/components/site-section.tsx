@@ -4,7 +4,7 @@ import { CircularProgressWithDesc } from "@/pages/indoor-simulator/report/compon
 import { TextButton } from "@/pages/indoor-simulator/report/components/text-button";
 import { Order, ReportData } from "@/pages/indoor-simulator/report/loader";
 import { reportTimeRange } from "@/types-and-schemas/report";
-import { roundUpToOneDecimalPlace } from "@/utils";
+import { formatDateString, roundUpToOneDecimalPlace } from "@/utils";
 import {
   endOfMonth,
   endOfYear,
@@ -189,7 +189,7 @@ export function SiteSection({
       let sdFormatted = "";
       let edFormatted = "";
       if (v.simulatorAppointment?.startTime) {
-        sd = new Date(v.simulatorAppointment.startTime);
+        sd = new Date(formatDateString(v.simulatorAppointment.startTime));
         sd.setHours(sd.getHours() - 8);
         sdFormatted = new Intl.DateTimeFormat("en-CA", {
           year: "numeric",
@@ -204,7 +204,8 @@ export function SiteSection({
           .replace(",", "");
       }
       if (v.simulatorAppointment?.endTime) {
-        ed = new Date(v.simulatorAppointment.endTime);
+        ed = new Date(formatDateString(v.simulatorAppointment.endTime));
+
         ed.setHours(ed.getHours() - 8);
 
         edFormatted = new Intl.DateTimeFormat("en-CA", {

@@ -332,3 +332,17 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
     totalPages,
   ];
 };
+
+export function formatDateString(s: string) {
+  return s.replace(
+    /(\d{4}-\d{2}-\d{2}) (\d{1,2}):(\d{1,2}):(\d{1,2})/,
+    (match, date, hour, minute, second) => {
+      // Pad hour, minute, and second to 2 digits if necessary
+      const paddedHour = hour.padStart(2, "0");
+      const paddedMinute = minute.padStart(2, "0");
+      const paddedSecond = second.padStart(2, "0");
+
+      return `${date}T${paddedHour}:${paddedMinute}:${paddedSecond}`;
+    },
+  );
+}

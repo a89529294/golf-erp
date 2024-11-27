@@ -5,7 +5,7 @@ import { TextButton } from "@/pages/driving-range/report/components/text-button"
 import { ReportData } from "@/pages/driving-range/report/loader";
 import { Appointment } from "@/types-and-schemas/appointment";
 import { reportTimeRange } from "@/types-and-schemas/report";
-import { roundUpToOneDecimalPlace } from "@/utils";
+import { formatDateString, roundUpToOneDecimalPlace } from "@/utils";
 import {
   endOfMonth,
   endOfYear,
@@ -177,7 +177,7 @@ export function SiteSection({
       let sdFormatted = "";
       let edFormatted = "";
       if (v.startTime) {
-        sd = new Date(v.startTime);
+        sd = new Date(formatDateString(v.startTime));
         sd.setHours(sd.getHours() - 8);
         sdFormatted = new Intl.DateTimeFormat("en-CA", {
           year: "numeric",
@@ -192,7 +192,7 @@ export function SiteSection({
           .replace(",", "");
       }
       if (v.endTime) {
-        ed = new Date(v.endTime);
+        ed = new Date(formatDateString(v.endTime));
         ed.setHours(ed.getHours() - 8);
 
         edFormatted = new Intl.DateTimeFormat("en-CA", {
