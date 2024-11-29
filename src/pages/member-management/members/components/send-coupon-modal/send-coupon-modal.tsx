@@ -78,7 +78,7 @@ export function SendCouponModal({
         await privateFetch(`/app-users/give-coupon`, {
           method: "POST",
           body: JSON.stringify({
-            appUserId: [id],
+            appUserId: id,
             couponId: Object.keys(rowSelection)[0],
           }),
           headers: {
@@ -163,7 +163,7 @@ export function SendCouponModal({
             {coupons && (
               <div className=" before:fixed before:h-12 before:w-1 before:bg-light-gray">
                 <div className="fixed right-[57px] h-12 w-1 bg-light-gray" />
-                <div className="sticky top-12 z-10 w-full border-b border-line-gray" />
+                <div className="sticky z-10 w-full border-b top-12 border-line-gray" />
                 <DataTable
                   columns={columns}
                   data={Array(1).fill(coupons).flat()}
@@ -179,7 +179,7 @@ export function SendCouponModal({
           </ScrollArea>
 
           {/* </DialogHeader> */}
-          <DialogFooter className="mt-6 justify-center">
+          <DialogFooter className="justify-center mt-6">
             <TextButton
               type="submit"
               form="xx"
