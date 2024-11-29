@@ -76,7 +76,7 @@ export function DataTable<TData extends Appointment, TValue>({
             電話: r.original.appUser?.phone,
             開始時間: r.original.startTime,
             結束時間: r.original.endTime,
-            付款方式: r.original.order?.paymentMethod ?? "現金",
+            付款方式: r.original.order?.paymentMethod ?? "點數",
             狀態: r.original.status,
             原訂單金額: originAmount,
             折數: percentOff,
@@ -196,7 +196,7 @@ export function DataTable<TData extends Appointment, TValue>({
                                   付款方式
                                 </p>
                                 <p className="text-secondary-purple ">
-                                  {row.original.order?.paymentMethod ?? "現金"}
+                                  {row.original.order?.paymentMethod ?? "點數"}
                                 </p>
                               </div>
                               <div className="w-14">
