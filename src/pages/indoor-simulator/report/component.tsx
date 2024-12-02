@@ -20,6 +20,8 @@ import {
   useSearchParams,
 } from "react-router-dom";
 import { genDataQuery, genIndoorSimulatorStoresQuery, loader } from "./loader";
+import { IconButton } from "@/components/ui/button";
+import { exportToExcel } from "@/utils";
 
 export function Component() {
   const isMobile = useIsMobile();
@@ -67,6 +69,17 @@ export function Component() {
     if (stores[0]) onStoreValueChange(stores[0].id, true);
   }, [stores, onStoreValueChange, storeId]);
 
+  const xlsxData = Object.values(data?.detailed ?? {}).flatMap((dayData) => {
+    return dayData.orders.map((v) => ({
+      名字: v.userName,
+      電話: v.userPhone,
+      開始時間: v.simulatorAppointment?.startTime ?? "",
+      結束時間: v.simulatorAppointment?.endTime ?? "",
+      付款方式: v.paymentMethod || "點數",
+      金額: v.amount,
+    }));
+  });
+
   return (
     <MainLayout
       headerChildren={
@@ -92,20 +105,23 @@ export function Component() {
               )}
             </SelectContent>
           </Select>
+          <IconButton icon="save" onClick={() => exportToExcel(xlsxData)}>
+            匯出訂單細節
+          </IconButton>
         </>
       }
     >
       {isMobile ? (
         ({ height }) => (
           <ScrollArea style={{ height }}>
-            <div className="w-full border border-line-gray bg-light-gray p-5">
+            <div className="w-full p-5 border border-line-gray bg-light-gray">
               {data && <ReportContainer data={data} stores={stores} />}
             </div>
             <Scrollbar orientation="horizontal" />
           </ScrollArea>
         )
       ) : (
-        <div className="w-full border border-line-gray bg-light-gray p-5">
+        <div className="w-full p-5 border border-line-gray bg-light-gray">
           {data && <ReportContainer data={data} stores={stores} />}
         </div>
       )}

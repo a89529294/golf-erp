@@ -11,6 +11,7 @@ import {
 } from "date-fns";
 import { NavigateFunction, SetURLSearchParams } from "react-router-dom";
 import { privateFetch } from "./utils";
+import * as XLSX from "xlsx";
 
 export const base_url = import.meta.env.VITE_BASE_URL;
 
@@ -345,4 +346,47 @@ export function formatDateString(s: string) {
       return `${date}T${paddedHour}:${paddedMinute}:${paddedSecond}`;
     },
   );
+}
+
+export function exportToExcel(
+  data: Record<string, string | number>[],
+  filename = "data.xlsx",
+) {
+  // Step 1: Convert the data to a worksheet
+  const worksheet = XLSX.utils.json_to_sheet(data);
+
+  // Step 2: Create a new workbook and append the worksheet
+  const workbook = XLSX.utils.book_new();
+
+  // Calculate the maximum width for each column
+  const columnWidths = (Object.keys(data[0]) as (keyof (typeof data)[0])[]).map(
+    (key) => {
+      const maxLength = Math.max(
+        key.length * 2, // header length
+        ...data.map((row) => {
+          return row[key] ? row[key]?.toString().length ?? 0 : 0;
+        }), // max length of each cell in the column
+      );
+      return { wch: maxLength + 2 }; // add padding for better readability
+    },
+  );
+
+  worksheet["!cols"] = columnWidths; // Set column widths in the worksheet
+
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+
+  // Step 3: Generate a binary Excel file
+  const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+
+  // Step 4: Create a Blob from the buffer
+  const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+
+  // Step 5: Create a link and trigger the download
+  const url = window.URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 }

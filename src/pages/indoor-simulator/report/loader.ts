@@ -55,14 +55,16 @@ const orderSchema = z.object({
       }),
       startTime: z.coerce.date().transform((v) => format(v, "y-MM-dd H:mm:ss")),
       endTime: z.coerce.date().transform((v) => format(v, "y-MM-dd H:mm:ss")),
-      appUser: z.object({
-        id: z.string(),
-        chName: z.string(),
-        phone: z
-          .string()
-          .nullish()
-          .transform((v) => v ?? ""),
-      }),
+      appUser: z
+        .object({
+          id: z.string(),
+          chName: z.string(),
+          phone: z
+            .string()
+            .nullish()
+            .transform((v) => v ?? ""),
+        })
+        .nullable(),
       amount: z.number(),
     })
     .nullable(),
