@@ -15,7 +15,8 @@ const showSendPoints = (userPermissions: string[]) =>
   userPermissions.includes("系統管理");
 
 const showDeleteMember = (userPermissions: string[]) =>
-  userPermissions.includes("系統刪除使用者");
+  userPermissions.includes("系統管理") ||
+  userPermissions.includes("系統管理-刪除使用者");
 
 export const genColumns = (
   userPermissions: string[],

@@ -27,6 +27,7 @@ import {
   loader,
 } from "@/pages/store-management/details/loader.ts";
 import couponIcon from "@/assets/coupon.svg";
+import { AnimatePresence, motion } from "framer-motion";
 
 export function SendCouponModal({
   storeId,
@@ -133,18 +134,26 @@ export function SendCouponModal({
         disabled={Array.isArray(userIds) && userIds.length === 0}
         asChild
       >
-        {show ? (
-          asMenuItem ? (
-            <div className="flex gap-1">
-              <img src={couponIcon} />
-              {userIds === "all" ? "全體發送優惠券" : "發送優惠券"}
-            </div>
-          ) : (
-            <IconButton icon="coupon" type="button">
-              {userIds === "all" ? "全體發送優惠券" : "發送優惠券"}
-            </IconButton>
-          )
-        ) : null}
+        <AnimatePresence mode="popLayout">
+          {show ? (
+            asMenuItem ? (
+              <div className="flex gap-1">
+                <img src={couponIcon} />
+                {userIds === "all" ? "全體發送優惠券" : "發送優惠券"}
+              </div>
+            ) : (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1, transition: { delay: 0.3 } }}
+                exit={{ opacity: 0 }}
+              >
+                <IconButton icon="coupon" type="button">
+                  {userIds === "all" ? "全體發送優惠券" : "發送優惠券"}
+                </IconButton>
+              </motion.div>
+            )
+          ) : null}
+        </AnimatePresence>
       </DialogTrigger>
       <DialogContent>
         <form
@@ -163,7 +172,7 @@ export function SendCouponModal({
             {coupons && (
               <div className=" before:fixed before:h-12 before:w-1 before:bg-light-gray">
                 <div className="fixed right-[57px] h-12 w-1 bg-light-gray" />
-                <div className="sticky z-10 w-full border-b top-12 border-line-gray" />
+                <div className="sticky top-12 z-10 w-full border-b border-line-gray" />
                 <DataTable
                   columns={columns}
                   data={Array(1).fill(coupons).flat()}
@@ -179,7 +188,7 @@ export function SendCouponModal({
           </ScrollArea>
 
           {/* </DialogHeader> */}
-          <DialogFooter className="justify-center mt-6">
+          <DialogFooter className="mt-6 justify-center">
             <TextButton
               type="submit"
               form="xx"

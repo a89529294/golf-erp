@@ -36,13 +36,17 @@ const showSendPoints = (category: string, userPermissions: string[]) => {
 const showDeleteMember = (category: string, userPermissions: string[]) => {
   if (
     category === "ground" &&
-    userPermissions.includes("練習場-刪除使用者權限")
+    (userPermissions.includes("練習場-刪除使用者") ||
+      userPermissions.includes("系統管理") ||
+      userPermissions.includes("系統管理-刪除使用者"))
   )
     return true;
 
   if (
     category === "simulator" &&
-    userPermissions.includes("模擬器-刪除使用者權限")
+    (userPermissions.includes("模擬器-刪除使用者") ||
+      userPermissions.includes("系統管理") ||
+      userPermissions.includes("系統管理-刪除使用者"))
   )
     return true;
 
@@ -109,7 +113,11 @@ export const columns = (
               const appUserId = props.row.original.id;
               const appUserName = props.row.original.chName;
               return (
-                <DeleteMemberModal userId={appUserId} userName={appUserName} />
+                <DeleteMemberModal
+                  category={category}
+                  userId={appUserId}
+                  userName={appUserName}
+                />
               );
             },
             size: 5.2,

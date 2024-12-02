@@ -1,35 +1,36 @@
 import { Modal } from "@/components/modal";
 import { TabletDeleteMember } from "@/components/tablet";
 
-// import { privateFetch } from "@/utils/utils";
+import { privateFetch } from "@/utils/utils";
+import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 export function DeleteMemberModal({
   userId,
   userName,
+  category,
 }: {
   userId: string;
   userName: string;
+  category?: string;
 }) {
+  const queryClient = useQueryClient();
+
   return (
     <Modal
       className="flex h-[200px] w-[400px] flex-col"
       dialogTriggerChildren={<TabletDeleteMember />}
       onSubmit={async () => {
         try {
-          //   await privateFetch(`/app-users/${userId}/add-coin`, {
-          //     method: "POST",
-          //     headers: {
-          //       "Content-Type": "application/json",
-          //     },
-          //     body: JSON.stringify({
-          //       coin: amount,
-          //       storeId: storeId,
-          //     }),
-          //   });
-          // TODO: replace with real api
-          await new Promise((r) => setTimeout(r, 2000));
+          await privateFetch(`/app-users/${userId}`, {
+            method: "DELETE",
+          });
+
           toast.success("刪除會員成功");
+          queryClient.invalidateQueries({ queryKey: ["members"] });
+
+          if (category)
+            queryClient.invalidateQueries({ queryKey: [category, "members"] });
         } catch (e) {
           console.log(e);
           toast.error("刪除會員失敗");
