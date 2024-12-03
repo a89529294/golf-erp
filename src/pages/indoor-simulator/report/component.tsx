@@ -19,7 +19,12 @@ import {
   useParams,
   useSearchParams,
 } from "react-router-dom";
-import { genDataQuery, genIndoorSimulatorStoresQuery, loader } from "./loader";
+import {
+  genDataQuery,
+  genIndoorSimulatorStoresQuery,
+  loader,
+  Order,
+} from "./loader";
 import { IconButton } from "@/components/ui/button";
 import { exportToExcel } from "@/utils";
 
@@ -69,16 +74,68 @@ export function Component() {
     if (stores[0]) onStoreValueChange(stores[0].id, true);
   }, [stores, onStoreValueChange, storeId]);
 
-  const xlsxData = Object.values(data?.detailed ?? {}).flatMap((dayData) => {
-    return dayData.orders.map((v) => ({
-      名字: v.userName,
-      電話: v.userPhone,
-      開始時間: v.simulatorAppointment?.startTime ?? "",
-      結束時間: v.simulatorAppointment?.endTime ?? "",
-      付款方式: v.paymentMethod || "點數",
-      金額: v.amount,
-    }));
+  // const xlsxData = Object.values(data?.detailed ?? {}).flatMap((dayData) => {
+  //   return dayData.orders.map((v) => ({
+  //     名字: v.userName,
+  //     電話: v.userPhone,
+  //     開始時間: v.simulatorAppointment?.startTime ?? "",
+  //     結束時間: v.simulatorAppointment?.endTime ?? "",
+  //     付款方式: v.paymentMethod || "點數",
+  //     金額: v.amount,
+  //   }));
+  // });
+
+  const ordersWithNulls = Object.values(data?.detailed ?? {}).flatMap((v) => {
+    return v.orders.filter((order) => order.appChargeHistory);
   });
+
+  const orders = ordersWithNulls.filter((v): v is Order => !!v);
+
+  const b = orders.map((o) => ({
+    時間: o.createdAt,
+    名稱: o.userName,
+    電話: o.userPhone,
+    merchantId: o.merchantId,
+    付款方式: o.paymentMethod,
+    訂單金額: o.amount,
+  }));
+
+  const a = Object.values(data?.detailed ?? {}).reduce(
+    (acc, v) => {
+      v.orders.forEach((order) => {
+        const newOrderData = {
+          名字: order.userName,
+          電話: order.userPhone,
+          開始時間: order.simulatorAppointment?.startTime ?? "",
+          結束時間: order.simulatorAppointment?.endTime ?? "",
+          merchantId: order.merchantId,
+          付款方式: order.paymentMethod || "點數",
+          金額: order.amount,
+        };
+
+        if (
+          order.simulatorAppointment?.storeSimulator.name &&
+          acc[order.simulatorAppointment.storeSimulator.name]
+        ) {
+          acc = {
+            ...acc,
+            [order.simulatorAppointment.storeSimulator.name]: [
+              ...acc[order.simulatorAppointment.storeSimulator.name],
+              newOrderData,
+            ],
+          };
+        } else if (order.simulatorAppointment?.storeSimulator.name) {
+          acc = {
+            ...acc,
+            [order.simulatorAppointment.storeSimulator.name]: [newOrderData],
+          };
+        }
+      });
+
+      return acc;
+    },
+    {} as Record<string, Record<string, string | number>[]>,
+  );
 
   return (
     <MainLayout
@@ -105,7 +162,15 @@ export function Component() {
               )}
             </SelectContent>
           </Select>
-          <IconButton icon="save" onClick={() => exportToExcel(xlsxData)}>
+          <IconButton
+            icon="save"
+            onClick={() =>
+              exportToExcel({
+                ...a,
+                儲值紀錄: b,
+              })
+            }
+          >
             匯出訂單細節
           </IconButton>
         </>

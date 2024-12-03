@@ -61,7 +61,6 @@ export function MainChart({
         : Object.values(data.detailed).map((v) => {
             return activeDataType === "revenue" ? v.totalAmount : v.totalCount;
           });
-    console.log(yData);
 
     if (!document.getElementById("chart")) return;
     const myChart = new Chart(
@@ -120,7 +119,6 @@ export function MainChart({
                   return `$ ${nf.format(tooltipItems[0].parsed.y)}`;
                 },
                 label(tooltipItem) {
-                  console.log(tooltipItem);
                   return tooltipItem.label;
                   // const isMonthLabel = "1" in data.detailed;
                   // if (isMonthLabel)

@@ -35,12 +35,81 @@ export function ChartStatsAndRange({
       }
     : undefined;
   const totalRevenue = data.total.totalAmount;
+
+  const totalFee = data.total.orders.reduce(
+    (acc, val) => {
+      if (
+        val.paymentMethod === "NewebPay" ||
+        val.paymentMethod === "ApplePay"
+      ) {
+        return {
+          linePay: acc.linePay,
+          newebPay: acc.newebPay + Math.round(val.amount * 0.028),
+        };
+      }
+
+      if (val.paymentMethod === "LinePay") {
+        return {
+          linePay: acc.linePay + Math.round(val.amount * 0.0315),
+          newebPay: acc.newebPay,
+        };
+      }
+
+      return acc;
+    },
+    {
+      newebPay: 0,
+      linePay: 0,
+    },
+  );
+
   const totalAppointmentCount = data.total.totalCount;
 
   const yearTotalRevenue = Object.values(data.year).reduce(
     (acc, v) => acc + (v.totalAmount ?? 0),
     0,
   );
+
+  const yearlyFee = Object.values(data.year).reduce(
+    (acc, val) => {
+      const monthlyFee = val.orders.reduce(
+        (a, v) => {
+          if (
+            v.paymentMethod === "ApplePay" ||
+            v.paymentMethod === "NewebPay"
+          ) {
+            return {
+              np: a.np + Math.round(v.amount * 0.028),
+              lp: a.lp,
+            };
+          }
+
+          if (v.paymentMethod === "LinePay") {
+            return {
+              np: a.np,
+              lp: a.lp + Math.round(v.amount * 0.0315),
+            };
+          }
+
+          return a;
+        },
+        {
+          np: 0,
+          lp: 0,
+        },
+      );
+
+      return {
+        newebPay: acc.newebPay + monthlyFee.np,
+        linePay: acc.linePay + monthlyFee.lp,
+      };
+    },
+    {
+      newebPay: 0,
+      linePay: 0,
+    },
+  );
+
   const yearTotalAppointments = Object.values(data.year).reduce(
     (acc, v) => acc + v.totalCount,
     0,
@@ -49,6 +118,47 @@ export function ChartStatsAndRange({
     (acc, v) => acc + (v.totalAmount ?? 0),
     0,
   );
+
+  const rangeFee = Object.values(data.detailed).reduce(
+    (acc, val) => {
+      const monthlyFee = val.orders.reduce(
+        (a, v) => {
+          if (
+            v.paymentMethod === "ApplePay" ||
+            v.paymentMethod === "NewebPay"
+          ) {
+            return {
+              np: a.np + Math.round(v.amount * 0.028),
+              lp: a.lp,
+            };
+          }
+
+          if (v.paymentMethod === "LinePay") {
+            return {
+              np: a.np,
+              lp: a.lp + Math.round(v.amount * 0.0315),
+            };
+          }
+
+          return a;
+        },
+        {
+          np: 0,
+          lp: 0,
+        },
+      );
+
+      return {
+        newebPay: acc.newebPay + monthlyFee.np,
+        linePay: acc.linePay + monthlyFee.lp,
+      };
+    },
+    {
+      newebPay: 0,
+      linePay: 0,
+    },
+  );
+
   const rangeTotalAppointments = Object.values(data.detailed).reduce(
     (acc, v) => acc + v.totalCount,
     0,
@@ -83,6 +193,20 @@ export function ChartStatsAndRange({
       day: new Date().getDate() + "日營業額",
       custom: `指定範圍營業額`,
     },
+    fee: {
+      newebPay: {
+        year: new Date().getFullYear() + "藍新手續費",
+        month: new Date().getMonth() + 1 + "月藍新手續費",
+        day: new Date().getDate() + "日藍新手續費",
+        custom: `指定範圍藍新手續費`,
+      },
+      linePay: {
+        year: new Date().getFullYear() + "LinePay手續費",
+        month: new Date().getMonth() + 1 + "月LinePay手續費",
+        day: new Date().getDate() + "日LinePay手續費",
+        custom: `指定範圍LinePay手續費`,
+      },
+    },
     appointment: {
       year: new Date().getFullYear() + "訂單數",
       month: new Date().getMonth() + 1 + "月訂單數",
@@ -99,37 +223,68 @@ export function ChartStatsAndRange({
     return o["custom"];
   })();
 
+  const feeTitle = (pt: "newebPay" | "linePay") => {
+    if (isYearData) return obj["fee"][pt]["year"];
+    if (isMonthData) return obj["fee"][pt]["month"];
+    if (isDayData) return obj["fee"][pt]["day"];
+    return obj["fee"][pt]["custom"];
+  };
+
   return (
-    <div className="flex gap-2.5">
-      <GraphRevenueCell
-        title={activeDataType === "revenue" ? "總營業額" : "總訂單數"}
-        amount={
-          activeDataType === "revenue" ? totalRevenue : totalAppointmentCount
-        }
-      />
-      {activeDataType === "revenue" && (
+    <div className="flex justify-between">
+      <div className="grid grid-cols-4 gap-2.5">
         <GraphRevenueCell
-          title="金流手續費"
-          amount={Math.round(totalRevenue * 0.028)}
+          title={activeDataType === "revenue" ? "總營業額" : "總訂單數"}
+          amount={
+            activeDataType === "revenue" ? totalRevenue : totalAppointmentCount
+          }
         />
-      )}
-      {activeDataType === "revenue" && (
+        {activeDataType === "revenue" && (
+          <GraphRevenueCell title="藍新手續費" amount={totalFee.newebPay} />
+        )}
+        {activeDataType === "revenue" && (
+          <GraphRevenueCell title="LinePay手續費" amount={totalFee.linePay} />
+        )}
+        {activeDataType === "revenue" && (
+          <GraphRevenueCell
+            title="實際營業額"
+            amount={Math.round(totalRevenue * 0.972)}
+          />
+        )}
+
         <GraphRevenueCell
-          title="實際營業額"
-          amount={Math.round(totalRevenue * 0.972)}
+          title={title}
+          amount={
+            activeDataType === "revenue"
+              ? rangeTotalRevenue
+              : rangeTotalAppointments
+          }
+          leftSlot={
+            <CircularProgressBar size={60} filledPercentage={percentage} />
+          }
         />
-      )}
-      <GraphRevenueCell
-        title={title}
-        amount={
-          activeDataType === "revenue"
-            ? rangeTotalRevenue
-            : rangeTotalAppointments
-        }
-        leftSlot={
-          <CircularProgressBar size={60} filledPercentage={percentage} />
-        }
-      />
+        {activeDataType === "revenue" && (
+          <>
+            <GraphRevenueCell
+              title={feeTitle("newebPay")}
+              amount={isYearData ? yearlyFee.newebPay : rangeFee.newebPay}
+            />
+            <GraphRevenueCell
+              title={feeTitle("linePay")}
+              amount={isYearData ? yearlyFee.linePay : rangeFee.linePay}
+            />
+            <GraphRevenueCell
+              title={isYearData ? "年度實際營業額" : "範圍實際營業額"}
+              amount={
+                isYearData
+                  ? yearTotalRevenue - yearlyFee.newebPay - yearlyFee.linePay
+                  : rangeTotalRevenue - rangeFee.newebPay - rangeFee.linePay
+              }
+            />
+          </>
+        )}
+      </div>
+
       <div className="ml-auto flex flex-col items-end gap-2.5">
         <div className="flex gap-1.5 text-sm">
           <TextButton onClick={setDay} selected={isDayData}>
@@ -154,7 +309,7 @@ export function ChartStatsAndRange({
               {date && date.to && format(date.to, "yyyy/MM/dd")}
             </span>
             <button
-              className="grid size-4 place-items-center rounded-full bg-word-gray"
+              className="grid rounded-full size-4 place-items-center bg-word-gray"
               onClick={setMonth}
             >
               <img src={x} />

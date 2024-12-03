@@ -349,18 +349,22 @@ export function formatDateString(s: string) {
 }
 
 export function exportToExcel(
-  data: Record<string, string | number>[],
+  datasets: Record<string, Record<string, string | number>[]>, // Object with sheet names as keys and data arrays as values
   filename = "data.xlsx",
 ) {
-  // Step 1: Convert the data to a worksheet
-  const worksheet = XLSX.utils.json_to_sheet(data);
-
-  // Step 2: Create a new workbook and append the worksheet
+  console.log(datasets);
+  // Step 1: Create a new workbook
   const workbook = XLSX.utils.book_new();
 
-  // Calculate the maximum width for each column
-  const columnWidths = (Object.keys(data[0]) as (keyof (typeof data)[0])[]).map(
-    (key) => {
+  // Step 2: Iterate over datasets to create sheets
+  Object.entries(datasets).forEach(([sheetName, data]) => {
+    // Convert the data to a worksheet
+    const worksheet = XLSX.utils.json_to_sheet(data);
+
+    // Calculate the maximum width for each column
+    const columnWidths = (
+      Object.keys(data[0] ?? {}) as (keyof (typeof data)[0])[]
+    ).map((key) => {
       const maxLength = Math.max(
         key.length * 2, // header length
         ...data.map((row) => {
@@ -368,12 +372,13 @@ export function exportToExcel(
         }), // max length of each cell in the column
       );
       return { wch: maxLength + 2 }; // add padding for better readability
-    },
-  );
+    });
 
-  worksheet["!cols"] = columnWidths; // Set column widths in the worksheet
+    worksheet["!cols"] = columnWidths; // Set column widths in the worksheet
 
-  XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+    // Append the worksheet to the workbook with the given sheet name
+    XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
+  });
 
   // Step 3: Generate a binary Excel file
   const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
