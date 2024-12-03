@@ -21,7 +21,7 @@ export const topUpHistorycolumns = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         廠商
-        <ArrowUpDown className="ml-2 h-4 w-4" />
+        <ArrowUpDown className="w-4 h-4 ml-2" />
       </button>
     ),
   }),
@@ -33,7 +33,7 @@ export const topUpHistorycolumns = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         付款完成日期
-        <ArrowUpDown className="ml-2 h-4 w-4" />
+        <ArrowUpDown className="w-4 h-4 ml-2" />
       </button>
     ),
     cell: (props) => {
@@ -66,7 +66,7 @@ export const topUpHistorycolumns = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         支付方式
-        <ArrowUpDown className="ml-2 h-4 w-4" />
+        <ArrowUpDown className="w-4 h-4 ml-2" />
       </button>
     ),
     cell: "信用卡",
@@ -78,7 +78,7 @@ export const topUpHistorycolumns = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         金額
-        <ArrowUpDown className="ml-2 h-4 w-4" />
+        <ArrowUpDown className="w-4 h-4 ml-2" />
       </button>
     ),
     id: "amount",
@@ -115,7 +115,7 @@ export const spendingHistoryColumns = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         包廂
-        <ArrowUpDown className="ml-2 h-4 w-4" />
+        <ArrowUpDown className="w-4 h-4 ml-2" />
       </button>
     ),
   }),
@@ -127,7 +127,7 @@ export const spendingHistoryColumns = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         開始時間
-        <ArrowUpDown className="ml-2 h-4 w-4" />
+        <ArrowUpDown className="w-4 h-4 ml-2" />
       </button>
     ),
     cell: (props) => {
@@ -157,7 +157,7 @@ export const spendingHistoryColumns = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         結束時間
-        <ArrowUpDown className="ml-2 h-4 w-4" />
+        <ArrowUpDown className="w-4 h-4 ml-2" />
       </button>
     ),
     cell: (props) => {
@@ -191,7 +191,7 @@ export const spendingHistoryColumns = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         金額
-        <ArrowUpDown className="ml-2 h-4 w-4" />
+        <ArrowUpDown className="w-4 h-4 ml-2" />
       </button>
     ),
     id: "amount",
@@ -209,7 +209,7 @@ export const spendingHistoryColumns = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         狀態
-        <ArrowUpDown className="ml-2 h-4 w-4" />
+        <ArrowUpDown className="w-4 h-4 ml-2" />
       </button>
     ),
     id: "status",
@@ -225,7 +225,7 @@ export const couponHistorycolumns = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         標題
-        <ArrowUpDown className="ml-2 h-4 w-4" />
+        <ArrowUpDown className="w-4 h-4 ml-2" />
       </button>
     ),
     size: 600,
@@ -238,7 +238,7 @@ export const couponHistorycolumns = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         使用期限
-        <ArrowUpDown className="ml-2 h-4 w-4" />
+        <ArrowUpDown className="w-4 h-4 ml-2" />
       </button>
     ),
     cell: (props) => <div>{props.getValue() + " 天"}</div>,
@@ -251,7 +251,7 @@ export const couponHistorycolumns = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         使用時間
-        <ArrowUpDown className="ml-2 h-4 w-4" />
+        <ArrowUpDown className="w-4 h-4 ml-2" />
       </button>
     ),
     cell: (props) => {
@@ -269,6 +269,32 @@ export const couponHistorycolumns = [
       );
     },
   }),
+  couponHistoryColumnHelper.display({
+    id: "status",
+    header: ({ column }) => (
+      <button
+        className="flex items-center gap-1 sm:w-24"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        狀態
+        <ArrowUpDown className="w-4 h-4 ml-2" />
+      </button>
+    ),
+    cell(props) {
+      const orow = props.row.original;
+      const createdAt = new Date(orow.createdAt);
+      const expiration = orow.expiration;
+      const useBefore = new Date(
+        createdAt.setDate(createdAt.getDate() + expiration),
+      );
+      let status = "";
+
+      if (orow.usedDate) status = "已使用";
+      else if (new Date() > useBefore) status = "已過期";
+      else status = "未使用";
+      return <div>{status}</div>;
+    },
+  }),
   couponHistoryColumnHelper.accessor("amount", {
     header: ({ column }) => (
       <button
@@ -276,7 +302,7 @@ export const couponHistorycolumns = [
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         金額
-        <ArrowUpDown className="ml-2 h-4 w-4" />
+        <ArrowUpDown className="w-4 h-4 ml-2" />
       </button>
     ),
     id: "amount",
