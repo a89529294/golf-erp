@@ -102,7 +102,6 @@ const DataTable: <TData extends { id: string }, TValue>({
   paginationStyle,
 }) {
   // const [sorting, setSorting] = useState<SortingState>([]);
-  console.log(rowSelection);
 
   const table = useReactTable({
     data: data,
@@ -131,7 +130,7 @@ const DataTable: <TData extends { id: string }, TValue>({
     <div className="absolute inset-0  m-1 mb-2.5 mt-0 w-fit border-line-gray sm:w-full">
       <Table
         outerDivClassName="h-full relative sm:overflow-scroll"
-        className="isolate table-fixed items-stretch sm:w-auto"
+        className="items-stretch table-fixed isolate sm:w-auto"
       >
         <TableHeader className="relative z-10 [&_tr]:border-b-0">
           {table.getHeaderGroups().map((headerGroup) => (
@@ -168,7 +167,7 @@ const DataTable: <TData extends { id: string }, TValue>({
         </TableHeader>
 
         {isFetching && !isFetched ? (
-          <TableBody className="absolute inset-0 flex grow items-center justify-center sm:fixed">
+          <TableBody className="absolute inset-0 flex items-center justify-center grow sm:fixed">
             <tr>
               <td>
                 <Spinner />

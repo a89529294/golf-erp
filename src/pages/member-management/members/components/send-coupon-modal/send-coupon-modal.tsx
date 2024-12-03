@@ -36,6 +36,7 @@ export function SendCouponModal({
   show,
   userIds,
   onClose,
+  resetUserIds,
 }: {
   storeId: string;
   asMenuItem?: boolean;
@@ -43,6 +44,7 @@ export function SendCouponModal({
   show: boolean;
   userIds?: "all" | string[];
   onClose?: () => void;
+  resetUserIds?: () => void;
 }) {
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
@@ -66,20 +68,38 @@ export function SendCouponModal({
   const category = store?.category;
 
   const { mutate, isPending } = useMutation({
-    mutationKey: ["add-permission-to-user"],
+    mutationKey: ["give-coupon-to-users"],
     mutationFn: async () => {
       // TODO: api not implemented yet
       if (userIds === "all") {
         // send coupon to all users
-      }
-
-      if (Array.isArray(userIds) && userIds.length > 0) {
+        await privateFetch(`/app-users/give-coupon-all`, {
+          method: "POST",
+          body: JSON.stringify({
+            couponId: Object.keys(rowSelection)[0],
+          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+      } else if (Array.isArray(userIds) && userIds.length > 0) {
         // send coupon to selected users
+
+        await privateFetch(`/app-users/give-coupon`, {
+          method: "POST",
+          body: JSON.stringify({
+            appUserIds: userIds,
+            couponId: Object.keys(rowSelection)[0],
+          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
       } else {
         await privateFetch(`/app-users/give-coupon`, {
           method: "POST",
           body: JSON.stringify({
-            appUserId: id,
+            appUserIds: [id],
             couponId: Object.keys(rowSelection)[0],
           }),
           headers: {
@@ -95,10 +115,12 @@ export function SendCouponModal({
 
       setOpen(false);
       onClose && onClose();
+      resetUserIds && resetUserIds();
       toast.success("贈送優惠券成功");
     },
     onError: (e) => {
       console.log(e);
+      toast.error("贈送優惠券失敗");
     },
   });
 
@@ -116,10 +138,15 @@ export function SendCouponModal({
   });
   const [globalFilter, setGlobalFilter] = useState("");
 
+  console.log(userIds);
+  console.log(Array.isArray(userIds));
+  console.log(userIds?.length);
+
   return (
     <Dialog
       open={open}
       onOpenChange={(s) => {
+        console.log(s);
         setOpen(s);
 
         if (onClose && !s) onClose();
@@ -131,29 +158,36 @@ export function SendCouponModal({
       }}
     >
       <DialogTrigger
-        disabled={Array.isArray(userIds) && userIds.length === 0}
+        // disabled={Array.isArray(userIds) && userIds.length === 0}
+        // disabled
         asChild
       >
-        <AnimatePresence mode="popLayout">
-          {show ? (
-            asMenuItem ? (
-              <div className="flex gap-1">
-                <img src={couponIcon} />
-                {userIds === "all" ? "全體發送優惠券" : "發送優惠券"}
-              </div>
-            ) : (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1, transition: { delay: 0.3 } }}
-                exit={{ opacity: 0 }}
-              >
-                <IconButton icon="coupon" type="button">
+        <div>
+          <AnimatePresence mode="popLayout">
+            {show ? (
+              asMenuItem ? (
+                <button className="flex gap-1">
+                  <img src={couponIcon} />
                   {userIds === "all" ? "全體發送優惠券" : "發送優惠券"}
-                </IconButton>
-              </motion.div>
-            )
-          ) : null}
-        </AnimatePresence>
+                </button>
+              ) : (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1, transition: { delay: 0.3 } }}
+                  exit={{ opacity: 0 }}
+                >
+                  <IconButton
+                    disabled={Array.isArray(userIds) && userIds.length === 0}
+                    icon="coupon"
+                    type="button"
+                  >
+                    {userIds === "all" ? "全體發送優惠券" : "發送優惠券"}
+                  </IconButton>
+                </motion.div>
+              )
+            ) : null}
+          </AnimatePresence>
+        </div>
       </DialogTrigger>
       <DialogContent>
         <form
@@ -172,7 +206,7 @@ export function SendCouponModal({
             {coupons && (
               <div className=" before:fixed before:h-12 before:w-1 before:bg-light-gray">
                 <div className="fixed right-[57px] h-12 w-1 bg-light-gray" />
-                <div className="sticky top-12 z-10 w-full border-b border-line-gray" />
+                <div className="sticky z-10 w-full border-b top-12 border-line-gray" />
                 <DataTable
                   columns={columns}
                   data={Array(1).fill(coupons).flat()}
@@ -188,7 +222,7 @@ export function SendCouponModal({
           </ScrollArea>
 
           {/* </DialogHeader> */}
-          <DialogFooter className="mt-6 justify-center">
+          <DialogFooter className="justify-center mt-6">
             <TextButton
               type="submit"
               form="xx"

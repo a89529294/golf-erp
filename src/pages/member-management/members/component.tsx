@@ -72,7 +72,7 @@ export function Component() {
             <Menubar
               value={value}
               onValueChange={setValue}
-              className="h-auto border-none bg-transparent"
+              className="h-auto bg-transparent border-none"
             >
               <MenubarMenu value="category-mobile-menu">
                 <MenubarTrigger className={button()}>選項</MenubarTrigger>
@@ -95,6 +95,7 @@ export function Component() {
                       show={true}
                       userIds={Object.keys(rowSelection)}
                       onClose={() => setValue("")}
+                      resetUserIds={() => setRowSelection({})}
                     />
                   </MenubarItem>
                   {Object.keys(rowSelection).length > 0 && (
@@ -153,6 +154,7 @@ export function Component() {
               <CreateCouponThenSendModal
                 show={!isSearchActive}
                 userIds={Object.keys(rowSelection)}
+                resetUserIds={() => setRowSelection({})}
               />
               {Object.keys(rowSelection).length > 0 && (
                 <IconWarningButton
@@ -171,7 +173,7 @@ export function Component() {
       {isMobile ? (
         ({ height }) => (
           <ScrollArea style={{ height, width: "100%" }}>
-            <div className="w-full border border-line-gray bg-light-gray p-1 pt-0">
+            <div className="w-full p-1 pt-0 border border-line-gray bg-light-gray">
               {data && (
                 <DataTable
                   columns={genColumns(user!.permissions, () => setPage(1))}

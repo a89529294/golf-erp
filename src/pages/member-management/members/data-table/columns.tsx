@@ -151,11 +151,12 @@ export const genColumns = (
           .toString(),
       {
         id: "storeAppUser.coin",
-        header: ({ column }) =>
+        header: ({ column }) => (
           // <SortableButton resetCurrentPage={resetCurrentPage} column={column}>
           //   累積儲值金額
           // </SortableButton>
-          "累積儲值金額",
+          <div className="whitespace-nowrap">儲值金額</div>
+        ),
         cell: (props) => {
           return (
             <div className="flex gap-1">
@@ -248,11 +249,11 @@ function SortableButton({
     >
       {children}
       {column.getIsSorted() === false ? (
-        <ArrowUpDown className="ml-2 h-4 w-4" />
+        <ArrowUpDown className="w-4 h-4 ml-2" />
       ) : column.getIsSorted() === "asc" ? (
-        <ArrowUp className="ml-2 h-4 w-4" />
+        <ArrowUp className="w-4 h-4 ml-2" />
       ) : (
-        <ArrowDown className="ml-2 h-4 w-4" />
+        <ArrowDown className="w-4 h-4 ml-2" />
       )}
     </button>
   );

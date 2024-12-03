@@ -25,7 +25,7 @@ export const genMemberDetailsQuery = (id: string, storeId?: string) => ({
           (v) => v.store.id === storeId,
         ),
         appUserCoupons:
-          parsedData.appUserCoupons?.filter((v) => v.store.id === storeId) ??
+          parsedData.appUserCoupons?.filter((v) => v.store?.id === storeId) ??
           [],
       };
 

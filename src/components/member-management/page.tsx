@@ -81,7 +81,7 @@ export function MemberManagementPage({
             <Menubar
               value={value}
               onValueChange={setValue}
-              className="h-auto border-none bg-transparent"
+              className="h-auto bg-transparent border-none"
             >
               <MenubarMenu value="category-mobile-menu">
                 <MenubarTrigger className={button()}>選項</MenubarTrigger>
@@ -93,6 +93,7 @@ export function MemberManagementPage({
                         userIds={Object.keys(rowSelection)}
                         onClose={() => setValue("")}
                         storeId={storeId}
+                        resetUserIds={() => setRowSelection({})}
                       />
                     </MenubarItem>
                   )}
@@ -156,6 +157,7 @@ export function MemberManagementPage({
                   storeId={storeId}
                   show={!isSearchActive}
                   userIds={Object.keys(rowSelection)}
+                  resetUserIds={() => setRowSelection({})}
                 />
               )}
 
@@ -248,7 +250,7 @@ export function MemberManagementPage({
           ) : isErrorMembers || !members ? (
             <div>讀取會員資料出現錯誤</div>
           ) : (
-            <div className="h-full w-full border border-line-gray bg-light-gray pt-0">
+            <div className="w-full h-full pt-0 border border-line-gray bg-light-gray">
               <ScrollArea className="h-full">
                 <DataTable
                   columns={columns(

@@ -21,6 +21,7 @@ import { Dispatch, SetStateAction, useRef, useState } from "react";
 import { toast } from "sonner";
 import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { privateFetch } from "@/utils/utils";
 
 export function CreateCouponThenSendModal({
   show,
@@ -56,10 +57,46 @@ export function CreateCouponThenSendModal({
       //   },
       // });
 
-      return new Promise((r) => setTimeout(r, 3000));
+      const d = await privateFetch("/coupon/platform/", {
+        method: "POST",
+        credentials: "include",
+        body: JSON.stringify({
+          ...prop,
+          isActive: true,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const { id: couponId } = (await d.json()) as { id: string };
+
+      if (userIds) {
+        await privateFetch("/app-users/give-platform-coupon", {
+          method: "POST",
+          credentials: "include",
+          body: JSON.stringify({ appUserIds: userIds, couponId }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+      } else {
+        await privateFetch("/app-users/give-platform-coupon-all", {
+          method: "POST",
+          credentials: "include",
+          body: JSON.stringify({ couponId }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+      }
     },
     onSuccess() {
       toast.success("贈送優惠券成功");
+      resetUserIds && resetUserIds();
+    },
+    onError() {
+      toast.error("贈送優惠券失敗");
     },
   });
 
@@ -114,14 +151,14 @@ export function CreateCouponThenSendModal({
         >
           <DialogPrimitive.DialogTitle />
           <DialogHeader className="w-full">
-            <div className="flex w-full flex-col">
-              <header className="bg-light-gray py-2 text-center">
+            <div className="flex flex-col w-full">
+              <header className="py-2 text-center bg-light-gray">
                 贈送優惠券
               </header>
 
-              <div className="flex flex-1 items-center justify-center pb-10 ">
+              <div className="flex items-center justify-center flex-1 pb-10 ">
                 <div className="flex w-[400px] flex-col gap-6 sm:w-72 sm:gap-3 sm:px-2">
-                  <Label className="mt-10 flex items-center gap-5">
+                  <Label className="flex items-center gap-5 mt-10">
                     <h2 className="w-20 shrink-0">標題</h2>
                     <UnderscoredInput
                       className="w-80 sm:w-auto sm:min-w-0 sm:flex-1"
@@ -141,7 +178,7 @@ export function CreateCouponThenSendModal({
                   </Label>
                   <Label className="flex items-center gap-5 ">
                     <h2 className="w-20 shrink-0">使用期限</h2>
-                    <div className="flex flex-1 flex-row items-baseline sm:w-auto sm:min-w-0 sm:flex-1">
+                    <div className="flex flex-row items-baseline flex-1 sm:w-auto sm:min-w-0 sm:flex-1">
                       <UnderscoredInput
                         className="w-full"
                         name={"expiration"}

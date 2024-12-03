@@ -75,9 +75,11 @@ export const memberSchema = z.object({
         usedDate: z.coerce.date().transform(fromDateToDateTimeString),
         createdAt: z.string(),
         amount: z.number(),
-        store: z.object({
-          id: z.string(),
-        }),
+        store: z
+          .object({
+            id: z.string(),
+          })
+          .nullish(),
       }),
     )
     .optional(),
@@ -179,7 +181,7 @@ export const genMembersQuery = (
     queryFn: async () => {
       const queryString = qs.stringify({
         page: page,
-        pageSize: options.pageSize || 7,
+        pageSize: options.pageSize || 8,
         sort: sort,
         order: order,
         populate: ["store", "storeAppUsers"],
