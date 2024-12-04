@@ -5,7 +5,7 @@ import {
   MemberSpendingHistory,
 } from "../loader";
 import { ArrowUpDown } from "lucide-react";
-import { addDays, format } from "date-fns";
+// import { addDays, format } from "date-fns";
 import { formatDateString } from "@/utils";
 
 const topUpHistoryColumnHelper = createColumnHelper<MemberAppChargeHistory>();
@@ -258,13 +258,14 @@ export const couponHistorycolumns = [
       console.log(props.row.original);
       return (
         <div className="text-orange">
-          {format(
+          {/* {format(
             addDays(
               new Date(props.row.original.createdAt),
               props.row.original.expiration,
             ),
             "yyyy-MM-dd",
-          )}
+          )} */}
+          {props.row.original.usedDate}
         </div>
       );
     },
