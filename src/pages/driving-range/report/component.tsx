@@ -102,9 +102,6 @@ export function Component() {
           {data && <ReportContainer data={data} stores={stores} />}
         </div>
       )}
-      {/* <div className="w-full p-5 border border-line-gray bg-light-gray">
-        {data && <ReportContainer data={data} stores={stores} />}
-      </div> */}
     </MainLayout>
   );
 }

@@ -39,18 +39,18 @@ export function ChartStatsAndRange({
   const totalFee = data.total.orders.reduce(
     (acc, val) => {
       if (
-        val.paymentMethod === "NewebPay" ||
+        val.paymentMethod === "台灣發卡機構核發之信用卡" ||
         val.paymentMethod === "ApplePay"
       ) {
         return {
           linePay: acc.linePay,
-          newebPay: acc.newebPay + Math.round(val.amount * 0.028),
+          newebPay: acc.newebPay + Math.ceil(val.amount * 0.028),
         };
       }
 
-      if (val.paymentMethod === "LinePay") {
+      if (val.paymentMethod === "line-pay") {
         return {
-          linePay: acc.linePay + Math.round(val.amount * 0.0315),
+          linePay: acc.linePay + Math.ceil(val.amount * 0.0315),
           newebPay: acc.newebPay,
         };
       }
@@ -76,18 +76,18 @@ export function ChartStatsAndRange({
         (a, v) => {
           if (
             v.paymentMethod === "ApplePay" ||
-            v.paymentMethod === "NewebPay"
+            v.paymentMethod === "台灣發卡機構核發之信用卡"
           ) {
             return {
-              np: a.np + Math.round(v.amount * 0.028),
+              np: a.np + Math.ceil(v.amount * 0.028),
               lp: a.lp,
             };
           }
 
-          if (v.paymentMethod === "LinePay") {
+          if (v.paymentMethod === "line-pay") {
             return {
               np: a.np,
-              lp: a.lp + Math.round(v.amount * 0.0315),
+              lp: a.lp + Math.ceil(v.amount * 0.0315),
             };
           }
 
@@ -125,18 +125,18 @@ export function ChartStatsAndRange({
         (a, v) => {
           if (
             v.paymentMethod === "ApplePay" ||
-            v.paymentMethod === "NewebPay"
+            v.paymentMethod === "台灣發卡機構核發之信用卡"
           ) {
             return {
-              np: a.np + Math.round(v.amount * 0.028),
+              np: a.np + Math.ceil(v.amount * 0.028),
               lp: a.lp,
             };
           }
 
-          if (v.paymentMethod === "LinePay") {
+          if (v.paymentMethod === "line-pay") {
             return {
               np: a.np,
-              lp: a.lp + Math.round(v.amount * 0.0315),
+              lp: a.lp + Math.ceil(v.amount * 0.0315),
             };
           }
 
@@ -248,7 +248,9 @@ export function ChartStatsAndRange({
         {activeDataType === "revenue" && (
           <GraphRevenueCell
             title="實際營業額"
-            amount={Math.round(totalRevenue * 0.972)}
+            amount={Math.round(
+              totalRevenue - totalFee.newebPay - totalFee.linePay,
+            )}
           />
         )}
 
@@ -309,7 +311,7 @@ export function ChartStatsAndRange({
               {date && date.to && format(date.to, "yyyy/MM/dd")}
             </span>
             <button
-              className="grid rounded-full size-4 place-items-center bg-word-gray"
+              className="grid size-4 place-items-center rounded-full bg-word-gray"
               onClick={setMonth}
             >
               <img src={x} />

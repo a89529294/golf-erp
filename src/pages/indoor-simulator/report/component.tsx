@@ -55,10 +55,6 @@ export function Component() {
     enabled: false,
   });
 
-  // const stores = Object.values(data?.total.storeSimulatorAppointments ?? {}).map(v=>({
-  //   ...v.storeSimulator
-  // }))
-
   const onStoreValueChange = useCallback(
     (storeId: string, replace: boolean) => {
       const range = encodeURIComponent("2024-01-01:2024-12-31");
@@ -73,17 +69,6 @@ export function Component() {
     if (storeId) return;
     if (stores[0]) onStoreValueChange(stores[0].id, true);
   }, [stores, onStoreValueChange, storeId]);
-
-  // const xlsxData = Object.values(data?.detailed ?? {}).flatMap((dayData) => {
-  //   return dayData.orders.map((v) => ({
-  //     名字: v.userName,
-  //     電話: v.userPhone,
-  //     開始時間: v.simulatorAppointment?.startTime ?? "",
-  //     結束時間: v.simulatorAppointment?.endTime ?? "",
-  //     付款方式: v.paymentMethod || "點數",
-  //     金額: v.amount,
-  //   }));
-  // });
 
   const ordersWithNulls = Object.values(data?.detailed ?? {}).flatMap((v) => {
     return v.orders.filter((order) => order.appChargeHistory);
@@ -179,14 +164,14 @@ export function Component() {
       {isMobile ? (
         ({ height }) => (
           <ScrollArea style={{ height }}>
-            <div className="w-full p-5 border border-line-gray bg-light-gray">
+            <div className="w-full border border-line-gray bg-light-gray p-5">
               {data && <ReportContainer data={data} stores={stores} />}
             </div>
             <Scrollbar orientation="horizontal" />
           </ScrollArea>
         )
       ) : (
-        <div className="w-full p-5 border border-line-gray bg-light-gray">
+        <div className="w-full border border-line-gray bg-light-gray p-5">
           {data && <ReportContainer data={data} stores={stores} />}
         </div>
       )}
