@@ -4,6 +4,7 @@ type Order = {
   id: string;
   name?: string;
   phone?: string;
+  createdAt: string;
   startDateTime: string;
   endDateTime: string;
   amount: number;
@@ -14,6 +15,10 @@ type Order = {
 const columnHelper = createColumnHelper<Order>();
 
 export const columns = [
+  columnHelper.accessor("startDateTime", {
+    header: "建立時間",
+    cell: (prop) => <div className="whitespace-nowrap">{prop.getValue()}</div>,
+  }),
   columnHelper.accessor("startDateTime", {
     header: "開始時間",
     cell: (prop) => <div className="whitespace-nowrap">{prop.getValue()}</div>,

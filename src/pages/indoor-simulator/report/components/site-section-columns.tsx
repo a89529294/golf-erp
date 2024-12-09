@@ -4,6 +4,7 @@ type AppointmentOrder = {
   id: string;
   name?: string;
   phone?: string;
+  createdAt: string;
   startDateTime: string;
   endDateTime: string;
   paymentType: string;
@@ -14,6 +15,11 @@ type AppointmentOrder = {
 const columnHelper = createColumnHelper<AppointmentOrder>();
 
 export const columns = [
+  columnHelper.accessor("createdAt", {
+    header: "建立時間",
+    cell: (prop) => <div className="whitespace-nowrap">{prop.getValue()}</div>,
+  }),
+  ,
   columnHelper.accessor("startDateTime", {
     header: "開始時間",
     cell: (prop) => <div className="whitespace-nowrap">{prop.getValue()}</div>,

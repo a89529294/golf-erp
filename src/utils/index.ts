@@ -395,3 +395,25 @@ export function exportToExcel(
   link.click();
   document.body.removeChild(link);
 }
+
+export function formatDateWithoutSeconds(date: string) {
+  let cd: Date | "" = "";
+  let cdFormatted = "";
+  if (date) {
+    cd = new Date(formatDateString(date));
+    cd.setHours(cd.getHours() - 8);
+    cdFormatted = new Intl.DateTimeFormat("en-CA", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "numeric",
+      minute: "2-digit",
+      // second: "2-digit",
+      hour12: false,
+    })
+      .format(cd)
+      .replace(",", "");
+  }
+
+  return cdFormatted;
+}

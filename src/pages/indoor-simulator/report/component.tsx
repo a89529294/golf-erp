@@ -26,7 +26,7 @@ import {
   Order,
 } from "./loader";
 import { IconButton } from "@/components/ui/button";
-import { exportToExcel } from "@/utils";
+import { exportToExcel, formatDateWithoutSeconds } from "@/utils";
 
 export function Component() {
   const isMobile = useIsMobile();
@@ -91,8 +91,13 @@ export function Component() {
         const newOrderData = {
           名字: order.userName,
           電話: order.userPhone,
-          開始時間: order.simulatorAppointment?.startTime ?? "",
-          結束時間: order.simulatorAppointment?.endTime ?? "",
+          建立時間: formatDateWithoutSeconds(order.createdAt),
+          開始時間: formatDateWithoutSeconds(
+            order.simulatorAppointment?.startTime ?? "",
+          ),
+          結束時間: formatDateWithoutSeconds(
+            order.simulatorAppointment?.endTime ?? "",
+          ),
           merchantId: order.merchantId,
           付款方式: order.paymentMethod || "點數",
           金額: order.amount,

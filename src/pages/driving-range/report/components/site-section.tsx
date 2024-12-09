@@ -1,5 +1,5 @@
 import { GenericDataTable } from "@/components/generic-data-table";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { CircularProgressWithDesc } from "@/pages/driving-range/report/components/circular-progress-with-desc";
 import { TextButton } from "@/pages/driving-range/report/components/text-button";
 import { ReportData } from "@/pages/driving-range/report/loader";
@@ -174,8 +174,10 @@ export function SiteSection({
     return appointments.map((v) => {
       let sd: Date | "" = "";
       let ed: Date | "" = "";
+      let cd: Date | "" = "";
       let sdFormatted = "";
       let edFormatted = "";
+      let cdFormatted = "";
       if (v.startTime) {
         sd = new Date(formatDateString(v.startTime));
         sd.setHours(sd.getHours() - 8);
@@ -185,7 +187,7 @@ export function SiteSection({
           day: "2-digit",
           hour: "numeric",
           minute: "2-digit",
-          second: "2-digit",
+          // second: "2-digit",
           hour12: false,
         })
           .format(sd)
@@ -201,10 +203,28 @@ export function SiteSection({
           day: "2-digit",
           hour: "numeric",
           minute: "2-digit",
-          second: "2-digit",
+          // second: "2-digit",
           hour12: false,
         })
           .format(ed)
+          .replace(",", "");
+      }
+
+      //@ts-ignore
+      if (v.order?.createdAt) {
+        //@ts-ignore
+        cd = new Date(formatDateString(v.order?.createdAt));
+        cd.setHours(cd.getHours() - 8);
+        cdFormatted = new Intl.DateTimeFormat("en-CA", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "numeric",
+          minute: "2-digit",
+          // second: "2-digit",
+          hour12: false,
+        })
+          .format(cd)
           .replace(",", "");
       }
 
@@ -212,6 +232,7 @@ export function SiteSection({
         id: v.id,
         name: v.appUser?.chName,
         phone: v.appUser?.phone,
+        createdAt: cdFormatted,
         startDateTime: sdFormatted,
         endDateTime: edFormatted,
         amount: v.amount,
@@ -255,7 +276,7 @@ export function SiteSection({
 
       <ScrollArea className={open ? "max-h-[390px]" : "max-h-0"}>
         <GenericDataTable columns={columns} data={tableData} />
-        {/* <ScrollBar orientation="horizontal" /> */}
+        <ScrollBar orientation="horizontal" />
       </ScrollArea>
     </section>
   );
