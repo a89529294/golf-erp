@@ -35,62 +35,71 @@ export function SearchInput({
   const isActive = isInputFocused || !!value;
 
   return (
-    <motion.div
-      className={cn(
-        "outline outline-1 outline-line-gray hover:outline-[1.5px] hover:outline-orange",
-        isActive && "border-orange",
-      )}
-      // style={{ borderColor: isActive ? "rgb(233 158 24)" : "rgb(182 182 182)" }}
-      layout
-    >
-      <motion.label
-        className={cn(
-          "flex h-11 cursor-pointer items-center gap-1 bg-light-gray px-3",
-          value && !isInputFocused && "border-[1.5px]",
-          disabled && "cursor-not-allowed opacity-50",
-          className,
-        )}
-        style={{
-          width: isActive ? (isMobile ? mobileWidth || 160 : 250) : 46,
-        }}
+    <div className="outline outline-1 outline-line-gray hover:outline-[1.5px] hover:outline-orange">
+      <motion.div
+        className={cn("", isActive && "outline-orange")}
+        // style={{ borderColor: isActive ? "rgb(233 158 24)" : "rgb(182 182 182)" }}
         layout
-        onMouseDown={() => setIsClickingInside(true)}
-        onMouseUp={() => setIsClickingInside(false)}
-        onFocus={() => {
-          updateFocus(true);
-          console.log("label focused");
-        }}
-        onBlur={(e) => {
-          console.log("label blurred");
-          if (isClickingInside) return;
-          updateFocus(false);
-        }}
       >
-        <motion.img
-          src={magnifyingGlass}
-          layout="position"
-          className="pointer-events-none touch-none"
-        />
-
-        <motion.input
-          type="text"
+        <motion.label
           className={cn(
-            "pointer-events-none w-0 touch-none bg-transparent outline-none",
-            isActive && "w-40 sm:w-20",
+            "flex h-11 cursor-pointer items-center gap-1 bg-light-gray px-3",
+            value && !isInputFocused && "border-[1.5px]",
+            disabled && "cursor-not-allowed opacity-50",
+            className,
           )}
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          disabled={disabled}
+          style={{
+            width: isActive ? (isMobile ? mobileWidth || 160 : 250) : 46,
+          }}
           layout
-          onFocus={() => console.log("input focused")}
-          onBlur={() => console.log("input blurred")}
-        />
+          onMouseDown={() => setIsClickingInside(true)}
+          onMouseUp={() => setIsClickingInside(false)}
+          onFocus={() => {
+            updateFocus(true);
+            console.log("label focused");
+          }}
+          onBlur={(e) => {
+            console.log("label blurred");
+            if (isClickingInside) return;
+            updateFocus(false);
+          }}
+        >
+          <motion.img
+            src={magnifyingGlass}
+            layout="position"
+            className="pointer-events-none"
+          />
 
-        {value && (
-          <img src={x} className="ml-auto w-5" onClick={() => setValue("")} />
-        )}
-      </motion.label>
-    </motion.div>
+          <motion.input
+            type="text"
+            className={cn(
+              "w-full bg-transparent outline-none",
+              !isActive && "w-0",
+            )}
+            value={value}
+            onChange={(e) => {
+              setValue(e.target.value);
+            }}
+            disabled={disabled}
+            layout
+            onFocus={() => {
+              updateFocus(true);
+              console.log("input focused");
+            }}
+            onBlur={() => {
+              if (!isClickingInside) {
+                updateFocus(false);
+                console.log("input blurred");
+              }
+            }}
+          />
+
+          {value && (
+            <img src={x} className="ml-auto w-5" onClick={() => setValue("")} />
+          )}
+        </motion.label>
+      </motion.div>
+    </div>
   );
 }
 

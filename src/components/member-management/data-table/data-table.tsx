@@ -37,12 +37,22 @@ interface DataTableProps<TData, TValue> {
 }
 
 const fuzzyFilter: FilterFn<unknown> = (row, columnId, value) => {
-  console.log(row, columnId, value);
   if (!row.getValue(columnId)) return false;
 
-  return (row.getValue(columnId) as string)
-    .toLowerCase()
-    .includes(value.toLowerCase());
+  if (typeof row.getValue(columnId) !== "string") return false;
+
+  let result = false;
+
+  try {
+    result = (row.getValue(columnId) as string)
+      .toLowerCase()
+      .includes(value.toLowerCase());
+  } catch (e) {
+    if (e instanceof Error) alert(e.message);
+    console.log(e);
+  }
+
+  return result;
 };
 
 export function DataTable<TData extends { id: string }, TValue>({
