@@ -80,7 +80,7 @@ function genColumns(isSelecting: boolean) {
       header: ({ column }) => {
         return (
           <button
-            className="flex items-center gap-1 whitespace-nowrap"
+            className="flex w-full items-center justify-center gap-1 whitespace-nowrap"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             編號
@@ -95,7 +95,7 @@ function genColumns(isSelecting: boolean) {
       header: ({ column }) => {
         return (
           <button
-            className="flex items-center gap-1"
+            className="flex w-full items-center justify-center gap-1"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             標題
@@ -111,7 +111,7 @@ function genColumns(isSelecting: boolean) {
       header: ({ column }) => {
         return (
           <button
-            className="flex items-center gap-1 whitespace-nowrap"
+            className="flex w-full items-center justify-center gap-1 whitespace-nowrap"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             使用期限
@@ -128,7 +128,7 @@ function genColumns(isSelecting: boolean) {
       header: ({ column }) => {
         return (
           <button
-            className="flex items-center gap-1 whitespace-nowrap"
+            className="flex w-full items-center justify-center gap-1 whitespace-nowrap"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             金額

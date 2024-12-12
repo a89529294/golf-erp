@@ -510,35 +510,38 @@ export function Site({
         >
           {form.watch("plans")?.length ? (
             <ul className="overflow-x-auto">
-              {form.getValues("plans")?.map((plan) => {
-                // let errorMessage = "";
-                // const planError = (form as UseFormReturn<NewIndoorSimulator>)
-                //   .formState.errors.plans?.[i];
+              {form
+                .getValues("plans")
+                ?.sort((a, b) => a.title.localeCompare(b.title))
+                .map((plan) => {
+                  // let errorMessage = "";
+                  // const planError = (form as UseFormReturn<NewIndoorSimulator>)
+                  //   .formState.errors.plans?.[i];
 
-                // if (planError) {
-                //   errorMessage = "請先儲存";
-                // }
+                  // if (planError) {
+                  //   errorMessage = "請先儲存";
+                  // }
 
-                return (
-                  <PlanRow
-                    myRef={plansRef}
-                    key={plan.id}
-                    onRemove={() => onRemovePlan(plan.id, form)}
-                    onSave={(plan: Plan) => onSavePlan(plan, form)}
-                    data={plan}
-                    disabled={
-                      formDisabled ||
-                      ((type === "driving-range" ||
-                        type === "existing-driving-range") &&
-                        !user!.permissions.includes("練習場-編輯場地價格")) ||
-                      ((type === "indoor-simulator" ||
-                        type === "existing-indoor-simulator") &&
-                        !user!.permissions.includes("模擬器-編輯場地價格"))
-                    }
-                    // errorMessage={errorMessage}
-                  />
-                );
-              })}
+                  return (
+                    <PlanRow
+                      myRef={plansRef}
+                      key={plan.id}
+                      onRemove={() => onRemovePlan(plan.id, form)}
+                      onSave={(plan: Plan) => onSavePlan(plan, form)}
+                      data={plan}
+                      disabled={
+                        formDisabled ||
+                        ((type === "driving-range" ||
+                          type === "existing-driving-range") &&
+                          !user!.permissions.includes("練習場-編輯場地價格")) ||
+                        ((type === "indoor-simulator" ||
+                          type === "existing-indoor-simulator") &&
+                          !user!.permissions.includes("模擬器-編輯場地價格"))
+                      }
+                      // errorMessage={errorMessage}
+                    />
+                  );
+                })}
             </ul>
           ) : (
             <p className="py-2.5">尚未新增方案</p>

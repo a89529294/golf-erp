@@ -55,7 +55,9 @@ export function DataTable<TData extends { id: string }, TValue>({
   setGlobalFilter,
   rmTheadMarginTop,
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = useState<SortingState>([]);
+  const [sorting, setSorting] = useState<SortingState>([
+    { id: "number", desc: false },
+  ]);
 
   const table = useReactTable({
     data: data,

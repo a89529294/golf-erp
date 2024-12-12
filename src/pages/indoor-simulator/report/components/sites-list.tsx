@@ -35,25 +35,27 @@ export function SitesList({
     },
   );
 
-  return sites.map((site) => {
-    const siteAppointments: Order[] = [];
-    Object.values(data.detailed).forEach((v) => {
-      v.orders.forEach((order) => {
-        if (!order.simulatorAppointment) return;
-        if (order.simulatorAppointment.storeSimulator.id === site.id)
-          siteAppointments.push(order);
+  return sites
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .map((site) => {
+      const siteAppointments: Order[] = [];
+      Object.values(data.detailed).forEach((v) => {
+        v.orders.forEach((order) => {
+          if (!order.simulatorAppointment) return;
+          if (order.simulatorAppointment.storeSimulator.id === site.id)
+            siteAppointments.push(order);
+        });
       });
-    });
 
-    return (
-      <SiteSection
-        key={site.id}
-        id={site.id}
-        appointments={siteAppointments}
-        title={site.name}
-        data={data}
-        merchantId={stores.find((store) => store.id === storeId)?.merchantId}
-      />
-    );
-  });
+      return (
+        <SiteSection
+          key={site.id}
+          id={site.id}
+          appointments={siteAppointments}
+          title={site.name}
+          data={data}
+          merchantId={stores.find((store) => store.id === storeId)?.merchantId}
+        />
+      );
+    });
 }
