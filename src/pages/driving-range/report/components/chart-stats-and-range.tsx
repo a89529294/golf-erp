@@ -199,7 +199,7 @@ export function ChartStatsAndRange({
   };
 
   return (
-    <div className="flex gap-2.5">
+    <div className="flex w-max gap-2.5">
       <div className="grid grid-cols-4 gap-2.5">
         <GraphRevenueCell
           title={activeDataType === "revenue" ? "總營業額" : "總訂單數"}

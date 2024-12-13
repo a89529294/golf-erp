@@ -231,7 +231,7 @@ export function ChartStatsAndRange({
   };
 
   return (
-    <div className="flex justify-between">
+    <div className="flex w-max justify-between">
       <div className="grid grid-cols-4 gap-2.5">
         <GraphRevenueCell
           title={activeDataType === "revenue" ? "總營業額" : "總訂單數"}
