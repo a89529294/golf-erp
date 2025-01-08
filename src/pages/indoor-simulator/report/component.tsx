@@ -87,10 +87,13 @@ export function Component() {
 
   const a = Object.values(data?.detailed ?? {}).reduce(
     (acc, v) => {
+      console.log(v.orders[0]);
+
       v.orders.forEach((order) => {
         const newOrderData = {
           名字: order.userName,
           電話: order.userPhone,
+          信箱: order.userEmail,
           建立時間: formatDateWithoutSeconds(order.createdAt),
           開始時間: formatDateWithoutSeconds(
             order.simulatorAppointment?.startTime ?? "",

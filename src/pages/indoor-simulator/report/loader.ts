@@ -35,6 +35,7 @@ const orderSchema = z.object({
   id: z.string(),
   userName: z.string(),
   userPhone: z.string(),
+  userEmail: z.string(),
   merchantId: z
     .string()
     .nullish()
@@ -162,6 +163,8 @@ export const genDataQuery = (storeId: string, startAt: Date, endAt: Date) => ({
     const totalData = totalSchema.parse(data[0]);
     const yearData = yearSchema.parse(data[1]);
     const detailedData = detailedSchema.parse(data[2]);
+
+    console.log(detailedData);
 
     return {
       total: totalData,
