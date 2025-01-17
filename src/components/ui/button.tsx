@@ -10,6 +10,7 @@ import circleIcon from "@/assets/circle.svg";
 import trashCanIcon from "@/assets/trash-can-icon.svg";
 import pencilIcon from "@/assets/pencil.svg";
 import resetIcon from "@/assets/reset.svg";
+import keyIcon from "@/assets/key-icon.svg";
 import xIcon from "@/assets/x.svg";
 import redXIcon from "@/assets/red-x-icon.svg";
 import checkIcon from "@/assets/check.svg";
@@ -38,6 +39,7 @@ const iconMap = {
   lock: lockIcon,
   reset: resetIcon,
   send: sendIcon,
+  key: keyIcon,
 };
 
 type IconButtonType = ComponentProps<"button"> & {

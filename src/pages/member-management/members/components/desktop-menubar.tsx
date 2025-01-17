@@ -11,6 +11,7 @@ import { UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 import { SendCouponModal } from "@/pages/member-management/members/components/send-coupon-modal/send-coupon-modal";
 import { IconButton, IconWarningButton } from "@/components/ui/button";
+import { ChangePasswordModal } from "./change-password-modal";
 
 export function DesktopMenubar({
   disabled,
@@ -83,6 +84,20 @@ export function DesktopMenubar({
             >
               編輯
             </IconButton>
+          )}
+          {allowEdit && (
+            <ChangePasswordModal
+              dialogTriggerChildren={
+                <IconButton
+                  icon="key"
+                  type="button"
+                  disabled={isUpdatingMemberStatus}
+                >
+                  修改密碼
+                </IconButton>
+              }
+              userId={data.id}
+            />
           )}
           {storeId && <SendCouponModal show storeId={storeId} />}
         </>
