@@ -313,7 +313,7 @@ export function Component() {
                   {coach.coachComments.map((comment, idx) => {
                     return (
                       <div key={idx} className="bg-light-gray px-4 py-3">
-                        {comment}
+                        {comment.comment}
                       </div>
                     );
                   })}

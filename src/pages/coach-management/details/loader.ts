@@ -42,7 +42,7 @@ const coachDetailsSchema = coachSchema
     //     }),
     //   )
     //   .nullish(),
-    coachComments: z.array(z.string()),
+    coachComments: z.array(z.object({ id: z.string(), comment: z.string() })),
     reviewStars: z.union([z.string(), z.number()]),
   })
   .transform(async (coach) => {
