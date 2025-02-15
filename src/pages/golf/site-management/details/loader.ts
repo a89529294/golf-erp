@@ -8,7 +8,9 @@ import { getAllowedStores } from "@/utils";
 export const genGolfSiteDetailsQuery = (storeId: string, siteId: string) => ({
   queryKey: ["golf-site-details", storeId, siteId],
   queryFn: async () => {
-    const response = await privateFetch(`/store/${storeId}/golf?populate=*`);
+    const response = await privateFetch(
+      `/store/${storeId}/golf?siteId=${siteId}&populate=store&populate=equipments&populate=openDays&populate=openTimes`,
+    );
     const data = await response.json();
 
     const parsed = golfSitesSchema.parse(data);

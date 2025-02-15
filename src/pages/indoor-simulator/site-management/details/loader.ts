@@ -61,7 +61,7 @@ export const genSimulatorDetailsQuery = (storeId: string, siteId: string) => ({
   queryKey: ["simulator-details", storeId, siteId],
   queryFn: async (): Promise<ExistingIndoorSimulator> => {
     const response = await privateFetch(
-      `/store/${storeId}/simulator?populate=*`,
+      `/store/${storeId}/simulator?filter[id]=${siteId}&populate=store&populate=equipments&populate=openDays&populate=openTimes&populate=plans`,
     );
     const data = await response.json();
 

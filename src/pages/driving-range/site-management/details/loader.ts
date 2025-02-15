@@ -69,7 +69,9 @@ export const genDrivingRangeDetailsQuery = (
 ) => ({
   queryKey: ["driving-range-details", storeId, siteId],
   queryFn: async (): Promise<ExistingDrivingRange> => {
-    const response = await privateFetch(`/store/${storeId}/ground?populate=*`);
+    const response = await privateFetch(
+      `/store/${storeId}/ground?filter[id]=${siteId}&populate=store&populate=openDays&populate=equipments&populate=openTimes&populate=plans`,
+    );
     const data = await response.json();
 
     const parsed = drivingRangeGETSchema
