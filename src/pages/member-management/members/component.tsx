@@ -72,7 +72,7 @@ export function Component() {
             <Menubar
               value={value}
               onValueChange={setValue}
-              className="h-auto bg-transparent border-none"
+              className="h-auto border-none bg-transparent"
             >
               <MenubarMenu value="category-mobile-menu">
                 <MenubarTrigger className={button()}>選項</MenubarTrigger>
@@ -173,7 +173,7 @@ export function Component() {
       {isMobile ? (
         ({ height }) => (
           <ScrollArea style={{ height, width: "100%" }}>
-            <div className="w-full p-1 pt-0 border border-line-gray bg-light-gray">
+            <div className="w-full border border-line-gray bg-light-gray p-1 pt-0">
               {data && (
                 <DataTable
                   columns={genColumns(user!.permissions, () => setPage(1))}

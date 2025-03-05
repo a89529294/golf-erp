@@ -22,7 +22,10 @@ import { toast } from "sonner";
 export function SendPointsModal({ userId }: { userId: string }) {
   const [storeId, setStoreId] = useState("");
   const [amount, setAmount] = useState("");
-  const { data } = useQuery(storesQuery);
+  const { data } = useQuery({
+    ...storesQuery,
+    staleTime: 5 * 60 * 1000,
+  });
 
   return (
     <Modal

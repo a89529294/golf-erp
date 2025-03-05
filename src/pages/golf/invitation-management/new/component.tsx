@@ -24,10 +24,6 @@ export function Component() {
     initialData: initialData.stores,
   });
 
-  // const { data: appUsers } = useQuery({
-  //   ...membersQuery,
-  //   initialData: initialData.appUsers,
-  // });
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {

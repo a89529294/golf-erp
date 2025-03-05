@@ -17,17 +17,6 @@ export const getStoresQuery = (
       const data = await response.json();
 
       return data.data as { id: string; name: string }[];
-      // const queryString = qs.stringify({
-      //     pageSize: 999,
-      //     sort: "updatedAt",
-      //     order: "DESC",
-      //     populate: ["store", "storeAppUsers"],
-      //   });
-      //   const response = await privateFetch(`/app-users?${queryString}`);
-
-      //   const data = await response.json();
-
-      //   return simpleMembersSchema.parse(data).data;
     } else {
       return allowedStores;
     }

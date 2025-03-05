@@ -140,30 +140,6 @@ export const genMembersFunction = (page: number) => async () => {
   return simpleMembersSchema.parse(data);
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-// export const useMembers = (page: number, initialData: any) => {
-//   console.log("wtff");
-//   return useQuery({
-//     queryKey: ["members", page],
-//     queryFn: async ({ queryKey }) => {
-//       console.log(queryKey);
-//       const queryString = qs.stringify({
-//         page: page,
-//         pageSize: 8,
-//         sort: "updatedAt",
-//         order: "DESC",
-//         populate: ["store", "storeAppUsers"],
-//       });
-//       const response = await privateFetch(`/app-users?${queryString}`);
-
-//       const data = await response.json();
-
-//       return simpleMembersSchema.parse(data);
-//     },
-//     initialData,
-//   });
-// };
-
 export const genMembersQuery = (
   page: number,
   options: {

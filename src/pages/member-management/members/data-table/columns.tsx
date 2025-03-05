@@ -249,11 +249,11 @@ function SortableButton({
     >
       {children}
       {column.getIsSorted() === false ? (
-        <ArrowUpDown className="w-4 h-4 ml-2" />
+        <ArrowUpDown className="ml-2 h-4 w-4" />
       ) : column.getIsSorted() === "asc" ? (
-        <ArrowUp className="w-4 h-4 ml-2" />
+        <ArrowUp className="ml-2 h-4 w-4" />
       ) : (
-        <ArrowDown className="w-4 h-4 ml-2" />
+        <ArrowDown className="ml-2 h-4 w-4" />
       )}
     </button>
   );

@@ -33,6 +33,7 @@ export function EmployeesModalSearchHeader({
     ...storesQuery,
     enabled: !disableStoreQuery,
   });
+
   const flattenedStores = stores
     ? Object.values(stores).flatMap((stores) => stores)
     : [];
