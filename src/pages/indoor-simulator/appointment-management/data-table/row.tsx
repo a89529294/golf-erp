@@ -170,6 +170,11 @@ function CountdownTimer({ hours, minutes, seconds = 0 }: CountdownTimerProps) {
 function getRemainingTime(startTimeStr: string, endTimeStr: string) {
   const startTime = new Date(startTimeStr.replace(" ", "T"));
   const endTime = new Date(endTimeStr.replace(" ", "T"));
+
+  // Deduct 8 hours from both startTime and endTime
+  startTime.setHours(startTime.getHours() - 8);
+  endTime.setHours(endTime.getHours() - 8);
+
   const now = new Date();
 
   if (now < startTime || now > endTime) return null;
