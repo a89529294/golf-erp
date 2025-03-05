@@ -208,8 +208,8 @@ export function Row({ row }: { row: RowModel<Appointment>["rows"][number] }) {
     intervalRef.current = setInterval(() => {
       setTimeRemaining((tr) => {
         const newestRemainingTime = getRemainingTime(
-          "2025-03-05 13:00",
-          "2025-03-05 14:00",
+          row.original.startTime,
+          row.original.endTime,
         );
         if (newestRemainingTime && tr) return tr;
         return newestRemainingTime;
