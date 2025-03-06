@@ -196,7 +196,14 @@ function getRemainingTime(startTimeStr: string, endTimeStr: string) {
 export function Row({ row }: { row: RowModel<Appointment>["rows"][number] }) {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const [timeRemaining, setTimeRemaining] = useState(() =>
-    getRemainingTime(row.original.startTime, row.original.endTime),
+    getRemainingTime(
+      row.original.id === "02432248-c2d8-4e45-a7af-ff79de04d62c"
+        ? "2025-03-05 08:00"
+        : row.original.startTime,
+      row.original.id === "02432248-c2d8-4e45-a7af-ff79de04d62c"
+        ? "2025-03-05 12:00"
+        : row.original.endTime,
+    ),
   );
 
   const originAmount =
@@ -225,6 +232,20 @@ export function Row({ row }: { row: RowModel<Appointment>["rows"][number] }) {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
   }, [row.original.endTime, row.original.startTime]);
+
+  useEffect(() => {
+    // if (row.original.id === "b133ab6b-92fa-454f-95b6-616f69f03827") {
+    //   console.log(row.original);
+    // }
+
+    setTimeRemaining(
+      getRemainingTime(row.original.startTime, row.original.endTime),
+    );
+
+    return () => {
+      setTimeRemaining(null);
+    };
+  }, [row.original.id]);
 
   return (
     <>
