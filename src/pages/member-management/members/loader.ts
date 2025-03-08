@@ -147,6 +147,7 @@ export const genMembersQuery = (
     order: "ASC" | "DESC";
     filter: string;
     pageSize?: number;
+    populate?: string[];
   },
 ) => {
   const sort = options.sort;
@@ -160,7 +161,7 @@ export const genMembersQuery = (
         pageSize: options.pageSize || 8,
         sort: sort,
         order: order,
-        populate: ["store", "storeAppUsers"],
+        populate: options.populate ?? [],
       });
       const encodedFilter = encodeURIComponent(filter);
       const encodedAppUserType = encodeURIComponent(

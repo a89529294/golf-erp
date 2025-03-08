@@ -142,34 +142,34 @@ export const genColumns = (
       ),
       size: 11.5,
     }),
-    columnHelper.accessor(
-      (row) =>
-        new Intl.NumberFormat()
-          .format(
-            (row.storeAppUsers ?? []).reduce((acc, val) => acc + val.coin, 0),
-          )
-          .toString(),
-      {
-        id: "storeAppUser.coin",
-        header: ({ column }) => (
-          // <SortableButton resetCurrentPage={resetCurrentPage} column={column}>
-          //   累積儲值金額
-          // </SortableButton>
-          <div className="whitespace-nowrap">儲值金額</div>
-        ),
-        cell: (props) => {
-          return (
-            <div className="flex gap-1">
-              $
-              <div className="font-medium text-line-green">
-                {props.getValue()}
-              </div>
-            </div>
-          );
-        },
-        size: undefined,
-      },
-    ),
+    // columnHelper.accessor(
+    //   (row) =>
+    //     new Intl.NumberFormat()
+    //       .format(
+    //         (row.storeAppUsers ?? []).reduce((acc, val) => acc + val.coin, 0),
+    //       )
+    //       .toString(),
+    //   {
+    //     id: "storeAppUser.coin",
+    //     header: ({ column }) => (
+    //       <SortableButton resetCurrentPage={resetCurrentPage} column={column}>
+    //         儲值金額
+    //       </SortableButton>
+    //       // <div className="whitespace-nowrap">儲值金額</div>
+    //     ),
+    //     cell: (props) => {
+    //       return (
+    //         <div className="flex gap-1">
+    //           $
+    //           <div className="font-medium text-line-green">
+    //             {props.getValue()}
+    //           </div>
+    //         </div>
+    //       );
+    //     },
+    //     size: undefined,
+    //   },
+    // ),
     columnHelper.display({
       id: "detail-link",
       cell: (props) => {

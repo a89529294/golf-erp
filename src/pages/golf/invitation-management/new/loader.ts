@@ -27,6 +27,8 @@ export async function loader() {
       sort: "updatedAt",
       order: "DESC",
       filter: "",
+      // this may not be necessary
+      populate: ["store", "storeAppUsers"],
     }),
   ]);
   return {

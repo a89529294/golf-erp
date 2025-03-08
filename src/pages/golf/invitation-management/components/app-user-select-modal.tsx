@@ -62,6 +62,7 @@ export function AppUserSelectModal({
       order: sorting[0].desc ? "DESC" : "ASC",
       filter: debouncedGlobalFilter,
       pageSize: 5,
+      // populate: ["store", "storeAppUsers"],
     }),
   });
 

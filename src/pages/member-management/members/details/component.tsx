@@ -29,8 +29,7 @@ import {
 } from "./columns";
 import { genMemberDetailsQuery, loader } from "./loader";
 import { useAuth } from "@/hooks/use-auth";
-
-type MemberHistory = "top-up-history" | "spending-history" | "coupon-history";
+import { MemberHistory } from "@/pages/member-management/members/details/types";
 
 export function Component() {
   const auth = useAuth();
@@ -48,13 +47,13 @@ export function Component() {
   const form = useForm<z.infer<typeof memberFormSchema>>({
     resolver: zodResolver(memberFormSchema),
     defaultValues: {
-      account: data.account,
-      memberType: data.appUserType,
-      chName: data.chName,
-      phone: data.phone ?? "",
-      gender: data.gender,
-      birthday: data.birthday ? new Date(data.birthday) : "",
-      isActive: data.isActive,
+      account: data?.account,
+      memberType: data?.appUserType,
+      chName: data?.chName,
+      phone: data?.phone ?? "",
+      gender: data?.gender,
+      birthday: data?.birthday ? new Date(data?.birthday) : "",
+      isActive: data?.isActive,
     },
   });
   const queryClient = useQueryClient();
@@ -230,11 +229,11 @@ export function Component() {
                 }
                 data={
                   memberHistory === "top-up-history"
-                    ? data.appChargeHistories
+                    ? data?.appChargeHistories
                     : memberHistory === "spending-history"
                       ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                        data.simulatorAppointmens ?? ([] as any)
-                      : data.appUserCoupons
+                        (data?.simulatorAppointmens ?? ([] as any))
+                      : data?.appUserCoupons
                 }
               />
               <ScrollBar className="hidden sm:block" orientation="horizontal" />

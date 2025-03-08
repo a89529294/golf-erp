@@ -2,12 +2,23 @@ import { queryClient } from "@/utils/query-client";
 import { privateFetch } from "@/utils/utils";
 import { LoaderFunctionArgs } from "react-router-dom";
 import { memberSchema } from "../loader";
+import queryString from "query-string";
 
 export const genMemberDetailsQuery = (id: string, storeId?: string) => ({
   queryKey: ["members", id, storeId],
   queryFn: async () => {
+    const queryObject: Record<string, string[]> = {};
+
+    queryObject.populate = [
+      "storeAppUsers",
+      "appChargeHistories.store",
+      "appUserCoupons.store",
+      "simulatorAppointmens.storeSimulator.store",
+      "groundAppointmens",
+    ];
+
     const response = await privateFetch(
-      `/app-users/${id}?populate=appChargeHistories&populate=storeAppUsers&populate=simulatorAppointmens&populate=groundAppointmens&populate=simulatorAppointments.order&populate=appChargeHistories.store&populate=simulatorAppointmens.storeSimulator.store&populate=appUserCoupons&populate=appUserCoupons.store`,
+      `/app-users/${id}?${queryString.stringify(queryObject)}`,
     );
 
     const data = await response.json();
@@ -32,6 +43,7 @@ export const genMemberDetailsQuery = (id: string, storeId?: string) => ({
     return parsedData;
     // }
   },
+  staleTime: 1000 * 5,
 });
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
