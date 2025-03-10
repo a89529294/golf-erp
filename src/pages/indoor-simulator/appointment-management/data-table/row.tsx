@@ -328,7 +328,7 @@ export function Row({ row }: { row: RowModel<Appointment>["rows"][number] }) {
             </div>
 
             <div className="r h-full">
-              {timeRemaining && (
+              {row.original.status !== "取消" && timeRemaining && (
                 <CountdownTimer
                   hours={timeRemaining.hours}
                   minutes={timeRemaining.minutes}
