@@ -111,6 +111,8 @@ export function MemberManagementPage({
     throwOnError: false,
   });
 
+  console.log(data);
+
   return (
     <MainLayout
       headerChildren={
@@ -167,7 +169,7 @@ export function MemberManagementPage({
               value={globalFilter}
               setValue={(v) => {
                 setGlobalFilter(v);
-                // setPage(1);
+                setPage(1);
               }}
             />
           </div>
@@ -184,7 +186,7 @@ export function MemberManagementPage({
                 value={globalFilter}
                 setValue={(v) => {
                   setGlobalFilter(v);
-                  // setPage(1);
+                  setPage(1);
                 }}
                 isFocused={isSearchFocused}
                 setIsFocused={setIsSearchFocused}
@@ -228,7 +230,7 @@ export function MemberManagementPage({
         >
           {isLoadingMembers || isFetching ? (
             <Spinner />
-          ) : isErrorMembers || !data.data ? (
+          ) : isErrorMembers || !data?.data ? (
             <div>讀取會員資料出現錯誤</div>
           ) : (
             <div className="h-full w-full border border-line-gray bg-light-gray pt-0">
@@ -239,7 +241,7 @@ export function MemberManagementPage({
                     category,
                     auth.user?.permissions ?? [],
                   )}
-                  data={data.data}
+                  data={data?.data}
                   rowSelection={rowSelection}
                   setRowSelection={setRowSelection}
                   globalFilter={globalFilter}
@@ -249,7 +251,7 @@ export function MemberManagementPage({
                   setSorting={setSorting}
                   page={page}
                   setPage={setPage}
-                  totalPages={data.meta?.pageCount}
+                  totalPages={data?.meta?.pageCount}
                   isFetching={isFetching}
                   isFetched={isFetched}
                 />
