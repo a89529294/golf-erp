@@ -98,7 +98,7 @@ export function MemberManagementPage({
         : "";
 
       const response = await privateFetch(
-        `/app-users?${queryString}${filterString}`,
+        `/app-users/${category}/${storeId}?${queryString}${filterString}`,
       );
 
       // const response = await privateFetch(
