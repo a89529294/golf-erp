@@ -13,7 +13,7 @@ export const genMemberDetailsQuery = (id: string, storeId?: string) => ({
       "storeAppUsers",
       "appChargeHistories.store",
       "appUserCoupons.store",
-      "simulatorAppointmens.storeSimulator.store",
+      // "simulatorAppointmens.storeSimulator.store",
       "groundAppointmens",
     ];
 

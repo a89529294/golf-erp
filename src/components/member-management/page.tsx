@@ -3,6 +3,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Spinner } from "@/components/ui/spinner";
 import { MainLayout } from "@/layouts/main-layout";
 import { cn } from "@/lib/utils";
+import qs from "query-string";
 
 import { privateFetch } from "@/utils/utils";
 import { Scrollbar } from "@radix-ui/react-scroll-area";
@@ -25,6 +26,9 @@ import {
   MenubarTrigger,
 } from "@/components/ui/menubar";
 import { button } from "@/components/ui/button-cn";
+import { SortingState } from "@tanstack/react-table";
+import { useDebouncedValue } from "@/hooks/use-debounced-value";
+import { appUserTypeFromChinese } from "@/constants/appuser-type";
 
 const navigateMap = {
   ground: "/driving-range/member-management",
@@ -51,23 +55,57 @@ export function MemberManagementPage({
   const [globalFilter, setGlobalFilter] = useState("");
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
   const auth = useAuth();
+  const [sorting, setSorting] = useState<SortingState>([
+    { id: "account", desc: true },
+  ]);
   const isMobile = useMediaQuery("(max-width: 639px)");
   const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const debouncedGlobalFilter = useDebouncedValue(globalFilter, 500);
   const isSearchActive = isSearchFocused ? true : !!globalFilter;
   const [value, setValue] = useState("");
+  const [page, setPage] = useState(1);
 
   const {
-    data: members,
+    data,
     isLoading: isLoadingMembers,
     isError: isErrorMembers,
+    isFetched,
+    isFetching,
   } = useQuery({
-    queryKey: [category, "members", storeId],
+    queryKey: [
+      category,
+      "members",
+      storeId,
+      page,
+      sorting[0].id,
+      sorting[0].desc ? "DESC" : "ASC",
+      debouncedGlobalFilter,
+    ],
     queryFn: async () => {
-      const response = await privateFetch(
-        `/app-users/${category}/${storeId}?populate=storeAppUsers&pageSize=999&populate=appChargeHistories.store`,
+      const queryString = qs.stringify({
+        page: page,
+        pageSize: 10,
+        sort: sorting[0].id,
+        order: sorting[0].desc ? "DESC" : "ASC",
+        populate: ["storeAppUsers", "appChargeHistories.store"],
+      });
+      const encodedFilter = encodeURIComponent(debouncedGlobalFilter);
+      const encodedAppUserType = encodeURIComponent(
+        appUserTypeFromChinese[debouncedGlobalFilter],
       );
+      const filterString = debouncedGlobalFilter
+        ? `&filter[$or][account][$containsi]=${encodedFilter}&filter[$or][appUserType][$containsi]=${encodedAppUserType}&filter[$or][chName][$containsi]=${encodedFilter}&filter[$or][phone][$containsi]=${encodedFilter}&filter[$or][gender][$containsi]=${encodedFilter}&filter[$or][birthday][$containsi]=${encodedFilter}`
+        : "";
+
+      const response = await privateFetch(
+        `/app-users?${queryString}${filterString}`,
+      );
+
+      // const response = await privateFetch(
+      //   `/app-users/${category}/${storeId}?populate=storeAppUsers&pageSize=10&page=${page}&populate=appChargeHistories.store&sort=${sorting[0].id}&order=${sorting[0].desc ? "DESC" : "ASC"}&filter=${debouncedGlobalFilter}`,
+      // );
       const data = await response.json();
-      return data.data;
+      return data;
     },
     enabled: !!storeId,
     throwOnError: false,
@@ -81,7 +119,7 @@ export function MemberManagementPage({
             <Menubar
               value={value}
               onValueChange={setValue}
-              className="h-auto bg-transparent border-none"
+              className="h-auto border-none bg-transparent"
             >
               <MenubarMenu value="category-mobile-menu">
                 <MenubarTrigger className={button()}>選項</MenubarTrigger>
@@ -181,76 +219,19 @@ export function MemberManagementPage({
         )
       }
     >
-      {/* {isMobile ? (
-        ({ height }) => (
-          <ScrollArea style={{ height }} className="w-full">
-            <div className="w-full p-1 pt-0 border border-line-gray bg-light-gray">
-              {members && (
-                <DataTable
-                  columns={mobileColumns(
-                    storeId ?? "",
-                    category,
-                    auth.user?.permissions ?? [],
-                  )}
-                  data={members}
-                  rowSelection={rowSelection}
-                  setRowSelection={setRowSelection}
-                  globalFilter={globalFilter}
-                  setGlobalFilter={setGlobalFilter}
-                />
-              )}
-            </div>
-            <Scrollbar orientation="horizontal" />
-          </ScrollArea>
-        )
-      ) : (
-        <div
-          className={cn(
-            "w-full ",
-            isLoadingMembers && "grid place-items-center",
-          )}
-        >
-          {isLoadingMembers ? (
-            <Spinner />
-          ) : members ? (
-            <div className="w-full pt-0 border border-t-0 border-line-gray bg-light-gray">
-              <div className="sticky top-[90px] z-10 w-full border-b border-line-gray" />
-              <div
-                className="sticky z-10 w-full border-b border-line-gray"
-                style={{
-                  top: `calc(90px + ${headerRowHeight}px)`,
-                }}
-              />
-              <DataTable
-                columns={columns(
-                  storeId ?? "",
-                  category,
-                  auth.user?.permissions ?? [],
-                )}
-                data={members}
-                rowSelection={rowSelection}
-                setRowSelection={setRowSelection}
-                globalFilter={globalFilter}
-                setGlobalFilter={setGlobalFilter}
-                headerRowRef={headerRowRef}
-              />
-            </div>
-          ) : null}
-        </div>
-      )} */}
       <div className="relative flex-1">
         <div
           className={cn(
             "absolute inset-0 bottom-2.5",
-            isLoadingMembers && "grid place-items-center",
+            isLoadingMembers || (isFetching && "grid place-items-center"),
           )}
         >
-          {isLoadingMembers ? (
+          {isLoadingMembers || isFetching ? (
             <Spinner />
-          ) : isErrorMembers || !members ? (
+          ) : isErrorMembers || !data.data ? (
             <div>讀取會員資料出現錯誤</div>
           ) : (
-            <div className="w-full h-full pt-0 border border-line-gray bg-light-gray">
+            <div className="h-full w-full border border-line-gray bg-light-gray pt-0">
               <ScrollArea className="h-full">
                 <DataTable
                   columns={columns(
@@ -258,12 +239,19 @@ export function MemberManagementPage({
                     category,
                     auth.user?.permissions ?? [],
                   )}
-                  data={members}
+                  data={data.data}
                   rowSelection={rowSelection}
                   setRowSelection={setRowSelection}
                   globalFilter={globalFilter}
                   setGlobalFilter={setGlobalFilter}
                   headerRowRef={headerRowRef}
+                  sorting={sorting}
+                  setSorting={setSorting}
+                  page={page}
+                  setPage={setPage}
+                  totalPages={data.meta?.pageCount}
+                  isFetching={isFetching}
+                  isFetched={isFetched}
                 />
                 <Scrollbar orientation="horizontal" />
               </ScrollArea>

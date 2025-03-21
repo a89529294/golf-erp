@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import { Dispatch, SetStateAction, useState } from "react";
+import { DataTablePagination } from "@/pages/member-management/members/data-table/data-table-pagination";
 
 declare module "@tanstack/react-table" {
   interface FilterFns {
@@ -34,6 +35,13 @@ interface DataTableProps<TData, TValue> {
   globalFilter: string;
   setGlobalFilter: Dispatch<SetStateAction<string>>;
   headerRowRef?: React.RefObject<HTMLTableRowElement>;
+  sorting: SortingState;
+  setSorting: Dispatch<SetStateAction<SortingState>>;
+  page?: number;
+  setPage?: Dispatch<SetStateAction<number>>;
+  totalPages?: number;
+  isFetching?: boolean;
+  isFetched?: boolean;
 }
 
 const fuzzyFilter: FilterFn<unknown> = (row, columnId, value) => {
@@ -63,8 +71,13 @@ export function DataTable<TData extends { id: string }, TValue>({
   globalFilter,
   setGlobalFilter,
   headerRowRef,
+  sorting,
+  setSorting,
+  page,
+  setPage,
+  totalPages,
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = useState<SortingState>([]);
+  // const [sorting, setSorting] = useState<SortingState>([]);
 
   const table = useReactTable({
     data: data,
@@ -147,6 +160,15 @@ export function DataTable<TData extends { id: string }, TValue>({
           )}
         </TableBody>
       </Table>
+
+      {page && setPage && totalPages && (
+        <DataTablePagination
+          currentPage={page}
+          totalPages={totalPages}
+          setPage={setPage}
+          paginationStyle={{ bottom: 20 }}
+        />
+      )}
     </div>
   );
 }
