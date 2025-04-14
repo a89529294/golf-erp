@@ -114,6 +114,15 @@ export const genDataQuery = (storeId: string, startAt: Date, endAt: Date) => ({
       privateFetch(`/appointment/ground/daily-report?${qs}`).then((r) =>
         r.json(),
       ),
+      // privateFetch(
+      //   `/appointment/ground/order-report/count?storeId=${storeId}`,
+      // ).then((r) => r.json()),
+      // privateFetch(`/appointment/ground/order-daily-report?${qsYear}`).then(
+      //   (r) => r.json(),
+      // ),
+      // privateFetch(`/appointment/ground/daily-report?${qs}`).then((r) =>
+      //   r.json(),
+      // ),
     ];
 
     const data = await Promise.all(promises);

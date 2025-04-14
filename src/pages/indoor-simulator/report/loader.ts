@@ -154,7 +154,7 @@ export const genDataQuery = (storeId: string, startAt: Date, endAt: Date) => ({
       privateFetch(`/appointment/simulator/order-report?${qsYear}`).then((r) =>
         r.json(),
       ),
-      privateFetch(`/appointment/simulator/daily-order-report?${qs}`).then(
+      privateFetch(`/appointment/simulator/order-daily-report?${qs}`).then(
         (r) => r.json(),
       ),
     ];

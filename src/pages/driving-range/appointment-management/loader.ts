@@ -6,17 +6,71 @@ import {
 import { getAllowedStores } from "@/utils";
 import { queryClient } from "@/utils/query-client";
 import { privateFetch } from "@/utils/utils";
+import { redirect } from "react-router-dom";
 
-export const appointmentsQuery = {
-  queryKey: ["appointments", "ground"],
+export type PaginationParams = {
+  page?: number;
+  pageSize?: number;
+};
+
+export type PaginationMeta = {
+  page: number;
+  pageSize: number;
+  pageCount: number;
+};
+
+export type AppointmentsResponse = {
+  storesWithSiteAppointments: StoreWithSiteAppointments[];
+  pagination: PaginationMeta;
+  sites: {
+    id: string;
+    name: string;
+  }[];
+};
+
+export const appointmentsQuery = (
+  page: number,
+  pageSize: number,
+  storeId: string,
+  siteId: string,
+  sortField?: string,
+  sortOrder?: string,
+) => ({
+  queryKey: [
+    "appointments",
+    "ground",
+    storeId,
+    siteId,
+    page,
+    sortField,
+    sortOrder,
+  ],
   queryFn: async () => {
-    const response = await privateFetch(
-      "/appointment/ground?populate=storeGround&populate=appUser&populate=storeGround.store&pageSize=999",
-    );
+    // Fetch sites for the store
+    const sitesResponse = await privateFetch(`/store/${storeId}/ground`);
+    const sites = (await sitesResponse.json()).data as {
+      id: string;
+      name: string;
+    }[];
 
+    // Build the URL with pagination, filtering and sorting
+    let url = `/appointment/ground?populate=storeGround&populate=appUser&populate=storeGround.store&populate=order&page=${page}&pageSize=${pageSize}&filter[storeGround.store.id]=${storeId}${siteId === "all" ? "" : `&filter[storeGround.id]=${siteId}`}`;
+
+    // Add sorting parameters if provided
+    if (sortField && sortOrder) {
+      url += `&sort=${sortField}&order=${sortOrder}`;
+    }
+
+    const response = await privateFetch(url);
     const data = await response.json();
-
     const parsedData = groundAppoitmentsSchema.parse(data);
+
+    // Extract pagination metadata from response
+    const paginationMeta: PaginationMeta = {
+      page,
+      pageSize,
+      pageCount: data.meta.pageCount,
+    };
 
     const storesWithSiteAppointments = [] as StoreWithSiteAppointments[];
 
@@ -44,6 +98,7 @@ export const appointmentsQuery = {
           : undefined,
         status: appointment.status,
         amount: appointment.amount,
+        order: appointment.order,
       };
 
       if (foundStore) {
@@ -52,13 +107,11 @@ export const appointmentsQuery = {
         if (foundSite) {
           foundSite.appointments.push(transformedAppointment);
         } else {
-          foundStore.sites = [
-            {
-              id: appointment.storeGround.id,
-              name: appointment.storeGround.name,
-              appointments: [transformedAppointment],
-            },
-          ];
+          foundStore.sites.push({
+            id: appointment.storeGround.id,
+            name: appointment.storeGround.name,
+            appointments: [transformedAppointment],
+          });
         }
       } else {
         storesWithSiteAppointments.push({
@@ -74,22 +127,51 @@ export const appointmentsQuery = {
       }
     });
 
-    return storesWithSiteAppointments;
+    // Return both the appointments data and pagination metadata
+    return {
+      storesWithSiteAppointments,
+      pagination: paginationMeta,
+      sites,
+    } as AppointmentsResponse;
   },
-};
+});
 
-export async function loader() {
-  const promises = [
-    queryClient.ensureQueryData(
-      groundStoresQuery(await getAllowedStores("ground")),
-    ),
-    queryClient.ensureQueryData(appointmentsQuery),
-  ] as const;
+export async function loader({ request }: { request: Request }) {
+  const url = new URL(request.url);
+  const searchParams = new URLSearchParams(url.search);
 
-  const results = await Promise.all(promises);
+  // First handle missing page param
+  if (!searchParams.get("page")) {
+    searchParams.set("page", "1");
+    throw redirect(`${url.pathname}?${searchParams.toString()}`);
+  }
+
+  // Then handle missing siteId
+  if (!searchParams.get("siteId")) {
+    searchParams.set("siteId", "all");
+    throw redirect(`${url.pathname}?${searchParams.toString()}`);
+  }
+
+  const page = parseInt(searchParams.get("page")!);
+  const siteId = searchParams.get("siteId")!;
+  const stores = await queryClient.ensureQueryData(
+    groundStoresQuery(await getAllowedStores("ground")),
+  );
+
+  const storeId = searchParams.get("storeId") || stores[0].id;
+
+  // Get sort parameters
+  const sortField = searchParams.get("sortField") || undefined;
+  const sortOrder = searchParams.get("sortOrder") || undefined;
+
+  const appointmentsData = await queryClient.ensureQueryData({
+    ...appointmentsQuery(page, 10, storeId, siteId, sortField, sortOrder),
+  });
 
   return {
-    stores: results[0].map((v) => ({ id: v.id, name: v.name })),
-    storesWithSiteAppointments: results[1],
+    stores: stores.map((v) => ({ id: v.id, name: v.name })),
+    storesWithSiteAppointments: appointmentsData.storesWithSiteAppointments,
+    pagination: appointmentsData.pagination,
+    sites: appointmentsData.sites,
   };
 }
