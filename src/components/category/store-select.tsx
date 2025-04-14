@@ -53,7 +53,13 @@ export function StoreSelect({
   );
 
   const onStoreValueChange = useCallback(
-    (category: string, storeId: string, replace: boolean) => {
+    (
+      category: string,
+      storeId: string,
+      replace: boolean,
+      searchParams: URLSearchParams,
+      x?: string,
+    ) => {
       // navigate(`${navigateTo}?storeId=${storeId}`, {
       //   replace,
       // });
@@ -63,8 +69,16 @@ export function StoreSelect({
       if (category === "ground") setGroundStoreId(storeId);
 
       // storeId search params update
-      const params = new URLSearchParams();
+      const params = new URLSearchParams(searchParams);
+      if (params.get("storeId") !== storeId) {
+        console.log("setting page to 1");
+        params.set("page", "1");
+        params.set("siteId", "all");
+      }
       params.set("storeId", storeId);
+      // params.set("page", "1");
+      console.log(params.get("storeId") !== storeId);
+
       setSearchParams(params, { replace });
 
       // store name update
@@ -75,23 +89,23 @@ export function StoreSelect({
 
   useEffect(() => {
     if (category === "simulator" && simulatorStoreId) {
-      onStoreValueChange(category, simulatorStoreId, true);
+      onStoreValueChange(category, simulatorStoreId, true, searchParams);
 
       return;
     }
 
     if (category === "ground" && groundStoreId) {
-      onStoreValueChange(category, groundStoreId, true);
+      onStoreValueChange(category, groundStoreId, true, searchParams);
       return;
     }
 
     if (storeId) {
-      onStoreValueChange(category, storeId, true);
+      onStoreValueChange(category, storeId, true, searchParams);
       return;
     }
 
     if (stores[0]) {
-      onStoreValueChange(category, stores[0].id, true);
+      onStoreValueChange(category, stores[0].id, true, searchParams);
     }
   }, [
     stores,
@@ -107,7 +121,9 @@ export function StoreSelect({
   return (
     <Select
       value={storeId ?? ""}
-      onValueChange={(v) => onStoreValueChange(category, v, false)}
+      onValueChange={(v) => {
+        onStoreValueChange(category, v, false, searchParams, "x");
+      }}
     >
       <SelectTrigger className="h-11 w-[280px] rounded-none border-0 border-b border-secondary-dark sm:w-40">
         <SelectValue placeholder="選擇廠商" />

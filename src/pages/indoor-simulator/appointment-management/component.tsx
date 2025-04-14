@@ -8,18 +8,29 @@ import { DataTable } from "@/pages/indoor-simulator/appointment-management/data-
 import { indoorSimulatorStoresQuery } from "@/pages/indoor-simulator/site-management/loader";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { useRef, useState } from "react";
-import { useLoaderData, useSearchParams } from "react-router-dom";
-import { appointmentsQuery, loader } from "./loader";
+import { useEffect, useRef, useState } from "react";
+import { useLoaderData, useNavigate, useSearchParams } from "react-router-dom";
+import {
+  AppointmentsResponse,
+  PaginationParams,
+  appointmentsQuery,
+  loader,
+} from "./loader";
 
 export function Component() {
   const currentDataRef = useRef({
     exportDataAsXlsx: (storeName?: string) => {},
   });
-  const [site, setSite] = useState("all");
+  // const [site, setSite] = useState("all");
   const { user } = useAuth();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
+
+  // Get pagination parameters from URL or use defaults
+  const page = parseInt(searchParams.get("page") || "1", 10);
+  const site = searchParams.get("siteId");
+
   const { data: stores } = useQuery({
     ...indoorSimulatorStoresQuery(
       user!.isAdmin ? "all" : user!.allowedStores.simulator,
@@ -27,45 +38,78 @@ export function Component() {
     initialData: initialData.stores,
     staleTime: 5000,
   });
-  const { data: storesWithSiteAppointments } = useQuery({
-    ...appointmentsQuery,
-    initialData: initialData.storesWithSiteAppointments,
-    staleTime: 5000,
-  });
 
-  const storeId = searchParams.get("storeId");
+  const storeId = searchParams.get("storeId")!;
+
+  // const { data: appointmentsData } = useQuery({
+  //   ...appointmentsQuery(page, pageSize, storeId),
+  //   initialData,
+  // });
+
+  const storesWithSiteAppointments = initialData.storesWithSiteAppointments;
+  const pagination = initialData.pagination;
 
   const store = storesWithSiteAppointments.find((s) => s.id === storeId);
 
-  const siteOptions = [{ id: "all", name: "全部" }, ...(store?.sites ?? [])];
+  // const siteOptions = [{ id: "all", name: "全部" }, ...(store?.sites ?? [])];
+  const siteOptions = [{ id: "all", name: "全部" }, ...initialData.sites];
 
-  const filteredData = (() => {
-    if (site === "all")
-      return store?.sites.flatMap((s) => s.appointments) ?? [];
+  // const filteredData = (() => {
+  //   if (site === "all")
+  //     return store?.sites.flatMap((s) => s.appointments) ?? [];
 
-    return (
-      store?.sites
-        .filter((s) => s.id === site)
-        .flatMap((s) => s.appointments) ?? []
-    );
-  })();
+  //   return (
+  //     store?.sites
+  //       .filter((s) => s.id === site)
+  //       .flatMap((s) => s.appointments) ?? []
+  //   );
+  // })();
+  const filteredData = store?.sites.flatMap((s) => s.appointments) ?? [];
+
+  const handlePageChange = (newPage: number) => {
+    setSearchParams((prev) => {
+      const newParams = new URLSearchParams(prev);
+      newParams.set("page", newPage.toString());
+
+      return newParams;
+    });
+  };
+
+  const handleSortChange = (sortField: string, sortOrder: string) => {
+    setSearchParams((prev) => {
+      const newParams = new URLSearchParams(prev);
+
+      // Reset to page 1 when sorting changes
+      newParams.set("page", "1");
+
+      if (sortField && sortOrder) {
+        newParams.set("sortField", sortField);
+        newParams.set("sortOrder", sortOrder);
+      } else {
+        // Clear sort params if no sorting
+        newParams.delete("sortField");
+        newParams.delete("sortOrder");
+      }
+
+      return newParams;
+    });
+  };
 
   return (
     <MainLayout
       headerChildren={
         <>
-          {/* <QueryParamSelect
-            options={stores}
-            optionKey="id"
-            optionValue="name"
-            placeholder="請選廠商"
-            queryKey="storeId"
-            className="w-56 sm:w-40"
-          /> */}
           <StoreSelect
             category="simulator"
             initialData={stores}
             navigateTo={""}
+            // onSelect={() => {
+            //   setSearchParams((prev) => {
+            //     const searchParams = new URLSearchParams(prev);
+            //     searchParams.set("page", "1");
+            //     return searchParams;
+            //   });
+            // }}
           />
           <IconButton
             icon="save"
@@ -81,32 +125,10 @@ export function Component() {
         </>
       }
     >
-      {/* <div className="mb-2.5 flex-1 border border-line-gray bg-light-gray p-4">
-        {!store ? (
-          <h1>查無資料</h1>
-        ) : (
-          store.sites.map((site) => (
-            <section key={site.id} className="space-y-1">
-              <h2>{site.name}</h2>
-              <ScrollArea
-                viewportCN="max-h-[200px] h-auto "
-                className="h-auto sm:w-[calc(100vw-54px)]"
-              >
-                <DataTable columns={columns} data={site.appointments} />
-                <ScrollBar orientation="horizontal" />
-              </ScrollArea>
-            </section>
-          ))
-        )}
-      </div> */}
       {({ height }) => {
         return (
           <div className="flex w-full flex-col border border-line-gray bg-light-gray p-1">
-            <nav
-            // ref={(e) => {
-            //   setNav(e);
-            // }}
-            >
+            <nav>
               <ul className="isolate flex items-center gap-3 overflow-x-auto py-2 pl-5">
                 {siteOptions
                   .sort((a, b) =>
@@ -115,7 +137,14 @@ export function Component() {
                   .map(({ id, name }) => (
                     <li key={id}>
                       <button
-                        onClick={() => setSite(id)}
+                        onClick={() => {
+                          setSearchParams((prev) => {
+                            const searchParams = new URLSearchParams(prev);
+                            searchParams.set("siteId", id);
+                            searchParams.set("page", "1");
+                            return searchParams;
+                          });
+                        }}
                         className={cn(
                           "relative grid h-9 place-items-center whitespace-nowrap rounded-full border border-line-gray bg-white px-5",
                         )}
@@ -141,28 +170,16 @@ export function Component() {
                     </li>
                   ))}
               </ul>
-              {/* <div className="hidden pb-1 sm:block">
-                <Select value={site ?? ""} onValueChange={setSite}>
-                  <SelectTrigger className="grid px-5 text-white border rounded-full h-9 place-items-center border-line-gray bg-secondary-dark">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {siteOptions.map(({ id, name }) => {
-                      return (
-                        <SelectItem value={id} key={id}>
-                          {name}
-                        </SelectItem>
-                      );
-                    })}
-                  </SelectContent>
-                </Select>
-              </div> */}
             </nav>
 
             <DataTable
               currentDataRef={currentDataRef}
               columns={columns}
               data={filteredData}
+              pagination={pagination}
+              onPageChange={handlePageChange}
+              onSortChange={handleSortChange}
+              currentPage={page}
             />
           </div>
         );

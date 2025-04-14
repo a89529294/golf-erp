@@ -6,17 +6,69 @@ import {
 import { getAllowedStores } from "@/utils";
 import { queryClient } from "@/utils/query-client";
 import { privateFetch } from "@/utils/utils";
+import { redirect } from "react-router-dom";
 
-export const appointmentsQuery = {
-  queryKey: ["appointments", "simulator"],
+export type PaginationParams = {
+  page?: number;
+  pageSize?: number;
+};
+
+export type PaginationMeta = {
+  page: number;
+  pageSize: number;
+  pageCount: number;
+};
+
+export type AppointmentsResponse = {
+  storesWithSiteAppointments: StoreWithSiteAppointments[];
+  pagination: PaginationMeta;
+  sites: {
+    id: string;
+    name: string;
+  }[];
+};
+
+export const appointmentsQuery = (
+  page: number,
+  pageSize: number,
+  storeId: string,
+  siteId: string,
+  sortField?: string,
+  sortOrder?: string,
+) => ({
+  queryKey: [
+    "appointments",
+    "simulator",
+    storeId,
+    siteId,
+    page,
+    sortField,
+    sortOrder,
+  ],
   queryFn: async () => {
-    const response = await privateFetch(
-      "/appointment/simulator?populate=storeSimulator&populate=appUser&populate=storeSimulator.store&populate=order&populate=usedCoupon&pageSize=99999",
-    );
+    const x = await privateFetch(`/store/${storeId}/simulator`);
+    const xx = (await x.json()).data as {
+      id: string;
+      name: string;
+    }[];
+
+    let url = `/appointment/simulator?populate=storeSimulator&populate=appUser&populate=storeSimulator.store&populate=order&populate=usedCoupon&page=${page}&pageSize=${pageSize}&filter[storeSimulator.store.id]=${storeId}${siteId === "all" ? "" : `&filter[storeSimulator.id]=${siteId}`}`;
+
+    // Add sorting parameters if provided
+    if (sortField && sortOrder) {
+      url += `&sort=${sortField}&order=${sortOrder}`;
+    }
+
+    const response = await privateFetch(url);
 
     const data = await response.json();
-
     const parsedData = simulatorAppoitmentsSchema.parse(data);
+
+    const paginationMeta: PaginationMeta = {
+      page,
+      pageSize,
+      pageCount: data.meta.pageCount,
+    };
 
     const storesWithSiteAppointments = [] as StoreWithSiteAppointments[];
 
@@ -76,22 +128,51 @@ export const appointmentsQuery = {
       }
     });
 
-    return storesWithSiteAppointments;
+    // Return both the appointments data and pagination metadata
+    return {
+      storesWithSiteAppointments,
+      pagination: paginationMeta,
+      sites: xx,
+    } as AppointmentsResponse;
   },
-};
+});
 
-export async function loader() {
-  const promises = [
-    queryClient.ensureQueryData(
-      indoorSimulatorStoresQuery(await getAllowedStores("simulator")),
-    ),
-    queryClient.ensureQueryData(appointmentsQuery),
-  ] as const;
+export async function loader({ request }: { request: Request }) {
+  const url = new URL(request.url);
+  const searchParams = new URLSearchParams(url.search);
 
-  const results = await Promise.all(promises);
+  // First handle missing page param
+  if (!searchParams.get("page")) {
+    searchParams.set("page", "1");
+    throw redirect(`${url.pathname}?${searchParams.toString()}`);
+  }
+
+  // Then handle missing siteId
+  if (!searchParams.get("siteId")) {
+    searchParams.set("siteId", "all");
+    throw redirect(`${url.pathname}?${searchParams.toString()}`);
+  }
+
+  const page = parseInt(searchParams.get("page")!);
+  const siteId = searchParams.get("siteId")!;
+  const stores = await queryClient.ensureQueryData(
+    indoorSimulatorStoresQuery(await getAllowedStores("simulator")),
+  );
+
+  const storeId = searchParams.get("storeId") || stores[0].id;
+
+  // Get sort parameters
+  const sortField = searchParams.get("sortField") || undefined;
+  const sortOrder = searchParams.get("sortOrder") || undefined;
+
+  const appointmentsData = await queryClient.ensureQueryData({
+    ...appointmentsQuery(page, 10, storeId, siteId, sortField, sortOrder),
+  });
 
   return {
-    stores: results[0].map((v) => ({ id: v.id, name: v.name })),
-    storesWithSiteAppointments: results[1],
+    stores: stores.map((v) => ({ id: v.id, name: v.name })),
+    storesWithSiteAppointments: appointmentsData.storesWithSiteAppointments,
+    pagination: appointmentsData.pagination,
+    sites: appointmentsData.sites,
   };
 }

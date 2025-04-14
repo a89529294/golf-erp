@@ -14,7 +14,8 @@ export const baseAppointmentSchema = z.object({
       z.literal("overtime"),
     ])
     .transform((v) => {
-      if (v === "pending" || v === "overtime") return "進行中";
+      if (v === "overtime") return "過期";
+      if (v === "pending") return "待付款";
       if (v === "complete") return "完成";
       return "取消";
     }),
@@ -22,6 +23,7 @@ export const baseAppointmentSchema = z.object({
     .object({
       id: z.string(),
       paymentMethod: z.string().nullish(),
+      status: z.string().nullish(),
     })
     .optional(),
   appUser: z

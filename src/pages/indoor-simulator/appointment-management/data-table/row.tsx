@@ -278,7 +278,13 @@ export function Row({ row }: { row: RowModel<Appointment>["rows"][number] }) {
               </div>
               <div className="w-14">
                 <p className="text-sm font-medium text-secondary-dark">狀態</p>
-                <p className="text-secondary-purple">{row.original.status}</p>
+                <p className="text-secondary-purple">
+                  {row.original.order?.status === "success"
+                    ? "成功"
+                    : row.original.order?.status === "pending"
+                      ? "待付款"
+                      : row.original.order?.status}
+                </p>
               </div>
             </div>
 

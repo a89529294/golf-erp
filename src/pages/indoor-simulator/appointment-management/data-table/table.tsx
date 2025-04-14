@@ -24,6 +24,8 @@ import { useImperativeHandle, useState } from "react";
 import { Row } from "@/pages/indoor-simulator/appointment-management/data-table/row";
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
+import { PaginationMeta } from "../loader";
+import { cn } from "@/lib/utils";
 
 const fuzzyFilter: FilterFn<unknown> = (row, columnId, value) => {
   return (row.getValue(columnId) as string)
@@ -35,12 +37,20 @@ interface DataTableProps<TData extends { id: string }, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   currentDataRef: React.MutableRefObject<{ exportDataAsXlsx: () => void }>;
+  pagination?: PaginationMeta;
+  onPageChange?: (page: number) => void;
+  onSortChange?: (sortField: string, sortOrder: string) => void;
+  currentPage?: number;
 }
 
 export function DataTable<TData extends Appointment, TValue>({
   columns,
   data,
   currentDataRef,
+  pagination,
+  onPageChange,
+  onSortChange,
+  currentPage = 1,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
 
@@ -52,7 +62,23 @@ export function DataTable<TData extends Appointment, TValue>({
       fuzzy: fuzzyFilter, //define as a filter function that can be used in column definitions
     },
     getRowId: (originalRow) => originalRow.id,
-    onSortingChange: setSorting,
+    onSortingChange: (updater) => {
+      // Handle the sorting state update
+      const nextState =
+        typeof updater === "function" ? updater(sorting) : updater;
+
+      setSorting(nextState);
+
+      // Trigger server-side sorting if a handler is provided
+      if (onSortChange && nextState.length > 0) {
+        const sortField = nextState[0].id;
+        const sortOrder = nextState[0].desc ? "DESC" : "ASC";
+        onSortChange(sortField, sortOrder);
+      } else if (onSortChange && nextState.length === 0) {
+        // Clear sorting
+        onSortChange("", "");
+      }
+    },
     getSortedRowModel: getSortedRowModel(),
     state: {
       sorting,
@@ -118,58 +144,136 @@ export function DataTable<TData extends Appointment, TValue>({
     };
   });
 
+  // Generate page numbers to display
+  const generatePaginationItems = () => {
+    if (!pagination) return [];
+
+    const { page, pageCount } = pagination;
+    const items = [];
+
+    // Always show first page
+    items.push(1);
+
+    // Calculate range of pages to show around current page
+    let startPage = Math.max(2, page - 1);
+    let endPage = Math.min(pageCount - 1, page + 1);
+
+    // Add ellipsis after first page if needed
+    if (startPage > 2) {
+      items.push("...");
+    }
+
+    // Add pages around current page
+    for (let i = startPage; i <= endPage; i++) {
+      items.push(i);
+    }
+
+    // Add ellipsis before last page if needed
+    if (endPage < pageCount - 1) {
+      items.push("...");
+    }
+
+    // Always show last page if there is more than one page
+    if (pageCount > 1) {
+      items.push(pageCount);
+    }
+
+    return items;
+  };
+
   return (
-    <div className="relative flex-1 border border-t-0 border-line-gray">
-      <div className="absolute inset-0">
-        <ScrollArea className="h-full">
-          <Table
-            outerDivClassName="w-auto "
-            className="w-auto min-w-full border-separate border-spacing-0"
-          >
-            <TableHeader className="[&_tr]:border-b-0">
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow
-                  key={headerGroup.id}
-                  className="sticky top-0 bg-light-gray "
-                >
-                  {headerGroup.headers.map((header) => {
-                    return (
-                      <TableHead
-                        key={header.id}
-                        className="border-t border-line-gray"
-                      >
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext(),
-                            )}
-                      </TableHead>
-                    );
-                  })}
-                </TableRow>
-              ))}
-            </TableHeader>
-            <TableBody>
-              {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row, i) => {
-                  return <Row key={i} row={row} />;
-                })
-              ) : (
-                <TableRow>
-                  <TableCell
-                    colSpan={columns.length}
-                    className="h-24 text-center"
+    <div className="relative flex flex-1 flex-col border border-t-0 border-line-gray">
+      <div className="relative flex-1">
+        <div className="absolute inset-0">
+          <ScrollArea className="h-full">
+            <Table
+              outerDivClassName="w-auto "
+              className="w-auto min-w-full border-separate border-spacing-0"
+            >
+              <TableHeader className="[&_tr]:border-b-0">
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <TableRow
+                    key={headerGroup.id}
+                    className="sticky top-0 bg-light-gray "
                   >
-                    查無資料
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-          <Scrollbar orientation="horizontal" />
-        </ScrollArea>
+                    {headerGroup.headers.map((header) => {
+                      return (
+                        <TableHead
+                          key={header.id}
+                          className="border-t border-line-gray"
+                        >
+                          {header.isPlaceholder
+                            ? null
+                            : flexRender(
+                                header.column.columnDef.header,
+                                header.getContext(),
+                              )}
+                        </TableHead>
+                      );
+                    })}
+                  </TableRow>
+                ))}
+              </TableHeader>
+              <TableBody>
+                {table.getRowModel().rows?.length ? (
+                  table.getRowModel().rows.map((row, i) => {
+                    return <Row key={i} row={row} />;
+                  })
+                ) : (
+                  <TableRow>
+                    <TableCell
+                      colSpan={columns.length}
+                      className="h-24 text-center"
+                    >
+                      查無資料
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+            <Scrollbar orientation="horizontal" />
+          </ScrollArea>
+        </div>
       </div>
+
+      {pagination && onPageChange && (
+        <div className="flex items-center justify-center space-x-2 border-t border-line-gray bg-light-gray py-4">
+          <button
+            onClick={() => onPageChange(Math.max(1, currentPage - 1))}
+            disabled={currentPage <= 1}
+          >
+            上一頁
+          </button>
+
+          {generatePaginationItems().map((item, index) =>
+            typeof item === "number" ? (
+              <button
+                key={index}
+                className={cn(
+                  "h-8 w-8",
+                  item === currentPage && "bg-black text-white",
+                )}
+                onClick={() => onPageChange(item)}
+              >
+                {item}
+              </button>
+            ) : (
+              <span key={index} className="px-2">
+                {item}
+              </span>
+            ),
+          )}
+
+          <button
+            onClick={() =>
+              onPageChange(Math.min(pagination.pageCount, currentPage + 1))
+            }
+            disabled={currentPage >= pagination.pageCount}
+          >
+            下一頁
+          </button>
+        </div>
+      )}
     </div>
   );
 }
