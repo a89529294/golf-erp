@@ -40,7 +40,7 @@ export function Component() {
 
   const { data: stores } = useQuery({
     ...genIndoorSimulatorStoresQuery(
-      user?.isAdmin ? "all" : user?.allowedStores.simulator ?? [],
+      user?.isAdmin ? "all" : (user?.allowedStores.simulator ?? []),
     ),
     initialData: initialData.simulators,
   });
@@ -102,7 +102,7 @@ export function Component() {
             order.simulatorAppointment?.endTime ?? "",
           ),
           merchantId: order.merchantId,
-          付款方式: order.paymentMethod || "點數",
+          付款方式: order.paymentMethod || "",
           金額: order.amount,
         };
 

@@ -56,10 +56,10 @@ export function Component() {
   const handleSortChange = (sortField: string, sortOrder: string) => {
     setSearchParams((prev) => {
       const newParams = new URLSearchParams(prev);
-      
+
       // Reset to page 1 when sorting changes
       newParams.set("page", "1");
-      
+
       if (sortField && sortOrder) {
         newParams.set("sortField", sortField);
         newParams.set("sortOrder", sortOrder);
@@ -68,7 +68,7 @@ export function Component() {
         newParams.delete("sortField");
         newParams.delete("sortOrder");
       }
-      
+
       return newParams;
     });
   };
@@ -142,10 +142,11 @@ export function Component() {
               currentDataRef={currentDataRef}
               columns={columns}
               data={filteredData}
-              pagination={pagination}
-              onPageChange={handlePageChange}
+              page={page}
+              setPage={handlePageChange}
+              totalPages={pagination.pageCount}
               onSortChange={handleSortChange}
-              currentPage={page}
+              height={height}
             />
           </div>
         );

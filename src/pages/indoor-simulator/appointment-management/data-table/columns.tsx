@@ -33,10 +33,10 @@ export const columns: ColumnDef<Appointment>[] = [
       return (
         <button
           className="flex items-center gap-1 whitespace-nowrap"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          // onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           名稱
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          {/* <ArrowUpDown className="ml-2 h-4 w-4" /> */}
         </button>
       );
     },

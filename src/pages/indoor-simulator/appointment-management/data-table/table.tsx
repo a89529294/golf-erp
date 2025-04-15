@@ -24,8 +24,8 @@ import { useImperativeHandle, useState } from "react";
 import { Row } from "@/pages/indoor-simulator/appointment-management/data-table/row";
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
-import { PaginationMeta } from "../loader";
 import { cn } from "@/lib/utils";
+import { DataTablePagination } from "./data-table-pagination";
 
 const fuzzyFilter: FilterFn<unknown> = (row, columnId, value) => {
   return (row.getValue(columnId) as string)
@@ -37,20 +37,22 @@ interface DataTableProps<TData extends { id: string }, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   currentDataRef: React.MutableRefObject<{ exportDataAsXlsx: () => void }>;
-  pagination?: PaginationMeta;
-  onPageChange?: (page: number) => void;
+  page?: number;
+  setPage?: (page: number) => void;
+  totalPages?: number;
   onSortChange?: (sortField: string, sortOrder: string) => void;
-  currentPage?: number;
+  height: number;
 }
 
 export function DataTable<TData extends Appointment, TValue>({
   columns,
   data,
   currentDataRef,
-  pagination,
-  onPageChange,
+  page,
+  setPage,
+  totalPages,
   onSortChange,
-  currentPage = 1,
+  height,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
 
@@ -144,46 +146,9 @@ export function DataTable<TData extends Appointment, TValue>({
     };
   });
 
-  // Generate page numbers to display
-  const generatePaginationItems = () => {
-    if (!pagination) return [];
-
-    const { page, pageCount } = pagination;
-    const items = [];
-
-    // Always show first page
-    items.push(1);
-
-    // Calculate range of pages to show around current page
-    let startPage = Math.max(2, page - 1);
-    let endPage = Math.min(pageCount - 1, page + 1);
-
-    // Add ellipsis after first page if needed
-    if (startPage > 2) {
-      items.push("...");
-    }
-
-    // Add pages around current page
-    for (let i = startPage; i <= endPage; i++) {
-      items.push(i);
-    }
-
-    // Add ellipsis before last page if needed
-    if (endPage < pageCount - 1) {
-      items.push("...");
-    }
-
-    // Always show last page if there is more than one page
-    if (pageCount > 1) {
-      items.push(pageCount);
-    }
-
-    return items;
-  };
-
   return (
-    <div className="relative flex flex-1 flex-col border border-t-0 border-line-gray">
-      <div className="relative flex-1">
+    <div className="relative flex-1 flex-col border border-t-0 border-line-gray">
+      <div className="relative " style={{ height: height - 150 }}>
         <div className="absolute inset-0">
           <ScrollArea className="h-full">
             <Table
@@ -236,43 +201,13 @@ export function DataTable<TData extends Appointment, TValue>({
         </div>
       </div>
 
-      {pagination && onPageChange && (
-        <div className="flex items-center justify-center space-x-2 border-t border-line-gray bg-light-gray py-4">
-          <button
-            onClick={() => onPageChange(Math.max(1, currentPage - 1))}
-            disabled={currentPage <= 1}
-          >
-            上一頁
-          </button>
-
-          {generatePaginationItems().map((item, index) =>
-            typeof item === "number" ? (
-              <button
-                key={index}
-                className={cn(
-                  "h-8 w-8",
-                  item === currentPage && "bg-black text-white",
-                )}
-                onClick={() => onPageChange(item)}
-              >
-                {item}
-              </button>
-            ) : (
-              <span key={index} className="px-2">
-                {item}
-              </span>
-            ),
-          )}
-
-          <button
-            onClick={() =>
-              onPageChange(Math.min(pagination.pageCount, currentPage + 1))
-            }
-            disabled={currentPage >= pagination.pageCount}
-          >
-            下一頁
-          </button>
-        </div>
+      {!!page && setPage && !!totalPages && (
+        <DataTablePagination
+          currentPage={page}
+          totalPages={totalPages}
+          setPage={setPage}
+          paginationStyle={{ bottom: 20 }}
+        />
       )}
     </div>
   );

@@ -60,57 +60,6 @@ export function Component() {
     if (stores[0]) onStoreValueChange(stores[0].id, true);
   }, [stores, onStoreValueChange, storeId]);
 
-  // const b = orders.map((o) => ({
-  //   時間: o.createdAt,
-  //   名稱: o.userName,
-  //   電話: o.userPhone,
-  //   merchantId: o.merchantId,
-  //   付款方式: o.paymentMethod,
-  //   訂單金額: o.amount,
-  // }));
-
-  // const a = Object.values(data?.detailed ?? {}).reduce(
-  //   (acc, v) => {
-  //     v.orders.forEach((order) => {
-  //       const newOrderData = {
-  //         名字: order.userName,
-  //         電話: order.userPhone,
-  //         建立時間: formatDateWithoutSeconds(order.createdAt),
-  //         開始時間: formatDateWithoutSeconds(
-  //           order.simulatorAppointment?.startTime ?? "",
-  //         ),
-  //         結束時間: formatDateWithoutSeconds(
-  //           order.simulatorAppointment?.endTime ?? "",
-  //         ),
-  //         merchantId: order.merchantId,
-  //         付款方式: order.paymentMethod || "點數",
-  //         金額: order.amount,
-  //       };
-
-  //       if (
-  //         order.simulatorAppointment?.storeSimulator.name &&
-  //         acc[order.simulatorAppointment.storeSimulator.name]
-  //       ) {
-  //         acc = {
-  //           ...acc,
-  //           [order.simulatorAppointment.storeSimulator.name]: [
-  //             ...acc[order.simulatorAppointment.storeSimulator.name],
-  //             newOrderData,
-  //           ],
-  //         };
-  //       } else if (order.simulatorAppointment?.storeSimulator.name) {
-  //         acc = {
-  //           ...acc,
-  //           [order.simulatorAppointment.storeSimulator.name]: [newOrderData],
-  //         };
-  //       }
-  //     });
-
-  //     return acc;
-  //   },
-  //   {} as Record<string, Record<string, string | number>[]>,
-  // );
-
   return (
     <MainLayout
       headerChildren={

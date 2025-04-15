@@ -127,7 +127,10 @@ export function Component() {
     >
       {({ height }) => {
         return (
-          <div className="flex w-full flex-col border border-line-gray bg-light-gray p-1">
+          <div
+            className="flex w-full flex-col border border-line-gray bg-light-gray p-1"
+            style={{ height }}
+          >
             <nav>
               <ul className="isolate flex items-center gap-3 overflow-x-auto py-2 pl-5">
                 {siteOptions
@@ -176,10 +179,11 @@ export function Component() {
               currentDataRef={currentDataRef}
               columns={columns}
               data={filteredData}
-              pagination={pagination}
-              onPageChange={handlePageChange}
+              page={page}
+              setPage={handlePageChange}
+              totalPages={pagination.pageCount}
               onSortChange={handleSortChange}
-              currentPage={page}
+              height={height}
             />
           </div>
         );
