@@ -151,11 +151,20 @@ export const genDataQuery = (storeId: string, startAt: Date, endAt: Date) => ({
       privateFetch(
         `/appointment/simulator/order-report/count?storeId=${storeId}`,
       ).then((r) => r.json()),
-      privateFetch(`/appointment/simulator/order-report?${qsYear}`).then((r) =>
+      // privateFetch(`/appointment/simulator/order-report?${qsYear}`).then((r) =>
+      //   r.json(),
+      // ),
+      // privateFetch(`/appointment/simulator/order-daily-report?${qs}`).then(
+      //   (r) => r.json(),
+      // ),
+      // privateFetch(
+      //   `/appointment/simulator/report/count?storeId=${storeId}`,
+      // ).then((r) => r.json()),
+      privateFetch(`/appointment/simulator/report?${qsYear}`).then((r) =>
         r.json(),
       ),
-      privateFetch(`/appointment/simulator/order-daily-report?${qs}`).then(
-        (r) => r.json(),
+      privateFetch(`/appointment/simulator/daily-report?${qs}`).then((r) =>
+        r.json(),
       ),
     ];
 
