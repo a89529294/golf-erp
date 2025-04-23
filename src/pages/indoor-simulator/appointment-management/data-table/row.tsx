@@ -336,13 +336,16 @@ export function Row({ row }: { row: RowModel<Appointment>["rows"][number] }) {
             </div>
 
             <div className="r h-full">
-              {row.original.status !== "取消" && timeRemaining && (
-                <CountdownTimer
-                  hours={timeRemaining.hours}
-                  minutes={timeRemaining.minutes}
-                  seconds={timeRemaining.seconds}
-                />
-              )}
+              {row.original.status !== "取消" &&
+                row.original.order &&
+                row.original.order.status === "success" &&
+                timeRemaining && (
+                  <CountdownTimer
+                    hours={timeRemaining.hours}
+                    minutes={timeRemaining.minutes}
+                    seconds={timeRemaining.seconds}
+                  />
+                )}
             </div>
           </div>
         </TableCell>
