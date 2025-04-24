@@ -273,20 +273,12 @@ export function Row({ row }: { row: RowModel<Appointment>["rows"][number] }) {
                   付款方式
                 </p>
                 <p className="text-secondary-purple">
-                  {row.original.order?.paymentMethod ?? ""}
+                  {row.original.order?.paymentMethod ?? "點數"}
                 </p>
               </div>
               <div className="w-14">
                 <p className="text-sm font-medium text-secondary-dark">狀態</p>
-                <p className="text-secondary-purple">
-                  {row.original.order?.paymentMethod === null
-                    ? "未付款"
-                    : row.original.order?.status === "success"
-                      ? "成功"
-                      : row.original.order?.status === "pending"
-                        ? "待付款"
-                        : row.original.order?.status}
-                </p>
+                <p className="text-secondary-purple">{row.original.status}</p>
               </div>
             </div>
 
@@ -336,16 +328,13 @@ export function Row({ row }: { row: RowModel<Appointment>["rows"][number] }) {
             </div>
 
             <div className="r h-full">
-              {row.original.status !== "取消" &&
-                row.original.order &&
-                row.original.order.status === "success" &&
-                timeRemaining && (
-                  <CountdownTimer
-                    hours={timeRemaining.hours}
-                    minutes={timeRemaining.minutes}
-                    seconds={timeRemaining.seconds}
-                  />
-                )}
+              {row.original.status !== "取消" && timeRemaining && (
+                <CountdownTimer
+                  hours={timeRemaining.hours}
+                  minutes={timeRemaining.minutes}
+                  seconds={timeRemaining.seconds}
+                />
+              )}
             </div>
           </div>
         </TableCell>

@@ -179,8 +179,10 @@ export function Component() {
           </ScrollArea>
         )
       ) : (
-        <div className="w-full overflow-auto border border-line-gray bg-light-gray p-5">
-          {data && <ReportContainer data={data} stores={stores} />}
+        <div className="absolute inset-0">
+          <div className="w-full overflow-auto border border-line-gray bg-light-gray p-5">
+            {data && <ReportContainer data={data} stores={stores} />}
+          </div>
         </div>
       )}
     </MainLayout>
