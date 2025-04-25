@@ -100,7 +100,7 @@ export const columns: ColumnDef<Appointment>[] = [
     id: "cancel-appointment",
     cell: (prop) => {
       const appointment = prop.row.original;
-      return appointment.status === "取消" ? null : (
+      return appointment.status === "cancel" ? null : (
         <Modal
           dialogTriggerChildren={
             <IconShortButton
