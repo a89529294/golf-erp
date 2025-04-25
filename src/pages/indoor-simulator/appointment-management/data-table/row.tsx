@@ -4,6 +4,12 @@ import gsap from "gsap";
 import "./countdown.css";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { flexRender, RowModel } from "@tanstack/react-table";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface FigureProps {
   value: string;
@@ -236,6 +242,17 @@ export function Row({ row }: { row: RowModel<Appointment>["rows"][number] }) {
     };
   }, [row.original.id]);
 
+  if (row.original.id.startsWith("20b67")) {
+    console.log(row.original);
+    console.log(row.original.startTime);
+    console.log(new Date(row.original.startTime.slice(0, -1)));
+  }
+
+  const startTimeDate = new Date(row.original.startTime);
+  startTimeDate.setHours(startTimeDate.getHours() - 8);
+  const endTimeDate = new Date(row.original.endTime);
+  endTimeDate.setHours(endTimeDate.getHours() - 8);
+
   return (
     <>
       <TableRow
@@ -270,9 +287,9 @@ export function Row({ row }: { row: RowModel<Appointment>["rows"][number] }) {
                 <p className="text-secondary-purple">
                   {row.original.status === "cancel"
                     ? "取消"
-                    : new Date(row.original.startTime).getTime() > Date.now()
+                    : startTimeDate.getTime() > Date.now()
                       ? "未進行"
-                      : new Date(row.original.endTime).getTime() > Date.now()
+                      : endTimeDate.getTime() > Date.now()
                         ? "進行中"
                         : "已完成"}
                 </p>
@@ -295,9 +312,19 @@ export function Row({ row }: { row: RowModel<Appointment>["rows"][number] }) {
                 <p className="text-sm font-medium text-secondary-dark">
                   優惠券名稱
                 </p>
-                <p className="truncate text-secondary-purple">
-                  {row.original.usedCoupon?.[0]?.name}
-                </p>
+
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger className="cursor-default">
+                      <p className="truncate text-secondary-purple">
+                        {row.original.usedCoupon?.[0]?.name}
+                      </p>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{row.original.usedCoupon?.[0]?.name}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
 
               <div>

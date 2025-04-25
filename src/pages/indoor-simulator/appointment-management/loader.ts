@@ -162,8 +162,8 @@ export async function loader({ request }: { request: Request }) {
   const storeId = searchParams.get("storeId") || stores[0].id;
 
   // Get sort parameters
-  const sortField = searchParams.get("sortField") || undefined;
-  const sortOrder = searchParams.get("sortOrder") || undefined;
+  const sortField = searchParams.get("sortField") || "startTime";
+  const sortOrder = searchParams.get("sortOrder") || "DESC";
 
   const appointmentsData = await queryClient.ensureQueryData({
     ...appointmentsQuery(page, 10, storeId, siteId, sortField, sortOrder),
