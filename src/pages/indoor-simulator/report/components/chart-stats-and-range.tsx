@@ -41,7 +41,7 @@ export function ChartStatsAndRange({
       if (
         val.paymentMethod === "台灣發卡機構核發之信用卡" ||
         val.paymentMethod === "ApplePay" ||
-        val.paymentMethod === "JKOPay"
+        val.paymentMethod === "JKOPAY"
       ) {
         return {
           linePay: acc.linePay,
@@ -78,7 +78,7 @@ export function ChartStatsAndRange({
           if (
             v.paymentMethod === "ApplePay" ||
             v.paymentMethod === "台灣發卡機構核發之信用卡" ||
-            v.paymentMethod === "JKOPay"
+            v.paymentMethod === "JKOPAY"
           ) {
             return {
               np: a.np + Math.ceil(v.amount * 0.028),
@@ -128,7 +128,7 @@ export function ChartStatsAndRange({
           if (
             v.paymentMethod === "ApplePay" ||
             v.paymentMethod === "台灣發卡機構核發之信用卡" ||
-            v.paymentMethod === "JKOPay"
+            v.paymentMethod === "JKOPAY"
           ) {
             return {
               np: a.np + Math.ceil(v.amount * 0.028),

@@ -196,14 +196,7 @@ function getRemainingTime(startTimeStr: string, endTimeStr: string) {
 export function Row({ row }: { row: RowModel<Appointment>["rows"][number] }) {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const [timeRemaining, setTimeRemaining] = useState(() =>
-    getRemainingTime(
-      row.original.id === "02432248-c2d8-4e45-a7af-ff79de04d62c"
-        ? "2025-03-05 08:00"
-        : row.original.startTime,
-      row.original.id === "02432248-c2d8-4e45-a7af-ff79de04d62c"
-        ? "2025-03-05 12:00"
-        : row.original.endTime,
-    ),
+    getRemainingTime(row.original.startTime, row.original.endTime),
   );
 
   const originAmount =
@@ -234,10 +227,6 @@ export function Row({ row }: { row: RowModel<Appointment>["rows"][number] }) {
   }, [row.original.endTime, row.original.startTime]);
 
   useEffect(() => {
-    // if (row.original.id === "b133ab6b-92fa-454f-95b6-616f69f03827") {
-    //   console.log(row.original);
-    // }
-
     setTimeRemaining(
       getRemainingTime(row.original.startTime, row.original.endTime),
     );
@@ -273,19 +262,19 @@ export function Row({ row }: { row: RowModel<Appointment>["rows"][number] }) {
                   付款方式
                 </p>
                 <p className="text-secondary-purple">
-                  {row.original.order?.paymentMethod ?? ""}
+                  {row.original.order?.paymentMethod ?? "點數"}
                 </p>
               </div>
               <div className="w-14">
                 <p className="text-sm font-medium text-secondary-dark">狀態</p>
                 <p className="text-secondary-purple">
-                  {row.original.order?.paymentMethod === null
-                    ? "未付款"
-                    : row.original.order?.status === "success"
-                      ? "成功"
-                      : row.original.order?.status === "pending"
-                        ? "待付款"
-                        : row.original.order?.status}
+                  {row.original.status === "cancel"
+                    ? "取消"
+                    : new Date(row.original.startTime).getTime() > Date.now()
+                      ? "未進行"
+                      : new Date(row.original.endTime).getTime() > Date.now()
+                        ? "進行中"
+                        : "已完成"}
                 </p>
               </div>
             </div>
@@ -336,16 +325,13 @@ export function Row({ row }: { row: RowModel<Appointment>["rows"][number] }) {
             </div>
 
             <div className="r h-full">
-              {row.original.status !== "取消" &&
-                row.original.order &&
-                row.original.order.status === "success" &&
-                timeRemaining && (
-                  <CountdownTimer
-                    hours={timeRemaining.hours}
-                    minutes={timeRemaining.minutes}
-                    seconds={timeRemaining.seconds}
-                  />
-                )}
+              {row.original.status !== "cancel" && timeRemaining && (
+                <CountdownTimer
+                  hours={timeRemaining.hours}
+                  minutes={timeRemaining.minutes}
+                  seconds={timeRemaining.seconds}
+                />
+              )}
             </div>
           </div>
         </TableCell>
