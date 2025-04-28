@@ -84,6 +84,9 @@ export function Component() {
       hashIV: store.hashIV ?? "",
       linepayChannelId: store.linepayChannelId ?? "",
       linepayChannelSecret: store.linepayChannelSecret ?? "",
+      jkoApiKey: store.jkoApiKey ?? "",
+      jkoSercertKey: store.jkoSercertKey ?? "",
+      jkoStoreId: store.jkoStoreId ?? "",
       invoiceMerchantId: store.invoiceMerchantId ?? "",
       invoiceHashIV: store.invoiceHashIV ?? "",
       invoiceHashKey: store.invoiceHashKey ?? "",
@@ -138,6 +141,9 @@ export function Component() {
       hashKey: values.hashKey,
       linepayChannelId: values.linepayChannelId,
       linepayChannelSecret: values.linepayChannelSecret,
+      jkoApiKey: values.jkoApiKey,
+      jkoSercertKey: values.jkoSercertKey,
+      jkoStoreId: values.jkoStoreId,
       invoiceMerchantId: values.invoiceMerchantId,
       invoiceHashIV: values.invoiceHashIV,
       invoiceHashKey: values.invoiceHashKey,
@@ -180,6 +186,13 @@ export function Component() {
     if (dirtyFields.linepayChannelSecret)
       changedFields.linepayChannelSecret =
         transformedValues.linepayChannelSecret;
+
+    if (dirtyFields.jkoApiKey)
+      changedFields.jkoApiKey = transformedValues.jkoApiKey;
+    if (dirtyFields.jkoSercertKey)
+      changedFields.jkoSercertKey = transformedValues.jkoSercertKey;
+    if (dirtyFields.jkoStoreId)
+      changedFields.jkoStoreId = transformedValues.jkoStoreId;
 
     if (dirtyFields.invoiceMerchantId)
       changedFields.invoiceMerchantId = transformedValues.invoiceMerchantId;
@@ -277,6 +290,9 @@ export function Component() {
       hashIV: form.getValues("hashIV"),
       linepayChannelId: form.getValues("linepayChannelId"),
       linepayChannelSecret: form.getValues("linepayChannelSecret"),
+      jkoApiKey: form.getValues("jkoApiKey"),
+      jkoSercertKey: form.getValues("jkoSercertKey"),
+      jkoStoreId: form.getValues("jkoStoreId"),
       invoiceMerchantId: form.getValues("invoiceMerchantId"),
       invoiceHashKey: form.getValues("invoiceHashKey"),
       invoiceHashIV: form.getValues("invoiceHashIV"),

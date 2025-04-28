@@ -327,6 +327,25 @@ export function StoreForm({
             name={"linepayChannelSecret"}
             label="Secret"
           />
+          <div>JKOPay 設定</div>
+          <StoreFormField
+            disabled={isInputDisabled}
+            form={form}
+            name={"jkoApiKey"}
+            label="jkoApiKey"
+          />
+          <StoreFormField
+            disabled={isInputDisabled}
+            form={form}
+            name={"jkoSercertKey"}
+            label="jkoSecretKey"
+          />
+          <StoreFormField
+            disabled={isInputDisabled}
+            form={form}
+            name={"jkoStoreId"}
+            label="jkoStoreId"
+          />
           <Label className="flex items-center sm:items-baseline sm:justify-between">
             <div className="space-y-1">
               <div className="w-28 sm:hidden">電子發票</div>

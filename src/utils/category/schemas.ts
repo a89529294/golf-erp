@@ -44,6 +44,18 @@ export const storeSchema = z.object({
     .string()
     .nullish()
     .transform((v) => v ?? ""),
+  jkoApiKey: z
+    .string()
+    .nullish()
+    .transform((v) => v ?? ""),
+  jkoSercertKey: z
+    .string()
+    .nullish()
+    .transform((v) => v ?? ""),
+  jkoStoreId: z
+    .string()
+    .nullish()
+    .transform((v) => v ?? ""),
   invoiceMerchantId: z
     .string()
     .nullish()

@@ -61,6 +61,9 @@ export function Component() {
       linepayChannelId: "",
       linepayChannelSecret: "",
       hashIV: "",
+      jkoApiKey: "",
+      jkoSercertKey: "",
+      jkoStoreId: "",
       invoiceMerchantId: "",
       invoiceHashKey: "",
       invoiceHashIV: "",
@@ -102,6 +105,11 @@ export function Component() {
       ...(values.linepayChannelSecret
         ? { linepayChannelSecret: values.linepayChannelSecret }
         : {}),
+
+      ...(values.jkoApiKey ? { jkoApiKey: values.jkoApiKey } : {}),
+      ...(values.jkoSercertKey ? { jkoSercertKey: values.jkoSercertKey } : {}),
+      ...(values.jkoStoreId ? { jkoStoreId: values.jkoStoreId } : {}),
+
       ...(values.invoiceMerchantId
         ? { invoiceMerchantId: values.invoiceMerchantId }
         : {}),
