@@ -130,6 +130,8 @@ export function Component() {
     {} as Record<string, Record<string, string | number>[]>,
   );
 
+  console.log(a);
+
   return (
     <MainLayout
       headerChildren={

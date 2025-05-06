@@ -48,6 +48,7 @@ export const memberSchema = z.object({
         id: z.string(),
         name: z.string(),
       }),
+      type: z.string(),
     }),
   ),
   simulatorAppointmens: z

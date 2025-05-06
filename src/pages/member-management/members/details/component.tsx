@@ -131,6 +131,32 @@ export function Component() {
     mutate();
   }
 
+  const topUpData = data.appChargeHistories.filter((v) => {
+    return v.type === "消費儲值";
+  });
+
+  const spendingData = data.appChargeHistories.filter((v) => {
+    return v.type === "取消預約" || v.type === "使用";
+  });
+
+  const systemGiftData = data.appChargeHistories.filter((v) => {
+    return v.type === "系統贈送";
+  });
+
+  const couponData = data?.appUserCoupons;
+
+  const currentColumns = (() => {
+    if (memberHistory !== "coupon-history") return topUpHistorycolumns;
+    return couponHistorycolumns;
+  })();
+
+  const currentData = (() => {
+    if (memberHistory === "top-up-history") return topUpData;
+    if (memberHistory === "spending-history") return spendingData;
+    if (memberHistory === "system-gift-history") return systemGiftData;
+    return couponData;
+  })();
+
   return (
     <MainLayout
       headerChildren={
@@ -206,6 +232,17 @@ export function Component() {
           <button
             className={cn(
               "rounded-full px-5 py-3",
+              memberHistory === "system-gift-history"
+                ? "bg-secondary-dark text-white "
+                : "border border-line-gray bg-white",
+            )}
+            onClick={() => setMemberHistory("system-gift-history")}
+          >
+            系統贈送紀錄
+          </button>
+          <button
+            className={cn(
+              "rounded-full px-5 py-3",
               memberHistory === "coupon-history"
                 ? "bg-secondary-dark text-white "
                 : "border border-line-gray bg-white",
@@ -219,22 +256,8 @@ export function Component() {
           <div className="absolute inset-0 ">
             <ScrollArea className="h-full border border-t-0 border-line-gray">
               <GenericDataTable
-                columns={
-                  memberHistory === "top-up-history"
-                    ? topUpHistorycolumns
-                    : memberHistory === "spending-history"
-                      ? spendingHistoryColumns
-                      : // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                        (couponHistorycolumns as any)
-                }
-                data={
-                  memberHistory === "top-up-history"
-                    ? data?.appChargeHistories
-                    : memberHistory === "spending-history"
-                      ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                        (data?.simulatorAppointmens ?? ([] as any))
-                      : data?.appUserCoupons
-                }
+                columns={currentColumns as any[]}
+                data={currentData as any[]}
               />
               <ScrollBar className="hidden sm:block" orientation="horizontal" />
             </ScrollArea>
