@@ -196,14 +196,19 @@ export function Component() {
           disabled={disabled || isPending}
           onSubmit={onSubmit}
           topUpAmount={data.appChargeHistories.reduce(
-            (acc, val) => acc + val.amount,
+            (acc, val) =>
+              val.type === "消費儲值" ? acc + Math.abs(val.amount) : acc,
             0,
           )}
-          spentAmount={
-            data.simulatorAppointmens?.reduce(
-              (acc, val) => acc + val.amount,
-              0,
-            ) ?? 0
+          spentAmount={data.appChargeHistories.reduce(
+            (acc, val) =>
+              val.type === "消費儲值" || val.type === "使用"
+                ? acc + Math.abs(val.amount)
+                : acc,
+            0,
+          )}
+          remainingAmount={
+            data.storeAppUsers?.reduce((acc, val) => acc + val.coin, 0) ?? 0
           }
         />
         <nav className="flex justify-center gap-3">

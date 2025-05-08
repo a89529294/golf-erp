@@ -229,8 +229,6 @@ export function Component() {
       }
     }
 
-    console.log(dirtyFields, chargeImageId);
-
     if (dirtyFields.chargeImages) {
       if (chargeImageId) {
         try {
@@ -248,8 +246,6 @@ export function Component() {
       }
 
       const newChargeImage = form.getValues("chargeImages");
-
-      console.log(newChargeImage);
 
       if (newChargeImage) {
         const formData = new FormData();
@@ -298,10 +294,6 @@ export function Component() {
       invoiceHashIV: form.getValues("invoiceHashIV"),
     });
   }
-
-  const newChargeImage = form.getValues("chargeImages");
-
-  console.log(newChargeImage);
 
   return (
     <MainLayout

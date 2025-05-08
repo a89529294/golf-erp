@@ -12,6 +12,7 @@ export function MemberForm({
   disabled,
   topUpAmount,
   spentAmount,
+  remainingAmount,
   newMemberForm,
 }: {
   form: UseFormReturn<z.infer<typeof memberFormSchema>>;
@@ -19,6 +20,7 @@ export function MemberForm({
   disabled: boolean;
   topUpAmount: number;
   spentAmount: number;
+  remainingAmount: number;
   newMemberForm?: boolean;
 }) {
   const memberTypeRef = useRef<HTMLButtonElement>(null);
@@ -48,11 +50,8 @@ export function MemberForm({
           <div className="flex justify-center bg-secondary-dark py-3">
             <div className="flex gap-36 sm:flex-col sm:gap-4">
               <AmountCell label="累積消費金額" amount={spentAmount} />
-              <AmountCell label="消費儲值金額" amount={topUpAmount} />
-              <AmountCell
-                label="剩餘消費金額"
-                amount={topUpAmount - spentAmount}
-              />
+              <AmountCell label="累積儲值金額" amount={topUpAmount} />
+              <AmountCell label="剩餘消費金額" amount={remainingAmount} />
             </div>
           </div>
         )}

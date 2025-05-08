@@ -91,6 +91,7 @@ export function Component() {
         <MemberForm
           topUpAmount={0}
           spentAmount={0}
+          remainingAmount={0}
           form={form}
           disabled={isPending}
           onSubmit={onSubmit}
