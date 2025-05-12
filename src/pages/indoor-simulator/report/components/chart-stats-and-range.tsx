@@ -40,12 +40,12 @@ export function ChartStatsAndRange({
     (acc, val) => {
       if (
         val.paymentMethod === "台灣發卡機構核發之信用卡" ||
-        val.paymentMethod === "ApplePay" ||
-        val.paymentMethod === "JKOPAY"
+        val.paymentMethod === "ApplePay"
       ) {
         return {
-          linePay: acc.linePay,
           newebPay: acc.newebPay + Math.ceil(val.amount * 0.028),
+          linePay: acc.linePay,
+          JKOPAY: acc.JKOPAY,
         };
       }
 
@@ -53,6 +53,15 @@ export function ChartStatsAndRange({
         return {
           linePay: acc.linePay + Math.ceil(val.amount * 0.0315),
           newebPay: acc.newebPay,
+          JKOPAY: acc.JKOPAY,
+        };
+      }
+
+      if (val.paymentMethod === "JKOPAY") {
+        return {
+          linePay: acc.linePay,
+          newebPay: acc.newebPay,
+          JKOPAY: acc.JKOPAY + Math.ceil(val.amount * 0.025),
         };
       }
 
@@ -61,6 +70,7 @@ export function ChartStatsAndRange({
     {
       newebPay: 0,
       linePay: 0,
+      JKOPAY: 0,
     },
   );
 
@@ -77,12 +87,12 @@ export function ChartStatsAndRange({
         (a, v) => {
           if (
             v.paymentMethod === "ApplePay" ||
-            v.paymentMethod === "台灣發卡機構核發之信用卡" ||
-            v.paymentMethod === "JKOPAY"
+            v.paymentMethod === "台灣發卡機構核發之信用卡"
           ) {
             return {
               np: a.np + Math.ceil(v.amount * 0.028),
               lp: a.lp,
+              jp: a.jp,
             };
           }
 
@@ -90,6 +100,15 @@ export function ChartStatsAndRange({
             return {
               np: a.np,
               lp: a.lp + Math.ceil(v.amount * 0.0315),
+              jp: a.jp,
+            };
+          }
+
+          if (v.paymentMethod === "JKOPAY") {
+            return {
+              np: a.np,
+              lp: a.lp,
+              jp: a.jp + Math.ceil(v.amount * 0.025),
             };
           }
 
@@ -98,17 +117,20 @@ export function ChartStatsAndRange({
         {
           np: 0,
           lp: 0,
+          jp: 0,
         },
       );
 
       return {
         newebPay: acc.newebPay + monthlyFee.np,
         linePay: acc.linePay + monthlyFee.lp,
+        JKOPAY: acc.JKOPAY + monthlyFee.jp,
       };
     },
     {
       newebPay: 0,
       linePay: 0,
+      JKOPAY: 0,
     },
   );
 
@@ -127,12 +149,12 @@ export function ChartStatsAndRange({
         (a, v) => {
           if (
             v.paymentMethod === "ApplePay" ||
-            v.paymentMethod === "台灣發卡機構核發之信用卡" ||
-            v.paymentMethod === "JKOPAY"
+            v.paymentMethod === "台灣發卡機構核發之信用卡"
           ) {
             return {
               np: a.np + Math.ceil(v.amount * 0.028),
               lp: a.lp,
+              jp: a.jp,
             };
           }
 
@@ -140,6 +162,7 @@ export function ChartStatsAndRange({
             return {
               np: a.np,
               lp: a.lp + Math.ceil(v.amount * 0.0315),
+              jp: a.jp,
             };
           }
 
@@ -148,17 +171,20 @@ export function ChartStatsAndRange({
         {
           np: 0,
           lp: 0,
+          jp: 0,
         },
       );
 
       return {
         newebPay: acc.newebPay + monthlyFee.np,
         linePay: acc.linePay + monthlyFee.lp,
+        JKOPAY: acc.JKOPAY + monthlyFee.jp,
       };
     },
     {
       newebPay: 0,
       linePay: 0,
+      JKOPAY: 0,
     },
   );
 
@@ -209,6 +235,12 @@ export function ChartStatsAndRange({
         day: new Date().getDate() + "日LinePay手續費",
         custom: `指定範圍LinePay手續費`,
       },
+      JKOPAY: {
+        year: new Date().getFullYear() + "JKOPAY手續費",
+        month: new Date().getMonth() + 1 + "月JKOPAY手續費",
+        day: new Date().getDate() + "日JKOPAY手續費",
+        custom: `指定範圍JKOPAY手續費`,
+      },
     },
     appointment: {
       year: new Date().getFullYear() + "訂單數",
@@ -226,7 +258,7 @@ export function ChartStatsAndRange({
     return o["custom"];
   })();
 
-  const feeTitle = (pt: "newebPay" | "linePay") => {
+  const feeTitle = (pt: "newebPay" | "linePay" | "JKOPAY") => {
     if (isYearData) return obj["fee"][pt]["year"];
     if (isMonthData) return obj["fee"][pt]["month"];
     if (isDayData) return obj["fee"][pt]["day"];
@@ -249,13 +281,21 @@ export function ChartStatsAndRange({
           <GraphRevenueCell title="LinePay手續費" amount={totalFee.linePay} />
         )}
         {activeDataType === "revenue" && (
+          <GraphRevenueCell title="JKOPAY手續費" amount={totalFee.JKOPAY} />
+        )}
+        {activeDataType === "revenue" && (
           <GraphRevenueCell
             title="實際營業額"
             amount={Math.round(
-              totalRevenue - totalFee.newebPay - totalFee.linePay,
+              totalRevenue -
+                totalFee.newebPay -
+                totalFee.linePay -
+                totalFee.JKOPAY,
             )}
           />
         )}
+
+        <div className="col-span-3" />
 
         <GraphRevenueCell
           title={title}
@@ -279,11 +319,21 @@ export function ChartStatsAndRange({
               amount={isYearData ? yearlyFee.linePay : rangeFee.linePay}
             />
             <GraphRevenueCell
+              title={feeTitle("JKOPAY")}
+              amount={isYearData ? yearlyFee.JKOPAY : rangeFee.JKOPAY}
+            />
+            <GraphRevenueCell
               title={isYearData ? "年度實際營業額" : "範圍實際營業額"}
               amount={
                 isYearData
-                  ? yearTotalRevenue - yearlyFee.newebPay - yearlyFee.linePay
-                  : rangeTotalRevenue - rangeFee.newebPay - rangeFee.linePay
+                  ? yearTotalRevenue -
+                    yearlyFee.newebPay -
+                    yearlyFee.linePay -
+                    yearlyFee.JKOPAY
+                  : rangeTotalRevenue -
+                    rangeFee.newebPay -
+                    rangeFee.linePay -
+                    rangeFee.JKOPAY
               }
             />
           </>

@@ -37,20 +37,27 @@ export function ChartStatsAndRange({
   const totalRevenue = data.total.totalAmount;
   const totalAppointmentCount = data.total.totalCount;
 
+  console.log("fk");
+  console.log(data.detailed);
+  console.log("fk");
+
   const totalFee = Object.values(data.detailed).reduce(
     (acc, val) => {
       Object.values(val.storeGroundAppointments).forEach((v) => {
         v.forEach((a) => {
           if (
             a.order?.paymentMethod === "台灣發卡機構核發之信用卡" ||
-            a.order?.paymentMethod === "ApplePay" ||
-            a.order?.paymentMethod === "JKOPAY"
+            a.order?.paymentMethod === "ApplePay"
           ) {
             acc.newebPay += Math.ceil(a.amount * 0.028);
           }
           if (a.order?.paymentMethod === "line-pay") {
             acc.linePay += Math.ceil(a.amount * 0.0315);
           }
+
+          // if ( a.order?.paymentMethod === "JKOPAY"){
+          //   acc.JKOPay += Math.ceil(a.amount * 0.0315);
+          // }
         });
       });
 
