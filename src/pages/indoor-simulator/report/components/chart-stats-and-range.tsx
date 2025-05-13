@@ -275,15 +275,6 @@ export function ChartStatsAndRange({
           }
         />
         {activeDataType === "revenue" && (
-          <GraphRevenueCell title="藍新手續費" amount={totalFee.newebPay} />
-        )}
-        {activeDataType === "revenue" && (
-          <GraphRevenueCell title="LinePay手續費" amount={totalFee.linePay} />
-        )}
-        {activeDataType === "revenue" && (
-          <GraphRevenueCell title="JKOPAY手續費" amount={totalFee.JKOPAY} />
-        )}
-        {activeDataType === "revenue" && (
           <GraphRevenueCell
             title="實際營業額"
             amount={Math.round(
@@ -294,8 +285,18 @@ export function ChartStatsAndRange({
             )}
           />
         )}
+        <div className="col-span-2" />
+        {activeDataType === "revenue" && (
+          <GraphRevenueCell title="藍新手續費" amount={totalFee.newebPay} />
+        )}
+        {activeDataType === "revenue" && (
+          <GraphRevenueCell title="LinePay手續費" amount={totalFee.linePay} />
+        )}
+        {activeDataType === "revenue" && (
+          <GraphRevenueCell title="JKOPAY手續費" amount={totalFee.JKOPAY} />
+        )}
 
-        <div className="col-span-3" />
+        <div className="col-span-1" />
 
         <GraphRevenueCell
           title={title}
@@ -308,6 +309,21 @@ export function ChartStatsAndRange({
             <CircularProgressBar size={60} filledPercentage={percentage} />
           }
         />
+        <GraphRevenueCell
+          title={isYearData ? "年度實際營業額" : "範圍實際營業額"}
+          amount={
+            isYearData
+              ? yearTotalRevenue -
+                yearlyFee.newebPay -
+                yearlyFee.linePay -
+                yearlyFee.JKOPAY
+              : rangeTotalRevenue -
+                rangeFee.newebPay -
+                rangeFee.linePay -
+                rangeFee.JKOPAY
+          }
+        />
+        <div className="col-span-2" />
         {activeDataType === "revenue" && (
           <>
             <GraphRevenueCell
@@ -321,20 +337,6 @@ export function ChartStatsAndRange({
             <GraphRevenueCell
               title={feeTitle("JKOPAY")}
               amount={isYearData ? yearlyFee.JKOPAY : rangeFee.JKOPAY}
-            />
-            <GraphRevenueCell
-              title={isYearData ? "年度實際營業額" : "範圍實際營業額"}
-              amount={
-                isYearData
-                  ? yearTotalRevenue -
-                    yearlyFee.newebPay -
-                    yearlyFee.linePay -
-                    yearlyFee.JKOPAY
-                  : rangeTotalRevenue -
-                    rangeFee.newebPay -
-                    rangeFee.linePay -
-                    rangeFee.JKOPAY
-              }
             />
           </>
         )}
