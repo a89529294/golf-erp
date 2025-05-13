@@ -82,7 +82,7 @@ export function ReportContainer({
           <>
             {!!rightPanelHeight && (
               <div
-                style={{ height: rightPanelHeight }}
+                // style={{ height: rightPanelHeight }}
                 className="flex flex-1 flex-col gap-2 rounded-md bg-white p-4"
               >
                 <ChartStatsAndRange
