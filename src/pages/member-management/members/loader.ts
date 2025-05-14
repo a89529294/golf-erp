@@ -44,10 +44,12 @@ export const memberSchema = z.object({
         })
         .transform((v) => fromDateToDateTimeString(v)),
       amount: z.number(),
-      store: z.object({
-        id: z.string(),
-        name: z.string(),
-      }),
+      store: z
+        .object({
+          id: z.string(),
+          name: z.string(),
+        })
+        .optional(),
       type: z.string(),
     }),
   ),
