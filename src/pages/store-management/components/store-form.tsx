@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { UseFormReturn } from "react-hook-form";
+import { Controller, useFieldArray, UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 import { formSchema } from "../schemas";
 
@@ -27,6 +27,30 @@ import { StoreFormSelectField } from "./store-form-select-field";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { ChargeImageField } from "@/pages/store-management/components/charge-image-field";
+import { TextButton } from "@/components/ui/button";
+
+const DAYS_OF_WEEK_CONFIG = [
+  { keyStr: "monday", label: "星期一", dayNumber: 1 },
+  { keyStr: "tuesday", label: "星期二", dayNumber: 2 },
+  { keyStr: "wednesday", label: "星期三", dayNumber: 3 },
+  { keyStr: "thursday", label: "星期四", dayNumber: 4 },
+  { keyStr: "friday", label: "星期五", dayNumber: 5 },
+  { keyStr: "saturday", label: "星期六", dayNumber: 6 },
+  { keyStr: "sunday", label: "星期日", dayNumber: 7 },
+];
+
+type FormValues = z.infer<typeof formSchema>;
+
+type Paths<T, K extends keyof T = keyof T> = K extends string
+  ? T[K] extends object
+    ? `${K}.${Paths<T[K]>}`
+    : K
+  : never;
+
+type FormFieldPaths = Paths<FormValues>;
+
+type SpecialPlansPath =
+  `specialPlans.${number}.timeRanges.${number}.${"startTime" | "endTime" | "discount"}`;
 
 export function StoreForm({
   form,
@@ -39,9 +63,9 @@ export function StoreForm({
   disableCode,
   setChargeImageId,
 }: {
-  form: UseFormReturn<z.infer<typeof formSchema>>;
+  form: UseFormReturn<FormValues>;
   setChargeImageId?: React.Dispatch<React.SetStateAction<string>>;
-  onSubmit: (values: z.infer<typeof formSchema>) => void;
+  onSubmit: (values: FormValues) => void;
   isMutating: boolean;
   counties: {
     countycode: string;
@@ -70,13 +94,23 @@ export function StoreForm({
   );
 
   const isInputDisabled = !!(isMutating || disabled);
+  const { control, watch, setValue, getValues } = form;
+
+  // Ensure specialPlans has 7 day objects initially
+  // This could also be handled when setting form defaultValues
+  // For now, let's assume defaultValues handles this or it's done in a useEffect if loading existing data
+  // Example: if (!getValues("specialPlans") || getValues("specialPlans").length !== 7) {
+  //   setValue("specialPlans", DAYS_OF_WEEK_CONFIG.map(day => ({ day: day.dayNumber, timeRanges: [] })), { shouldValidate: false });
+  // }
+
+  console.log(form.getFieldState("specialPlans"));
+
   return (
     <Form {...form}>
       <form
         id="store-form"
         onSubmit={form.handleSubmit(onSubmit, (error, event) => {
-          console.log(form.getValues("chargeImages"));
-          console.log(error, event);
+          console.log(form.getValues("specialPlans"));
         })}
         className="flex flex-col items-center pt-12"
       >
@@ -294,6 +328,233 @@ export function StoreForm({
             disabled={isInputDisabled}
             setChargeImageId={setChargeImageId}
           />
+
+          <div className="col-span-1 my-6 space-y-2 md:col-span-2">
+            <div>早鳥優惠設定</div>
+            {DAYS_OF_WEEK_CONFIG.map((dayConfig, dayIndex) => {
+              const {
+                fields: timeRangeFields,
+                append: appendTimeRange,
+                remove: removeTimeRange,
+              } = useFieldArray({
+                control: form.control,
+                name: `specialPlans.${dayIndex}.timeRanges` as const,
+              });
+
+              return (
+                <div
+                  key={dayConfig.keyStr}
+                  className=" rounded-lg border border-gray-200 bg-white p-4 shadow-sm"
+                >
+                  <div className="mb-3 flex items-center justify-between">
+                    <h4 className="text-lg font-medium text-gray-700">
+                      {dayConfig.label}
+                    </h4>
+                    <Controller
+                      name={`specialPlans.${dayIndex}.day`}
+                      control={form.control}
+                      defaultValue={dayConfig.dayNumber}
+                      render={({ field }) => (
+                        <input
+                          type="hidden"
+                          {...field}
+                          value={field.value || dayConfig.dayNumber}
+                        />
+                      )}
+                    />
+                    <TextButton
+                      type="button"
+                      onClick={() => {
+                        appendTimeRange({
+                          startTime: "00:00:00",
+                          endTime: "00:00:00",
+                          discount: 0.1,
+                        });
+                        form.clearErrors(`specialPlans.${dayIndex}.timeRanges`);
+                      }}
+                      disabled={isInputDisabled}
+                      className=""
+                    >
+                      新增時段
+                    </TextButton>
+                  </div>
+
+                  {timeRangeFields.length === 0 && (
+                    <p className="py-2 text-sm italic text-gray-500">
+                      本日無特殊時段
+                    </p>
+                  )}
+
+                  {timeRangeFields.map((timeRangeField, rangeIndex) => (
+                    <div
+                      key={timeRangeField.id}
+                      className="mb-3 grid grid-cols-1 items-end gap-x-4 gap-y-2 border-t border-gray-100 p-3 pt-3 first:border-t-0 md:grid-cols-[1fr_1fr_1fr_auto]"
+                    >
+                      <FormField
+                        control={form.control}
+                        name={`specialPlans.${dayIndex}.timeRanges.${rangeIndex}.startTime`}
+                        render={({ field, fieldState }) => {
+                          const x = Object.keys(
+                            // @ts-ignore
+                            form.getFieldState("specialPlans").error?.[dayIndex]
+                              ?.timeRanges ?? {},
+                          )[0]?.split(",");
+
+                          const hasError = !!x?.includes(rangeIndex.toString());
+
+                          return (
+                            <FormItem>
+                              <FormLabel className="text-xs font-medium text-gray-600">
+                                開始時間
+                              </FormLabel>
+                              <FormControl>
+                                <Input
+                                  type="time"
+                                  step="1"
+                                  lang="en-GB"
+                                  {...field}
+                                  disabled={isInputDisabled}
+                                  className={cn(
+                                    "block h-9 w-full text-sm ",
+                                    hasError && "border-red-500",
+                                  )}
+                                  placeholder="HH:MM:SS"
+                                  onChange={(e) => {
+                                    const newValue = e.target.value;
+                                    field.onChange(newValue);
+                                    form.setValue(field.name, newValue, {
+                                      shouldValidate: true,
+                                      shouldDirty: true,
+                                      shouldTouch: true,
+                                    });
+                                    form.clearErrors(field.name);
+                                  }}
+                                />
+                              </FormControl>
+                              {hasError && (
+                                <div className="mt-1 text-xs text-red-500">
+                                  結束時間必須晚於開始時間
+                                </div>
+                              )}
+                            </FormItem>
+                          );
+                        }}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name={`specialPlans.${dayIndex}.timeRanges.${rangeIndex}.endTime`}
+                        render={({ field, fieldState }) => {
+                          const x = Object.keys(
+                            // @ts-ignore
+                            form.getFieldState("specialPlans").error?.[dayIndex]
+                              ?.timeRanges ?? {},
+                          )[0]?.split(",");
+
+                          const hasError = !!x?.includes(rangeIndex.toString());
+
+                          return (
+                            <FormItem>
+                              <FormLabel className="text-xs font-medium text-gray-600">
+                                結束時間
+                              </FormLabel>
+                              <FormControl>
+                                <Input
+                                  type="time"
+                                  step="1"
+                                  lang="en-GB"
+                                  {...field}
+                                  disabled={isInputDisabled}
+                                  className={cn(
+                                    "block h-9 w-full text-sm",
+                                    hasError && "border-red-500",
+                                  )}
+                                  placeholder="HH:MM:SS"
+                                  onChange={(e) => {
+                                    const newValue = e.target.value;
+                                    field.onChange(newValue);
+                                    form.setValue(field.name, newValue, {
+                                      shouldValidate: true,
+                                      shouldDirty: true,
+                                      shouldTouch: true,
+                                    });
+                                    form.clearErrors(field.name);
+                                  }}
+                                />
+                              </FormControl>
+                              {hasError && (
+                                <div className="mt-1 text-xs text-red-500">
+                                  結束時間必須晚於開始時間
+                                </div>
+                              )}
+                            </FormItem>
+                          );
+                        }}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name={`specialPlans.${dayIndex}.timeRanges.${rangeIndex}.discount`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-xs font-medium text-gray-600">
+                              折扣 (例: 0.9 為9折)
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                step="0.01"
+                                min="0"
+                                max="1"
+                                {...field}
+                                value={
+                                  field.value === undefined
+                                    ? ""
+                                    : String(field.value)
+                                } // Handle undefined for controlled input
+                                onChange={(e) => {
+                                  const val = e.target.value;
+                                  let numVal: number | undefined;
+                                  if (val === "") {
+                                    numVal = undefined;
+                                  } else {
+                                    const parsed = parseFloat(val);
+                                    if (!isNaN(parsed)) {
+                                      numVal = Math.min(Math.max(parsed, 0), 1); // Clamp between 0 and 1
+                                    } else {
+                                      numVal = undefined;
+                                    }
+                                  }
+                                  field.onChange(numVal);
+                                  form.setValue(field.name, numVal, {
+                                    shouldValidate: true,
+                                    shouldDirty: true,
+                                    shouldTouch: true,
+                                  });
+                                  form.clearErrors(field.name);
+                                }}
+                                disabled={isInputDisabled}
+                                className="h-9 w-full text-sm"
+                              />
+                            </FormControl>
+                            <FormMessage className="text-xs" />
+                          </FormItem>
+                        )}
+                      />
+
+                      <TextButton
+                        onClick={() => removeTimeRange(rangeIndex)}
+                        disabled={isInputDisabled}
+                        className="mt-4 h-9 self-center justify-self-start md:mb-[2px] md:mt-0 md:self-end"
+                      >
+                        刪除
+                      </TextButton>
+                    </div>
+                  ))}
+                </div>
+              );
+            })}
+          </div>
 
           <div>藍新金流設定</div>
           <StoreFormField

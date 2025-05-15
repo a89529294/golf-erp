@@ -64,6 +64,7 @@ export function StoreFormAddressSelectFields({
             <div className="flex items-baseline ">
               <div className="w-28 sm:w-9" />
               <FormControl>
+                {/* @ts-ignore */}
                 <Input
                   className={cn(
                     "h-7 w-[186px] rounded-none border-0 border-b border-b-secondary-dark p-1 focus-visible:border-b-[1.5px] focus-visible:border-b-orange",

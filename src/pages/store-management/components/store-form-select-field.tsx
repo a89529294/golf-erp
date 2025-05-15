@@ -40,6 +40,7 @@ export function StoreFormSelectField({
             <Select
               disabled={disabled}
               onValueChange={field.onChange}
+              // @ts-ignore
               defaultValue={field.value ?? ""}
             >
               <FormControl>

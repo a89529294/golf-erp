@@ -68,6 +68,30 @@ export const storeSchema = z.object({
     .string()
     .nullish()
     .transform((v) => v ?? ""),
+  specialPlans: z.array(
+    z.object({
+      day: z.number().min(1).max(7), // 1 for Monday, 7 for Sunday or similar convention
+      timeRanges: z
+        .array(
+          z.object({
+            startTime: z
+              .string()
+              .regex(/^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/, {
+                // HH:mm:ss format
+                message: "開始時間格式不正確 (HH:mm:ss)",
+              }),
+            endTime: z.string().regex(/^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/, {
+              message: "結束時間格式不正確 (HH:mm:ss)",
+            }),
+            discount: z
+              .number()
+              .min(0)
+              .max(1, { message: "折扣必須介於0和1之間" }),
+          }),
+        )
+        .optional(),
+    }),
+  ),
 });
 
 const fileWithIdSchema = z.object({

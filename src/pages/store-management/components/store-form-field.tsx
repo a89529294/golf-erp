@@ -37,6 +37,7 @@ export function StoreFormField({
               {label}
             </FormLabel>
             <FormControl>
+              {/* @ts-ignore */}
               <Input
                 className={cn(
                   "h-7 rounded-none border-0 border-b border-b-secondary-dark p-1 focus-visible:border-b-[1.5px] focus-visible:border-b-orange",

@@ -67,6 +67,15 @@ export function Component() {
       invoiceMerchantId: "",
       invoiceHashKey: "",
       invoiceHashIV: "",
+      specialPlans: [
+        { day: 1, timeRanges: [] },
+        { day: 2, timeRanges: [] },
+        { day: 3, timeRanges: [] },
+        { day: 4, timeRanges: [] },
+        { day: 5, timeRanges: [] },
+        { day: 6, timeRanges: [] },
+        { day: 7, timeRanges: [] },
+      ],
     },
   });
 
@@ -79,6 +88,8 @@ export function Component() {
   const [isMutating, setIsMutating] = useState(false);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log(values);
+
     const transformedValues = {
       code: values.code,
       name: values.name,
@@ -117,6 +128,7 @@ export function Component() {
         ? { invoiceHashKey: values.invoiceHashKey }
         : {}),
       ...(values.invoiceHashIV ? { invoiceHashIV: values.invoiceHashIV } : {}),
+      specialPlans: values.specialPlans,
     };
 
     setIsMutating(true);

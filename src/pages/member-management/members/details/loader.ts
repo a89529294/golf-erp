@@ -14,7 +14,8 @@ export const genMemberDetailsQuery = (id: string, storeId?: string) => ({
       "appChargeHistories.store",
       "appUserCoupons.store",
       // "simulatorAppointmens.storeSimulator.store",
-      "simulatorAppointments.Orders",
+      "simulatorAppointmens.order",
+      "simulatorAppointmens",
       "groundAppointmens",
     ];
 

@@ -81,12 +81,14 @@ export const storesQuery = {
   queryKey: ["stores"],
   queryFn: async () => {
     const response = await privateFetch(
-      "/store?pageSize=999&populate=employees",
+      "/store?pageSize=999&populate=employees&sort=updatedAt&order=DESC",
     );
 
     const data = await response.json();
 
     const parsed = storesSchema.parse(data).data;
+
+    console.log(parsed.find((v) => !!v.specialPlans?.length));
 
     const x = {
       golf: parsed.filter((s) => s.category === "golf"),

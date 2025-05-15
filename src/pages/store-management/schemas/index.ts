@@ -73,6 +73,50 @@ export const formSchema = z
       .string()
       .nullish()
       .transform((v) => v ?? ""),
+    specialPlans: z.array(
+      z.object({
+        day: z.number().min(1).max(7), // 1 for Monday, 7 for Sunday or similar convention
+        timeRanges: z
+          .array(
+            z.object({
+              startTime: z
+                .string()
+                .regex(/^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/, {
+                  message: "開始時間格式不正確 (HH:mm:ss)",
+                }),
+              endTime: z
+                .string()
+                .regex(/^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/, {
+                  message: "結束時間格式不正確 (HH:mm:ss)",
+                }),
+              discount: z
+                .number()
+                .min(0)
+                .max(1, { message: "折扣必須介於0和1之間" })
+                .optional(),
+            }),
+          )
+          .optional()
+          .superRefine((timeRangesValue, ctx) => {
+            if (!timeRangesValue) return;
+            timeRangesValue.forEach((range, index) => {
+              if (range.startTime && range.endTime && range.endTime <= range.startTime) {
+                ctx.addIssue({
+                  code: z.ZodIssueCode.custom,
+                  message: "結束時間必須晚於開始時間",
+                  path: [index, "endTime"],
+                });
+                // Optionally, add a corresponding issue to startTime for more specific feedback
+                // ctx.addIssue({
+                //   code: z.ZodIssueCode.custom,
+                //   message: "開始時間必須早於結束時間",
+                //   path: [index, "startTime"],
+                // });
+              }
+            });
+          }),
+      }),
+    ),
   })
   .refine(
     (schema) => {
