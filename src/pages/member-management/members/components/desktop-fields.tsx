@@ -42,6 +42,9 @@ export function DesktopFields({
       <Cell htmlFor="chName" withBottomBorder withGapBorder>
         姓名
       </Cell>
+      <Cell htmlFor="email" withBottomBorder withGapBorder>
+        email
+      </Cell>
       <Cell htmlFor="phone" withBottomBorder withGapBorder>
         電話
       </Cell>
@@ -91,6 +94,13 @@ export function DesktopFields({
       </Cell>
       <Cell>
         <UnderScoredFormInput
+          name="email"
+          placeholder="email"
+          disabled={disabled}
+        />
+      </Cell>
+      <Cell>
+        <UnderScoredFormInput
           name="phone"
           placeholder="電話"
           disabled={disabled}
@@ -107,7 +117,7 @@ export function DesktopFields({
       <Cell>
         <BirthDayDatePicker disabled={disabled} />
       </Cell>
-      <Cell />
+      {/* <Cell /> */}
     </>
   );
 }

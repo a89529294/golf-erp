@@ -50,6 +50,7 @@ export function Component() {
       account: data?.account,
       memberType: data?.appUserType,
       chName: data?.chName,
+      email: data?.email ?? "",
       phone: data?.phone ?? "",
       gender: data?.gender,
       birthday: data?.birthday ? new Date(data?.birthday) : "",
@@ -120,6 +121,7 @@ export function Component() {
       account: data.account,
       memberType: data.appUserType,
       chName: data.chName,
+      email: data.email ?? "",
       phone: data.phone ?? "",
       gender: data.gender,
       birthday: data.birthday ? new Date(data.birthday) : "",
@@ -130,6 +132,8 @@ export function Component() {
   function onSubmit() {
     mutate();
   }
+
+  console.log(data.appChargeHistories);
 
   const topUpData = data.appChargeHistories.filter((v) => {
     return v.type === "消費儲值";

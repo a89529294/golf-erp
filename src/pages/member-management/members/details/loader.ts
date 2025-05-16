@@ -15,6 +15,7 @@ export const genMemberDetailsQuery = (id: string, storeId?: string) => ({
       "appUserCoupons.store",
       // "simulatorAppointmens.storeSimulator.store",
       "simulatorAppointmens.order",
+      "simulatorAppointmens.store",
       "simulatorAppointmens",
       "groundAppointmens",
     ];
@@ -24,8 +25,6 @@ export const genMemberDetailsQuery = (id: string, storeId?: string) => ({
     );
 
     const data = await response.json();
-    console.log("wtf");
-    console.log(data);
 
     let parsedData = memberSchema.parse(data);
 
@@ -34,7 +33,7 @@ export const genMemberDetailsQuery = (id: string, storeId?: string) => ({
         ...parsedData,
         simulatorAppointmens:
           parsedData.simulatorAppointmens?.filter(
-            (v) => v.storeSimulator.store.id === storeId,
+            (v) => v.storeSimulator?.store.id === storeId,
           ) ?? [],
         appChargeHistories: parsedData.appChargeHistories.filter(
           (v) => v.store?.id === storeId,

@@ -27,6 +27,7 @@ export const memberSchema = z.object({
   appUserType: memberTypeSchema,
   chName: z.string(),
   phone: z.string().nullable(),
+  email: z.string().optional().nullable(),
   gender: genderSchema,
   birthday: z.string().nullable(),
   storeAppUsers: z
@@ -63,9 +64,11 @@ export const memberSchema = z.object({
           .transform((v) => fromDateToDateTimeString(v)),
         endTime: z.coerce.date().transform((v) => fromDateToDateTimeString(v)),
         status: z.string(),
-        storeSimulator: z.object({
-          store: z.object({ id: z.string(), name: z.string() }),
-        }),
+        storeSimulator: z
+          .object({
+            store: z.object({ id: z.string(), name: z.string() }),
+          })
+          .optional(),
       }),
     )
     .optional(),

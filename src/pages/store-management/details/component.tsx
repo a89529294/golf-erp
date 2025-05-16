@@ -52,13 +52,13 @@ export function Component() {
     (c) => c.countyname === currentCountyName,
   )?.countycode;
 
-  const day1 = store.specialPlans.find((d) => d.day === 1);
-  const day2 = store.specialPlans.find((d) => d.day === 2);
-  const day3 = store.specialPlans.find((d) => d.day === 3);
-  const day4 = store.specialPlans.find((d) => d.day === 4);
-  const day5 = store.specialPlans.find((d) => d.day === 5);
-  const day6 = store.specialPlans.find((d) => d.day === 6);
-  const day7 = store.specialPlans.find((d) => d.day === 7);
+  // const day1 = store.specialPlans.find((d) => d.day === 1);
+  // const day2 = store.specialPlans.find((d) => d.day === 2);
+  // const day3 = store.specialPlans.find((d) => d.day === 3);
+  // const day4 = store.specialPlans.find((d) => d.day === 4);
+  // const day5 = store.specialPlans.find((d) => d.day === 5);
+  // const day6 = store.specialPlans.find((d) => d.day === 6);
+  // const day7 = store.specialPlans.find((d) => d.day === 7);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -98,50 +98,50 @@ export function Component() {
       invoiceMerchantId: store.invoiceMerchantId ?? "",
       invoiceHashIV: store.invoiceHashIV ?? "",
       invoiceHashKey: store.invoiceHashKey ?? "",
-      specialPlans: [
-        day1
-          ? day1
-          : {
-              day: 1,
-              timeRanges: [],
-            },
-        day2
-          ? day2
-          : {
-              day: 2,
-              timeRanges: [],
-            },
-        day3
-          ? day3
-          : {
-              day: 3,
-              timeRanges: [],
-            },
-        day4
-          ? day4
-          : {
-              day: 4,
-              timeRanges: [],
-            },
-        day5
-          ? day5
-          : {
-              day: 5,
-              timeRanges: [],
-            },
-        day6
-          ? day6
-          : {
-              day: 6,
-              timeRanges: [],
-            },
-        day7
-          ? day7
-          : {
-              day: 7,
-              timeRanges: [],
-            },
-      ],
+      // specialPlans: [
+      //   day1
+      //     ? day1
+      //     : {
+      //         day: 1,
+      //         timeRanges: [],
+      //       },
+      //   day2
+      //     ? day2
+      //     : {
+      //         day: 2,
+      //         timeRanges: [],
+      //       },
+      //   day3
+      //     ? day3
+      //     : {
+      //         day: 3,
+      //         timeRanges: [],
+      //       },
+      //   day4
+      //     ? day4
+      //     : {
+      //         day: 4,
+      //         timeRanges: [],
+      //       },
+      //   day5
+      //     ? day5
+      //     : {
+      //         day: 5,
+      //         timeRanges: [],
+      //       },
+      //   day6
+      //     ? day6
+      //     : {
+      //         day: 6,
+      //         timeRanges: [],
+      //       },
+      //   day7
+      //     ? day7
+      //     : {
+      //         day: 7,
+      //         timeRanges: [],
+      //       },
+      // ],
     },
   });
 
@@ -199,7 +199,7 @@ export function Component() {
       invoiceMerchantId: values.invoiceMerchantId,
       invoiceHashIV: values.invoiceHashIV,
       invoiceHashKey: values.invoiceHashKey,
-      specialPlans: values.specialPlans,
+      // specialPlans: values.specialPlans,
     };
 
     const changedFields: Partial<typeof transformedValues> = {};
@@ -254,7 +254,7 @@ export function Component() {
     if (dirtyFields.invoiceHashKey)
       changedFields.invoiceHashKey = transformedValues.invoiceHashKey;
 
-    changedFields.specialPlans = transformedValues.specialPlans;
+    // changedFields.specialPlans = transformedValues.specialPlans;
 
     setIsMutating(true);
     // submit(

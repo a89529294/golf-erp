@@ -33,7 +33,7 @@ export function MemberForm({
         id="member-form"
         className="space-y-4 border border-line-gray p-1"
       >
-        <div className="grid grid-cols-[152fr_110fr_110fr_110fr_110fr_80fr_140fr_152fr] gap-x-10 pt-2.5 sm:flex sm:flex-col">
+        <div className="grid grid-cols-[12fr_110fr_110fr_110fr_110fr_110fr_80fr_140fr_12fr] gap-x-10 pt-2.5 sm:flex sm:flex-col">
           <DesktopFields
             disabled={disabled}
             memberTypeRef={memberTypeRef}

@@ -103,15 +103,11 @@ export function StoreForm({
   //   setValue("specialPlans", DAYS_OF_WEEK_CONFIG.map(day => ({ day: day.dayNumber, timeRanges: [] })), { shouldValidate: false });
   // }
 
-  console.log(form.getFieldState("specialPlans"));
-
   return (
     <Form {...form}>
       <form
         id="store-form"
-        onSubmit={form.handleSubmit(onSubmit, (error, event) => {
-          console.log(form.getValues("specialPlans"));
-        })}
+        onSubmit={form.handleSubmit(onSubmit, (error, event) => {})}
         className="flex flex-col items-center pt-12"
       >
         <section className="flex w-[613px] flex-col gap-6 border border-line-gray px-12 pb-10 sm:w-80">
@@ -329,7 +325,7 @@ export function StoreForm({
             setChargeImageId={setChargeImageId}
           />
 
-          <div className="col-span-1 my-6 space-y-2 md:col-span-2">
+          {/* <div className="col-span-1 my-6 space-y-2 md:col-span-2">
             <div>早鳥優惠設定</div>
             {DAYS_OF_WEEK_CONFIG.map((dayConfig, dayIndex) => {
               const {
@@ -554,7 +550,7 @@ export function StoreForm({
                 </div>
               );
             })}
-          </div>
+          </div> */}
 
           <div>藍新金流設定</div>
           <StoreFormField

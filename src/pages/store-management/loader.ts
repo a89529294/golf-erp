@@ -88,8 +88,6 @@ export const storesQuery = {
 
     const parsed = storesSchema.parse(data).data;
 
-    console.log(parsed.find((v) => !!v.specialPlans?.length));
-
     const x = {
       golf: parsed.filter((s) => s.category === "golf"),
       ground: parsed.filter((s) => s.category === "ground"),
