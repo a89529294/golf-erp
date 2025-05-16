@@ -87,7 +87,6 @@ export function TimeRangeRow({
         }}
         value={start}
         ref={startRef}
-        max={end}
         disabled={disabled}
       />
 
@@ -110,7 +109,6 @@ export function TimeRangeRow({
         }}
         value={end}
         ref={endRef}
-        min={start}
         disabled={disabled}
       />
 
