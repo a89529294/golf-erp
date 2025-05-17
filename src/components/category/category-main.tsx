@@ -31,14 +31,17 @@ export function CategoryMain({
   siteDetailsHref,
   stores,
   type,
+  earlyBirdPricingHref,
 }: {
   newSiteHref: string;
   siteDetailsHref: string;
   type: "ground";
   stores: GroundStoreWithSites[];
+  earlyBirdPricingHref: string;
 }): React.JSX.Element;
 export function CategoryMain({
   newSiteHref,
+  earlyBirdPricingHref,
   siteDetailsHref,
   stores,
   type,
@@ -47,27 +50,32 @@ export function CategoryMain({
   siteDetailsHref: string;
   type: "simulator";
   stores: SimulatorStoreWithSites[];
+  earlyBirdPricingHref: string;
 }): React.JSX.Element;
 export function CategoryMain({
   newSiteHref,
   siteDetailsHref,
   stores,
   type,
+  earlyBirdPricingHref,
 }: {
   newSiteHref: string;
+  earlyBirdPricingHref: string;
   siteDetailsHref: string;
   type: "golf";
   stores: GolfStoreWithSites[];
 }): React.JSX.Element;
 
 export function CategoryMain({
-  newSiteHref,
   siteDetailsHref,
   stores,
   type,
+  newSiteHref,
+  earlyBirdPricingHref,
 }: {
   type: "golf" | "ground" | "simulator";
   newSiteHref: string;
+  earlyBirdPricingHref: string;
   siteDetailsHref: string;
   stores:
     | GolfStoreWithSites[]
@@ -117,6 +125,7 @@ export function CategoryMain({
             globalFilter={globalFilter}
             setGlobalFilter={setGlobalFilter}
             newSiteHref={newSiteHref}
+            earlyBirdPricingHref={earlyBirdPricingHref}
             onStoreValueChange={onStoreValueChange}
             storeId={storeId}
             stores={stores}

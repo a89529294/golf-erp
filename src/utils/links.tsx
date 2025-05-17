@@ -70,12 +70,17 @@ export const linksKV = {
           },
           new: `${DRIVING_RANGE_BASE_PATH}/site-management/new`,
           details: `${DRIVING_RANGE_BASE_PATH}/site-management/:storeId/:siteId`,
+          earlyBirdPricing: `${DRIVING_RANGE_BASE_PATH}/site-management/stores/early-bird-pricing/:storeId`,
         },
         lazy: {
           index: () => import("@/pages/driving-range/site-management"),
           new: () => import("@/pages/driving-range/site-management/new"),
           details: () =>
             import("@/pages/driving-range/site-management/details"),
+          earlyBirdPricing: () =>
+            import(
+              "@/pages/driving-range/site-management/stores/early-bird-pricing"
+            ),
         },
         type: "multiple" as const,
         allowedPermissions: ["練習場-基本操作"],
@@ -155,11 +160,14 @@ export const linksKV = {
           },
           new: `${GOLF_BASE_PATH}/site-management/new`,
           details: `${GOLF_BASE_PATH}/site-management/:storeId/:siteId`,
+          earlyBirdPricing: `${GOLF_BASE_PATH}/site-management/stores/early-bird-pricing/:storeId`,
         },
         lazy: {
           index: () => import("@/pages/golf/site-management"),
           new: () => import("@/pages/golf/site-management/new"),
           details: () => import("@/pages/golf/site-management/details"),
+          earlyBirdPricing: () =>
+            import("@/pages/golf/site-management/stores/early-bird-pricing"),
         },
         type: "multiple" as const,
         allowedPermissions: ["高爾夫球-基本操作"],
@@ -266,11 +274,16 @@ export const linksKV = {
             path: `${INDOOR_SIMULATOR_BASE_PATH}/site-management`,
           },
           new: `${INDOOR_SIMULATOR_BASE_PATH}/site-management/new`,
+          earlyBirdPricing: `${INDOOR_SIMULATOR_BASE_PATH}/site-management/stores/early-bird-pricing/:storeId`,
           details: `${INDOOR_SIMULATOR_BASE_PATH}/site-management/:storeId/:siteId`,
         },
         lazy: {
           index: () => import("@/pages/indoor-simulator/site-management"),
           new: () => import("@/pages/indoor-simulator/site-management/new"),
+          earlyBirdPricing: () =>
+            import(
+              "@/pages/indoor-simulator/site-management/stores/early-bird-pricing"
+            ),
           details: () =>
             import("@/pages/indoor-simulator/site-management/details"),
         },

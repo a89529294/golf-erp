@@ -26,6 +26,7 @@ export function Component() {
       type="golf"
       newSiteHref={linksKV["golf"].subLinks["site-management"].paths.new}
       siteDetailsHref={`/golf/site-management/${storeId}`}
+      earlyBirdPricingHref={`/golf/site-management/stores/early-bird-pricing/${storeId}`}
     />
   );
 }

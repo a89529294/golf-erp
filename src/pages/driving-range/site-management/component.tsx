@@ -27,6 +27,7 @@ export function Component() {
       }
       siteDetailsHref={`/driving-range/site-management/${storeId}`}
       stores={stores}
+      earlyBirdPricingHref={`/driving-range/site-management/stores/early-bird-pricing/${storeId}`}
     />
   );
 }

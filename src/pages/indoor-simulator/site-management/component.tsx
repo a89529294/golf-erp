@@ -28,6 +28,7 @@ export function Component() {
         linksKV["indoor-simulator"].subLinks["site-management"].paths.new
       }
       siteDetailsHref={`/indoor-simulator/site-management/${storeId}`}
+      earlyBirdPricingHref={`/indoor-simulator/site-management/stores/early-bird-pricing/${storeId}`}
     />
   );
 }

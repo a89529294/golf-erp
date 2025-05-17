@@ -8,6 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 import {
   GolfStoreWithSites,
   GroundStoreWithSites,
@@ -17,6 +18,7 @@ import { Link } from "react-router-dom";
 
 export function CategoryDesktopMenubar({
   newSiteHref,
+  earlyBirdPricingHref,
   globalFilter,
   setGlobalFilter,
   storeId,
@@ -25,6 +27,7 @@ export function CategoryDesktopMenubar({
   type,
 }: {
   newSiteHref: string;
+  earlyBirdPricingHref: string;
   globalFilter: string;
   setGlobalFilter: React.Dispatch<React.SetStateAction<string>>;
   storeId: string | undefined;
@@ -37,10 +40,12 @@ export function CategoryDesktopMenubar({
 }) {
   return (
     <>
-      <Link to={newSiteHref} className={button()} id="new-site-link">
-        <img src={plusIcon} />
-        新增場地
-      </Link>
+      <div className="flex gap-2">
+        <Link to={newSiteHref} className={button()} id="new-site-link">
+          <img src={plusIcon} />
+          新增場地
+        </Link>
+      </div>
       {/* <SearchInput value={globalFilter} setValue={setGlobalFilter} /> */}
       <Select
         value={storeId}
@@ -68,6 +73,15 @@ export function CategoryDesktopMenubar({
           )}
         </SelectContent>
       </Select>
+      <Link
+        to={earlyBirdPricingHref}
+        className={cn(
+          button({ borderLess: true }),
+          "hover:outline-[1.5px] hover:outline-orange",
+        )}
+      >
+        早鳥定價
+      </Link>
     </>
   );
 }
