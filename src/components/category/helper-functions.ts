@@ -229,10 +229,12 @@ export function onAddNewOpeningHoursRange(
     | ExistingIndoorSimulator
   >,
 ) {
+  console.log(form.formState.errors);
   if ("openingHours" in form.formState.errors) return;
   form.setValue(
     "openingHours",
     [
+      ...(form.getValues("openingHours") || []),
       {
         start: "",
         end: "",
@@ -259,22 +261,22 @@ export function onRemoveOpeningTimeRange(
   });
 }
 
-export function onSaveOpeningTimeRange(
-  form: UseFormReturn<
-    | NewGolfCourse
-    | NewIndoorSimulator
-    | NewDrivingRange
-    | ExistingGolfCourse
-    | ExistingDrivingRange
-    | ExistingIndoorSimulator
-  >,
-  tr: TimeRange,
-) {
-  form.setValue("openingHours", tr, {
-    shouldValidate: true,
-    shouldDirty: true,
-  });
-}
+// export function onSaveOpeningTimeRange(
+//   form: UseFormReturn<
+//     | NewGolfCourse
+//     | NewIndoorSimulator
+//     | NewDrivingRange
+//     | ExistingGolfCourse
+//     | ExistingDrivingRange
+//     | ExistingIndoorSimulator
+//   >,
+//   tr: TimeRange,
+// ) {
+//   form.setValue("openingHours", tr, {
+//     shouldValidate: true,
+//     shouldDirty: true,
+//   });
+// }
 
 export function onEditOpeningTimeRange(
   form: UseFormReturn<

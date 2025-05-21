@@ -161,7 +161,7 @@ const openingHoursSchema = {
 type TimeRange = Exclude<
   z.infer<(typeof openingHoursSchema)["openingHours"]>,
   undefined
->;
+>[number];
 
 const plansSchema = {
   plans: z

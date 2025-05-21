@@ -20,13 +20,13 @@ export function TimeRangeRow({
   data: TimeRange;
   onSave: (tr: TimeRange) => void;
   onRemove(): void;
-  onEdit(): void;
+  onEdit?(): void;
   disabled?: boolean;
   myRef: React.RefObject<HTMLLIElement>;
   errorMessage?: string;
 }) {
-  const [start, setStart] = useState(data[0].start);
-  const [end, setEnd] = useState(data[0].end);
+  const [start, setStart] = useState(data.start);
+  const [end, setEnd] = useState(data.end);
   const startRef = useRef<HTMLInputElement>(null);
   const endRef = useRef<HTMLInputElement>(null);
   const [errorFields, setErrorFields] = useState({
@@ -49,20 +49,18 @@ export function TimeRangeRow({
     //   return;
     // }
 
-    onSave([
-      {
-        start,
-        end,
-        saved: true,
-      },
-    ]);
+    onSave({
+      start,
+      end,
+      saved: true,
+    });
   }
 
   return (
     <li
       className={cn(
         "flex flex-wrap items-center gap-y-2 border-b-[1.5px] border-b-transparent pb-4 pl-8 pr-5 pt-5 text-secondary-dark sm:px-2",
-        !data[0].saved && "border-b-orange bg-hover-orange",
+        !data.saved && "border-b-orange bg-hover-orange",
         disabled && "opacity-50",
       )}
       ref={myRef}
@@ -75,7 +73,7 @@ export function TimeRangeRow({
         )}
         onClick={(e) => {
           e.currentTarget.showPicker();
-          onEdit();
+          if (onEdit) onEdit();
         }}
         onChange={(e) => {
           const val = e.currentTarget.value + ":00";
@@ -97,7 +95,7 @@ export function TimeRangeRow({
         className="h-7 w-24 rounded-none border-0 border-b border-b-secondary-dark bg-transparent font-mono *:w-full"
         onClick={(e) => {
           e.currentTarget.showPicker();
-          onEdit();
+          if (onEdit) onEdit();
         }}
         onChange={(e) => {
           const val = e.currentTarget.value + ":00";
@@ -134,7 +132,7 @@ export function TimeRangeRow({
 
       <div className="ml-auto flex gap-4 sm:ml-2 ">
         <span className="text-red-500">{errorMessage}</span>
-        {data[0].saved ? (
+        {data.saved ? (
           <>
             <button
               type="button"

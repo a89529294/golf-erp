@@ -89,15 +89,13 @@ export const genSimulatorDetailsQuery = (storeId: string, siteId: string) => ({
         id: id,
         src: id,
       })),
-      ...(parsed.openTimes && parsed.openTimes[0]
+      ...(parsed.openTimes
         ? {
-            openingHours: [
-              {
-                start: parsed.openTimes[0].startTime,
-                end: parsed.openTimes[0].endTime,
-                saved: true,
-              },
-            ],
+            openingHours: parsed.openTimes.map((v) => ({
+              start: v.startTime,
+              end: v.endTime,
+              saved: true,
+            })),
           }
         : {
             openingHours: [],

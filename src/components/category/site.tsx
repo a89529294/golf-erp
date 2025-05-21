@@ -36,7 +36,7 @@ import {
 } from "@/utils/category/schemas";
 import { SimpleStore } from "@/utils/types";
 import React, { useRef } from "react";
-import { useFormContext } from "react-hook-form";
+import { useFieldArray, useFormContext } from "react-hook-form";
 import {
   findRealEquipments,
   onAddNewBannerImages,
@@ -58,7 +58,7 @@ import {
   onRemoveVenueSettingsRow,
   onRemoveWeekdayTimeRange,
   onSaveOpeningDateRange,
-  onSaveOpeningTimeRange,
+  // onSaveOpeningTimeRange,
   onSavePlan,
   onSaveVenueSettingsRow,
   onSaveWeekdayTimeRange,
@@ -108,6 +108,12 @@ export function Site({
   const openingHours = form.watch("openingHours");
   const { siteId } = useParams();
   const [isOpeningGate, setIsOpeningGate] = React.useState(false);
+  const { fields, append, remove, update } = useFieldArray({
+    control: form.control,
+    name: "openingHours",
+  });
+
+  console.log(fields);
 
   const { data: availableEquipments, isLoading: isEquipmentsLoading } =
     useQuery({
@@ -446,7 +452,7 @@ export function Site({
       {(type === "indoor-simulator" ||
         type === "existing-indoor-simulator") && (
         <>
-          <Section
+          {/* <Section
             title="場地開放時間"
             inputButton={{
               text: "新增時間",
@@ -458,9 +464,9 @@ export function Site({
                 />
               ),
             }}
-            disabled={formDisabled || openingHours.length > 0}
+            disabled={formDisabled}
           >
-            {openingHours[0] ? (
+            {openingHours ? (
               <TimeRangeRow
                 myRef={openingHoursRef}
                 onRemove={() => onRemoveOpeningTimeRange(form)}
@@ -477,6 +483,44 @@ export function Site({
               />
             ) : (
               <p className="py-2.5">尚未新增開放時間</p>
+            )}
+          </Section> */}
+          <Section
+            title="場地開放時間"
+            inputButton={{
+              text: "新增時間",
+              element: (
+                <button
+                  type="button"
+                  className="hidden"
+                  onClick={() => append({ start: "", end: "", saved: false })}
+                >
+                  新增時間
+                </button>
+              ),
+            }}
+            disabled={formDisabled}
+          >
+            {fields.length > 0 ? (
+              <div className="space-y-4">
+                {fields.map((field, index) => (
+                  <TimeRangeRow
+                    key={field.id}
+                    myRef={openingHoursRef}
+                    onRemove={() => remove(index)}
+                    onSave={(tr) => {
+                      update(index, { ...tr, saved: true });
+                    }}
+                    // onEdit={() => {
+                    //   update(index, { ...field, saved: false });
+                    // }}
+                    data={field} // Pass the field directly instead of [field]
+                    disabled={formDisabled}
+                  />
+                ))}
+              </div>
+            ) : (
+              <p className="py-2.5 text-gray-500">尚未新增開放時間</p>
             )}
           </Section>
         </>
