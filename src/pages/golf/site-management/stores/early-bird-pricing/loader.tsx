@@ -6,6 +6,7 @@ import { LoaderFunctionArgs } from "react-router-dom";
 import { z } from "zod";
 
 export const earlyBirdPricingSchema = z.object({
+  isUseSpecialPlan: z.boolean(),
   specialPlans: z
     .array(
       z.object({

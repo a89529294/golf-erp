@@ -60,6 +60,7 @@ type DaySchedule = {
 
 type EarlyBirdPricingFormData = {
   specialPlans: DaySchedule[];
+  isUseSpecialPlan: boolean;
 };
 
 interface TimeRangeFieldProps {
@@ -288,7 +289,6 @@ export function Component() {
 
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
 
-  // Make sure all hooks are called unconditionally
   const { data: stores } = useQuery({
     ...genIndoorSimulatorStoresWithSitesQuery(
       user!.isAdmin ? "all" : user!.allowedStores.simulator,
@@ -317,11 +317,12 @@ export function Component() {
       );
     });
 
-    return { specialPlans };
+    return { specialPlans, isUseSpecialPlan: store.isUseSpecialPlan };
   }, [store]);
 
   const form = useForm<EarlyBirdPricingFormData>({
     defaultValues: getDefaultValues(),
+    disabled: !isEditing || isUpdating,
   });
 
   const onStoreValueChange = useCallback(
@@ -372,15 +373,30 @@ export function Component() {
     form.reset(getDefaultValues());
   }, [storeId, getDefaultValues]);
 
+  const specialPlanCheckbox = (
+    <label className="mr-2 flex cursor-pointer items-center gap-2">
+      <span className="select-none">開放使用</span>
+      <input
+        type="checkbox"
+        className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+        {...form.register("isUseSpecialPlan")}
+      />
+    </label>
+  );
+
   // Rest of your component code remains the same
   const viewContent = (
     <div className="space-y-6 p-6">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold">早鳥優惠設定</h2>
-        <IconButton icon="pencil" onClick={handleEdit}>
-          編輯
-        </IconButton>
+        <div className="flex gap-2">
+          {specialPlanCheckbox}
+          <IconButton key="edit-button" icon="pencil" onClick={handleEdit}>
+            編輯
+          </IconButton>
+        </div>
       </div>
+
       <EarlyBirdPricingForm disabled={true} />
     </div>
   );
@@ -390,11 +406,13 @@ export function Component() {
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold">早鳥優惠設定</h2>
         <div className="flex gap-2">
+          {specialPlanCheckbox}
           <IconButton
             type="button"
             onClick={handleCancel}
             icon="x"
             disabled={isUpdating}
+            key="cancel-button"
           >
             取消
           </IconButton>
