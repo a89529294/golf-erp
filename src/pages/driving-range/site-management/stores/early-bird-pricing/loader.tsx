@@ -26,11 +26,19 @@ export const earlyBirdPricingSchema = z.object({
                 .regex(/^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/, {
                   // HH:mm:ss format
                   message: "開始時間格式不正確 (HH:mm:ss)",
+                })
+                .transform((v) => {
+                  const arr = v.split(":");
+                  return `${arr[0]}:${arr[1]}`;
                 }),
               endTime: z
                 .string()
                 .regex(/^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/, {
                   message: "結束時間格式不正確 (HH:mm:ss)",
+                })
+                .transform((v) => {
+                  const arr = v.split(":");
+                  return `${arr[0]}:${arr[1]}`;
                 }),
               discount: z
                 .number()

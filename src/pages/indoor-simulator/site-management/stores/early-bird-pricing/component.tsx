@@ -90,32 +90,6 @@ const TimeRangeField: React.FC<TimeRangeFieldProps> = ({
         label="開始時間"
       />
 
-      {/* <FormField
-        control={control}
-        name={`specialPlans.${dayIndex}.timeRanges.${rangeIndex}.endTime`}
-        render={({ field }) => {
-          return (
-            <FormItem>
-              <FormLabel className="text-xs font-medium text-gray-600">
-                結束時間
-              </FormLabel>
-              <FormControl>
-                <Input
-                  type="time"
-                  step="1"
-                  lang="en-GB"
-                  {...field}
-                  className="block h-9 w-full text-sm"
-                  placeholder="HH:MM:SS"
-                 
-                />
-               
-              </FormControl>
-            </FormItem>
-          );
-        }}
-      /> */}
-
       <Time24hrInput
         control={control}
         name={`specialPlans.${dayIndex}.timeRanges.${rangeIndex}.endTime`}

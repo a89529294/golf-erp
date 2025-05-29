@@ -32,6 +32,7 @@ import {
 import { useAuth } from "@/hooks/use-auth";
 import { genIndoorSimulatorStoresWithSitesQuery } from "@/pages/indoor-simulator/site-management/loader";
 import { genGroundStoresQuery } from "@/pages/driving-range/report/loader";
+import { Time24hrInput } from "@/components/time-input-24-hr";
 
 const DAYS_OF_WEEK_CONFIG = [
   { dayNumber: 1, keyStr: "monday", label: "星期一" },
@@ -83,48 +84,16 @@ const TimeRangeField: React.FC<TimeRangeFieldProps> = ({
   const fieldClassName = disabled ? "opacity-50 pointer-events-none" : "";
   return (
     <div className="mb-3 grid grid-cols-1 items-end gap-x-4 gap-y-2 border-t border-gray-100 p-3 pt-3 first:border-t-0 md:grid-cols-[1fr_1fr_1fr_auto]">
-      <FormField
+      <Time24hrInput
         control={control}
         name={`specialPlans.${dayIndex}.timeRanges.${rangeIndex}.startTime`}
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel className="text-xs font-medium text-gray-600">
-              開始時間
-            </FormLabel>
-            <FormControl>
-              <Input
-                type="time"
-                step="1"
-                lang="en-GB"
-                {...field}
-                className="block h-9 w-full text-sm"
-                placeholder="HH:MM:SS"
-              />
-            </FormControl>
-          </FormItem>
-        )}
+        label="開始時間"
       />
 
-      <FormField
+      <Time24hrInput
         control={control}
         name={`specialPlans.${dayIndex}.timeRanges.${rangeIndex}.endTime`}
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel className="text-xs font-medium text-gray-600">
-              結束時間
-            </FormLabel>
-            <FormControl>
-              <Input
-                type="time"
-                step="1"
-                lang="en-GB"
-                {...field}
-                className="block h-9 w-full text-sm"
-                placeholder="HH:MM:SS"
-              />
-            </FormControl>
-          </FormItem>
-        )}
+        label="結束時間"
       />
 
       <FormField
@@ -342,7 +311,17 @@ export function Component() {
     try {
       const response = await privateFetch(`/store/${storeId}`, {
         method: "PATCH",
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          ...data,
+          specialPlans: data.specialPlans.map((v) => ({
+            ...v,
+            timeRanges: v.timeRanges.map((tr) => ({
+              ...tr,
+              startTime: tr.startTime + ":00",
+              endTime: tr.endTime + ":00",
+            })),
+          })),
+        } satisfies EarlyBirdPricingFormData),
         headers: {
           "Content-Type": "application/json",
         },
