@@ -17,6 +17,11 @@ export const baseAppointmentSchema = z.object({
       id: z.string(),
       paymentMethod: z.string().nullish(),
       status: z.string().nullish(),
+      invoice: z
+        .object({
+          invoiceNumber: z.string(),
+        })
+        .optional(),
     })
     .optional(),
   appUser: z

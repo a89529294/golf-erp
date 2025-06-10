@@ -166,6 +166,14 @@ export function ChartStatsAndRange({
             };
           }
 
+          if (v.paymentMethod === "JKOPAY") {
+            return {
+              np: a.np,
+              lp: a.lp,
+              jp: a.jp + Math.ceil(v.amount * 0.025),
+            };
+          }
+
           return a;
         },
         {

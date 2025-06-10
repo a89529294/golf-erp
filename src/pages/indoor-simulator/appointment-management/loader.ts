@@ -52,7 +52,7 @@ export const appointmentsQuery = (
       name: string;
     }[];
 
-    let url = `/appointment/simulator?populate=storeSimulator&populate=appUser&populate=storeSimulator.store&populate=order&populate=usedCoupon&page=${page}&pageSize=${pageSize}&filter[storeSimulator.store.id]=${storeId}${siteId === "all" ? "" : `&filter[storeSimulator.id]=${siteId}`}`;
+    let url = `/appointment/simulator?populate=storeSimulator&populate=appUser&populate=storeSimulator.store&populate=order.invoice&populate=usedCoupon&page=${page}&pageSize=${pageSize}&filter[storeSimulator.store.id]=${storeId}${siteId === "all" ? "" : `&filter[storeSimulator.id]=${siteId}`}`;
 
     // Add sorting parameters if provided
     if (sortField && sortOrder) {
@@ -62,7 +62,12 @@ export const appointmentsQuery = (
     const response = await privateFetch(url);
 
     const data = await response.json();
+
     const parsedData = simulatorAppoitmentsSchema.parse(data);
+
+    console.log(
+      parsedData.data.filter((v) => v.order?.paymentMethod === "JKOPAY"),
+    );
 
     const paginationMeta: PaginationMeta = {
       page,

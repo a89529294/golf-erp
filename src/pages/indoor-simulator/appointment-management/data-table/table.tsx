@@ -113,6 +113,7 @@ export function DataTable<TData extends Appointment, TValue>({
             優惠券金額: r.original.usedCoupon?.[0]?.amount,
             折扣: originAmount - r.original.amount,
             實際付款金額: r.original.amount,
+            發票號碼: r.original.order?.invoice?.invoiceNumber,
           };
         });
         const worksheet = XLSX.utils.json_to_sheet(data);

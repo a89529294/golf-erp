@@ -351,6 +351,17 @@ export function Row({ row }: { row: RowModel<Appointment>["rows"][number] }) {
               </div>
             </div>
 
+            <div className="flex gap-7 rounded border border-line-gray bg-black/5 px-3 py-2.5">
+              <div>
+                <p className="text-sm font-medium text-secondary-dark">
+                  發票號碼
+                </p>
+                <p className="text-secondary-purple">
+                  {row.original.order?.invoice?.invoiceNumber}
+                </p>
+              </div>
+            </div>
+
             <div className="r h-full">
               {row.original.status !== "cancel" &&
                 timeRemaining &&

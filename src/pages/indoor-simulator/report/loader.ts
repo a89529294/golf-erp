@@ -173,7 +173,11 @@ export const genDataQuery = (storeId: string, startAt: Date, endAt: Date) => ({
     const yearData = yearSchema.parse(data[1]);
     const detailedData = detailedSchema.parse(data[2]);
 
-    console.log(yearData);
+    console.log(
+      totalData.orders.filter((o) =>
+        o.paymentMethod.toLowerCase().startsWith("jkopay"),
+      ),
+    );
 
     return {
       total: totalData,
