@@ -195,7 +195,8 @@ export function MemberManagementPage({
               {storeId && (
                 <SendCouponModal
                   storeId={storeId}
-                  show={!isSearchActive}
+                  // show={!isSearchActive}
+                  show
                   userIds={Object.keys(rowSelection)}
                   resetUserIds={() => setRowSelection({})}
                 />

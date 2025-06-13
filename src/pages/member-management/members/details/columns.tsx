@@ -25,18 +25,7 @@ export const topUpHistorycolumns = [
       </button>
     ),
   }),
-  topUpHistoryColumnHelper.accessor("store.name", {
-    id: "store.name",
-    header: ({ column }) => (
-      <button
-        className="flex items-center gap-1 sm:w-24"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        廠商
-        <ArrowUpDown className="ml-2 h-4 w-4" />
-      </button>
-    ),
-  }),
+
   topUpHistoryColumnHelper.accessor("createdAt", {
     id: "createdAt",
     header: ({ column }) => (

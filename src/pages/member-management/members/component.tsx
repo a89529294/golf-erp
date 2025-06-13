@@ -152,7 +152,8 @@ export function Component() {
               />
 
               <CreateCouponThenSendModal
-                show={!isSearchActive}
+                // show={!isSearchActive}
+                show
                 userIds={Object.keys(rowSelection)}
                 resetUserIds={() => setRowSelection({})}
               />

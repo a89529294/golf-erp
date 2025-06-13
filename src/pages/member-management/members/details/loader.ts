@@ -12,12 +12,12 @@ export const genMemberDetailsQuery = (id: string, storeId?: string) => ({
     queryObject.populate = [
       "storeAppUsers",
       "appChargeHistories.store",
-      "appUserCoupons.store",
-      // "simulatorAppointmens.storeSimulator.store",
+      // "appUserCoupons.store",
+      "simulatorAppointmens.storeSimulator.store",
       "simulatorAppointmens.order",
-      "simulatorAppointmens.store",
-      "simulatorAppointmens",
-      "groundAppointmens",
+      // "simulatorAppointmens.store",
+      // "simulatorAppointmens",
+      // "groundAppointmens",
     ];
 
     const response = await privateFetch(
