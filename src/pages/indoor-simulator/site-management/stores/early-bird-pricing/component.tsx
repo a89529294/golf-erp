@@ -135,7 +135,7 @@ const TimeRangeField: React.FC<TimeRangeFieldProps> = ({
                   });
                   form.clearErrors(field.name);
                 }}
-                className={cn("h-9 w-full text-sm", fieldClassName)}
+                className={cn("h-9 w-60 text-sm", fieldClassName)}
               />
             </FormControl>
           </FormItem>
