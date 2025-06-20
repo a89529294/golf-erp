@@ -8,6 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useAuth } from "@/hooks/use-auth";
 import { cn } from "@/lib/utils";
 import {
   GolfStoreWithSites,
@@ -38,6 +39,13 @@ export function CategoryDesktopMenubar({
     | SimulatorStoreWithSites[];
   type: "golf" | "ground" | "simulator";
 }) {
+  const { user } = useAuth();
+
+  const enableEarlyBird =
+    (type === "simulator" &&
+      user!.permissions.includes("模擬器-編輯場地價格")) ||
+    (type === "golf" && user!.permissions.includes("高爾夫球-編輯場地價格")) ||
+    (type === "ground" && user!.permissions.includes("練習場-編輯場地價格"));
   return (
     <>
       <div className="flex gap-2">
@@ -73,12 +81,17 @@ export function CategoryDesktopMenubar({
           )}
         </SelectContent>
       </Select>
+
       <Link
         to={earlyBirdPricingHref}
         className={cn(
           button({ borderLess: true }),
           "hover:outline-[1.5px] hover:outline-orange",
+          !enableEarlyBird && "opacity-50",
         )}
+        onClick={(e) => {
+          if (!enableEarlyBird) e.preventDefault();
+        }}
       >
         早鳥定價
       </Link>
