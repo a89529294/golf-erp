@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { columns } from "@/pages/indoor-simulator/appointment-management/data-table/columns";
 import { DataTable } from "@/pages/indoor-simulator/appointment-management/data-table/table";
 import { indoorSimulatorStoresQuery } from "@/pages/indoor-simulator/site-management/loader";
+import { Appointment } from "@/types-and-schemas/appointment";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
@@ -18,9 +19,9 @@ import {
 } from "./loader";
 
 export function Component() {
-  const currentDataRef = useRef({
-    exportDataAsXlsx: (storeName?: string) => {},
-  });
+  const currentDataRef = useRef<{
+    exportDataAsXlsx: (storeName?: string, data?: Appointment[]) => void;
+  }>({ exportDataAsXlsx: () => {} });
   // const [site, setSite] = useState("all");
   const { user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -38,6 +39,8 @@ export function Component() {
     initialData: initialData.stores,
     staleTime: 5000,
   });
+
+  console.log(stores);
 
   const storeId = searchParams.get("storeId")!;
 
@@ -65,6 +68,33 @@ export function Component() {
   //   );
   // })();
   const filteredData = store?.sites.flatMap((s) => s.appointments) ?? [];
+
+  const [isExporting, setIsExporting] = useState(false);
+  const { data: allAppointmentsData, isFetching: isFetchingAllAppointments } =
+    useQuery({
+      ...appointmentsQuery(
+        1,
+        9999,
+        storeId,
+        site ?? "all",
+        searchParams.get("sortField") ?? undefined,
+        searchParams.get("sortOrder") ?? undefined,
+      ),
+      enabled: isExporting,
+    });
+
+  useEffect(() => {
+    if (allAppointmentsData && isExporting) {
+      const allAppointments = allAppointmentsData.storesWithSiteAppointments
+        .flatMap((s) => s.sites)
+        .flatMap((s) => s.appointments);
+      currentDataRef.current.exportDataAsXlsx(
+        stores.find((store) => store.id === storeId)?.name,
+        allAppointments,
+      );
+      setIsExporting(false); // Reset after export
+    }
+  }, [allAppointmentsData, isExporting, stores, storeId]);
 
   const handlePageChange = (newPage: number) => {
     setSearchParams((prev) => {
@@ -114,11 +144,9 @@ export function Component() {
           <IconButton
             icon="save"
             onClick={() => {
-              console.log(currentDataRef.current.exportDataAsXlsx);
-              currentDataRef.current.exportDataAsXlsx(
-                stores.find((store) => store.id === storeId)?.name,
-              );
+              setIsExporting(true);
             }}
+            disabled={isFetchingAllAppointments}
           >
             下載xlsx
           </IconButton>

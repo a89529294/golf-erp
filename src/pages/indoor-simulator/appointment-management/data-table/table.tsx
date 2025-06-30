@@ -36,7 +36,9 @@ const fuzzyFilter: FilterFn<unknown> = (row, columnId, value) => {
 interface DataTableProps<TData extends { id: string }, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  currentDataRef: React.MutableRefObject<{ exportDataAsXlsx: () => void }>;
+  currentDataRef: React.MutableRefObject<{
+    exportDataAsXlsx: (storeName?: string, data?: TData[]) => void;
+  }>;
   page?: number;
   setPage?: (page: number) => void;
   totalPages?: number;
@@ -89,33 +91,41 @@ export function DataTable<TData extends Appointment, TValue>({
 
   useImperativeHandle(currentDataRef, () => {
     return {
-      exportDataAsXlsx: (storeName?: string) => {
-        const data = table.getRowModel().rows.map((r) => {
+      exportDataAsXlsx: (storeName?: string, allAppointments?: TData[]) => {
+        const dataRows =
+          allAppointments ?? table.getRowModel().rows.map((r) => r.original);
+        const data = dataRows.map((original) => {
           const originAmount =
-            r.original.originAmount ??
-            r.original.amount + (r.original.usedCoupon?.[0]?.amount ?? 0);
+            original.originAmount ??
+            original.amount + (original.usedCoupon?.[0]?.amount ?? 0);
           const percentOff = (
-            ((originAmount - r.original.amount) / originAmount) *
+            ((originAmount - original.amount) / originAmount) *
             100
           ).toFixed(2);
 
           return {
-            訂單編號: r.original.id,
-            名稱: r.original.appUser?.chName,
-            電話: r.original.appUser?.phone,
-            開始時間: r.original.startTime,
-            結束時間: r.original.endTime,
-            付款方式: r.original.order?.paymentMethod ?? "",
-            狀態: r.original.status,
+            訂單編號: original.id,
+            名稱: original.appUser?.chName,
+            電話: original.appUser?.phone,
+            開始時間: original.startTime,
+            結束時間: original.endTime,
+            付款方式: original.order?.paymentMethod ?? "",
+            狀態: original.status,
             原訂單金額: originAmount,
             折數: percentOff,
-            優惠券名稱: r.original.usedCoupon?.[0]?.name,
-            優惠券金額: r.original.usedCoupon?.[0]?.amount,
-            折扣: originAmount - r.original.amount,
-            實際付款金額: r.original.amount,
-            發票號碼: r.original.order?.invoice?.invoiceNumber,
+            優惠券名稱: original.usedCoupon?.[0]?.name,
+            優惠券金額: original.usedCoupon?.[0]?.amount,
+            折扣: originAmount - original.amount,
+            實際付款金額: original.amount,
+            發票號碼: original.order?.invoice?.invoiceNumber,
           };
         });
+
+        if (data.length === 0) {
+          alert("沒有資料可匯出");
+          return;
+        }
+
         const worksheet = XLSX.utils.json_to_sheet(data);
 
         // Calculate the maximum width for each column
@@ -123,7 +133,7 @@ export function DataTable<TData extends Appointment, TValue>({
           Object.keys(data[0]) as (keyof (typeof data)[0])[]
         ).map((key) => {
           const maxLength = Math.max(
-            key.length * 2, // header length
+            String(key).length * 2, // header length
             ...data.map((row) => {
               return row[key] ? (row[key]?.toString().length ?? 0) : 0;
             }), // max length of each cell in the column
