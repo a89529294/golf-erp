@@ -14,6 +14,7 @@ import { privateFetch } from "@/utils/utils";
 import { toast } from "sonner";
 import { queryClient } from "@/utils/query-client";
 import { ArrowUpDown } from "lucide-react";
+import { format } from "date-fns";
 
 const columnHelper = createColumnHelper<SimulatorRepairRequest>();
 
@@ -158,6 +159,14 @@ export const columns = [
       flexRender(ImagesContainer, {
         imageIds: prop.getValue(),
       }),
+  }),
+  columnHelper.accessor("updatedAt", {
+    header: "日期",
+    cell: (prop) => (
+      <div className="whitespace-nowrap">
+        {format(prop.getValue() as Date, "yyyy-MM-dd HH:mm:ss")}
+      </div>
+    ),
   }),
   columnHelper.display({
     id: "status-toggle",

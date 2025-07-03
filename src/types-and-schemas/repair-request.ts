@@ -14,6 +14,7 @@ const repairRequestBaseSchema = z.object({
   //   if (v === "complete") return "已完成";
   //   return "無須處理";
   // }),
+  updatedAt: z.coerce.date(),
 });
 
 const simulatorRepairRequestsSchema = z.object({
