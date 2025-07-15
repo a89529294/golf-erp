@@ -16,7 +16,7 @@ import { DataTable } from "@/components/coupon-management/data-table/data-table"
 import { privateFetch } from "@/utils/utils";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Scrollbar } from "@radix-ui/react-scroll-area";
@@ -49,6 +49,7 @@ export function SendCouponModal({
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const [rowSelection, setRowSelection] = useState({});
+  const formRef = useRef<HTMLFormElement>(null);
   const { id } = useParams();
 
   const initialData = useLoaderData() as Exclude<
@@ -191,8 +192,10 @@ export function SendCouponModal({
       </DialogTrigger>
       <DialogContent>
         <form
+          ref={formRef}
           id="xx"
           onSubmit={(e) => {
+            console.log("Form submitted");
             e.preventDefault();
             mutate();
           }}
@@ -206,7 +209,7 @@ export function SendCouponModal({
             {coupons && (
               <div className=" before:fixed before:h-12 before:w-1 before:bg-light-gray">
                 <div className="fixed right-[57px] h-12 w-1 bg-light-gray" />
-                <div className="sticky z-10 w-full border-b top-12 border-line-gray" />
+                <div className="sticky top-12 z-10 w-full border-b border-line-gray" />
                 <DataTable
                   columns={columns}
                   data={Array(1).fill(coupons).flat()}
@@ -222,11 +225,11 @@ export function SendCouponModal({
           </ScrollArea>
 
           {/* </DialogHeader> */}
-          <DialogFooter className="justify-center mt-6">
+          <DialogFooter className="mt-6 justify-center">
             <TextButton
-              type="submit"
-              form="xx"
+              type="button"
               loading={isPending}
+              onClick={() => formRef.current?.requestSubmit()}
               disabled={isPending || Object.keys(rowSelection).length === 0}
             >
               確定
