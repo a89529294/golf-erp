@@ -11,7 +11,7 @@ export const genMemberDetailsQuery = (id: string, storeId?: string) => ({
 
     queryObject.populate = [
       "storeAppUsers",
-      "appChargeHistories.store",
+      // "appChargeHistories.store",
       // "appUserCoupons.store",
       // "simulatorAppointmens.storeSimulator.store",
       // "simulatorAppointmens.order",
@@ -35,9 +35,9 @@ export const genMemberDetailsQuery = (id: string, storeId?: string) => ({
           parsedData.simulatorAppointmens?.filter(
             (v) => v.storeSimulator?.store.id === storeId,
           ) ?? [],
-        appChargeHistories: parsedData.appChargeHistories.filter(
-          (v) => v.store?.id === storeId,
-        ),
+        // appChargeHistories: parsedData.appChargeHistories.filter(
+        //   (v) => v.store?.id === storeId,
+        // ),
         appUserCoupons:
           parsedData.appUserCoupons?.filter((v) => v.store?.id === storeId) ??
           [],

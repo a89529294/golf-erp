@@ -30,19 +30,112 @@ import {
 import { genMemberDetailsQuery, loader } from "./loader";
 import { useAuth } from "@/hooks/use-auth";
 import { MemberHistory } from "@/pages/member-management/members/details/types";
+import queryString from "query-string";
+import { memberSchema } from "../loader";
 
 export function Component() {
   const auth = useAuth();
   const location = useLocation();
   const [searchParams] = useSearchParams();
   const [memberHistory, setMemberHistory] =
-    useState<MemberHistory>("top-up-history");
+    useState<MemberHistory>("spending-history");
   const { id } = useParams();
   const initialData = useLoaderData() as Awaited<ReturnType<typeof loader>>;
   const { data } = useQuery({
     ...genMemberDetailsQuery(id!, searchParams.get("storeId") ?? undefined),
     initialData,
   });
+
+  // 預約消費紀錄
+  const { data: spendingData, isLoading: isSpendingLoading } = useQuery({
+    queryKey: ["member-spending-data", id],
+    queryFn: async () => {
+      const response = await privateFetch(
+        `/app-users/${id}/simulator-appointments?pageSize=999`,
+      );
+
+      const data = await response.json();
+      return data.data.map((v: any) => {
+        if (!v.order) console.log(v);
+        return {
+          storeName: v.storeSimulator.store.name,
+          createdAt: v.order?.createdAt ?? "",
+          paymentMethod: v.order?.paymentMethod ?? "",
+          amount: v.amount,
+        };
+      });
+    },
+    enabled: memberHistory === "spending-history",
+  });
+
+  // 儲值紀錄
+  const { data: topUpData, isLoading: isTopUpLoading } = useQuery({
+    queryKey: ["member-top-up-data", id],
+    queryFn: async () => {
+      const response = await privateFetch(
+        `/app-users/${id}/charge-histories?pageSize=999`,
+      );
+
+      const data = await response.json();
+      console.log(data);
+      return data.data.map((v: any) => {
+        if (!v.order) console.log(v);
+        return {
+          storeName: v.store?.name ?? "",
+          createdAt: v.createdAt ?? "",
+          paymentMethod: v.type ?? "",
+          amount: v.amount,
+        };
+      });
+    },
+    enabled: memberHistory === "top-up-history",
+  });
+
+  const { data: couponData, isLoading: isCouponLoading } = useQuery({
+    queryKey: ["member-coupon-data", id],
+    queryFn: async () => {
+      const response = await privateFetch(
+        `/app-users/${id}/coupons?pageSize=999`,
+      );
+
+      const data = await response.json();
+      console.log(data);
+      return data.data.map((v: any) => ({
+        name: v.name,
+        expiration: v.expiration,
+        usedDate: v.usedDate,
+        amount: v.amount,
+      }));
+    },
+    enabled: memberHistory === "coupon-history",
+  });
+
+  // 系統贈送紀錄
+  const { data: systemGiftData, isLoading: isSystemGiftLoading } = useQuery({
+    queryKey: ["member-system-gift-data", id],
+    queryFn: async () => {
+      const queryObject: Record<string, string[]> = {};
+      queryObject.populate = ["appChargeHistories.store"];
+
+      const response = await privateFetch(
+        `/app-users/${id}?${queryString.stringify(queryObject)}`,
+      );
+
+      const data = await response.json();
+      const parsedData = memberSchema.parse(data);
+
+      return (parsedData.appChargeHistories ?? [])
+        .filter((v) => v.type === "系統贈送")
+        .map((v) => ({
+          storeName: v.store?.name ?? "",
+          createdAt: v.createdAt ?? "",
+          paymentMethod: v.type ?? "",
+          amount: v.amount,
+        }));
+    },
+    enabled: memberHistory === "system-gift-history",
+  });
+
   const [disabled, setDisabled] = useState(true);
   const form = useForm<z.infer<typeof memberFormSchema>>({
     resolver: zodResolver(memberFormSchema),
@@ -133,33 +226,40 @@ export function Component() {
     mutate();
   }
 
-  console.log(data.appChargeHistories);
+  // const spendingData = data.appChargeHistories.filter((v) => {
+  //   return v.type === "取消預約" || v.type === "使用";
+  // });
 
-  const topUpData = data.appChargeHistories.filter((v) => {
-    return v.type === "消費儲值";
-  });
+  // const topUpData = data.appChargeHistories.filter((v) => {
+  //   return v.type === "消費儲值";
+  // });
 
-  const spendingData = data.appChargeHistories.filter((v) => {
-    return v.type === "取消預約" || v.type === "使用";
-  });
+  // We're now using the systemGiftData from the query above instead of filtering from loader data
 
-  const systemGiftData = data.appChargeHistories.filter((v) => {
-    return v.type === "系統贈送";
-  });
-
-  const couponData = data?.appUserCoupons;
+  // const couponData = data?.appUserCoupons;
 
   const currentColumns = (() => {
-    if (memberHistory !== "coupon-history") return topUpHistorycolumns;
-    return couponHistorycolumns;
+    if (memberHistory === "coupon-history") return couponHistorycolumns;
+    // For spending-history, top-up-history, and system-gift-history, use topUpHistorycolumns
+    return topUpHistorycolumns;
   })();
 
   const currentData = (() => {
-    if (memberHistory === "top-up-history") return topUpData;
     if (memberHistory === "spending-history") return spendingData;
+    if (memberHistory === "top-up-history") return topUpData;
     if (memberHistory === "system-gift-history") return systemGiftData;
     return couponData;
   })();
+
+  const isLoading = (() => {
+    if (memberHistory === "spending-history") return isSpendingLoading;
+    if (memberHistory === "top-up-history") return isTopUpLoading;
+    if (memberHistory === "system-gift-history") return isSystemGiftLoading;
+    return isCouponLoading;
+  })();
+
+  console.log(memberHistory);
+  console.log(currentData);
 
   return (
     <MainLayout
@@ -199,18 +299,22 @@ export function Component() {
           form={form}
           disabled={disabled || isPending}
           onSubmit={onSubmit}
-          topUpAmount={data.appChargeHistories.reduce(
-            (acc, val) =>
-              val.type === "消費儲值" ? acc + Math.abs(val.amount) : acc,
-            0,
-          )}
-          spentAmount={data.appChargeHistories.reduce(
-            (acc, val) =>
-              val.type === "消費儲值" || val.type === "使用"
-                ? acc + Math.abs(val.amount)
-                : acc,
-            0,
-          )}
+          topUpAmount={
+            data.appChargeHistories?.reduce(
+              (acc, val) =>
+                val.type === "消費儲值" ? acc + Math.abs(val.amount) : acc,
+              0,
+            ) ?? 0
+          }
+          spentAmount={
+            data.appChargeHistories?.reduce(
+              (acc, val) =>
+                val.type === "消費儲值" || val.type === "使用"
+                  ? acc + Math.abs(val.amount)
+                  : acc,
+              0,
+            ) ?? 0
+          }
           remainingAmount={
             data.storeAppUsers?.reduce((acc, val) => acc + val.coin, 0) ?? 0
           }
@@ -264,10 +368,16 @@ export function Component() {
         <div className="relative grow sm:h-96">
           <div className="absolute inset-0 ">
             <ScrollArea className="h-full border border-t-0 border-line-gray">
-              <GenericDataTable
-                columns={currentColumns as any[]}
-                data={currentData as any[]}
-              />
+              {isLoading ? (
+                <div className="flex w-full items-center justify-center border-t border-line-gray pt-20">
+                  <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
+                </div>
+              ) : (
+                <GenericDataTable
+                  columns={currentColumns as any[]}
+                  data={(currentData as any[]) ?? []}
+                />
+              )}
               <ScrollBar className="hidden sm:block" orientation="horizontal" />
             </ScrollArea>
           </div>

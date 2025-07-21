@@ -70,6 +70,8 @@ export function Component() {
         Object.keys(dirtyFields) as (keyof typeof dirtyFields)[],
       );
 
+      console.log(changedValues.isActive)
+
       const x = {} as Partial<SimulatorPATCH>;
       if (changedValues["name"]) x.name = changedValues["name"];
       if (changedValues["introduce"]) x.introduce = changedValues.introduce;
@@ -92,7 +94,7 @@ export function Component() {
             });
         });
       }
-      if (changedValues["openingHours"]) {
+      if (changedValues["openingHours"] !== undefined) {
         x.openTimes = changedValues["openingHours"].map((v, i) => ({
           startTime: v.start,
           endTime: v.end,
@@ -166,7 +168,7 @@ export function Component() {
       if (changedValues["plans"]) {
         x.plans = changedValues["plans"];
       }
-      if (changedValues["isActive"]) x.isActive = changedValues["isActive"];
+      if (changedValues["isActive"] !== undefined) x.isActive = changedValues["isActive"];
 
       if (Object.keys(changedValues).length === 1 && changedValues.imageFiles)
         return;

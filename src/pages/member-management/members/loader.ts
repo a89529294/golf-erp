@@ -34,26 +34,28 @@ export const memberSchema = z.object({
     .array(z.object({ id: z.string(), coin: z.number() }))
     .nullable()
     .optional(),
-  appChargeHistories: z.array(
-    z.object({
-      id: z.string(),
-      createdAt: z.coerce
-        .date()
-        .transform((v) => {
-          v.setHours(v.getHours() - 8);
-          return v;
-        })
-        .transform((v) => fromDateToDateTimeString(v)),
-      amount: z.number(),
-      store: z
-        .object({
-          id: z.string(),
-          name: z.string(),
-        })
-        .optional(),
-      type: z.string(),
-    }),
-  ),
+  appChargeHistories: z
+    .array(
+      z.object({
+        id: z.string(),
+        createdAt: z.coerce
+          .date()
+          .transform((v) => {
+            v.setHours(v.getHours() - 8);
+            return v;
+          })
+          .transform((v) => fromDateToDateTimeString(v)),
+        amount: z.number(),
+        store: z
+          .object({
+            id: z.string(),
+            name: z.string(),
+          })
+          .optional(),
+        type: z.string(),
+      }),
+    )
+    .optional(),
   simulatorAppointmens: z
     .array(
       z.object({
@@ -92,7 +94,7 @@ export const memberSchema = z.object({
 });
 
 export const simpleMemberSchema = memberSchema.omit({
-  appChargeHistories: true,
+  // appChargeHistories: true,
 });
 
 export const simpleMembersSchema = z.object({
@@ -110,7 +112,7 @@ export const simpleMembersSchema = z.object({
 export type Member = z.infer<typeof memberSchema>;
 export type SimpleMember = z.infer<typeof simpleMemberSchema>;
 export type MemberType = Member["appUserType"];
-export type MemberAppChargeHistory = Member["appChargeHistories"][number];
+export type MemberAppChargeHistory = NonNullable<Member["appChargeHistories"]>[number];
 export type MemberAppUserCoupon = Required<Member>["appUserCoupons"][number];
 export type MemberSpendingHistory =
   Required<Member>["simulatorAppointmens"][number];

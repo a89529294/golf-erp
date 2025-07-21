@@ -13,7 +13,8 @@ const spendingHistoryColumnHelper = createColumnHelper<MemberSpendingHistory>();
 const couponHistoryColumnHelper = createColumnHelper<MemberAppUserCoupon>();
 
 export const topUpHistorycolumns = [
-  topUpHistoryColumnHelper.accessor("store.name", {
+  //@ts-ignore
+  topUpHistoryColumnHelper.accessor("storeName", {
     id: "store.name",
     header: ({ column }) => (
       <button
@@ -59,8 +60,9 @@ export const topUpHistorycolumns = [
       return <div className="text-orange">{edFormatted}</div>;
     },
   }),
-  topUpHistoryColumnHelper.display({
-    id: "payment-method",
+  //@ts-ignore
+  topUpHistoryColumnHelper.accessor("paymentMethod", {
+    id: "paymentMethod",
     header: ({ column }) => (
       <button
         className="flex items-center gap-1 sm:w-20"

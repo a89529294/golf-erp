@@ -1,5 +1,5 @@
 export type MemberHistory =
-  | "top-up-history"
   | "spending-history"
+  | "top-up-history"
   | "system-gift-history"
   | "coupon-history";
