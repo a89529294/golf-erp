@@ -56,7 +56,9 @@ export function DataTable<TData extends Appointment, TValue>({
   onSortChange,
   height,
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = useState<SortingState>([]);
+  const [sorting, setSorting] = useState<SortingState>([
+    { id: "startTime", desc: true },
+  ]);
 
   const table = useReactTable({
     data,
@@ -72,6 +74,7 @@ export function DataTable<TData extends Appointment, TValue>({
         typeof updater === "function" ? updater(sorting) : updater;
 
       setSorting(nextState);
+      console.log(nextState);
 
       // Trigger server-side sorting if a handler is provided
       if (onSortChange && nextState.length > 0) {
