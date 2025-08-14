@@ -22,6 +22,8 @@ export const baseAppointmentSchema = z.object({
           invoiceNumber: z.string(),
         })
         .optional(),
+      userName: z.string(),
+      userPhone: z.string(),
     })
     .optional(),
   appUser: z

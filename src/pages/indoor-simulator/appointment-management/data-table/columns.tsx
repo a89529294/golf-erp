@@ -41,14 +41,18 @@ export const columns: ColumnDef<Appointment>[] = [
       );
     },
     cell: (prop) => (
-      <div className="whitespace-nowrap">{prop.getValue() as string}</div>
+      <div className="whitespace-nowrap">
+        {(prop.getValue() as string) ?? prop.row.original.order?.userName}
+      </div>
     ),
   },
   {
     accessorKey: "appUser.phone",
     header: "電話",
     cell: (prop) => (
-      <div className="whitespace-nowrap">{prop.getValue() as string}</div>
+      <div className="whitespace-nowrap">
+        {(prop.getValue() as string) ?? prop.row.original.order?.userPhone}
+      </div>
     ),
   },
   {
