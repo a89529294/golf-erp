@@ -4,6 +4,7 @@ export function appUserTypeNameOf(type: string) {
   const name = {
     [AppUserType.Guest]: "來賓",
     [AppUserType.CommonUser]: "一般會員",
+    [AppUserType.CommonUser1]: "一般會員1",
     [AppUserType.GroupUser]: "團體會員",
     [AppUserType.Coach]: "教練",
     [AppUserType.Collaboration]: "協力廠商",

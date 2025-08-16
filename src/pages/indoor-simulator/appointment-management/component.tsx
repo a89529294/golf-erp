@@ -40,8 +40,6 @@ export function Component() {
     staleTime: 5000,
   });
 
-  console.log(stores);
-
   const storeId = searchParams.get("storeId")!;
 
   // const { data: appointmentsData } = useQuery({
