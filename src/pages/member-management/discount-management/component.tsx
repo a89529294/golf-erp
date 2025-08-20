@@ -28,9 +28,10 @@ import { AppUserType } from "@/constants/appuser-type.ts";
 const AppUserTypeSortTable = {
   [AppUserType.Guest]: 0,
   [AppUserType.CommonUser]: 1,
-  [AppUserType.GroupUser]: 2,
-  [AppUserType.Coach]: 3,
-  [AppUserType.Collaboration]: 4,
+  [AppUserType.CommonUser1]: 2,
+  [AppUserType.GroupUser]: 3,
+  [AppUserType.Coach]: 4,
+  [AppUserType.Collaboration]: 5,
 };
 
 type DataType = Awaited<ReturnType<typeof loader>>;

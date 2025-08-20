@@ -10,6 +10,7 @@ export const memberTypeSchema = z.union([
   z.literal("guest"),
   z.literal("group_user"),
   z.literal("common_user"),
+  z.literal("common_user1"),
   z.literal("coach"),
   z.literal("collaboration"),
 ]);
@@ -112,7 +113,9 @@ export const simpleMembersSchema = z.object({
 export type Member = z.infer<typeof memberSchema>;
 export type SimpleMember = z.infer<typeof simpleMemberSchema>;
 export type MemberType = Member["appUserType"];
-export type MemberAppChargeHistory = NonNullable<Member["appChargeHistories"]>[number];
+export type MemberAppChargeHistory = NonNullable<
+  Member["appChargeHistories"]
+>[number];
 export type MemberAppUserCoupon = Required<Member>["appUserCoupons"][number];
 export type MemberSpendingHistory =
   Required<Member>["simulatorAppointmens"][number];
@@ -121,6 +124,7 @@ export type Gender = Member["gender"];
 export const memberTypeEnChMap: Record<MemberType, string> = {
   guest: "來賓",
   common_user: "一般會員",
+  common_user1: "一般會員1",
   group_user: "團體會員",
   coach: "教練",
   collaboration: "協力廠商",
