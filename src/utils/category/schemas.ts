@@ -196,6 +196,7 @@ const weekdaySchema = z.array(
           z.literal("guest"),
           z.literal("group_user"),
           z.literal("common_user"),
+          z.literal("common_user1"),
           z.literal("coach"),
           z.literal("collaboration"),
         ]),
