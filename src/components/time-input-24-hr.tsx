@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/select";
 import { ControllerRenderProps, FieldValues } from "react-hook-form";
 
-const hourOptions = Array.from({ length: 24 }, (_, i) =>
+const hourOptions = Array.from({ length: 25 }, (_, i) =>
   String(i).padStart(2, "0"),
 );
 const minuteOptions = Array.from({ length: 12 }, (_, i) =>
@@ -250,7 +250,7 @@ function HourMinuteSelect({
           </SelectTrigger>
         </FormControl>
         <SelectContent>
-          {minuteOptions.map((m) => (
+          {(hour === "24" ? ["00"] : minuteOptions).map((m) => (
             <SelectItem key={m} value={m}>
               {m}
             </SelectItem>
