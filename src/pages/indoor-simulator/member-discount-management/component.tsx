@@ -19,7 +19,7 @@ import { useLoaderData, useSearchParams } from "react-router-dom";
 import {
   appUserDiscountQuery,
   loader,
-} from "@/pages/member-management/discount-management/loader.ts";
+} from "@/pages/indoor-simulator/member-discount-management/loader.ts";
 import { appUserTypeNameOf } from "@/utils/appuser-type.ts";
 import { privateFetch } from "@/utils/utils.ts";
 import { queryClient } from "@/utils/query-client.ts";
@@ -47,7 +47,7 @@ export function Component(): React.ReactElement {
   const storeId = searchParams.get("storeId");
 
   const { discountData: initialData, storeData } = useLoaderData() as DataType;
-
+  
   const { data = [] } = useQuery({
     ...appUserDiscountQuery(storeId || ""),
     initialData: storeId ? initialData : undefined,
@@ -140,7 +140,7 @@ export function Component(): React.ReactElement {
       toast.success("折扣更新成功");
       setIsEditing(false);
       return queryClient.invalidateQueries({
-        queryKey: ["appUser", "discount"],
+        queryKey: ["appUser", "discount", storeId || ""],
       });
     },
     onError() {
@@ -161,8 +161,8 @@ export function Component(): React.ReactElement {
           <div className="flex items-center gap-2">
             <StoreSelect
               category="simulator"
-              initialData={[]}
-              navigateTo="/member-management/discount-management"
+              initialData={storeData}
+              navigateTo="/indoor-simulator/member-discount-management"
             />
             <MobileMenubar
               isPending={isPending}
@@ -179,8 +179,8 @@ export function Component(): React.ReactElement {
           <div className="flex items-center gap-2">
             <StoreSelect
               category="simulator"
-              initialData={[]}
-              navigateTo="/member-management/discount-management"
+              initialData={storeData}
+              navigateTo="/indoor-simulator/member-discount-management"
             />
             <DesktopMenubar
               isPending={isPending}

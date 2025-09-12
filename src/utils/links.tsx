@@ -266,6 +266,13 @@ export const linksKV = {
         },
         allowedPermissions: ["模擬器-基本操作"],
       },
+      "member-discount-management": {
+        label: "會員折扣管理",
+        path: `${INDOOR_SIMULATOR_BASE_PATH}/member-discount-management`,
+        lazy: () => import("@/pages/indoor-simulator/member-discount-management"),
+        type: "flat" as const,
+        allowedPermissions: ["模擬器-基本操作"],
+      },
       "site-management": {
         label: "場地管理",
         paths: {
