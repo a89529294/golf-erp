@@ -28,6 +28,22 @@ export const columns: ColumnDef<Appointment>[] = [
     },
   },
   {
+    accessorKey: "storeSimulatorName",
+    header: ({ column }) => {
+      return (
+        <button className="flex items-center gap-1 whitespace-nowrap">
+          包廂編號
+        </button>
+      );
+    },
+    cell(props) {
+      console.log(props.getValue());
+      return (
+        <div className="whitespace-nowrap">{props.getValue() as string}</div>
+      );
+    },
+  },
+  {
     accessorKey: "appUser.chName",
     header: ({ column }) => {
       return (

@@ -65,9 +65,7 @@ export const appointmentsQuery = (
 
     const parsedData = simulatorAppoitmentsSchema.parse(data);
 
-    console.log(
-      parsedData.data.filter((v) => v.order?.paymentMethod === "JKOPAY"),
-    );
+    console.log(parsedData);
 
     const paginationMeta: PaginationMeta = {
       page,
@@ -105,6 +103,7 @@ export const appointmentsQuery = (
         originAmount: appointment.originAmount,
         usedCoupon: appointment.usedCoupon,
         order: appointment.order,
+        storeSimulatorName: appointment.storeSimulator.name,
       };
 
       if (foundStore) {

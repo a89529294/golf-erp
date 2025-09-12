@@ -67,6 +67,8 @@ export function Component() {
   // })();
   const filteredData = store?.sites.flatMap((s) => s.appointments) ?? [];
 
+  console.log(filteredData);
+
   const [isExporting, setIsExporting] = useState(false);
   const { data: allAppointmentsData, isFetching: isFetchingAllAppointments } =
     useQuery({
