@@ -37,6 +37,12 @@ export const genEmployeesQuery = (
   return {
     queryKey: criteria ? keyMap[criteria] : ["employees"],
     queryFn: async () => {
+      const response1 = await privateFetch(`/mobile-app-version`);
+
+      const data1 = await response1.json();
+
+      console.log(data1);
+
       const response = await privateFetch(
         `/employees?pageSize=999&populate=stores&sort=updatedAt&order=DESC${criteria === "non-erp-users" ? "&populate=user&filter[user][$null]" : ""}`,
       );

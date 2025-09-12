@@ -269,7 +269,8 @@ export const linksKV = {
       "member-discount-management": {
         label: "會員折扣管理",
         path: `${INDOOR_SIMULATOR_BASE_PATH}/member-discount-management`,
-        lazy: () => import("@/pages/indoor-simulator/member-discount-management"),
+        lazy: () =>
+          import("@/pages/indoor-simulator/member-discount-management"),
         type: "flat" as const,
         allowedPermissions: ["模擬器-基本操作"],
       },
@@ -400,6 +401,13 @@ export const linksKV = {
         label: "Banner 設定",
         path: `${SYSTEM_MANAGEMENT_BASE_PATH}/banner-carousel`,
         lazy: () => import("@/pages/system-management/banner-carousel"),
+        type: "flat" as const,
+        allowedPermissions: ["系統管理"],
+      },
+      "mobile-app-version": {
+        label: "APP版本",
+        path: `${SYSTEM_MANAGEMENT_BASE_PATH}/mobile-app-version`,
+        lazy: () => import("@/pages/system-management/mobile-app-version"),
         type: "flat" as const,
         allowedPermissions: ["系統管理"],
       },
