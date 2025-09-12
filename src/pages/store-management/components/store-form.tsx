@@ -127,6 +127,24 @@ export function StoreForm({
             name={"name"}
             label="廠商名稱"
           />
+          <StoreFormField
+            disabled={isInputDisabled}
+            form={form}
+            name={"order"}
+            label="排序編號"
+            asNumber
+            inputProps={{
+              min: 1,
+              step: 1,
+              onBlur: (e) => {
+                const value =
+                  e.target.value === "" ? null : parseInt(e.target.value);
+                if (value !== null && (isNaN(value) || value < 1)) {
+                  form.setValue("order", "1");
+                }
+              },
+            }}
+          />
           <StoreFormSelectField
             disabled={isInputDisabled}
             form={form}

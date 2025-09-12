@@ -37,6 +37,23 @@ export const columns: ColumnDef<Store>[] = [
     accessorFn: (row) => row.code ?? "",
   },
   {
+    accessorKey: "order",
+    id: "order",
+    header: ({ column }) => {
+      return (
+        <button
+          className="flex items-center gap-1"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          排序
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </button>
+      );
+    },
+    // @ts-ignore
+    accessorFn: (row) => row.order ?? "",
+  },
+  {
     id: "name-address",
     header: ({ column }) => {
       return (

@@ -4,6 +4,7 @@ import { z } from "zod";
 export const formSchema = z
   .object({
     code: z.string().trim().min(1, { message: "請輸入廠商編號" }),
+    order: z.string().trim().min(1, { message: "請輸入廠商排序" }),
     name: z.string().trim().min(1, { message: "請輸入廠商名稱" }),
     category: z.enum(storeCategories),
     openingHoursStart: z.string().min(1, { message: "請輸入營業時間" }),

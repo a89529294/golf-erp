@@ -18,6 +18,7 @@ export function StoreFormField({
   disabled,
   asNumber,
   labelClassName,
+  inputProps,
 }: {
   form: UseFormReturn<z.infer<typeof formSchema>, unknown, undefined>;
   name: Exclude<keyof z.infer<typeof formSchema>, "employees" | "chargeImages">;
@@ -25,6 +26,7 @@ export function StoreFormField({
   disabled: boolean;
   asNumber?: boolean;
   labelClassName?: string;
+  inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
 }) {
   return (
     <FormField
@@ -46,12 +48,30 @@ export function StoreFormField({
                 placeholder={`請輸入${label}`}
                 {...field}
                 disabled={disabled}
+                {...(asNumber
+                  ? {
+                      type: "number",
+                      onChange: (e) => {
+                        const value = e.target.value;
+                        if (value === "") {
+                          field.onChange(null);
+                        } else {
+                          const numValue = parseInt(value);
+                          if (!isNaN(numValue)) {
+                            field.onChange(numValue);
+                          }
+                        }
+                        form.clearErrors(name);
+                      },
+                      ...inputProps,
+                    }
+                  : {
+                      onChange: (e) => {
+                        field.onChange(e);
+                        form.clearErrors(name);
+                      },
+                    })}
                 inputMode={asNumber ? "decimal" : "text"}
-                type={asNumber ? "number" : "text"}
-                onChange={(e) => {
-                  field.onChange(e);
-                  form.clearErrors(name);
-                }}
               />
             </FormControl>
 
