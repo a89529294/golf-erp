@@ -14,6 +14,7 @@ export function MemberForm({
   spentAmount,
   remainingAmount,
   newMemberForm,
+  allowMemberTypeEdit,
 }: {
   form: UseFormReturn<z.infer<typeof memberFormSchema>>;
   onSubmit: (values: z.infer<typeof memberFormSchema>) => void;
@@ -22,6 +23,7 @@ export function MemberForm({
   spentAmount: number;
   remainingAmount: number;
   newMemberForm?: boolean;
+  allowMemberTypeEdit?: boolean;
 }) {
   const memberTypeRef = useRef<HTMLButtonElement>(null);
   const genderRef = useRef<HTMLButtonElement>(null);

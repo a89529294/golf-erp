@@ -47,7 +47,7 @@ export function Component(): React.ReactElement {
   const storeId = searchParams.get("storeId");
 
   const { discountData: initialData, storeData } = useLoaderData() as DataType;
-  
+
   const { data = [] } = useQuery({
     ...appUserDiscountQuery(storeId || ""),
     initialData: storeId ? initialData : undefined,
@@ -242,7 +242,7 @@ export function Component(): React.ReactElement {
                     </div>
                   ),
                 )}
-                {isEditing && (
+                {/* {isEditing && (
                   <div className="flex justify-center border-t border-line-gray pt-4">
                     <button
                       type="button"
@@ -256,7 +256,7 @@ export function Component(): React.ReactElement {
                       新增會員類型
                     </button>
                   </div>
-                )}
+                )} */}
               </div>
             </section>
           </form>

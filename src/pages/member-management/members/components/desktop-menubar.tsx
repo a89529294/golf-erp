@@ -22,6 +22,7 @@ export function DesktopMenubar({
   isPending,
   form,
   allowEdit,
+  allowMemberTypeEdit,
 }: {
   disabled: boolean;
   setDisabled: React.Dispatch<React.SetStateAction<boolean>>;
@@ -31,6 +32,7 @@ export function DesktopMenubar({
   isPending: boolean;
   form: UseFormReturn<z.infer<typeof memberFormSchema>>;
   allowEdit?: boolean;
+  allowMemberTypeEdit?: boolean;
 }) {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -72,7 +74,7 @@ export function DesktopMenubar({
               恢復
             </IconButton>
           )}
-          {allowEdit && (
+          {(allowEdit || allowMemberTypeEdit) && (
             <IconButton
               icon="pencil"
               type="button"
@@ -102,7 +104,7 @@ export function DesktopMenubar({
           {storeId && <SendCouponModal show storeId={storeId} />}
         </>
       ) : (
-        allowEdit && (
+        (allowEdit || allowMemberTypeEdit) && (
           <>
             <IconWarningButton
               type="button"

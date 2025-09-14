@@ -74,7 +74,7 @@ export function DesktopFields({
         <UnderScoredFormInput
           name="account"
           placeholder="帳號"
-          disabled={disabled}
+          disabled={location.pathname.includes("view-only") ?? disabled}
         />
       </Cell>
       <Cell>
@@ -89,21 +89,21 @@ export function DesktopFields({
         <UnderScoredFormInput
           name="chName"
           placeholder="姓名"
-          disabled={disabled}
+          disabled={location.pathname.includes("view-only") ?? disabled}
         />
       </Cell>
       <Cell>
         <UnderScoredFormInput
           name="email"
           placeholder="email"
-          disabled={disabled}
+          disabled={location.pathname.includes("view-only") ?? disabled}
         />
       </Cell>
       <Cell>
         <UnderScoredFormInput
           name="phone"
           placeholder="電話"
-          disabled={disabled}
+          disabled={location.pathname.includes("view-only") ?? disabled}
         />
       </Cell>
       <Cell>
@@ -111,11 +111,13 @@ export function DesktopFields({
           name="gender"
           optionMap={genderEnChMap}
           myRef={genderRef}
-          disabled={disabled}
+          disabled={location.pathname.includes("view-only") ?? disabled}
         />
       </Cell>
       <Cell>
-        <BirthDayDatePicker disabled={disabled} />
+        <BirthDayDatePicker
+          disabled={location.pathname.includes("view-only") ?? disabled}
+        />
       </Cell>
       {/* <Cell /> */}
     </>

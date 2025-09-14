@@ -289,6 +289,10 @@ export function Component() {
                 !location.pathname.includes("view-only") &&
                 auth.user?.permissions.includes("系統管理")
               }
+              allowMemberTypeEdit={
+                location.pathname.includes("view-only") &&
+                auth.user?.permissions.includes("系統管理")
+              }
             />
           )}
         </>
