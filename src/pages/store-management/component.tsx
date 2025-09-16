@@ -59,6 +59,8 @@ export function Component() {
     return data[category as StoreCategory];
   })();
 
+  console.log(filteredData);
+
   return (
     <MainLayout
       headerChildren={

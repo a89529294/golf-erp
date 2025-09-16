@@ -20,6 +20,7 @@ export const storeSchema = z.object({
   employees: z.array(employeeSchema).optional(),
   LineLink: z.string().nullish(),
   IGLink: z.string().nullish(),
+  sort: z.number().nullish(),
   chargeImages: z
     .array(z.string())
     .nullish()

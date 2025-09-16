@@ -130,7 +130,7 @@ export function StoreForm({
           <StoreFormField
             disabled={isInputDisabled}
             form={form}
-            name={"order"}
+            name={"sort"}
             label="排序編號"
             asNumber
             inputProps={{
@@ -140,7 +140,7 @@ export function StoreForm({
                 const value =
                   e.target.value === "" ? null : parseInt(e.target.value);
                 if (value !== null && (isNaN(value) || value < 1)) {
-                  form.setValue("order", "1");
+                  form.setValue("sort", 1);
                 }
               },
             }}

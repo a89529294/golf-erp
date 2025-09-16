@@ -65,6 +65,7 @@ export function Component() {
     defaultValues: {
       code: store.code,
       name: store.name,
+      sort: store.sort ?? undefined,
       category: store.category,
       openingHoursStart: store.businessHours
         ? store.businessHours.split("-")[0]
@@ -174,6 +175,7 @@ export function Component() {
     const transformedValues = {
       code: values.code,
       name: values.name,
+      sort: values.sort,
       category: values.category,
       businessHours: `${values.openingHoursStart}-${values.openingHoursEnd}`,
       telphone: `${values.phoneAreaCode}-${values.phone}`,
@@ -253,6 +255,7 @@ export function Component() {
       changedFields.invoiceHashIV = transformedValues.invoiceHashIV;
     if (dirtyFields.invoiceHashKey)
       changedFields.invoiceHashKey = transformedValues.invoiceHashKey;
+    if (dirtyFields.sort) changedFields.sort = transformedValues.sort;
 
     // changedFields.specialPlans = transformedValues.specialPlans;
 
@@ -320,6 +323,7 @@ export function Component() {
     form.reset({
       code: form.getValues("code"),
       name: form.getValues("name"),
+      sort: form.getValues("sort"),
       category: form.getValues("category"),
       openingHoursStart: form.getValues("openingHoursStart"),
       openingHoursEnd: form.getValues("openingHoursEnd"),

@@ -37,8 +37,8 @@ export const columns: ColumnDef<Store>[] = [
     accessorFn: (row) => row.code ?? "",
   },
   {
-    accessorKey: "order",
-    id: "order",
+    accessorKey: "sort",
+    id: "sort",
     header: ({ column }) => {
       return (
         <button
@@ -50,8 +50,8 @@ export const columns: ColumnDef<Store>[] = [
         </button>
       );
     },
-    // @ts-ignore
-    accessorFn: (row) => row.order ?? "",
+
+    accessorFn: (row) => row.sort ?? "",
   },
   {
     id: "name-address",
