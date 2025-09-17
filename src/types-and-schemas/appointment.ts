@@ -6,6 +6,7 @@ export const baseAppointmentSchema = z.object({
   amount: z.number(),
   startTime: z.coerce.date().transform((v) => fromDateToDateTimeString(v)),
   endTime: z.coerce.date().transform((v) => fromDateToDateTimeString(v)),
+  updatedAt: z.coerce.date().transform((v) => fromDateToDateTimeString(v)),
   status: z.union([
     z.literal("pending"),
     z.literal("complete"),

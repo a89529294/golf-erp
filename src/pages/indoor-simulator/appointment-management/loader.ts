@@ -90,6 +90,7 @@ export const appointmentsQuery = (
         id: appointment.id,
         startTime: appointment.startTime,
         endTime: appointment.endTime,
+        updatedAt: appointment.updatedAt,
         appUser: appointment.appUser
           ? {
               id: appointment.appUser.id,

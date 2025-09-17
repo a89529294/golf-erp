@@ -111,6 +111,45 @@ export const columns: ColumnDef<Appointment>[] = [
       );
     },
   },
+  {
+    accessorKey: "updatedAt",
+    header: ({ column }) => {
+      return (
+        <button
+          className="flex items-center gap-1"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          修改時間
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </button>
+      );
+    },
+    cell: (prop) => {
+      const value = prop.getValue();
+      console.log("Raw value:", value); // Add this line
+      if (!value) return <div className="whitespace-nowrap">-</div>;
+
+      try {
+        const dateStr = String(value).replace(/\.\d+Z$/, "Z");
+        console.log("Normalized date string:", dateStr); // Add this line
+        const date = new Date(dateStr);
+        console.log("Parsed date:", date); // Add this line
+
+        if (isNaN(date.getTime()))
+          return <div className="whitespace-nowrap">-</div>;
+
+        const d = subHours(date, 8);
+        return (
+          <div className="whitespace-nowrap">
+            {format(d, "yyyy-MM-dd HH:mm")}
+          </div>
+        );
+      } catch (e) {
+        console.log("Date parsing error:", e); // Add this line
+        return <div className="whitespace-nowrap">-</div>;
+      }
+    },
+  },
 
   {
     id: "cancel-appointment",
