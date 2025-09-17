@@ -18,6 +18,7 @@ import useMediaQuery from "@/hooks/use-media-query";
 import { LayoutGroup } from "framer-motion";
 import { IconWarningButton } from "@/components/ui/button";
 import { SendCouponModal } from "@/pages/member-management/members/components/send-coupon-modal/send-coupon-modal";
+import { AddMemberModal } from "@/pages/member-management/members/components/add-member-modal/add-member-modal";
 import {
   Menubar,
   MenubarContent,
@@ -149,6 +150,16 @@ export function MemberManagementPage({
                   )}
                   {storeId && (
                     <MenubarItem onClick={(e) => e.preventDefault()}>
+                      <AddMemberModal
+                        storeId={storeId}
+                        show={true}
+                        asMenuItem
+                        closeMenu={() => setValue("")}
+                      />
+                    </MenubarItem>
+                  )}
+                  {storeId && (
+                    <MenubarItem onClick={(e) => e.preventDefault()}>
                       <SendCouponModal
                         storeId={storeId}
                         show={!isSearchActive}
@@ -180,6 +191,14 @@ export function MemberManagementPage({
               initialData={initialData}
               navigateTo={navigateMap[category]}
             />
+
+            {storeId && (
+              <AddMemberModal
+                storeId={storeId}
+                show={!isSearchActive}
+                onClose={() => setIsSearchFocused(false)}
+              />
+            )}
             <LayoutGroup>
               <SearchInput
                 // className="sm:hidden"
