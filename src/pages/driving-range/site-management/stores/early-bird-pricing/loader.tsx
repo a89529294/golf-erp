@@ -33,7 +33,7 @@ export const earlyBirdPricingSchema = z.object({
                 }),
               endTime: z
                 .string()
-                .regex(/^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/, {
+                .regex(/^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$|^24:00:00$/, {
                   message: "結束時間格式不正確 (HH:mm:ss)",
                 })
                 .transform((v) => {
