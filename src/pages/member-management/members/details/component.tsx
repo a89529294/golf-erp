@@ -58,7 +58,7 @@ export function Component() {
       return data.data.map((v: any) => {
         if (!v.order) console.log(v);
         return {
-          storeName: v.storeSimulator.store.name,
+          storeName: v.storeSimulator.store?.name ?? "",
           createdAt: v.order?.createdAt ?? "",
           paymentMethod: v.order?.paymentMethod ?? "",
           amount: v.amount,
