@@ -56,10 +56,8 @@ export function SearchInput({
           onMouseUp={() => setIsClickingInside(false)}
           onFocus={() => {
             updateFocus(true);
-            console.log("label focused");
           }}
           onBlur={(e) => {
-            console.log("label blurred");
             if (isClickingInside) return;
             updateFocus(false);
           }}
@@ -84,12 +82,10 @@ export function SearchInput({
             layout
             onFocus={() => {
               updateFocus(true);
-              console.log("input focused");
             }}
             onBlur={() => {
               if (!isClickingInside) {
                 updateFocus(false);
-                console.log("input blurred");
               }
             }}
           />
