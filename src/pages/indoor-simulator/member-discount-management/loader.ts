@@ -2,6 +2,7 @@ import { queryClient } from "@/utils/query-client";
 import { privateFetch } from "@/utils/utils";
 import { z } from "zod";
 import { getStoresQuery } from "@/pages/indoor-simulator/member-management/loader";
+import { getAllowedStores } from "@/utils";
 
 export const appUserDiscountSchema = z.array(
   z.object({
@@ -26,9 +27,13 @@ export const appUserDiscountQuery = (storeId: string) => ({
 export async function loader() {
   // Load store data for StoreSelect component
   const storeData = await queryClient.ensureQueryData(
-    getStoresQuery("all", "simulator", "admin")
+    getStoresQuery(
+      await getAllowedStores("simulator"),
+      "simulator",
+      JSON.parse(localStorage.getItem("golf-erp-user")!).account,
+    ),
   );
-  
+
   // Return empty discount data initially - will be loaded based on selected store
   return { discountData: [], storeData };
 }
