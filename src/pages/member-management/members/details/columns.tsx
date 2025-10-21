@@ -7,6 +7,9 @@ import {
 import { ArrowUpDown } from "lucide-react";
 // import { addDays, format } from "date-fns";
 import { formatDateString } from "@/utils";
+import trashCanIcon from "@/assets/trash-can-icon.svg";
+import { Modal } from "@/components/modal";
+import { cn } from "@/lib/utils";
 
 const topUpHistoryColumnHelper = createColumnHelper<MemberAppChargeHistory>();
 const spendingHistoryColumnHelper = createColumnHelper<MemberSpendingHistory>();
@@ -318,3 +321,116 @@ export const couponHistorycolumns = [
     ),
   }),
 ] as ColumnDef<MemberAppUserCoupon>[];
+
+// System gift history columns with delete functionality
+type SystemGiftHistoryRow = MemberAppChargeHistory & { id: string };
+
+export function genSystemGiftHistoryColumns(
+  deleteGivenCoin: (id: string) => Promise<void>,
+) {
+  const systemGiftHistoryColumnHelper = createColumnHelper<SystemGiftHistoryRow>();
+
+  return [
+    //@ts-ignore
+    systemGiftHistoryColumnHelper.accessor("storeName", {
+      id: "store.name",
+      header: ({ column }) => (
+        <button
+          className="flex items-center gap-1 sm:w-24"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          廠商
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </button>
+      ),
+    }),
+
+    systemGiftHistoryColumnHelper.accessor("createdAt", {
+      id: "createdAt",
+      header: ({ column }) => (
+        <button
+          className="flex items-center gap-1 sm:w-24"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          付款完成日期
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </button>
+      ),
+      cell: (props) => {
+        const ed = props.getValue()
+          ? new Date(formatDateString(props.getValue()))
+          : "";
+
+        if (typeof ed === "string") return <div className="text-orange" />;
+
+        ed.setHours(ed.getHours() + 8);
+        const edFormatted = new Intl.DateTimeFormat("en-CA", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+          hour: "numeric",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: false,
+        })
+          .format(ed)
+          .replace(",", "");
+        return <div className="text-orange">{edFormatted}</div>;
+      },
+    }),
+    //@ts-ignore
+    systemGiftHistoryColumnHelper.accessor("paymentMethod", {
+      id: "paymentMethod",
+      header: ({ column }) => (
+        <button
+          className="flex items-center gap-1 sm:w-20"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          支付方式
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </button>
+      ),
+      cell: (info) => info.getValue(),
+    }),
+    systemGiftHistoryColumnHelper.accessor("amount", {
+      header: ({ column }) => (
+        <button
+          className="flex items-center gap-1"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          金額
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </button>
+      ),
+      id: "amount",
+      cell: (props) => (
+        <div className="text-line-green">
+          {props.getValue()}
+          <span className="ml-1 text-secondary-dark">元</span>
+        </div>
+      ),
+    }),
+    systemGiftHistoryColumnHelper.display({
+      id: "delete",
+      header: () => <div className="text-right pr-6">刪除</div>,
+      cell: (props) => {
+        const rowData = props.row.original;
+        return (
+          <div className="group flex justify-end pr-6">
+            <div className={cn("hidden text-right group-hover:block")}>
+              <Modal
+                dialogTriggerChildren={
+                  <button>
+                    <img src={trashCanIcon} alt="delete" />
+                  </button>
+                }
+                title={`確認刪除此系統贈送紀錄?`}
+                onSubmit={() => deleteGivenCoin(rowData.id)}
+              />
+            </div>
+          </div>
+        );
+      },
+    }),
+  ] as ColumnDef<SystemGiftHistoryRow>[];
+}

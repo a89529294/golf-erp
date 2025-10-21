@@ -26,6 +26,7 @@ import {
   spendingHistoryColumns,
   topUpHistorycolumns,
   couponHistorycolumns,
+  genSystemGiftHistoryColumns,
 } from "./columns";
 import { genMemberDetailsQuery, loader } from "./loader";
 import { useAuth } from "@/hooks/use-auth";
@@ -122,11 +123,13 @@ export function Component() {
       );
 
       const data = await response.json();
+
       const parsedData = memberSchema.parse(data);
 
       return (parsedData.appChargeHistories ?? [])
         .filter((v) => v.type === "系統贈送")
         .map((v) => ({
+          id: v.id,
           storeName: v.store?.name ?? "",
           createdAt: v.createdAt ?? "",
           paymentMethod: v.type ?? "",
@@ -207,6 +210,23 @@ export function Component() {
       },
     });
 
+  const deleteGivenCoin = async (appUserChargeHistoryId: string) => {
+    const response = await privateFetch(
+      `/app-users/delete-given-coin/${appUserChargeHistoryId}`,
+      {
+        method: "DELETE",
+      },
+    );
+
+    if (!response.ok) {
+      throw new Error("刪除失敗");
+    }
+
+    toast.success("刪除成功");
+    queryClient.invalidateQueries({ queryKey: ["member-system-gift-data", id] });
+    queryClient.invalidateQueries({ queryKey: ["members"] });
+  };
+
   const isMobile = useIsMobile();
 
   useEffect(() => {
@@ -240,7 +260,8 @@ export function Component() {
 
   const currentColumns = (() => {
     if (memberHistory === "coupon-history") return couponHistorycolumns;
-    // For spending-history, top-up-history, and system-gift-history, use topUpHistorycolumns
+    if (memberHistory === "system-gift-history") return genSystemGiftHistoryColumns(deleteGivenCoin);
+    // For spending-history and top-up-history, use topUpHistorycolumns
     return topUpHistorycolumns;
   })();
 

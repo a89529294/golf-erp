@@ -14,7 +14,8 @@ import {
 import { cn } from "@/lib/utils";
 import { privateFetch } from "@/utils/utils";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { storesQuery } from "@/pages/store-management/loader";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -57,7 +58,14 @@ export function AddMemberModal({
     coin: 0,
     password: "",
     email: "",
+    storeId: storeId || "",
   });
+
+  const { data: stores } = useQuery(storesQuery);
+
+  const flattenedStores = stores
+    ? Object.values(stores).flatMap((stores) => stores)
+    : [];
 
   const { mutate, isPending } = useMutation({
     mutationKey: ["register-member"],
@@ -89,6 +97,7 @@ export function AddMemberModal({
         coin: 0,
         password: "",
         email: "",
+        storeId: storeId || "",
       });
       setErrors({});
 
@@ -109,6 +118,10 @@ export function AddMemberModal({
 
     if (!formData.account.trim()) {
       newErrors.account = "請輸入帳號";
+    }
+
+    if (!formData.storeId.trim()) {
+      newErrors.storeId = "請選擇店家";
     }
 
     if (!formData.phone.trim()) {
@@ -140,7 +153,13 @@ export function AddMemberModal({
 
   // Check if all required fields are filled
   const checkFormValidity = (data: typeof formData) => {
-    const requiredFields = ["chName", "account", "phone", "password"];
+    const requiredFields = [
+      "chName",
+      "account",
+      "storeId",
+      "phone",
+      "password",
+    ];
     const isValid = requiredFields.every((field) => {
       if (typeof data[field as keyof typeof data] === "string") {
         return (data[field as keyof typeof data] as string).trim() !== "";
@@ -194,6 +213,7 @@ export function AddMemberModal({
             coin: 0,
             password: "",
             email: "",
+            storeId: storeId || "",
           });
           setErrors({});
 
@@ -265,6 +285,35 @@ export function AddMemberModal({
                 />
                 {errors.chName && (
                   <p className="mt-1 text-xs text-red-500">{errors.chName}</p>
+                )}
+              </div>
+
+              {/* Store Field */}
+              <div className="space-y-1.5">
+                <Label
+                  htmlFor="storeId"
+                  className="flex items-center text-sm font-medium text-gray-700"
+                >
+                  店家
+                  <span className="ml-1 text-red-500">*</span>
+                </Label>
+                <Select
+                  value={formData.storeId}
+                  onValueChange={(value) => handleInputChange("storeId", value)}
+                >
+                  <SelectTrigger className="w-full border-gray-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+                    <SelectValue placeholder="請選擇店家" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {flattenedStores.map((store) => (
+                      <SelectItem value={store.id} key={store.id}>
+                        {store.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {errors.storeId && (
+                  <p className="mt-1 text-xs text-red-500">{errors.storeId}</p>
                 )}
               </div>
 
@@ -405,7 +454,7 @@ export function AddMemberModal({
               </div>
 
               {/* Initial Points Field */}
-              <div className="space-y-1.5">
+              {/* <div className="space-y-1.5">
                 <Label
                   htmlFor="coin"
                   className="flex items-center text-sm font-medium text-gray-700"
@@ -425,7 +474,7 @@ export function AddMemberModal({
                   placeholder="請輸入初始點數"
                   className="w-full border-gray-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                 />
-              </div>
+              </div> */}
             </div>
           </div>
 
