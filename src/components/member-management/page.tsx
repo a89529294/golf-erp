@@ -88,7 +88,8 @@ export function MemberManagementPage({
         pageSize: 10,
         sort: sorting[0].id,
         order: sorting[0].desc ? "DESC" : "ASC",
-        populate: ["storeAppUsers", "appChargeHistories.store"],
+        populate: ["storeAppUsers"],
+        // Note: appChargeHistories removed - charge history only shown on detail page
       });
       const encodedFilter = encodeURIComponent(debouncedGlobalFilter);
       const encodedAppUserType = encodeURIComponent(

@@ -211,46 +211,9 @@ export const columns = (
       ),
       size: 11.5,
     }),
-    columnHelper.accessor(
-      (row) => {
-        return new Intl.NumberFormat()
-          .format(
-            row.appChargeHistories?.reduce(
-              (acc, val) =>
-                val.store?.id === storeId ? acc + val.amount : acc,
-              0,
-            ) ?? 0,
-          )
-          .toString();
-      },
-      {
-        id: "coin",
-        header: ({ column }) => {
-          return (
-            <button
-              className="flex items-center gap-1 whitespace-nowrap"
-              onClick={() =>
-                column.toggleSorting(column.getIsSorted() === "asc")
-              }
-            >
-              累積儲值金額
-              <ArrowUpDown className="ml-2 h-4 w-4" />
-            </button>
-          );
-        },
-        cell: (props) => {
-          return (
-            <div className="flex gap-1">
-              $
-              <div className="font-medium text-line-green">
-                {props.getValue()}
-              </div>
-            </div>
-          );
-        },
-        size: undefined,
-      },
-    ),
+    // Removed "累積儲值金額" (Total Charge Amount) column from list page
+    // This data requires populating all appChargeHistories which causes 504 timeout in production
+    // Charge history should only be displayed on the member detail page
     columnHelper.display({
       id: "detail-link",
       cell: (props) => {
