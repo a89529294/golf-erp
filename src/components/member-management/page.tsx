@@ -112,8 +112,6 @@ export function MemberManagementPage({
     throwOnError: false,
   });
 
-  console.log(data);
-
   return (
     <MainLayout
       headerChildren={
@@ -155,6 +153,7 @@ export function MemberManagementPage({
                         show={true}
                         asMenuItem
                         closeMenu={() => setValue("")}
+                        stores={initialData}
                       />
                     </MenubarItem>
                   )}
@@ -197,6 +196,7 @@ export function MemberManagementPage({
                 storeId={storeId}
                 show={!isSearchActive}
                 onClose={() => setIsSearchFocused(false)}
+                stores={initialData}
               />
             )}
             <LayoutGroup>

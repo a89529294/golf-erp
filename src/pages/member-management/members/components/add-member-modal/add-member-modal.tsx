@@ -14,8 +14,7 @@ import {
 import { cn } from "@/lib/utils";
 import { privateFetch } from "@/utils/utils";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { storesQuery } from "@/pages/store-management/loader";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -37,12 +36,14 @@ export function AddMemberModal({
   closeMenu,
   show,
   onClose,
+  stores,
 }: {
   storeId?: string | null;
   asMenuItem?: boolean;
   closeMenu?: () => void;
   show: boolean;
   onClose?: () => void;
+  stores: { id: string; name: string }[];
 }) {
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
@@ -60,12 +61,6 @@ export function AddMemberModal({
     email: "",
     storeId: storeId || "",
   });
-
-  const { data: stores } = useQuery(storesQuery);
-
-  const flattenedStores = stores
-    ? Object.values(stores).flatMap((stores) => stores)
-    : [];
 
   const { mutate, isPending } = useMutation({
     mutationKey: ["register-member"],
@@ -305,7 +300,7 @@ export function AddMemberModal({
                     <SelectValue placeholder="請選擇店家" />
                   </SelectTrigger>
                   <SelectContent>
-                    {flattenedStores.map((store) => (
+                    {stores.map((store) => (
                       <SelectItem value={store.id} key={store.id}>
                         {store.name}
                       </SelectItem>

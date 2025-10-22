@@ -42,6 +42,7 @@ export function StoreSelect({
     ),
     initialData,
     staleTime: 5000,
+    refetchOnMount: false,
   });
 
   const updateStoreName = useCallback(
