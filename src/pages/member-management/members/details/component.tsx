@@ -223,7 +223,9 @@ export function Component() {
     }
 
     toast.success("刪除成功");
-    queryClient.invalidateQueries({ queryKey: ["member-system-gift-data", id] });
+    queryClient.invalidateQueries({
+      queryKey: ["member-system-gift-data", id],
+    });
     queryClient.invalidateQueries({ queryKey: ["members"] });
   };
 
@@ -260,7 +262,8 @@ export function Component() {
 
   const currentColumns = (() => {
     if (memberHistory === "coupon-history") return couponHistorycolumns;
-    if (memberHistory === "system-gift-history") return genSystemGiftHistoryColumns(deleteGivenCoin);
+    if (memberHistory === "system-gift-history")
+      return genSystemGiftHistoryColumns(deleteGivenCoin);
     // For spending-history and top-up-history, use topUpHistorycolumns
     return topUpHistorycolumns;
   })();
@@ -312,7 +315,8 @@ export function Component() {
               }
               allowMemberTypeEdit={
                 location.pathname.includes("view-only") &&
-                auth.user?.permissions.includes("系統管理")
+                auth.user?.permissions.includes("系統管理") &&
+                auth.user?.permissions.includes("會員身分折扣管理")
               }
             />
           )}

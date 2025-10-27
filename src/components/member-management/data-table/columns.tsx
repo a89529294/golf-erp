@@ -90,42 +90,42 @@ export const columns = (
 
     ...(showSendPoints(category, userPermissions)
       ? [
-        columnHelper.display({
-          id: "send_points",
-          header: "",
-          cell: (props) => {
-            const appUserId = props.row.original.id;
-            return <AddCoinModal appUserId={appUserId} storeId={storeId} />;
-          },
-          size: 9.2,
-          meta: {
-            className: "px-2 ",
-          },
-        }),
-      ]
+          columnHelper.display({
+            id: "send_points",
+            header: "",
+            cell: (props) => {
+              const appUserId = props.row.original.id;
+              return <AddCoinModal appUserId={appUserId} storeId={storeId} />;
+            },
+            size: 9.2,
+            meta: {
+              className: "px-2 ",
+            },
+          }),
+        ]
       : []),
     ...(showDeleteMember(category, userPermissions)
       ? [
-        columnHelper.display({
-          id: "delete_member",
-          header: "",
-          cell: (props) => {
-            const appUserId = props.row.original.id;
-            const appUserName = props.row.original.chName;
-            return (
-              <DeleteMemberModal
-                category={category}
-                userId={appUserId}
-                userName={appUserName}
-              />
-            );
-          },
-          size: 5.2,
-          meta: {
-            className: "px-2",
-          },
-        }),
-      ]
+          columnHelper.display({
+            id: "delete_member",
+            header: "",
+            cell: (props) => {
+              const appUserId = props.row.original.id;
+              const appUserName = props.row.original.chName;
+              return (
+                <DeleteMemberModal
+                  category={category}
+                  userId={appUserId}
+                  userName={appUserName}
+                />
+              );
+            },
+            size: 5.2,
+            meta: {
+              className: "px-2",
+            },
+          }),
+        ]
       : []),
     columnHelper.accessor("account", {
       header: ({ column }) => {
