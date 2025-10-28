@@ -315,8 +315,8 @@ export function Component() {
               }
               allowMemberTypeEdit={
                 location.pathname.includes("view-only") &&
-                auth.user?.permissions.includes("系統管理") &&
-                auth.user?.permissions.includes("會員身分折扣管理")
+                (auth.user?.permissions.includes("系統管理") ||
+                  auth.user?.permissions.includes("會員身分折扣管理"))
               }
             />
           )}
