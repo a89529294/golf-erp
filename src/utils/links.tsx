@@ -319,6 +319,22 @@ export const linksKV = {
         type: "flat" as const,
         allowedPermissions: ["模擬器-贈送點數"],
       },
+      "discount-code-management": {
+        label: "優惠碼管理",
+        type: "multiple" as const,
+        paths: {
+          index: {
+            symbolicPath: `${INDOOR_SIMULATOR_BASE_PATH}/discount-code-management/:storeId?`,
+            path: `${INDOOR_SIMULATOR_BASE_PATH}/discount-code-management`,
+          },
+          edit: `${INDOOR_SIMULATOR_BASE_PATH}/discount-code-management/:storeId/:codeId`,
+        },
+        lazy: {
+          index: () => import("@/pages/indoor-simulator/discount-code-management"),
+          edit: () => import("@/pages/indoor-simulator/discount-code-management/edit"),
+        },
+        allowedPermissions: ["系統管理", "模擬器-優惠碼管理"],
+      },
       "reward-settings": {
         label: "累積點數設定",
         path: `${INDOOR_SIMULATOR_BASE_PATH}/reward-settings`,
