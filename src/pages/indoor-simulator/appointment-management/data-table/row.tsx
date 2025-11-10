@@ -242,12 +242,6 @@ export function Row({ row }: { row: RowModel<Appointment>["rows"][number] }) {
     };
   }, [row.original.id]);
 
-  if (row.original.id.startsWith("20b67")) {
-    console.log(row.original);
-    console.log(row.original.startTime);
-    console.log(new Date(row.original.startTime.slice(0, -1)));
-  }
-
   const startTimeDate = new Date(row.original.startTime);
   startTimeDate.setHours(startTimeDate.getHours() - 8);
   const endTimeDate = new Date(row.original.endTime);
@@ -333,6 +327,15 @@ export function Row({ row }: { row: RowModel<Appointment>["rows"][number] }) {
                 </p>
                 <p className="text-secondary-purple">
                   {row.original.usedCoupon?.[0]?.amount}
+                </p>
+              </div>
+
+              <div>
+                <p className="text-sm font-medium text-secondary-dark">
+                  優惠碼金額
+                </p>
+                <p className="text-secondary-purple">
+                  {row.original.discountDetails?.storeDiscountCodeDiscountPrice}
                 </p>
               </div>
 
