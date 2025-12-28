@@ -356,8 +356,39 @@ export function exportToExcel(
   // Step 1: Create a new workbook
   const workbook = XLSX.utils.book_new();
 
+  // Helper to sanitize sheet names
+  const sanitizeSheetName = (name: string) => {
+    // Excel forbidden characters: : \ / ? * [ ]
+    // Also truncate to 31 characters
+    let sanitized = name
+      .replace(/[:\\/?*[\]]/g, "_")
+      .substring(0, 31)
+      .trim();
+
+    // Ensure name is not empty
+    if (!sanitized) {
+      sanitized = "Sheet";
+    }
+
+    return sanitized;
+  };
+
+  const usedSheetNames = new Set<string>();
+
   // Step 2: Iterate over datasets to create sheets
   Object.entries(datasets).forEach(([sheetName, data]) => {
+    let sanitizedName = sanitizeSheetName(sheetName);
+
+    // Handle duplicates by appending (1), (2), etc.
+    let finalName = sanitizedName;
+    let counter = 1;
+    while (usedSheetNames.has(finalName)) {
+      const suffix = `(${counter})`;
+      finalName = sanitizedName.substring(0, 31 - suffix.length) + suffix;
+      counter++;
+    }
+    usedSheetNames.add(finalName);
+
     // Convert the data to a worksheet
     const worksheet = XLSX.utils.json_to_sheet(data);
 
@@ -368,7 +399,7 @@ export function exportToExcel(
       const maxLength = Math.max(
         key.length * 2, // header length
         ...data.map((row) => {
-          return row[key] ? row[key]?.toString().length ?? 0 : 0;
+          return row[key] ? (row[key]?.toString().length ?? 0) : 0;
         }), // max length of each cell in the column
       );
       return { wch: maxLength + 2 }; // add padding for better readability
@@ -377,7 +408,7 @@ export function exportToExcel(
     worksheet["!cols"] = columnWidths; // Set column widths in the worksheet
 
     // Append the worksheet to the workbook with the given sheet name
-    XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
+    XLSX.utils.book_append_sheet(workbook, worksheet, finalName);
   });
 
   // Step 3: Generate a binary Excel file

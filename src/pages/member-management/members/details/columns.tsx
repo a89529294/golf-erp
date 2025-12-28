@@ -48,7 +48,7 @@ export const topUpHistorycolumns = [
 
       if (typeof ed === "string") return <div className="text-orange" />;
 
-      ed.setHours(ed.getHours() + 8);
+      // ed.setHours(ed.getHours() + 8);
       const edFormatted = new Intl.DateTimeFormat("en-CA", {
         year: "numeric",
         month: "2-digit",
@@ -328,7 +328,8 @@ type SystemGiftHistoryRow = MemberAppChargeHistory & { id: string };
 export function genSystemGiftHistoryColumns(
   deleteGivenCoin: (id: string) => Promise<void>,
 ) {
-  const systemGiftHistoryColumnHelper = createColumnHelper<SystemGiftHistoryRow>();
+  const systemGiftHistoryColumnHelper =
+    createColumnHelper<SystemGiftHistoryRow>();
 
   return [
     //@ts-ignore
@@ -363,7 +364,7 @@ export function genSystemGiftHistoryColumns(
 
         if (typeof ed === "string") return <div className="text-orange" />;
 
-        ed.setHours(ed.getHours() + 8);
+        // ed.setHours(ed.getHours() + 8);
         const edFormatted = new Intl.DateTimeFormat("en-CA", {
           year: "numeric",
           month: "2-digit",
@@ -412,7 +413,7 @@ export function genSystemGiftHistoryColumns(
     }),
     systemGiftHistoryColumnHelper.display({
       id: "delete",
-      header: () => <div className="text-right pr-6">刪除</div>,
+      header: () => <div className="pr-6 text-right">刪除</div>,
       cell: (props) => {
         const rowData = props.row.original;
         return (
