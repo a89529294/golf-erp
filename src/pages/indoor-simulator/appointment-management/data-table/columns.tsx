@@ -138,7 +138,7 @@ export const columns: ColumnDef<Appointment>[] = [
         if (isNaN(date.getTime()))
           return <div className="whitespace-nowrap">-</div>;
 
-        const d = subHours(date, 8);
+        const d = subHours(date, 0);
         return (
           <div className="whitespace-nowrap">
             {format(d, "yyyy-MM-dd HH:mm")}
