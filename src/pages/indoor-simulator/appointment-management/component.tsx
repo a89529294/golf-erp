@@ -67,8 +67,6 @@ export function Component() {
   // })();
   const filteredData = store?.sites.flatMap((s) => s.appointments) ?? [];
 
-  console.log(filteredData);
-
   const [isExporting, setIsExporting] = useState(false);
   const { data: allAppointmentsData, isFetching: isFetchingAllAppointments } =
     useQuery({
@@ -83,11 +81,37 @@ export function Component() {
       enabled: isExporting,
     });
 
+  console.log("wtf");
+  console.log(allAppointmentsData);
+
+  const deduct8Hours = (datetimeStr: string): string => {
+    const date = new Date(datetimeStr);
+    date.setHours(date.getHours() - 8);
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
+  };
+
   useEffect(() => {
     if (allAppointmentsData && isExporting) {
       const allAppointments = allAppointmentsData.storesWithSiteAppointments
         .flatMap((s) => s.sites)
-        .flatMap((s) => s.appointments);
+        .flatMap((s) => s.appointments)
+        .map((v) => ({
+          ...v,
+          startTime: deduct8Hours(v.startTime),
+          endTime: deduct8Hours(v.endTime),
+        }));
+      console.log(
+        allAppointments.find(
+          (v) => v.id === "a0fcc5f0-146f-40ac-a7ae-204f1048b5de",
+        ),
+      );
       currentDataRef.current.exportDataAsXlsx(
         stores.find((store) => store.id === storeId)?.name,
         allAppointments,

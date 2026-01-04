@@ -37,7 +37,6 @@ export const columns: ColumnDef<Appointment>[] = [
       );
     },
     cell(props) {
-      console.log(props.getValue());
       return (
         <div className="whitespace-nowrap">{props.getValue() as string}</div>
       );
@@ -126,14 +125,13 @@ export const columns: ColumnDef<Appointment>[] = [
     },
     cell: (prop) => {
       const value = prop.getValue();
-      console.log("Raw value:", value); // Add this line
+
       if (!value) return <div className="whitespace-nowrap">-</div>;
 
       try {
         const dateStr = String(value).replace(/\.\d+Z$/, "Z");
-        console.log("Normalized date string:", dateStr); // Add this line
+
         const date = new Date(dateStr);
-        console.log("Parsed date:", date); // Add this line
 
         if (isNaN(date.getTime()))
           return <div className="whitespace-nowrap">-</div>;
@@ -145,7 +143,6 @@ export const columns: ColumnDef<Appointment>[] = [
           </div>
         );
       } catch (e) {
-        console.log("Date parsing error:", e); // Add this line
         return <div className="whitespace-nowrap">-</div>;
       }
     },

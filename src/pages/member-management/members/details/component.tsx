@@ -57,11 +57,10 @@ export function Component() {
 
       const data = await response.json();
       return data.data.map((v: any) => {
-        if (!v.order) console.log(v);
         return {
           storeName: v.storeSimulator.store?.name ?? "",
-          createdAt: v.order?.createdAt ?? "",
-          paymentMethod: v.order?.paymentMethod ?? "",
+          createdAt: v.order?.createdAt ?? v.createdAt,
+          paymentMethod: v.order?.paymentMethod ?? "點數",
           amount: v.amount,
         };
       });
