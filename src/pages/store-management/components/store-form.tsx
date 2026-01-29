@@ -307,14 +307,12 @@ export function StoreForm({
             form={form}
             name={"latitude"}
             label="緯度"
-            asNumber
           />
           <StoreFormField
             disabled={isInputDisabled}
             form={form}
             name={"longitude"}
             label="經度"
-            asNumber
           />
           <StoreFormAddressSelectFields
             form={form}
